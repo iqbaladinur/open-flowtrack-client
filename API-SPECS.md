@@ -30,7 +30,7 @@ Base URLs:
 
 <h1 id="wallport-api-authentication">Authentication</h1>
 
-## Redirect to Google for authentication
+## AuthController_googleAuth
 
 <a id="opIdAuthController_googleAuth"></a>
 
@@ -59,7 +59,9 @@ fetch('/auth/google',
 
 `GET /auth/google`
 
-<h3 id="redirect-to-google-for-authentication-responses">Responses</h3>
+*Redirect to Google for authentication*
+
+<h3 id="authcontroller_googleauth-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -69,7 +71,7 @@ fetch('/auth/google',
 This operation does not require authentication
 </aside>
 
-## Google callback for authentication
+## AuthController_googleAuthRedirect
 
 <a id="opIdAuthController_googleAuthRedirect"></a>
 
@@ -98,7 +100,9 @@ fetch('/auth/google/callback',
 
 `GET /auth/google/callback`
 
-<h3 id="google-callback-for-authentication-responses">Responses</h3>
+*Google callback for authentication*
+
+<h3 id="authcontroller_googleauthredirect-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -108,7 +112,7 @@ fetch('/auth/google/callback',
 This operation does not require authentication
 </aside>
 
-## Register a new user
+## AuthController_register
 
 <a id="opIdAuthController_register"></a>
 
@@ -147,6 +151,8 @@ fetch('/auth/register',
 
 `POST /auth/register`
 
+*Register a new user*
+
 > Body parameter
 
 ```json
@@ -157,13 +163,13 @@ fetch('/auth/register',
 }
 ```
 
-<h3 id="register-a-new-user-parameters">Parameters</h3>
+<h3 id="authcontroller_register-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[CreateUserDto](#schemacreateuserdto)|true|none|
 
-<h3 id="register-a-new-user-responses">Responses</h3>
+<h3 id="authcontroller_register-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -174,7 +180,7 @@ fetch('/auth/register',
 This operation does not require authentication
 </aside>
 
-## Log in a user
+## AuthController_login
 
 <a id="opIdAuthController_login"></a>
 
@@ -212,6 +218,8 @@ fetch('/auth/login',
 
 `POST /auth/login`
 
+*Log in a user*
+
 > Body parameter
 
 ```json
@@ -221,13 +229,13 @@ fetch('/auth/login',
 }
 ```
 
-<h3 id="log-in-a-user-parameters">Parameters</h3>
+<h3 id="authcontroller_login-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[LoginDto](#schemalogindto)|true|none|
 
-<h3 id="log-in-a-user-responses">Responses</h3>
+<h3 id="authcontroller_login-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -238,7 +246,7 @@ fetch('/auth/login',
 This operation does not require authentication
 </aside>
 
-## Send password reset link
+## AuthController_forgotPassword
 
 <a id="opIdAuthController_forgotPassword"></a>
 
@@ -275,6 +283,8 @@ fetch('/auth/forgot-password',
 
 `POST /auth/forgot-password`
 
+*Send password reset link*
+
 > Body parameter
 
 ```json
@@ -283,13 +293,13 @@ fetch('/auth/forgot-password',
 }
 ```
 
-<h3 id="send-password-reset-link-parameters">Parameters</h3>
+<h3 id="authcontroller_forgotpassword-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[ForgotPasswordDto](#schemaforgotpassworddto)|true|none|
 
-<h3 id="send-password-reset-link-responses">Responses</h3>
+<h3 id="authcontroller_forgotpassword-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -299,7 +309,7 @@ fetch('/auth/forgot-password',
 This operation does not require authentication
 </aside>
 
-## Reset user password
+## AuthController_resetPassword
 
 <a id="opIdAuthController_resetPassword"></a>
 
@@ -336,6 +346,8 @@ fetch('/auth/reset-password/{token}',
 
 `POST /auth/reset-password/{token}`
 
+*Reset user password*
+
 > Body parameter
 
 ```json
@@ -344,14 +356,14 @@ fetch('/auth/reset-password/{token}',
 }
 ```
 
-<h3 id="reset-user-password-parameters">Parameters</h3>
+<h3 id="authcontroller_resetpassword-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |token|path|string|true|none|
 |body|body|[ResetPasswordDto](#schemaresetpassworddto)|true|none|
 
-<h3 id="reset-user-password-responses">Responses</h3>
+<h3 id="authcontroller_resetpassword-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -362,7 +374,7 @@ fetch('/auth/reset-password/{token}',
 This operation does not require authentication
 </aside>
 
-## Get user profile
+## AuthController_getProfile
 
 <a id="opIdAuthController_getProfile"></a>
 
@@ -397,7 +409,9 @@ fetch('/auth/profile',
 
 `GET /auth/profile`
 
-<h3 id="get-user-profile-responses">Responses</h3>
+*Get user profile*
+
+<h3 id="authcontroller_getprofile-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -410,7 +424,7 @@ bearer
 
 <h1 id="wallport-api-wallets">Wallets</h1>
 
-## Create a new wallet
+## WalletsController_create
 
 <a id="opIdWalletsController_create"></a>
 
@@ -451,6 +465,8 @@ fetch('/wallets',
 
 `POST /wallets`
 
+*Create a new wallet*
+
 > Body parameter
 
 ```json
@@ -461,13 +477,13 @@ fetch('/wallets',
 }
 ```
 
-<h3 id="create-a-new-wallet-parameters">Parameters</h3>
+<h3 id="walletscontroller_create-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[CreateWalletDto](#schemacreatewalletdto)|true|none|
 
-<h3 id="create-a-new-wallet-responses">Responses</h3>
+<h3 id="walletscontroller_create-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -478,7 +494,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Get all wallets for the current user
+## WalletsController_findAll
 
 <a id="opIdWalletsController_findAll"></a>
 
@@ -513,7 +529,16 @@ fetch('/wallets',
 
 `GET /wallets`
 
-<h3 id="get-all-wallets-for-the-current-user-responses">Responses</h3>
+*Get all wallets for the current user*
+
+<h3 id="walletscontroller_findall-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|start_date|query|string(date-time)|false|none|
+|end_date|query|string(date-time)|false|none|
+
+<h3 id="walletscontroller_findall-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -524,7 +549,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Get a specific wallet by ID
+## WalletsController_findOne
 
 <a id="opIdWalletsController_findOne"></a>
 
@@ -559,13 +584,15 @@ fetch('/wallets/{id}',
 
 `GET /wallets/{id}`
 
-<h3 id="get-a-specific-wallet-by-id-parameters">Parameters</h3>
+*Get a specific wallet by ID*
+
+<h3 id="walletscontroller_findone-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 
-<h3 id="get-a-specific-wallet-by-id-responses">Responses</h3>
+<h3 id="walletscontroller_findone-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -576,7 +603,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Update a wallet
+## WalletsController_update
 
 <a id="opIdWalletsController_update"></a>
 
@@ -617,6 +644,8 @@ fetch('/wallets/{id}',
 
 `PATCH /wallets/{id}`
 
+*Update a wallet*
+
 > Body parameter
 
 ```json
@@ -627,14 +656,14 @@ fetch('/wallets/{id}',
 }
 ```
 
-<h3 id="update-a-wallet-parameters">Parameters</h3>
+<h3 id="walletscontroller_update-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 |body|body|[UpdateWalletDto](#schemaupdatewalletdto)|true|none|
 
-<h3 id="update-a-wallet-responses">Responses</h3>
+<h3 id="walletscontroller_update-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -645,7 +674,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Delete a wallet
+## WalletsController_remove
 
 <a id="opIdWalletsController_remove"></a>
 
@@ -680,13 +709,15 @@ fetch('/wallets/{id}',
 
 `DELETE /wallets/{id}`
 
-<h3 id="delete-a-wallet-parameters">Parameters</h3>
+*Delete a wallet*
+
+<h3 id="walletscontroller_remove-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 
-<h3 id="delete-a-wallet-responses">Responses</h3>
+<h3 id="walletscontroller_remove-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -699,7 +730,7 @@ bearer
 
 <h1 id="wallport-api-categories">Categories</h1>
 
-## Create a new category
+## CategoriesController_create
 
 <a id="opIdCategoriesController_create"></a>
 
@@ -741,6 +772,8 @@ fetch('/categories',
 
 `POST /categories`
 
+*Create a new category*
+
 > Body parameter
 
 ```json
@@ -752,13 +785,13 @@ fetch('/categories',
 }
 ```
 
-<h3 id="create-a-new-category-parameters">Parameters</h3>
+<h3 id="categoriescontroller_create-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[CreateCategoryDto](#schemacreatecategorydto)|true|none|
 
-<h3 id="create-a-new-category-responses">Responses</h3>
+<h3 id="categoriescontroller_create-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -769,7 +802,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Get all categories for the current user (including defaults)
+## CategoriesController_findAll
 
 <a id="opIdCategoriesController_findAll"></a>
 
@@ -804,7 +837,9 @@ fetch('/categories',
 
 `GET /categories`
 
-<h3 id="get-all-categories-for-the-current-user-(including-defaults)-parameters">Parameters</h3>
+*Get all categories for the current user (including defaults)*
+
+<h3 id="categoriescontroller_findall-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -817,7 +852,7 @@ fetch('/categories',
 |type|income|
 |type|expense|
 
-<h3 id="get-all-categories-for-the-current-user-(including-defaults)-responses">Responses</h3>
+<h3 id="categoriescontroller_findall-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -828,7 +863,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Get a specific category by ID
+## CategoriesController_findOne
 
 <a id="opIdCategoriesController_findOne"></a>
 
@@ -863,13 +898,15 @@ fetch('/categories/{id}',
 
 `GET /categories/{id}`
 
-<h3 id="get-a-specific-category-by-id-parameters">Parameters</h3>
+*Get a specific category by ID*
+
+<h3 id="categoriescontroller_findone-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 
-<h3 id="get-a-specific-category-by-id-responses">Responses</h3>
+<h3 id="categoriescontroller_findone-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -880,7 +917,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Update a category
+## CategoriesController_update
 
 <a id="opIdCategoriesController_update"></a>
 
@@ -922,6 +959,8 @@ fetch('/categories/{id}',
 
 `PATCH /categories/{id}`
 
+*Update a category*
+
 > Body parameter
 
 ```json
@@ -933,14 +972,14 @@ fetch('/categories/{id}',
 }
 ```
 
-<h3 id="update-a-category-parameters">Parameters</h3>
+<h3 id="categoriescontroller_update-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 |body|body|[UpdateCategoryDto](#schemaupdatecategorydto)|true|none|
 
-<h3 id="update-a-category-responses">Responses</h3>
+<h3 id="categoriescontroller_update-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -951,7 +990,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Delete a category
+## CategoriesController_remove
 
 <a id="opIdCategoriesController_remove"></a>
 
@@ -986,13 +1025,15 @@ fetch('/categories/{id}',
 
 `DELETE /categories/{id}`
 
-<h3 id="delete-a-category-parameters">Parameters</h3>
+*Delete a category*
+
+<h3 id="categoriescontroller_remove-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 
-<h3 id="delete-a-category-responses">Responses</h3>
+<h3 id="categoriescontroller_remove-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1005,7 +1046,7 @@ bearer
 
 <h1 id="wallport-api-transactions">Transactions</h1>
 
-## Create a new transaction
+## TransactionsController_create
 
 <a id="opIdTransactionsController_create"></a>
 
@@ -1051,6 +1092,8 @@ fetch('/transactions',
 
 `POST /transactions`
 
+*Create a new transaction*
+
 > Body parameter
 
 ```json
@@ -1066,13 +1109,13 @@ fetch('/transactions',
 }
 ```
 
-<h3 id="create-a-new-transaction-parameters">Parameters</h3>
+<h3 id="transactionscontroller_create-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[CreateTransactionDto](#schemacreatetransactiondto)|true|none|
 
-<h3 id="create-a-new-transaction-responses">Responses</h3>
+<h3 id="transactionscontroller_create-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1083,7 +1126,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Get all transactions for the current user
+## TransactionsController_findAll
 
 <a id="opIdTransactionsController_findAll"></a>
 
@@ -1118,7 +1161,9 @@ fetch('/transactions',
 
 `GET /transactions`
 
-<h3 id="get-all-transactions-for-the-current-user-parameters">Parameters</h3>
+*Get all transactions for the current user*
+
+<h3 id="transactionscontroller_findall-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1135,7 +1180,7 @@ fetch('/transactions',
 |type|income|
 |type|expense|
 
-<h3 id="get-all-transactions-for-the-current-user-responses">Responses</h3>
+<h3 id="transactionscontroller_findall-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1146,7 +1191,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Get a specific transaction by ID
+## TransactionsController_findOne
 
 <a id="opIdTransactionsController_findOne"></a>
 
@@ -1181,13 +1226,15 @@ fetch('/transactions/{id}',
 
 `GET /transactions/{id}`
 
-<h3 id="get-a-specific-transaction-by-id-parameters">Parameters</h3>
+*Get a specific transaction by ID*
+
+<h3 id="transactionscontroller_findone-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 
-<h3 id="get-a-specific-transaction-by-id-responses">Responses</h3>
+<h3 id="transactionscontroller_findone-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1198,7 +1245,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Update a transaction
+## TransactionsController_update
 
 <a id="opIdTransactionsController_update"></a>
 
@@ -1244,6 +1291,8 @@ fetch('/transactions/{id}',
 
 `PATCH /transactions/{id}`
 
+*Update a transaction*
+
 > Body parameter
 
 ```json
@@ -1259,14 +1308,14 @@ fetch('/transactions/{id}',
 }
 ```
 
-<h3 id="update-a-transaction-parameters">Parameters</h3>
+<h3 id="transactionscontroller_update-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 |body|body|[UpdateTransactionDto](#schemaupdatetransactiondto)|true|none|
 
-<h3 id="update-a-transaction-responses">Responses</h3>
+<h3 id="transactionscontroller_update-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1277,7 +1326,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Delete a transaction
+## TransactionsController_remove
 
 <a id="opIdTransactionsController_remove"></a>
 
@@ -1312,13 +1361,15 @@ fetch('/transactions/{id}',
 
 `DELETE /transactions/{id}`
 
-<h3 id="delete-a-transaction-parameters">Parameters</h3>
+*Delete a transaction*
+
+<h3 id="transactionscontroller_remove-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 
-<h3 id="delete-a-transaction-responses">Responses</h3>
+<h3 id="transactionscontroller_remove-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1331,7 +1382,7 @@ bearer
 
 <h1 id="wallport-api-budgets">Budgets</h1>
 
-## Create a new budget
+## BudgetsController_create
 
 <a id="opIdBudgetsController_create"></a>
 
@@ -1373,6 +1424,8 @@ fetch('/budgets',
 
 `POST /budgets`
 
+*Create a new budget*
+
 > Body parameter
 
 ```json
@@ -1384,13 +1437,13 @@ fetch('/budgets',
 }
 ```
 
-<h3 id="create-a-new-budget-parameters">Parameters</h3>
+<h3 id="budgetscontroller_create-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[CreateBudgetDto](#schemacreatebudgetdto)|true|none|
 
-<h3 id="create-a-new-budget-responses">Responses</h3>
+<h3 id="budgetscontroller_create-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1401,7 +1454,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Get all budgets for the current user
+## BudgetsController_findAll
 
 <a id="opIdBudgetsController_findAll"></a>
 
@@ -1436,7 +1489,9 @@ fetch('/budgets',
 
 `GET /budgets`
 
-<h3 id="get-all-budgets-for-the-current-user-responses">Responses</h3>
+*Get all budgets for the current user*
+
+<h3 id="budgetscontroller_findall-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1447,7 +1502,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Get a specific budget by ID
+## BudgetsController_findOne
 
 <a id="opIdBudgetsController_findOne"></a>
 
@@ -1482,13 +1537,15 @@ fetch('/budgets/{id}',
 
 `GET /budgets/{id}`
 
-<h3 id="get-a-specific-budget-by-id-parameters">Parameters</h3>
+*Get a specific budget by ID*
+
+<h3 id="budgetscontroller_findone-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 
-<h3 id="get-a-specific-budget-by-id-responses">Responses</h3>
+<h3 id="budgetscontroller_findone-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1499,7 +1556,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Update a budget
+## BudgetsController_update
 
 <a id="opIdBudgetsController_update"></a>
 
@@ -1538,6 +1595,8 @@ fetch('/budgets/{id}',
 
 `PATCH /budgets/{id}`
 
+*Update a budget*
+
 > Body parameter
 
 ```json
@@ -1546,14 +1605,14 @@ fetch('/budgets/{id}',
 }
 ```
 
-<h3 id="update-a-budget-parameters">Parameters</h3>
+<h3 id="budgetscontroller_update-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 |body|body|[UpdateBudgetDto](#schemaupdatebudgetdto)|true|none|
 
-<h3 id="update-a-budget-responses">Responses</h3>
+<h3 id="budgetscontroller_update-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1564,7 +1623,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Delete a budget
+## BudgetsController_remove
 
 <a id="opIdBudgetsController_remove"></a>
 
@@ -1599,13 +1658,15 @@ fetch('/budgets/{id}',
 
 `DELETE /budgets/{id}`
 
-<h3 id="delete-a-budget-parameters">Parameters</h3>
+*Delete a budget*
+
+<h3 id="budgetscontroller_remove-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 
-<h3 id="delete-a-budget-responses">Responses</h3>
+<h3 id="budgetscontroller_remove-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1779,7 +1840,7 @@ bearer
 
 <h1 id="wallport-api-export">Export</h1>
 
-## Export user transactions to CSV
+## ExportController_exportTransactions
 
 <a id="opIdExportController_exportTransactions"></a>
 
@@ -1814,7 +1875,9 @@ fetch('/export/transactions/csv',
 
 `GET /export/transactions/csv`
 
-<h3 id="export-user-transactions-to-csv-responses">Responses</h3>
+*Export user transactions to CSV*
+
+<h3 id="exportcontroller_exporttransactions-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1827,7 +1890,7 @@ bearer
 
 <h1 id="wallport-api-backup-and-restore">Backup & Restore</h1>
 
-## Backup user data
+## BackupController_backup
 
 <a id="opIdBackupController_backup"></a>
 
@@ -1862,7 +1925,9 @@ fetch('/backup',
 
 `GET /backup`
 
-<h3 id="backup-user-data-responses">Responses</h3>
+*Backup user data*
+
+<h3 id="backupcontroller_backup-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1873,7 +1938,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## Restore user data
+## BackupController_restore
 
 <a id="opIdBackupController_restore"></a>
 
@@ -1912,6 +1977,8 @@ fetch('/backup/restore',
 
 `POST /backup/restore`
 
+*Restore user data*
+
 > Body parameter
 
 ```yaml
@@ -1919,14 +1986,14 @@ file: string
 
 ```
 
-<h3 id="restore-user-data-parameters">Parameters</h3>
+<h3 id="backupcontroller_restore-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|true|none|
 |» file|body|string(binary)|false|none|
 
-<h3 id="restore-user-data-responses">Responses</h3>
+<h3 id="backupcontroller_restore-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -2288,4 +2355,84 @@ bearer
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |limit_amount|number|false|none|none|
+
+<h2 id="tocS_User">User</h2>
+<!-- backwards compatibility -->
+<a id="schemauser"></a>
+<a id="schema_User"></a>
+<a id="tocSuser"></a>
+<a id="tocsuser"></a>
+
+```json
+{}
+
+```
+
+### Properties
+
+*None*
+
+<h2 id="tocS_Budget">Budget</h2>
+<!-- backwards compatibility -->
+<a id="schemabudget"></a>
+<a id="schema_Budget"></a>
+<a id="tocSbudget"></a>
+<a id="tocsbudget"></a>
+
+```json
+{}
+
+```
+
+### Properties
+
+*None*
+
+<h2 id="tocS_Category">Category</h2>
+<!-- backwards compatibility -->
+<a id="schemacategory"></a>
+<a id="schema_Category"></a>
+<a id="tocScategory"></a>
+<a id="tocscategory"></a>
+
+```json
+{}
+
+```
+
+### Properties
+
+*None*
+
+<h2 id="tocS_Transaction">Transaction</h2>
+<!-- backwards compatibility -->
+<a id="schematransaction"></a>
+<a id="schema_Transaction"></a>
+<a id="tocStransaction"></a>
+<a id="tocstransaction"></a>
+
+```json
+{}
+
+```
+
+### Properties
+
+*None*
+
+<h2 id="tocS_Wallet">Wallet</h2>
+<!-- backwards compatibility -->
+<a id="schemawallet"></a>
+<a id="schema_Wallet"></a>
+<a id="tocSwallet"></a>
+<a id="tocswallet"></a>
+
+```json
+{}
+
+```
+
+### Properties
+
+*None*
 

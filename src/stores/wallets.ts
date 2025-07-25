@@ -1,48 +1,27 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useApi } from '@/composables/useApi';
-import type { Wallet, Transaction } from '@/types';
-import { useTransactionsStore } from './transactions';
-
-interface WalletWithBalance extends Wallet {
-  balance: number;
-}
+import type { Wallet } from '@/types';
 
 export const useWalletsStore = defineStore('wallets', () => {
-  const wallets = ref<WalletWithBalance[]>([]);
+  const wallets = ref<Wallet[]>([]);
   const loading = ref(false);
   const api = useApi();
-  const transactionsStore = useTransactionsStore();
 
-  const calculateBalance = (wallet: Wallet, allTransactions: Transaction[]): number => {
-    const walletTransactions = allTransactions.filter(t => t.wallet_id === wallet.id);
-    return walletTransactions.reduce((acc, transaction) => {
-      if (transaction.type === 'income') {
-        return acc + transaction.amount;
-      }
-      return acc - transaction.amount;
-    }, wallet.initial_balance);
-  };
-
-  const fetchWallets = async () => {
+  const fetchWallets = async (force = false) => {
+    // If we have data and we're not forcing a refresh, or if we are already loading, do nothing.
+    if ((wallets.value.length > 0 && !force) || loading.value) {
+      return;
+    }
+    
     loading.value = true;
     try {
-      const [walletsResponse, transactionsResponse] = await Promise.all([
-        api.get<Wallet[]>('/wallets'),
-        api.get<Transaction[]>('/transactions', { params: { end_date: new Date().toISOString().split('T')[0] } })
-      ]);
-
-      if (walletsResponse.data && transactionsResponse.data) {
-        const walletsData = walletsResponse.data;
-        const allTransactions = transactionsResponse.data;
-
-        // Set transactions in the transactions store
-        transactionsStore.setTransactions(allTransactions);
-
-        wallets.value = walletsData.map(wallet => ({
-          ...wallet,
-          balance: calculateBalance(wallet, allTransactions)
-        }));
+      const today = new Date().toISOString().split('T')[0];
+      const response = await api.get<Wallet[]>('/wallets', {
+        params: { date: today },
+      });
+      if (response.data) {
+        wallets.value = response.data;
       }
     } finally {
       loading.value = false;
@@ -56,7 +35,7 @@ export const useWalletsStore = defineStore('wallets', () => {
   }) => {
     const response = await api.post<Wallet>('/wallets', walletData);
     if (response.data) {
-      wallets.value.push({ ...response.data, balance: response.data.initial_balance });
+      await fetchWallets(true); // Force refresh
       return { success: true };
     }
     return { success: false, error: response.error };
@@ -72,7 +51,7 @@ export const useWalletsStore = defineStore('wallets', () => {
   ) => {
     const response = await api.patch<Wallet>(`/wallets/${id}`, walletData);
     if (response.data) {
-      await fetchWallets(); // Refetch everything to ensure consistency
+      await fetchWallets(true); // Force refresh
       return { success: true };
     }
     return { success: false, error: response.error };
@@ -91,27 +70,6 @@ export const useWalletsStore = defineStore('wallets', () => {
     return wallets.value.find((w) => w.id === id);
   };
 
-  const recalculateWalletBalance = async (walletId: string) => {
-    const index = wallets.value.findIndex((w) => w.id === walletId);
-    if (index === -1) return;
-
-    const wallet = wallets.value[index];
-    const today = new Date().toISOString().split('T')[0];
-    const response = await api.get<Transaction[]>(`/transactions`, {
-      params: { wallet_id: wallet.id, end_date: today },
-    });
-
-    if (response.data) {
-      const balance = response.data.reduce((acc, transaction) => {
-        if (transaction.type === 'income') {
-          return acc + transaction.amount;
-        }
-        return acc - transaction.amount;
-      }, wallet.initial_balance);
-      wallets.value[index].balance = balance;
-    }
-  };
-
   return {
     wallets,
     loading,
@@ -120,6 +78,5 @@ export const useWalletsStore = defineStore('wallets', () => {
     updateWallet,
     deleteWallet,
     getWalletById,
-    recalculateWalletBalance,
   };
 });

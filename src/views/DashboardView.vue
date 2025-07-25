@@ -227,12 +227,15 @@ const formatDate = (dateString: string) => {
 const handleTransactionAdded = () => {
   showAddTransactionModal.value = false;
   showAddExpenseModal.value = false;
-  // Refresh data
-  transactionsStore.fetchTransactions();
-  walletsStore.fetchWallets();
+  // Force refresh data
+  transactionsStore.fetchTransactions({}, true);
+  walletsStore.fetchWallets(true);
 };
 
 onMounted(async () => {
-  await walletsStore.fetchWallets();
+  await Promise.all([
+    walletsStore.fetchWallets(),
+    transactionsStore.fetchTransactions(),
+  ]);
 });
 </script>

@@ -8,11 +8,16 @@ export const useCategoriesStore = defineStore('categories', () => {
   const loading = ref(false);
   const api = useApi();
 
-  const fetchCategories = async (type?: 'income' | 'expense') => {
+  const fetchCategories = async (force = false) => {
+    // If we have data and we're not forcing a refresh, or if we are already loading, do nothing.
+    if ((categories.value.length > 0 && !force) || loading.value) {
+      return;
+    }
+
     loading.value = true;
     try {
-      const params = type ? { type } : {};
-      const response = await api.get<Category[]>('/categories', { params });
+      // Always fetch all categories. Filtering will be done on the client.
+      const response = await api.get<Category[]>('/categories');
       if (response.data) {
         categories.value = response.data;
       }
@@ -29,7 +34,8 @@ export const useCategoriesStore = defineStore('categories', () => {
   }) => {
     const response = await api.post<Category>('/categories', categoryData);
     if (response.data) {
-      categories.value.push(response.data);
+      // Force a refresh of the categories list
+      await fetchCategories(true);
       return { success: true };
     }
     return { success: false, error: response.error };
@@ -46,10 +52,8 @@ export const useCategoriesStore = defineStore('categories', () => {
   ) => {
     const response = await api.patch<Category>(`/categories/${id}`, categoryData);
     if (response.data) {
-      const index = categories.value.findIndex((c) => c.id === id);
-      if (index !== -1) {
-        categories.value[index] = response.data;
-      }
+      // Force a refresh of the categories list
+      await fetchCategories(true);
       return { success: true };
     }
     return { success: false, error: response.error };
@@ -58,7 +62,8 @@ export const useCategoriesStore = defineStore('categories', () => {
   const deleteCategory = async (id: string) => {
     const response = await api.delete(`/categories/${id}`);
     if (!response.error) {
-      categories.value = categories.value.filter((c) => c.id !== id);
+      // Force a refresh of the categories list
+      await fetchCategories(true);
       return { success: true };
     }
     return { success: false, error: response.error };

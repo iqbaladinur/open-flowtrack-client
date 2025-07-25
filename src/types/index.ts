@@ -9,6 +9,7 @@ export interface Wallet {
   id: string;
   name: string;
   currency: 'USD' | 'IDR';
+  balance: number;
   initial_balance: number;
   created_at: string;
   updated_at: string;

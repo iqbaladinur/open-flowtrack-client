@@ -146,18 +146,21 @@ const editTransaction = (transaction: Transaction) => {
   showAddModal.value = true;
 };
 
-const deleteTransaction = async (id: string) => {
-  if (confirm('Are you sure you want to delete this transaction?')) {
-    const result = await transactionsStore.deleteTransaction(id);
-    
-  }
-};
-
 const handleTransactionSaved = () => {
   showAddModal.value = false;
   selectedTransaction.value = null;
-  // transaction has been saved, we can refetch transactions
-  transactionsStore.fetchTransactions(filters);
+  // Refresh transactions and wallet balances
+  transactionsStore.fetchTransactions(filters, true);
+  walletsStore.fetchWallets(true);
+};
+
+const deleteTransaction = async (id: string) => {
+  if (confirm('Are you sure you want to delete this transaction?')) {
+    const result = await transactionsStore.deleteTransaction(id);
+    if (result.success) {
+      walletsStore.fetchWallets(true);
+    }
+  }
 };
 
 // Watch filters and fetch transactions when they change
