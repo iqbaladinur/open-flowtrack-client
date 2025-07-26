@@ -117,9 +117,14 @@ const deleteCategory = async (id: string) => {
 
 const handleCategorySaved = () => {
   showAddModal.value = false;
-  selectedCategory.value = null;
   categoriesStore.fetchCategories();
 };
+
+watch(showAddModal, (isShowing) => {
+  if (!isShowing) {
+    selectedCategory.value = null;
+  }
+});
 
 onMounted(() => {
   categoriesStore.fetchCategories();

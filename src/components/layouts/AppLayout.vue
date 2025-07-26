@@ -5,9 +5,9 @@
       <div class="flex items-center justify-between px-4 py-3">
         <div class="flex items-center space-x-3">
           <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-            <DollarSign class="w-5 h-5 text-white" />
+            <TrendingUpDown class="w-5 h-5 text-white" />
           </div>
-          <h1 class="text-lg font-semibold text-gray-900 dark:text-white">Wallport</h1>
+          <h1 class="text-lg font-semibold text-gray-900 dark:text-white">FlowTrack</h1>
         </div>
         
         <button @click="showProfileMenu = !showProfileMenu" class="relative">
@@ -76,7 +76,7 @@
 
     <!-- Main Content -->
     <main class="lg:pl-64">
-      <div class="pt-16 lg:pt-0">
+      <div class="pt-16 pb-24 lg:pt-0 lg:pb-0">
         <slot />
       </div>
     </main>
@@ -85,25 +85,74 @@
     <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 safe-area-bottom">
       <div class="grid grid-cols-5">
         <router-link 
-          v-for="item in bottomNavigation" 
+          v-for="item in mainBottomNav" 
           :key="item.name"
           :to="item.to"
-          class="flex flex-col items-center justify-center py-2 transition-colors"
+          class="flex flex-col items-center justify-center text-center py-2 transition-colors"
           :class="$route.name === item.name 
             ? 'text-primary-600 dark:text-primary-400' 
             : 'text-gray-500 dark:text-gray-400'"
         >
-          <component :is="item.icon" class="w-5 h-5 my-1" />
-          <!-- <span class="text-xs font-medium text-center">{{ item.name }}</span> -->
+          <component :is="item.icon" class="w-5 h-5 mb-1" />
+          <span class="text-[10px] font-medium">{{ item.name }}</span>
         </router-link>
+        <button 
+          @click="showMoreMenu = true"
+          class="flex flex-col items-center justify-center text-center py-2 transition-colors"
+          :class="isMoreMenuActive
+            ? 'text-primary-600 dark:text-primary-400' 
+            : 'text-gray-500 dark:text-gray-400'"
+        >
+          <Ellipsis class="w-5 h-5 mb-1" />
+          <span class="text-[10px] font-medium">More</span>
+        </button>
       </div>
     </nav>
+
+    <!-- More Menu Modal -->
+    <Teleport to="body">
+      <Transition
+        enter-active-class="transition-opacity duration-300"
+        leave-active-class="transition-opacity duration-300"
+        enter-from-class="opacity-0"
+        leave-to-class="opacity-0"
+      >
+        <div v-if="showMoreMenu" @click="showMoreMenu = false" class="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"></div>
+      </Transition>
+
+      <Transition
+        enter-active-class="transition-transform duration-300 ease-out"
+        leave-active-class="transition-transform duration-300 ease-in"
+        enter-from-class="translate-y-full"
+        leave-to-class="translate-y-full"
+      >
+        <div v-if="showMoreMenu" class="fixed bottom-0 left-0 right-0 z-50 lg:hidden safe-area-bottom">
+          <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-4">
+            <div class="grid grid-cols-4 gap-4">
+                <router-link
+                  v-for="item in moreMenuNav"
+                  :key="item.name"
+                  :to="item.to"
+                  @click="showMoreMenu = false"
+                  class="flex flex-col items-center justify-center text-center py-2 transition-colors"
+                  :class="$route.name === item.name ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500 dark:text-gray-400'"
+                >
+                  <div class="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-2">
+                    <component :is="item.icon" class="w-6 h-6" />
+                  </div>
+                  <span class="text-[10px] font-medium">{{ item.name }}</span>
+                </router-link>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { 
   DollarSign, 
@@ -114,12 +163,16 @@ import {
   Wallet, 
   Target, 
   Tag,
-  BarChart3 
+  BarChart3,
+  Ellipsis,
+  TrendingUpDown
 } from 'lucide-vue-next';
 
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 const showProfileMenu = ref(false);
+const showMoreMenu = ref(false);
 
 const navigation = [
   { name: 'Dashboard', to: '/dashboard', icon: Home },
@@ -130,14 +183,12 @@ const navigation = [
   { name: 'Reports', to: '/reports', icon: BarChart3 },
 ];
 
-const bottomNavigation = [
-  { name: 'Dashboard', to: '/dashboard', icon: Home },
-  { name: 'Transactions', to: '/transactions', icon: ArrowUpDown },
-  { name: 'Wallets', to: '/wallets', icon: Wallet },
-  { name: 'Categories', to: '/categories', icon: Tag },
-  { name: 'Budgets', to: '/budgets', icon: Target },
-  { name: 'Reports', to: '/reports', icon: BarChart3 },
-];
+const mainBottomNav = navigation.slice(0, 4);
+const moreMenuNav = navigation.slice(4);
+
+const isMoreMenuActive = computed(() => {
+  return moreMenuNav.some(item => item.name === route.name);
+});
 
 const logout = () => {
   authStore.logout();

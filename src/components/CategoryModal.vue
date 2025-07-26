@@ -1,6 +1,6 @@
 <template>
   <Modal v-model="isModalOpen" :title="category ? 'Edit Category' : 'Add Category'">
-    <form @submit.prevent="handleSubmit" class="space-y-4">
+    <form @submit.prevent="handleSubmit" id="category-form" class="space-y-4">
       <!-- Category Name -->
       <div>
         <label for="name" class="label">Category Name</label>
@@ -102,9 +102,9 @@
       <div v-if="error" class="p-3 rounded-lg bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800">
         <p class="text-sm text-error-700 dark:text-error-300">{{ error }}</p>
       </div>
-
-      <!-- Form Actions -->
-      <div class="flex space-x-3 pt-4">
+    </form>
+    <template #footer>
+      <div class="flex space-x-3">
         <button
           type="button"
           @click="$emit('update:modelValue', false)"
@@ -115,6 +115,7 @@
         </button>
         <button
           type="submit"
+          form="category-form"
           class="flex-1 btn-primary"
           :disabled="loading || !isFormValid"
         >
@@ -122,7 +123,7 @@
           <span v-else>{{ category ? 'Update' : 'Create' }} Category</span>
         </button>
       </div>
-    </form>
+    </template>
   </Modal>
 </template>
 

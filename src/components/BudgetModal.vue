@@ -1,6 +1,6 @@
 <template>
   <Modal v-model="isModalOpen" :title="budget ? 'Edit Budget' : 'Create Budget'">
-    <form @submit.prevent="handleSubmit" class="space-y-4">
+    <form @submit.prevent="handleSubmit" id="budget-form" class="space-y-4">
       <!-- Category -->
       <div>
         <label for="category" class="label">Category</label>
@@ -21,7 +21,41 @@
           </option>
         </select>
         <p v-if="budget" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          Category cannot be changed when editing a budget
+          Category cannot be changed when editing a budget.
+        </p>
+      </div>
+
+      <!-- Currency -->
+      <div>
+        <label class="label">Currency</label>
+        <div class="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            @click="form.currency = 'USD'"
+            :disabled="!!budget"
+            class="p-3 rounded-lg border-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            :class="form.currency === 'USD' 
+              ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300' 
+              : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
+          >
+            <DollarSign class="w-5 h-5 mx-auto mb-1" />
+            <span class="text-sm font-medium">USD ($)</span>
+          </button>
+          <button
+            type="button"
+            @click="form.currency = 'IDR'"
+            :disabled="!!budget"
+            class="p-3 rounded-lg border-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            :class="form.currency === 'IDR' 
+              ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300' 
+              : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
+          >
+            <Banknote class="w-5 h-5 mx-auto mb-1" />
+            <span class="text-sm font-medium">IDR (Rp)</span>
+          </button>
+        </div>
+         <p v-if="budget" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          Currency cannot be changed when editing a budget.
         </p>
       </div>
 
@@ -30,7 +64,7 @@
         <label for="limit" class="label">Budget Limit</label>
         <div class="relative">
           <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
-            $
+            {{ form.currency === 'USD' ? '$' : 'Rp' }}
           </span>
           <input
             id="limit"
@@ -79,7 +113,7 @@
       </div>
 
       <p v-if="budget" class="text-xs text-gray-500 dark:text-gray-400">
-        Month and year cannot be changed when editing a budget
+        Month and year cannot be changed when editing a budget.
       </p>
 
       <!-- Budget Preview -->
@@ -94,7 +128,7 @@
           </h4>
         </div>
         <p class="text-sm text-gray-600 dark:text-gray-400">
-          {{ months[form.month - 1] }} {{ form.year }} • ${{ formatCurrency(form.limit_amount) }} limit
+          {{ months[form.month - 1] }} {{ form.year }} • {{ formatCurrency(form.limit_amount, form.currency) }} limit
         </p>
       </div>
 
@@ -102,9 +136,9 @@
       <div v-if="error" class="p-3 rounded-lg bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800">
         <p class="text-sm text-error-700 dark:text-error-300">{{ error }}</p>
       </div>
-
-      <!-- Form Actions -->
-      <div class="flex space-x-3 pt-4">
+    </form>
+    <template #footer>
+      <div class="flex space-x-3">
         <button
           type="button"
           @click="$emit('update:modelValue', false)"
@@ -115,6 +149,7 @@
         </button>
         <button
           type="submit"
+          form="budget-form"
           class="flex-1 btn-primary"
           :disabled="loading || !isFormValid"
         >
@@ -122,7 +157,7 @@
           <span v-else>{{ budget ? 'Update' : 'Create' }} Budget</span>
         </button>
       </div>
-    </form>
+    </template>
   </Modal>
 </template>
 
@@ -132,7 +167,8 @@ import { useBudgetsStore } from '@/stores/budgets';
 import { useCategoriesStore } from '@/stores/categories';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import type { Budget } from '@/types';
+import type { Budget, CurrencyType } from '@/types';
+import { DollarSign, Banknote } from 'lucide-vue-next';
 
 interface Props {
   modelValue: boolean;
@@ -167,6 +203,7 @@ const form = reactive({
   limit_amount: 0,
   month: new Date().getMonth() + 1,
   year: currentYear,
+  currency: 'IDR' as CurrencyType,
 });
 
 const expenseCategories = computed(() => {
@@ -181,7 +218,8 @@ const isFormValid = computed(() => {
   return form.category_id && 
          form.limit_amount > 0 && 
          form.month >= 1 && form.month <= 12 && 
-         form.year;
+         form.year &&
+         form.currency;
 });
 
 const isModalOpen = computed({
@@ -189,8 +227,10 @@ const isModalOpen = computed({
   set: (value) => emit('update:modelValue', value),
 });
 
-const formatCurrency = (amount: number) => {
+const formatCurrency = (amount: number, currency: CurrencyType) => {
   return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency,
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   }).format(amount);
@@ -208,6 +248,7 @@ const handleSubmit = async () => {
       limit_amount: form.limit_amount,
       month: form.month,
       year: form.year,
+      currency: form.currency,
     };
 
     let result;
@@ -239,6 +280,7 @@ const resetForm = () => {
     limit_amount: 0,
     month: new Date().getMonth() + 1,
     year: currentYear,
+    currency: 'IDR' as CurrencyType,
   });
 };
 
@@ -247,9 +289,10 @@ watch(() => props.budget, (newBudget) => {
   if (newBudget) {
     Object.assign(form, {
       category_id: newBudget.category_id,
-      limit_amount: newBudget.limit_amount,
+      limit_amount: parseFloat(newBudget.limit_amount) || 0,
       month: newBudget.month,
       year: newBudget.year,
+      currency: newBudget.currency as CurrencyType,
     });
   } else {
     resetForm();

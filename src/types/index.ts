@@ -45,13 +45,15 @@ export interface Transaction {
 export interface Budget {
   id: string;
   category_id: string;
-  limit_amount: number;
-  spent_amount: number;
+  limit_amount: string;
   month: number;
   year: number;
-  category?: Category;
+  currency: string;
+  user_id: string;
   created_at: string;
   updated_at: string;
+  category: Category;
+  total_spent: number;
 }
 
 export interface SummaryReport {

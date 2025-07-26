@@ -1,6 +1,6 @@
 <template>
   <Modal v-model="isModalOpen" :title="transaction ? 'Edit Transaction' : 'Add Transaction'">
-    <form @submit.prevent="handleSubmit" class="space-y-4">
+    <form @submit.prevent="handleSubmit" id="transaction-form" class="space-y-4">
       <!-- Transaction Type -->
       <div v-if="!type">
         <label class="label">Type</label>
@@ -149,9 +149,9 @@
       <div v-if="error" class="p-3 rounded-lg bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800">
         <p class="text-sm text-error-700 dark:text-error-300">{{ error }}</p>
       </div>
-
-      <!-- Form Actions -->
-      <div class="flex space-x-3 pt-4">
+    </form>
+    <template #footer>
+      <div class="flex space-x-3">
         <button
           type="button"
           @click="isModalOpen = false"
@@ -162,6 +162,7 @@
         </button>
         <button
           type="submit"
+          form="transaction-form"
           class="flex-1 btn-primary"
           :disabled="loading || !isFormValid"
         >
@@ -169,7 +170,7 @@
           <span v-else>{{ transaction ? 'Update' : 'Add' }} Transaction</span>
         </button>
       </div>
-    </form>
+    </template>
   </Modal>
 </template>
 
@@ -248,7 +249,7 @@ const handleSubmit = async () => {
   try {
     const transactionData = {
       type: form.type,
-      amount: form.amount,
+      amount: Number(form.amount),
       wallet_id: form.wallet_id,
       category_id: form.category_id,
       date: form.date,

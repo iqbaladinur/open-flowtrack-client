@@ -32,6 +32,6 @@ const sizeClass = computed(() => {
 });
 
 const containerClass = computed(() => {
-  return props.fullHeight ? 'min-h-64' : 'p-4';
+  return props.fullHeight ? 'min-h-64' : '';
 });
 </script>

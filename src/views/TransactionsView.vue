@@ -228,11 +228,16 @@ const editTransaction = (transaction: Transaction) => {
 
 const handleTransactionSaved = () => {
   showAddModal.value = false;
-  selectedTransaction.value = null;
   // Refresh transactions and wallet balances
   transactionsStore.fetchTransactions(filters, true);
   walletsStore.fetchWallets(true);
 };
+
+watch(showAddModal, (isShowing) => {
+  if (!isShowing) {
+    selectedTransaction.value = null;
+  }
+});
 
 const deleteTransaction = async (id: string) => {
   if (confirm('Are you sure you want to delete this transaction?')) {

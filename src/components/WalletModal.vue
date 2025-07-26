@@ -1,6 +1,6 @@
 <template>
   <Modal v-model="isModalOpen" :title="wallet ? 'Edit Wallet' : 'Add Wallet'">
-    <form @submit.prevent="handleSubmit" class="space-y-4">
+    <form @submit.prevent="handleSubmit" id="wallet-form" class="space-y-4">
       <!-- Wallet Name -->
       <div>
         <label for="name" class="label">Wallet Name</label>
@@ -71,9 +71,9 @@
       <div v-if="error" class="p-3 rounded-lg bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800">
         <p class="text-sm text-error-700 dark:text-error-300">{{ error }}</p>
       </div>
-
-      <!-- Form Actions -->
-      <div class="flex space-x-3 pt-4">
+    </form>
+    <template #footer>
+      <div class="flex space-x-3">
         <button
           type="button"
           @click="$emit('update:modelValue', false)"
@@ -84,6 +84,7 @@
         </button>
         <button
           type="submit"
+          form="wallet-form"
           class="flex-1 btn-primary"
           :disabled="loading || !isFormValid"
         >
@@ -91,7 +92,7 @@
           <span v-else>{{ wallet ? 'Update' : 'Create' }} Wallet</span>
         </button>
       </div>
-    </form>
+    </template>
   </Modal>
 </template>
 

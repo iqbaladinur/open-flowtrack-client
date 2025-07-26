@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useWalletsStore } from '@/stores/wallets';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import WalletModal from '@/components/WalletModal.vue';
@@ -94,8 +94,13 @@ const deleteWallet = async (id: string) => {
 
 const handleWalletSaved = () => {
   showAddModal.value = false;
-  selectedWallet.value = null;
 };
+
+watch(showAddModal, (isShowing) => {
+  if (!isShowing) {
+    selectedWallet.value = null;
+  }
+});
 
 onMounted(() => {
   walletsStore.fetchWallets();

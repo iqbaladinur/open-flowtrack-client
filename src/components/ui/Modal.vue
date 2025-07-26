@@ -28,7 +28,7 @@
             class="w-full max-h-[90vh] transform rounded-t-2xl bg-white dark:bg-gray-800 shadow-xl transition-all sm:my-8 sm:max-w-md sm:rounded-xl"
             @click.stop
           >
-            <div class="flex flex-col h-full">
+            <div class="flex flex-col h-full relative">
               <div class="px-6 py-4 flex-shrink-0">
                 <div class="flex items-center justify-between">
                   <h3 
@@ -46,8 +46,12 @@
                 </div>
               </div>
               
-              <div class="px-6 pb-6 overflow-y-auto">
+              <div class="px-6 pb-[100px] overflow-y-auto flex-1 max-h-[80vh]">
                 <slot />
+              </div>
+
+              <div v-if="$slots.footer" class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0 absolute bottom-0 w-full bg-white rounded-b-xl">
+                <slot name="footer" />
               </div>
             </div>
           </div>
