@@ -57,7 +57,7 @@
             type="number"
             step="0.01"
             required
-            class="input pl-8"
+            class="input pl-10"
             placeholder="0.00"
             :disabled="loading"
           />
@@ -186,7 +186,7 @@ watch(() => props.wallet, (newWallet) => {
     Object.assign(form, {
       name: newWallet.name,
       currency: newWallet.currency,
-      initial_balance: newWallet.initial_balance,
+      initial_balance: Number(newWallet.initial_balance) || 0,
     });
   } else {
     resetForm();

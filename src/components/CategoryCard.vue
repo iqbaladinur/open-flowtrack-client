@@ -21,7 +21,7 @@
 
     <!-- Category Icon -->
     <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" :style="{ backgroundColor: category.color + '20' }">
-      <component :is="category.icon" class="w-6 h-6" :style="{ color: category.color }" />
+      <component :is="icons[category.icon] || icons['Tag']" class="w-6 h-6" :style="{ color: category.color }" />
     </div>
 
     <!-- Category Info -->

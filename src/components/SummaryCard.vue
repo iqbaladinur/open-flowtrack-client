@@ -24,7 +24,7 @@ const props = defineProps({
   },
   amount: {
     type: Number,
-    required: true,
+    default: 0,
   },
   amountClass: {
     type: String,
@@ -41,11 +41,20 @@ const props = defineProps({
 });
 
 const formattedAmount = computed(() => {
-  return new Intl.NumberFormat('en-US', {
+  const options = {
     style: 'currency',
     currency: props.currency,
-    minimumFractionDigits: 0,
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(props.amount);
+  };
+
+  if (props.currency === 'IDR') {
+    // @ts-ignore
+    options.minimumFractionDigits = 0;
+    // @ts-ignore
+    options.maximumFractionDigits = 0;
+  }
+
+  return new Intl.NumberFormat(props.currency === 'IDR' ? 'id-ID' : 'en-US', options).format(props.amount);
 });
 </script>

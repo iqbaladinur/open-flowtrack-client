@@ -12,54 +12,120 @@
       </div>
 
       <!-- Summary Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <SummaryCard
-          title="Total Balance"
-          :amount="totalBalance"
-          icon-bg-class="bg-primary-100 dark:bg-primary-900"
-        >
-          <template #icon>
-            <Wallet class="w-6 h-6 text-primary-600 dark:text-primary-400" />
-          </template>
-        </SummaryCard>
+      <div class="relative">
+        <div class="flex overflow-x-auto space-x-4 pb-4 -mb-4 lg:grid lg:grid-cols-4 lg:gap-4 lg:overflow-visible lg:space-x-0 lg:pb-0 lg:mb-0">
+          <!-- Total Balance -->
+          <SummaryCard
+            class="flex-shrink-0 w-72 lg:w-auto"
+            title="Total Balance (USD)"
+            :amount="totalBalanceUSD"
+            currency="USD"
+            icon-bg-class="bg-primary-100 dark:bg-primary-900"
+          >
+            <template #icon>
+              <Wallet class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+            </template>
+          </SummaryCard>
+          <SummaryCard
+            class="flex-shrink-0 w-72 lg:w-auto"
+            title="Total Balance (IDR)"
+            :amount="totalBalanceIDR"
+            currency="IDR"
+            icon-bg-class="bg-primary-100 dark:bg-primary-900"
+          >
+            <template #icon>
+              <Wallet class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+            </template>
+          </SummaryCard>
 
-        <SummaryCard
-          title="This Month Income"
-          :amount="monthlyIncome"
-          amount-class="text-success-600"
-          icon-bg-class="bg-success-100 dark:bg-success-900"
-        >
-          <template #amount>+{{ formatCurrency(monthlyIncome) }}</template>
-          <template #icon>
-            <TrendingUp class="w-6 h-6 text-success-600 dark:text-success-400" />
-          </template>
-        </SummaryCard>
+          <!-- Income -->
+          <SummaryCard
+            class="flex-shrink-0 w-72 lg:w-auto"
+            title="Income (USD)"
+            :amount="monthlyIncomeUSD"
+            currency="USD"
+            amount-class="text-success-600"
+            icon-bg-class="bg-success-100 dark:bg-success-900"
+          >
+            <template #amount>+{{ formatCurrency(monthlyIncomeUSD, 'USD') }}</template>
+            <template #icon>
+              <TrendingUp class="w-6 h-6 text-success-600 dark:text-success-400" />
+            </template>
+          </SummaryCard>
+          <SummaryCard
+            class="flex-shrink-0 w-72 lg:w-auto"
+            title="Income (IDR)"
+            :amount="monthlyIncomeIDR"
+            currency="IDR"
+            amount-class="text-success-600"
+            icon-bg-class="bg-success-100 dark:bg-success-900"
+          >
+            <template #amount>+{{ formatCurrency(monthlyIncomeIDR, 'IDR') }}</template>
+            <template #icon>
+              <TrendingUp class="w-6 h-6 text-success-600 dark:text-success-400" />
+            </template>
+          </SummaryCard>
 
-        <SummaryCard
-          title="This Month Expenses"
-          :amount="monthlyExpenses"
-          amount-class="text-error-600"
-          icon-bg-class="bg-error-100 dark:bg-error-900"
-        >
-          <template #amount>-{{ formatCurrency(monthlyExpenses) }}</template>
-          <template #icon>
-            <TrendingDown class="w-6 h-6 text-error-600 dark:text-error-400" />
-          </template>
-        </SummaryCard>
+          <!-- Expenses -->
+          <SummaryCard
+            class="flex-shrink-0 w-72 lg:w-auto"
+            title="Expenses (USD)"
+            :amount="monthlyExpensesUSD"
+            currency="USD"
+            amount-class="text-error-600"
+            icon-bg-class="bg-error-100 dark:bg-error-900"
+          >
+            <template #amount>-{{ formatCurrency(monthlyExpensesUSD, 'USD') }}</template>
+            <template #icon>
+              <TrendingDown class="w-6 h-6 text-error-600 dark:text-error-400" />
+            </template>
+          </SummaryCard>
+          <SummaryCard
+            class="flex-shrink-0 w-72 lg:w-auto"
+            title="Expenses (IDR)"
+            :amount="monthlyExpensesIDR"
+            currency="IDR"
+            amount-class="text-error-600"
+            icon-bg-class="bg-error-100 dark:bg-error-900"
+          >
+            <template #amount>-{{ formatCurrency(monthlyExpensesIDR, 'IDR') }}</template>
+            <template #icon>
+              <TrendingDown class="w-6 h-6 text-error-600 dark:text-error-400" />
+            </template>
+          </SummaryCard>
 
-        <SummaryCard
-          title="Net Income"
-          :amount="netIncome"
-          :amount-class="netIncome >= 0 ? 'text-success-600' : 'text-error-600'"
-          icon-bg-class="bg-warning-100 dark:bg-warning-900"
-        >
-          <template #amount>
-            {{ netIncome >= 0 ? '+' : '' }}{{ formatCurrency(Math.abs(netIncome)) }}
-          </template>
-          <template #icon>
-            <BarChart3 class="w-6 h-6 text-warning-600 dark:text-warning-400" />
-          </template>
-        </SummaryCard>
+          <!-- Net Income -->
+          <SummaryCard
+            class="flex-shrink-0 w-72 lg:w-auto"
+            title="Net Income (USD)"
+            :amount="netIncomeUSD"
+            currency="USD"
+            :amount-class="netIncomeUSD >= 0 ? 'text-success-600' : 'text-error-600'"
+            icon-bg-class="bg-warning-100 dark:bg-warning-900"
+          >
+            <template #amount>
+              {{ netIncomeUSD >= 0 ? '+' : '' }}{{ formatCurrency(netIncomeUSD, 'USD') }}
+            </template>
+            <template #icon>
+              <BarChart3 class="w-6 h-6 text-warning-600 dark:text-warning-400" />
+            </template>
+          </SummaryCard>
+          <SummaryCard
+            class="flex-shrink-0 w-72 lg:w-auto"
+            title="Net Income (IDR)"
+            :amount="netIncomeIDR"
+            currency="IDR"
+            :amount-class="netIncomeIDR >= 0 ? 'text-success-600' : 'text-error-600'"
+            icon-bg-class="bg-warning-100 dark:bg-warning-900"
+          >
+            <template #amount>
+              {{ netIncomeIDR >= 0 ? '+' : '' }}{{ formatCurrency(netIncomeIDR, 'IDR') }}
+            </template>
+            <template #icon>
+              <BarChart3 class="w-6 h-6 text-warning-600 dark:text-warning-400" />
+            </template>
+          </SummaryCard>
+        </div>
       </div>
 
       <!-- Quick Actions -->
@@ -135,6 +201,7 @@
             v-for="transaction in recentTransactions"
             :key="transaction.id"
             :transaction="transaction"
+            class="rounded-xl"
           />
         </div>
       </div>
@@ -183,25 +250,60 @@ const showAddTransactionModal = ref(false);
 const showAddExpenseModal = ref(false);
 const transactionType = ref<'income' | 'expense'>('income');
 
-const totalBalance = computed(() => {
-  return walletsStore.wallets.reduce((sum, wallet) => sum + wallet.balance, 0);
+const totalBalanceUSD = computed(() => {
+  return walletsStore.wallets
+    .filter(w => w.currency === 'USD')
+    .reduce((sum, wallet) => sum + wallet.balance, 0);
 });
 
-const monthlyIncome = computed(() => {
+const totalBalanceIDR = computed(() => {
+  return walletsStore.wallets
+    .filter(w => w.currency === 'IDR')
+    .reduce((sum, wallet) => sum + wallet.balance, 0);
+});
+
+const monthlyIncomeUSD = computed(() => {
   const currentMonth = new Date().toISOString().slice(0, 7);
   return transactionsStore.transactions
-    .filter(t => t.type === 'income' && t.date.startsWith(currentMonth))
-    .reduce((sum, t) => sum + t.amount, 0);
+    .filter(t => {
+      const wallet = walletsStore.wallets.find(w => w.id === t.wallet_id);
+      return t.type === 'income' && t.date.startsWith(currentMonth) && wallet?.currency === 'USD';
+    })
+    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
 });
 
-const monthlyExpenses = computed(() => {
+const monthlyIncomeIDR = computed(() => {
   const currentMonth = new Date().toISOString().slice(0, 7);
   return transactionsStore.transactions
-    .filter(t => t.type === 'expense' && t.date.startsWith(currentMonth))
-    .reduce((sum, t) => sum + t.amount, 0);
+    .filter(t => {
+      const wallet = walletsStore.wallets.find(w => w.id === t.wallet_id);
+      return t.type === 'income' && t.date.startsWith(currentMonth) && wallet?.currency === 'IDR';
+    })
+    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
 });
 
-const netIncome = computed(() => monthlyIncome.value - monthlyExpenses.value);
+const monthlyExpensesUSD = computed(() => {
+  const currentMonth = new Date().toISOString().slice(0, 7);
+  return transactionsStore.transactions
+    .filter(t => {
+      const wallet = walletsStore.wallets.find(w => w.id === t.wallet_id);
+      return t.type === 'expense' && t.date.startsWith(currentMonth) && wallet?.currency === 'USD';
+    })
+    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
+});
+
+const monthlyExpensesIDR = computed(() => {
+  const currentMonth = new Date().toISOString().slice(0, 7);
+  return transactionsStore.transactions
+    .filter(t => {
+      const wallet = walletsStore.wallets.find(w => w.id === t.wallet_id);
+      return t.type === 'expense' && t.date.startsWith(currentMonth) && wallet?.currency === 'IDR';
+    })
+    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
+});
+
+const netIncomeUSD = computed(() => monthlyIncomeUSD.value - monthlyExpensesUSD.value);
+const netIncomeIDR = computed(() => monthlyIncomeIDR.value - monthlyExpensesIDR.value);
 
 const recentTransactions = computed(() => {
   return transactionsStore.transactions
@@ -210,18 +312,22 @@ const recentTransactions = computed(() => {
     .slice(0, 5);
 });
 
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 0,
+const formatCurrency = (amount: number, currency: 'USD' | 'IDR') => {
+  const options = {
+    style: 'currency',
+    currency: currency,
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(amount);
-};
+  };
+  
+  if (currency === 'IDR') {
+    // @ts-ignore
+    options.minimumFractionDigits = 0;
+    // @ts-ignore
+    options.maximumFractionDigits = 0;
+  }
 
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  });
+  return new Intl.NumberFormat(currency === 'IDR' ? 'id-ID' : 'en-US', options).format(amount);
 };
 
 const handleTransactionAdded = () => {

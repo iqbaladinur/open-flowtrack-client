@@ -9,40 +9,80 @@
             Track all your income and expenses
           </p>
         </div>
-        <button @click="showAddModal = true" class="btn-primary">
-          <Plus class="w-4 h-4 mr-2" />
-          Add Transaction
-        </button>
+        <div class="flex items-center gap-2 self-end sm:self-auto">
+          <button @click="showFilters = !showFilters" class="btn-secondary">
+            <Filter class="w-4 h-4 mr-2" />
+            {{ showFilters ? 'Hide' : 'Show' }} Filters
+          </button>
+          <button @click="showAddModal = true" class="btn-primary">
+            <Plus class="w-4 h-4 mr-2" />
+            Add Transaction
+          </button>
+        </div>
       </div>
 
       <!-- Filters -->
-      <div class="card p-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div>
-            <label class="label">Type</label>
-            <select v-model="filters.type" class="input">
-              <option value="">All Types</option>
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
-            </select>
+      <div v-if="showFilters" class="card p-4 space-y-4">
+        <!-- Type Filter -->
+        <div>
+          <label class="label mb-2">Type</label>
+          <div class="flex items-center space-x-2 overflow-x-auto py-2 px-2">
+            <button @click="filters.type = ''" :class="['btn flex-shrink-0', filters.type === '' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">All Types</button>
+            <button @click="filters.type = 'income'" :class="['btn flex-shrink-0', filters.type === 'income' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
+              <TrendingUp class="w-4 h-4 mr-1.5" />
+              Income
+            </button>
+            <button @click="filters.type = 'expense'" :class="['btn flex-shrink-0', filters.type === 'expense' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
+              <TrendingDown class="w-4 h-4 mr-1.5" />
+              Expense
+            </button>
           </div>
-          <div>
-            <label class="label">Wallet</label>
-            <select v-model="filters.wallet_id" class="input">
-              <option value="">All Wallets</option>
-              <option v-for="wallet in walletsStore.wallets" :key="wallet.id" :value="wallet.id">
-                {{ wallet.name }}
-              </option>
-            </select>
+        </div>
+
+        <!-- Wallet Filter -->
+        <div>
+          <label class="label mb-2">Wallet</label>
+          <div class="flex items-center space-x-2 overflow-x-auto py-2 px-2">
+            <button @click="filters.wallet_id = ''" :class="['btn flex-shrink-0', filters.wallet_id === '' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">All Wallets</button>
+            <button
+              v-for="wallet in walletsStore.wallets"
+              :key="wallet.id"
+              @click="filters.wallet_id = wallet.id"
+              :class="['btn flex-shrink-0', { 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double': filters.wallet_id === wallet.id, 'btn-secondary': filters.wallet_id !== wallet.id }]"
+            >
+              <Wallet class="w-4 h-4 mr-1.5" />
+              {{ wallet.name }}
+            </button>
           </div>
-          <div>
-            <label class="label">Start Date</label>
-            <input v-model="filters.start_date" type="date" class="input" />
+        </div>
+
+        <!-- Date Range Filter -->
+        <div>
+          <label class="label mb-2">Date Range</label>
+          <div class="flex flex-wrap gap-2">
+            <button @click="setDateRange('today')" :class="['btn', dateRangePreset === 'today' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">Today</button>
+            <button @click="setDateRange('weekly')" :class="['btn', dateRangePreset === 'weekly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Week</button>
+            <button @click="setDateRange('monthly')" :class="['btn', dateRangePreset === 'monthly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Month</button>
+            <button @click="setDateRange('yearly')" :class="['btn', dateRangePreset === 'yearly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Year</button>
+            <button @click="toggleCustomDateRange" :class="['btn', showCustomDateRange ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">Custom</button>
           </div>
-          <div>
-            <label class="label">End Date</label>
-            <input v-model="filters.end_date" type="date" class="input" />
+          <div v-if="showCustomDateRange" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+            <div>
+              <label for="start_date" class="label">Start Date</label>
+              <input id="start_date" v-model="filters.start_date" type="date" class="input" @change="onCustomDateChange" />
+            </div>
+            <div>
+              <label for="end_date" class="label">End Date</label>
+              <input id="end_date" v-model="filters.end_date" type="date" class="input" @change="onCustomDateChange" />
+            </div>
           </div>
+        </div>
+
+        <div class="mt-4 flex justify-end">
+          <button @click="resetFilters" class="btn btn-secondary">
+            <RotateCcw class="w-4 h-4 mr-1.5" />
+            Reset Filters
+          </button>
         </div>
       </div>
 
@@ -58,7 +98,7 @@
           </div>
           <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No transactions found</h3>
           <p class="text-gray-500 dark:text-gray-400 mb-6">
-            Get started by adding your first transaction
+            Try adjusting your filters or add a new transaction.
           </p>
           <button @click="showAddModal = true" class="btn-primary">
             <Plus class="w-4 h-4 mr-2" />
@@ -68,11 +108,12 @@
 
         <div v-else class="divide-y divide-gray-200 dark:divide-gray-700">
           <TransactionItem
-            v-for="transaction in transactions"
+            v-for="(transaction, i) in transactions"
             :key="transaction.id"
             :transaction="transaction"
             show-type
             show-actions
+            :class="{ 'rounded-t-xl': i === 0, 'rounded-b-xl': i === (transactions?.length - 1) }"
             @edit="editTransaction"
             @delete="deleteTransaction"
           />
@@ -103,14 +144,16 @@ import {
   ArrowUpDown,
   TrendingUp,
   TrendingDown,
-  Edit2,
-  Trash2,
+  Filter,
+  Wallet,
+  RotateCcw,
 } from 'lucide-vue-next';
 
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
 
 const showAddModal = ref(false);
+const showFilters = ref(true); // Show by default for better UX
 const selectedTransaction = ref<Transaction | null>(null);
 
 const filters = reactive({
@@ -120,25 +163,62 @@ const filters = reactive({
   end_date: '',
 });
 
+const dateRangePreset = ref<'today' | 'weekly' | 'monthly' | 'yearly' | 'custom' | null>(null);
+const showCustomDateRange = ref(false);
+
 const transactions = computed(() => {
   return transactionsStore.transactions
     .slice()
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 });
 
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(amount);
+const setDateRange = (preset: 'today' | 'weekly' | 'monthly' | 'yearly') => {
+  dateRangePreset.value = preset;
+  showCustomDateRange.value = false;
+  const today = new Date();
+  let startDate = new Date();
+  
+  switch (preset) {
+    case 'today':
+      startDate = today;
+      break;
+    case 'weekly':
+      const firstDay = today.getDate() - today.getDay();
+      startDate = new Date(new Date().setDate(firstDay));
+      startDate.setHours(0, 0, 0, 0);
+      break;
+    case 'monthly':
+      startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+      break;
+    case 'yearly':
+      startDate = new Date(today.getFullYear(), 0, 1);
+      break;
+  }
+
+  filters.start_date = startDate.toISOString().split('T')[0];
+  filters.end_date = new Date().toISOString().split('T')[0];
 };
 
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
+const toggleCustomDateRange = () => {
+  showCustomDateRange.value = !showCustomDateRange.value;
+  dateRangePreset.value = showCustomDateRange.value ? 'custom' : null;
+  if (!showCustomDateRange.value) {
+    filters.start_date = '';
+    filters.end_date = '';
+  }
+};
+
+const onCustomDateChange = () => {
+  dateRangePreset.value = 'custom';
+};
+
+const resetFilters = () => {
+  filters.type = '';
+  filters.wallet_id = '';
+  filters.start_date = '';
+  filters.end_date = '';
+  dateRangePreset.value = null;
+  showCustomDateRange.value = false;
 };
 
 const editTransaction = (transaction: Transaction) => {

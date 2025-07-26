@@ -22,7 +22,7 @@
 
       <div v-else-if="wallets.length === 0" class="card p-12 text-center">
         <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Wallet class="w-8 h-8 text-gray-400" />
+          <WalletIcon class="w-8 h-8 text-gray-400" />
         </div>
         <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No wallets yet</h3>
         <p class="text-gray-500 dark:text-gray-400 mb-6">
@@ -65,10 +65,6 @@ import type { Wallet } from '@/types';
 import {
   Plus,
   Wallet as WalletIcon,
-  Edit2,
-  Trash2,
-  TrendingUp,
-  TrendingDown,
 } from 'lucide-vue-next';
 
 const walletsStore = useWalletsStore();
@@ -81,13 +77,6 @@ const wallets = computed(() => {
     .slice()
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 });
-
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(amount);
-};
 
 const editWallet = (wallet: Wallet) => {
   selectedWallet.value = wallet;

@@ -44,18 +44,58 @@
         </div>
       </div>
 
+      <!-- Preview -->
+      <div>
+        <label class="label">Preview</label>
+        <div class="card p-4 flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center" :style="{ backgroundColor: form.color + '20' }">
+            <component :is="icons[form.icon] || icons['Tag']" class="w-6 h-6" :style="{ color: form.color }" />
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+              {{ form.name || 'Category Name' }}
+            </h3>
+            <span 
+              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+              :class="form.type === 'income' ? 'bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-200' : 'bg-error-100 text-error-800 dark:bg-error-900 dark:text-error-200'"
+            >
+              {{ form.type }}
+            </span>
+          </div>
+        </div>
+      </div>
+
       <!-- Icon -->
       <div>
-        <label for="icon" class="label">Icon</label>
-        <select id="icon" v-model="form.icon" class="input">
-          <option v-for="icon in iconList" :key="icon" :value="icon">{{ icon }}</option>
-        </select>
+        <label class="label">Icon</label>
+        <div class="grid grid-cols-6 sm:grid-cols-8 gap-2 max-h-48 overflow-y-auto p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <button
+            v-for="icon in iconList"
+            :key="icon"
+            type="button"
+            @click="form.icon = icon"
+            class="h-10 w-10 flex items-center justify-center rounded-lg transition-all"
+            :class="form.icon === icon
+              ? 'bg-primary-500 text-white ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 ring-primary-500'
+              : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'"
+          >
+            <component :is="icons[icon]" class="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       <!-- Color -->
       <div>
         <label for="color" class="label">Color</label>
-        <input id="color" v-model="form.color" type="color" class="input h-10" />
+        <div class="relative">
+          <input id="color" v-model="form.color" type="color" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+          <div 
+            class="w-full h-10 rounded-lg border-2 border-gray-200 dark:border-gray-700 flex items-center justify-center px-3"
+            :style="{ backgroundColor: form.color + '33' }"
+          >
+            <div class="w-full h-4 rounded" :style="{ backgroundColor: form.color }"></div>
+          </div>
+        </div>
       </div>
 
       <!-- Error Display -->
@@ -92,6 +132,7 @@ import { useCategoriesStore } from '@/stores/categories';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import type { Category } from '@/types';
+import * as icons from 'lucide-vue-next';
 import { TrendingUp, TrendingDown } from 'lucide-vue-next';
 
 const iconList = [
@@ -99,7 +140,10 @@ const iconList = [
   'GraduationCap', 'Briefcase', 'Gift', 'Film', 'Plane', 'Phone', 
   'Bolt', 'PawPrint', 'Landmark', 'Shirt', 'Book', 'Coffee', 
   'Dumbbell', 'Wrench', 'Baby', 'Pizza', 'Gamepad2', 'Music', 'Receipt',
-  'DollarSign', 'CreditCard', 'PiggyBank'
+  'DollarSign', 'CreditCard', 'PiggyBank', 'Bus', 'Train',
+  'Building', 'Hospital', 'Droplets', 'Wind', 'Sun', 'Moon', 'Cloud',
+  'Laptop', 'Smartphone', 'Tablet', 'Headphones', 'Watch', 'MousePointer',
+  'ShoppingCart', 'Ticket', 'Trophy', 'Users', 'User', 'Key'
 ];
 
 interface Props {

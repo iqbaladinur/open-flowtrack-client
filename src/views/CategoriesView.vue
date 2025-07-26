@@ -17,14 +17,21 @@
 
       <!-- Filters -->
       <div class="card p-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="label">Type</label>
-            <select v-model="filterType" class="input">
-              <option value="">All Types</option>
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
-            </select>
+        <div>
+          <label class="label mb-2">Filter by Type</label>
+          <div class="flex items-center space-x-2">
+            <button @click="filterType = ''" :class="['btn', filterType === '' ? 'btn-primary' : 'btn-secondary']">
+              <LayoutGrid class="w-4 h-4 mr-1.5" />
+              All
+            </button>
+            <button @click="filterType = 'income'" :class="['btn', filterType === 'income' ? 'btn-primary' : 'btn-secondary']">
+              <TrendingUp class="w-4 h-4 mr-1.5" />
+              Income
+            </button>
+            <button @click="filterType = 'expense'" :class="['btn', filterType === 'expense' ? 'btn-primary' : 'btn-secondary']">
+              <TrendingDown class="w-4 h-4 mr-1.5" />
+              Expense
+            </button>
           </div>
         </div>
       </div>
@@ -38,9 +45,9 @@
         <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
           <Tag class="w-8 h-8 text-gray-400" />
         </div>
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No categories yet</h3>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No categories found</h3>
         <p class="text-gray-500 dark:text-gray-400 mb-6">
-          Create your first category to start organizing your finances
+          Create your first category to start organizing your finances.
         </p>
         <button @click="showAddModal = true" class="btn-primary">
           <Plus class="w-4 h-4 mr-2" />
@@ -76,7 +83,7 @@ import CategoryModal from '@/components/CategoryModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import CategoryCard from '@/components/CategoryCard.vue';
 import type { Category } from '@/types';
-import { Plus, Tag } from 'lucide-vue-next';
+import { Plus, Tag, TrendingUp, TrendingDown, LayoutGrid } from 'lucide-vue-next';
 
 const categoriesStore = useCategoriesStore();
 
@@ -86,6 +93,10 @@ const filterType = ref<'income' | 'expense' | ''>('');
 
 const categories = computed(() => {
   return categoriesStore.categories
+    .filter(category => {
+      if (!filterType.value) return true;
+      return category.type === filterType.value;
+    })
     .slice()
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 });
@@ -107,12 +118,8 @@ const deleteCategory = async (id: string) => {
 const handleCategorySaved = () => {
   showAddModal.value = false;
   selectedCategory.value = null;
-  categoriesStore.fetchCategories(filterType.value || undefined);
+  categoriesStore.fetchCategories();
 };
-
-watch(filterType, (newType) => {
-  categoriesStore.fetchCategories(newType || undefined);
-});
 
 onMounted(() => {
   categoriesStore.fetchCategories();
