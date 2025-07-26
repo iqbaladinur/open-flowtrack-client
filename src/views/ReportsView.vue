@@ -5,181 +5,122 @@
       <div>
         <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">Reports</h1>
         <p class="text-gray-600 dark:text-gray-400 mt-1">
-          Analyze your financial data and trends
+          Analyze your financial trends over time
         </p>
       </div>
 
-      <!-- Filters -->
-      <div class="card p-4 space-y-4">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
-          <div>
-            <label class="label">Start Date</label>
-            <input v-model="dateRange.start" type="date" class="input" />
-          </div>
-          <div>
-            <label class="label">End Date</label>
-            <input v-model="dateRange.end" type="date" class="input" />
-          </div>
-          <div>
-            <button @click="fetchReports" class="btn-primary w-full" :disabled="loading">
-              <BarChart3 class="w-4 h-4 mr-2" />
-              Generate Report
-            </button>
-          </div>
-        </div>
-        <div v-if="availableCurrencies.length > 1" class="pt-2">
-           <label class="label mb-2">Currency</label>
-          <div class="flex items-center space-x-2">
-            <button
-              v-for="currency in availableCurrencies"
-              :key="currency"
-              @click="selectedCurrency = currency"
-              :class="['btn', selectedCurrency === currency ? 'btn-primary' : 'btn-secondary']"
-            >
-              {{ currency }}
-            </button>
-          </div>
+      <!-- View Switcher -->
+      <div class="card p-2">
+        <div class="flex items-center justify-center sm:justify-start space-x-1 flex-wrap">
+          <button @click="currentView = 'monthly'" :class="['btn', currentView === 'monthly' ? 'btn-primary' : 'btn-secondary']">
+            <Calendar class="w-4 h-4 mr-2" /> Monthly
+          </button>
+          <button @click="currentView = 'yearly'" :class="['btn', currentView === 'yearly' ? 'btn-primary' : 'btn-secondary']">
+            <CalendarClock class="w-4 h-4 mr-2" /> Yearly
+          </button>
+          <button @click="currentView = 'custom'" :class="['btn', currentView === 'custom' ? 'btn-primary' : 'btn-secondary']">
+            <SlidersHorizontal class="w-4 h-4 mr-2" /> Custom
+          </button>
         </div>
       </div>
 
-      <div v-if="loading" class="text-center py-12">
+      <!-- Period Selector -->
+      <div class="card p-4 space-y-4">
+        <!-- Monthly Selector -->
+        <div v-if="currentView === 'monthly'" class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="monthly-month" class="label">Month</label>
+            <select id="monthly-month" v-model="selectedDate.monthly.month" class="input">
+              <option v-for="(month, index) in months" :key="index" :value="index + 1">{{ month }}</option>
+            </select>
+          </div>
+          <div>
+            <label for="monthly-year" class="label">Year</label>
+            <select id="monthly-year" v-model="selectedDate.monthly.year" class="input">
+              <option v-for="year in yearList" :key="year" :value="year">{{ year }}</option>
+            </select>
+          </div>
+        </div>
+        <!-- Yearly Selector -->
+        <div v-if="currentView === 'yearly'">
+          <label for="yearly-year" class="label">Select Year</label>
+          <select id="yearly-year" v-model="selectedDate.yearly.year" class="input">
+            <option v-for="year in yearList" :key="year" :value="year">{{ year }}</option>
+          </select>
+        </div>
+        <!-- Custom Range Selector -->
+        <div v-if="currentView === 'custom'" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="custom-start" class="label">Start Date</label>
+              <input id="custom-start" v-model="selectedDate.custom.start" type="date" class="input" />
+            </div>
+            <div>
+              <label for="custom-end" class="label">End Date</label>
+              <input id="custom-end" v-model="selectedDate.custom.end" type="date" class="input" />
+            </div>
+          </div>
+          <div>
+            <label class="label">Group By</label>
+            <div class="flex items-center space-x-1 flex-wrap">
+              <button @click="customAggregationLevel = 'daily'" :class="['btn btn-sm', customAggregationLevel === 'daily' ? 'btn-primary' : 'btn-secondary']">Daily</button>
+              <button @click="customAggregationLevel = 'weekly'" :class="['btn btn-sm', customAggregationLevel === 'weekly' ? 'btn-primary' : 'btn-secondary']">Weekly</button>
+              <button @click="customAggregationLevel = 'monthly'" :class="['btn btn-sm', customAggregationLevel === 'monthly' ? 'btn-primary' : 'btn-secondary']">Monthly</button>
+              <button @click="customAggregationLevel = 'yearly'" :class="['btn btn-sm', customAggregationLevel === 'yearly' ? 'btn-primary' : 'btn-secondary']">Yearly</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Currency Selector -->
+      <div v-if="availableCurrencies.length > 0" class="card p-4">
+        <label class="label">Currency</label>
+        <div class="flex items-center space-x-2">
+          <button
+            v-for="currency in availableCurrencies"
+            :key="currency"
+            @click="selectedCurrency = currency"
+            :class="['btn', selectedCurrency === currency ? 'btn-primary' : 'btn-secondary']"
+          >
+            {{ currency }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Report Content -->
+      <div v-if="loading" class="card p-6 flex items-center justify-center h-96">
         <LoadingSpinner />
       </div>
-
-      <div v-else-if="!currentSummary" class="text-center py-12 card">
+      <div v-else-if="transactions.length === 0" class="card text-center py-12">
         <BarChart3 class="w-12 h-12 text-gray-400 mx-auto mb-2" />
-        <p class="text-gray-500 dark:text-gray-400">No data available for the selected period or currency.</p>
+        <p class="text-gray-500 dark:text-gray-400">No transaction data available for the selected period.</p>
       </div>
-
       <div v-else class="space-y-6">
         <!-- Summary Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div class="card p-6">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Income</p>
-                <p class="text-2xl font-bold text-success-600">
-                  {{ formatCurrency(currentSummary.totalIncome, currentSummary.currency) }}
-                </p>
-              </div>
-              <div class="w-12 h-12 bg-success-100 dark:bg-success-900 rounded-lg flex items-center justify-center">
-                <TrendingUp class="w-6 h-6 text-success-600 dark:text-success-400" />
-              </div>
-            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Income</p>
+            <p class="text-2xl font-bold text-success-600">{{ formatCurrency(summary.totalIncome) }}</p>
           </div>
-
           <div class="card p-6">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Expenses</p>
-                <p class="text-2xl font-bold text-error-600">
-                  {{ formatCurrency(currentSummary.totalExpense, currentSummary.currency) }}
-                </p>
-              </div>
-              <div class="w-12 h-12 bg-error-100 dark:bg-error-900 rounded-lg flex items-center justify-center">
-                <TrendingDown class="w-6 h-6 text-error-600 dark:text-error-400" />
-              </div>
-            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Expense</p>
+            <p class="text-2xl font-bold text-error-600">{{ formatCurrency(summary.totalExpense) }}</p>
           </div>
-
           <div class="card p-6">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Net Income</p>
-                <p 
-                  class="text-2xl font-bold"
-                  :class="currentSummary.net >= 0 ? 'text-success-600' : 'text-error-600'"
-                >
-                  {{ currentSummary.net >= 0 ? '+' : '' }}{{ formatCurrency(currentSummary.net, currentSummary.currency) }}
-                </p>
-              </div>
-              <div 
-                class="w-12 h-12 rounded-lg flex items-center justify-center"
-                :class="currentSummary.net >= 0 
-                  ? 'bg-success-100 dark:bg-success-900' 
-                  : 'bg-error-100 dark:bg-error-900'"
-              >
-                <BarChart3 
-                  class="w-6 h-6"
-                  :class="currentSummary.net >= 0 
-                    ? 'text-success-600 dark:text-success-400' 
-                    : 'text-error-600 dark:text-error-400'"
-                />
-              </div>
-            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Net Income</p>
+            <p class="text-2xl font-bold" :class="summary.net >= 0 ? 'text-success-600' : 'text-error-600'">
+              {{ formatCurrency(summary.net) }}
+            </p>
           </div>
         </div>
 
-        <!-- Reports Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:items-start">
-          <!-- Category Report -->
-          <div class="card p-6">
-            <div class="flex justify-between items-start mb-4">
-              <div>
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-                  {{ selectedReportType === 'expense' ? 'Spending' : 'Income' }} by Category
-                </h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400">({{ selectedCurrency }})</p>
-              </div>
-              <div class="flex items-center space-x-2">
-                <button @click="selectedReportType = 'expense'" :class="['btn btn-sm', selectedReportType === 'expense' ? 'btn-primary' : 'btn-secondary']">Spending</button>
-                <button @click="selectedReportType = 'income'" :class="['btn btn-sm', selectedReportType === 'income' ? 'btn-primary' : 'btn-secondary']">Income</button>
-              </div>
-            </div>
-            <div v-if="currentCategoryReport.length === 0" class="text-center py-8">
-              <PieChart class="w-12 h-12 text-gray-400 mx-auto mb-2" />
-              <p class="text-gray-500 dark:text-gray-400">No {{ selectedReportType }} data available</p>
-            </div>
-            <div v-else class="relative h-80">
-              <CategoryChart :report-data="currentCategoryReport" :currency="selectedCurrency" />
-            </div>
-          </div>
-
-          <!-- Wallet Report -->
-          <div class="card p-6 overflow-hidden">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              Balance by Wallet ({{ selectedCurrency }})
-            </h2>
-            <div v-if="currentWalletReport.length === 0" class="text-center py-8">
-              <Wallet class="w-12 h-12 text-gray-400 mx-auto mb-2" />
-              <p class="text-gray-500 dark:text-gray-400">No wallet data available</p>
-            </div>
-            <div v-else class="flex space-x-4 -mb-4 pb-4 overflow-x-auto lg:flex-col lg:space-x-0 lg:space-y-4 lg:mb-0 lg:pb-0 lg:overflow-visible">
-              <div
-                v-for="item in currentWalletReport"
-                :key="item.name"
-                class="p-4 rounded-lg border border-gray-200 dark:border-gray-600 w-full flex-shrink-0"
-              >
-                <div class="flex items-center justify-between mb-3">
-                  <h3 class="font-medium text-gray-900 dark:text-white truncate">
-                    {{ item.name }}
-                  </h3>
-                  <span class="font-bold text-gray-800 dark:text-gray-200 ml-2">
-                    {{ formatCurrency(item.finalBalance, item.currency) }}
-                  </span>
-                </div>
-                <div class="grid grid-cols-2 gap-4 text-sm">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center text-gray-500 dark:text-gray-400">
-                      <TrendingUp class="w-4 h-4 mr-1 lg:hidden text-success-500" />
-                      <span class="hidden lg:inline">Income:</span>
-                    </div>
-                    <span class="text-success-600 dark:text-success-400 font-medium">
-                      +{{ formatCurrency(item.totalIncome, item.currency) }}
-                    </span>
-                  </div>
-                  <div class="flex items-center justify-between">
-                     <div class="flex items-center text-gray-500 dark:text-gray-400">
-                      <TrendingDown class="w-4 h-4 mr-1 lg:hidden text-error-500" />
-                      <span class="hidden lg:inline">Expenses:</span>
-                    </div>
-                    <span class="text-error-600 dark:text-error-400 font-medium">
-                      -{{ formatCurrency(item.totalExpense, item.currency) }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <!-- Chart -->
+        <div class="card p-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            {{ reportTitle }} ({{ selectedCurrency }})
+          </h2>
+          <div class="h-96">
+            <TimeSeriesChart v-if="!loading" :chart-data="chartData" />
           </div>
         </div>
       </div>
@@ -188,140 +129,230 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from 'vue';
-import { useApi } from '@/composables/useApi';
+import { ref, reactive, computed, watch } from 'vue';
+import { useTransactionsStore } from '@/stores/transactions';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import CategoryChart from '@/components/CategoryChart.vue';
-import {
-  BarChart3,
-  TrendingUp,
-  TrendingDown,
-  PieChart,
-  Wallet,
-} from 'lucide-vue-next';
+import TimeSeriesChart from '@/components/TimeSeriesChart.vue';
+import { Calendar, CalendarClock, BarChart3, SlidersHorizontal } from 'lucide-vue-next';
+import type { Transaction, CurrencyType } from '@/types';
 
-// --- Data Structures ---
-interface SummaryData {
-  currency: string;
-  totalIncome: number;
-  totalExpense: number;
-  net: number;
-}
+type ReportView = 'monthly' | 'yearly' | 'custom';
+type AggregationLevel = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
-interface CategoryReportItem {
-  name: string;
-  color: string;
-  icon: string;
-  total: number;
-}
+const transactionsStore = useTransactionsStore();
 
-interface CurrencyReport {
-  [currency: string]: CategoryReportItem[];
-}
-
-interface CategoryReportResponse {
-  income?: CurrencyReport;
-  expense?: CurrencyReport;
-}
-
-interface WalletReportItem {
-  name: string;
-  currency: string;
-  initialBalance: number;
-  totalIncome: number;
-  totalExpense: number;
-  finalBalance: number;
-}
-
-const api = useApi();
-
-// --- State ---
+const currentView = ref<ReportView>('monthly');
+const customAggregationLevel = ref<AggregationLevel>('monthly');
 const loading = ref(false);
-const summary = ref<SummaryData[]>([]);
-const categoryReport = ref<CategoryReportResponse | null>(null);
-const walletReport = ref<Record<string, WalletReportItem[]>>({});
-const selectedCurrency = ref('');
-const selectedReportType = ref<'income' | 'expense'>('expense');
+const transactions = ref<Transaction[]>([]);
+const selectedCurrency = ref<CurrencyType>('IDR');
 
-const dateRange = reactive({
-  start: '',
-  end: '',
+const now = new Date();
+const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+const selectedDate = reactive({
+  monthly: { month: now.getMonth() + 1, year: now.getFullYear() },
+  yearly: { year: now.getFullYear() },
+  custom: { 
+    start: startOfMonth.toISOString().split('T')[0], 
+    end: now.toISOString().split('T')[0] 
+  },
 });
 
-// --- Computed Properties ---
-const availableCurrencies = computed(() => summary.value.map(s => s.currency));
-
-const currentSummary = computed(() => {
-  return summary.value.find(s => s.currency === selectedCurrency.value) || null;
+const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const yearList = computed(() => {
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let i = currentYear + 5; i >= currentYear - 50; i--) {
+    years.push(i);
+  }
+  return years;
 });
 
-const currentCategoryReport = computed(() => {
-  if (!categoryReport.value || !selectedCurrency.value) return [];
-  const reportForType = categoryReport.value[selectedReportType.value];
-  if (!reportForType) return [];
-  return reportForType[selectedCurrency.value] || [];
+const availableCurrencies = computed(() => {
+  const currencies = new Set(transactions.value.map(t => t.wallet?.currency));
+  return Array.from(currencies).filter(Boolean) as CurrencyType[];
 });
 
-const currentWalletReport = computed(() => {
-  return walletReport.value[selectedCurrency.value] || [];
+const filteredTransactions = computed(() => {
+  return transactions.value.filter(t => t.wallet?.currency === selectedCurrency.value);
 });
 
-// --- Methods ---
-const formatCurrency = (amount: number, currency: string) => {
-  const options = {
+const reportTitle = computed(() => {
+  switch (currentView.value) {
+    case 'monthly': return `Monthly Report for ${months[selectedDate.monthly.month - 1]} ${selectedDate.monthly.year}`;
+    case 'yearly': return `Yearly Report for ${selectedDate.yearly.year}`;
+    case 'custom': return `Custom Report (${selectedDate.custom.start} to ${selectedDate.custom.end})`;
+    default: return 'Report';
+  }
+});
+
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: currency,
-    minimumFractionDigits: currency === 'IDR' ? 0 : 2,
-    maximumFractionDigits: currency === 'IDR' ? 0 : 2,
-  };
-  const locale = currency === 'IDR' ? 'id-ID' : 'en-US';
-  return new Intl.NumberFormat(locale, options).format(Math.abs(amount));
+    currency: selectedCurrency.value,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
 };
 
-const fetchReports = async () => {
-  loading.value = true;
-  summary.value = [];
-  categoryReport.value = {};
-  walletReport.value = {};
-  
-  const params = {
-    ...(dateRange.start && { startDate: dateRange.start }),
-    ...(dateRange.end && { endDate: dateRange.end }),
-  };
+const getStartOfWeek = (d: Date) => {
+  const date = new Date(d.getTime());
+  const day = date.getUTCDay();
+  const diff = date.getUTCDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+  return new Date(date.setUTCDate(diff));
+}
 
-  try {
-    const [summaryRes, categoryRes, walletRes] = await Promise.all([
-      api.get<SummaryData[]>('/reports/summary', { params }),
-      api.get<CategoryReportResponse>('/reports/by-category', { params }),
-      api.get<Record<string, WalletReportItem[]>>('/reports/by-wallet', { params }),
-    ]);
+const chartData = computed(() => {
+  const data = filteredTransactions.value;
+  let aggregation: AggregationLevel;
+  let startDate: Date, endDate: Date;
 
-    if (summaryRes.data) {
-      summary.value = summaryRes.data;
-      if (summary.value.length > 0 && !availableCurrencies.value.includes(selectedCurrency.value)) {
-        selectedCurrency.value = summary.value[0].currency;
+  // Determine aggregation level and date range
+  switch (currentView.value) {
+    case 'monthly':
+      aggregation = 'daily';
+      startDate = new Date(Date.UTC(selectedDate.monthly.year, selectedDate.monthly.month - 1, 1));
+      endDate = new Date(Date.UTC(selectedDate.monthly.year, selectedDate.monthly.month, 0));
+      break;
+    case 'yearly':
+      aggregation = 'monthly';
+      startDate = new Date(Date.UTC(selectedDate.yearly.year, 0, 1));
+      endDate = new Date(Date.UTC(selectedDate.yearly.year, 11, 31));
+      break;
+    case 'custom':
+      aggregation = customAggregationLevel.value;
+      startDate = new Date(selectedDate.custom.start);
+      endDate = new Date(selectedDate.custom.end);
+      break;
+  }
+
+  const totals = new Map<string, { income: number; expense: number }>();
+  const labels: string[] = [];
+
+  // 1. Generate all labels and initialize totals map based on the date range
+  if (startDate && endDate && startDate <= endDate) {
+    let currentDate = new Date(startDate);
+    
+    if (aggregation === 'monthly') {
+      currentDate = new Date(Date.UTC(startDate.getUTCFullYear(), startDate.getUTCMonth(), 1));
+    }
+
+    while (currentDate <= endDate) {
+      let key = '';
+      if (aggregation === 'daily') {
+        key = currentDate.toISOString().split('T')[0];
+        labels.push(key);
+        totals.set(key, { income: 0, expense: 0 });
+        currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+      } else if (aggregation === 'weekly') {
+        const weekStart = getStartOfWeek(new Date(currentDate));
+        key = weekStart.toISOString().split('T')[0];
+        if (!totals.has(key)) {
+          labels.push(key);
+          totals.set(key, { income: 0, expense: 0 });
+        }
+        currentDate.setUTCDate(currentDate.getUTCDate() + 7);
+      } else if (aggregation === 'monthly') {
+        key = `${currentDate.getUTCFullYear()}-${String(currentDate.getUTCMonth() + 1).padStart(2, '0')}`;
+        labels.push(key);
+        totals.set(key, { income: 0, expense: 0 });
+        currentDate.setUTCMonth(currentDate.getUTCMonth() + 1);
+      } else if (aggregation === 'yearly') {
+        key = String(currentDate.getUTCFullYear());
+        if (!totals.has(key)) {
+          labels.push(key);
+          totals.set(key, { income: 0, expense: 0 });
+        }
+        currentDate.setUTCFullYear(currentDate.getUTCFullYear() + 1);
       }
     }
-    if (categoryRes.data) categoryReport.value = categoryRes.data;
-    if (walletRes.data) walletReport.value = walletRes.data;
-
-  } catch (error) {
-    console.error("Failed to fetch reports:", error);
-  } finally {
-    loading.value = false;
   }
+
+  // 2. Populate the totals map with transaction data
+  data.forEach(t => {
+    const date = new Date(t.date);
+    let key = '';
+    if (aggregation === 'daily') {
+      key = date.toISOString().split('T')[0];
+    } else if (aggregation === 'weekly') {
+      key = getStartOfWeek(date).toISOString().split('T')[0];
+    } else if (aggregation === 'monthly') {
+      key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
+    } else if (aggregation === 'yearly') {
+      key = String(date.getUTCFullYear());
+    }
+
+    if (totals.has(key)) {
+      const current = totals.get(key)!;
+      if (t.type === 'income') current.income += t.amount;
+      else current.expense += t.amount;
+    }
+  });
+
+  // 3. Generate final datasets
+  const incomeData = labels.map(label => totals.get(label)?.income || 0);
+  const expenseData = labels.map(label => totals.get(label)?.expense || 0);
+
+  return {
+    labels,
+    datasets: [
+      { label: 'Income', backgroundColor: '#10b981', data: incomeData },
+      { label: 'Expense', backgroundColor: '#ef4444', data: expenseData },
+    ],
+  };
+});
+
+
+const summary = computed(() => {
+  return filteredTransactions.value.reduce((acc, t) => {
+    if (t.type === 'income') acc.totalIncome += t.amount;
+    else acc.totalExpense += t.amount;
+    acc.net = acc.totalIncome - acc.totalExpense;
+    return acc;
+  }, { totalIncome: 0, totalExpense: 0, net: 0 });
+});
+
+const fetchReportData = async () => {
+  loading.value = true;
+  let startDate: Date, endDate: Date;
+
+  switch (currentView.value) {
+    case 'monthly':
+      startDate = new Date(Date.UTC(selectedDate.monthly.year, selectedDate.monthly.month - 1, 1));
+      endDate = new Date(Date.UTC(selectedDate.monthly.year, selectedDate.monthly.month, 0));
+      break;
+    case 'yearly':
+      startDate = new Date(Date.UTC(selectedDate.yearly.year, 0, 1));
+      endDate = new Date(Date.UTC(selectedDate.yearly.year, 11, 31));
+      break;
+    case 'custom':
+      if (!selectedDate.custom.start || !selectedDate.custom.end) {
+        loading.value = false;
+        transactions.value = [];
+        return;
+      }
+      startDate = new Date(selectedDate.custom.start);
+      endDate = new Date(selectedDate.custom.end);
+      break;
+  }
+  
+  const filters = {
+    start_date: startDate.toISOString().split('T')[0],
+    end_date: endDate.toISOString().split('T')[0],
+  };
+
+  await transactionsStore.fetchTransactions(filters, true);
+  transactions.value = transactionsStore.transactions;
+
+  if (!availableCurrencies.value.includes(selectedCurrency.value)) {
+    selectedCurrency.value = availableCurrencies.value[0] || 'IDR';
+  }
+
+  loading.value = false;
 };
 
-// --- Lifecycle ---
-onMounted(async () => {
-  const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  
-  dateRange.start = startOfMonth.toISOString().split('T')[0];
-  dateRange.end = endOfMonth.toISOString().split('T')[0];
+watch([currentView, selectedDate, customAggregationLevel], fetchReportData, { immediate: true, deep: true });
 
-  await fetchReports();
-});
 </script>

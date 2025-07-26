@@ -32,7 +32,11 @@ export const useTransactionsStore = defineStore('transactions', () => {
         params: filters,
       });
       if (response.data) {
-        transactions.value = response.data;
+        // Ensure amount is always a number
+        transactions.value = response.data.map(t => ({
+          ...t,
+          amount: parseFloat(t.amount as any) || 0,
+        }));
       }
     } finally {
       loading.value = false;
