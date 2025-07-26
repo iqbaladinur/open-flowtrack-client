@@ -9,10 +9,16 @@
             Set spending limits and track your progress
           </p>
         </div>
-        <button @click="showAddModal = true" class="btn-primary">
-          <Plus class="w-4 h-4 mr-2" />
-          Create Budget
-        </button>
+        <div class="flex items-center gap-2 self-end sm:self-auto">
+          <button @click="showYearSelector = true" class="btn-secondary">
+            <Calendar class="w-4 h-4 mr-2" />
+            <span>{{ selectedYear }}</span>
+          </button>
+          <button @click="showAddModal = true" class="btn-primary">
+            <Plus class="w-4 h-4 mr-2" />
+            Create Budget
+          </button>
+        </div>
       </div>
 
       <!-- Budgets List -->
@@ -24,9 +30,9 @@
         <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
           <Target class="w-8 h-8 text-gray-400" />
         </div>
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No budgets yet</h3>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No budgets for {{ selectedYear }}</h3>
         <p class="text-gray-500 dark:text-gray-400 mb-6">
-          Create your first budget to start tracking your spending
+          Create your first budget for this year to start tracking your spending.
         </p>
         <button @click="showAddModal = true" class="btn-primary">
           <Target class="w-4 h-4 mr-2" />
@@ -34,7 +40,7 @@
         </button>
       </div>
 
-      <div v-else class="space-y-4">
+      <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <BudgetCard
           v-for="budget in budgets"
           :key="budget.id"
@@ -51,6 +57,23 @@
       :budget="selectedBudget"
       @success="handleBudgetSaved"
     />
+
+    <!-- Year Selector Modal -->
+    <Modal v-model="showYearSelector" title="Select Year">
+      <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-[60vh] overflow-y-auto">
+        <button
+          v-for="year in yearList"
+          :key="year"
+          @click="selectYear(year)"
+          class="p-3 rounded-lg text-center font-medium transition-colors"
+          :class="year === selectedYear 
+            ? 'bg-primary-600 text-white shadow' 
+            : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'"
+        >
+          {{ year }}
+        </button>
+      </div>
+    </Modal>
   </AppLayout>
 </template>
 
@@ -61,25 +84,36 @@ import AppLayout from '@/components/layouts/AppLayout.vue';
 import BudgetModal from '@/components/BudgetModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import BudgetCard from '@/components/BudgetCard.vue';
+import Modal from '@/components/ui/Modal.vue';
 import type { Budget } from '@/types';
-import {
-  Plus,
-  Target,
-} from 'lucide-vue-next';
+import { Plus, Target, Calendar } from 'lucide-vue-next';
 
 const budgetsStore = useBudgetsStore();
 
 const showAddModal = ref(false);
 const selectedBudget = ref<Budget | null>(null);
+const showYearSelector = ref(false);
+const selectedYear = ref(new Date().getFullYear());
+
+const yearList = computed(() => {
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let i = currentYear + 50; i >= currentYear - 50; i--) {
+    years.push(i);
+  }
+  return years;
+});
 
 const budgets = computed(() => {
   return budgetsStore.budgets
     .slice()
-    .sort((a, b) => {
-      if (a.year !== b.year) return b.year - a.year;
-      return b.month - a.month;
-    });
+    .sort((a, b) => b.month - a.month);
 });
+
+const selectYear = (year: number) => {
+  selectedYear.value = year;
+  showYearSelector.value = false;
+};
 
 const editBudget = (budget: Budget) => {
   selectedBudget.value = budget;
@@ -97,7 +131,7 @@ const deleteBudget = async (id: string) => {
 
 const handleBudgetSaved = () => {
   showAddModal.value = false;
-  budgetsStore.fetchBudgets();
+  budgetsStore.fetchBudgets(selectedYear.value);
 };
 
 watch(showAddModal, (isShowing) => {
@@ -106,7 +140,11 @@ watch(showAddModal, (isShowing) => {
   }
 });
 
+watch(selectedYear, (newYear) => {
+  budgetsStore.fetchBudgets(newYear);
+}, { immediate: true });
+
 onMounted(async () => {
-  await budgetsStore.fetchBudgets();
+  // The immediate watcher on selectedYear handles the initial fetch
 });
 </script>

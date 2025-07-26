@@ -8,10 +8,10 @@ export const useBudgetsStore = defineStore('budgets', () => {
   const loading = ref(false);
   const api = useApi();
 
-  const fetchBudgets = async () => {
+  const fetchBudgets = async (year: number) => {
     loading.value = true;
     try {
-      const response = await api.get<Budget[]>('/budgets');
+      const response = await api.get<Budget[]>(`/budgets?year=${year}`);
       if (response.data) {
         budgets.value = response.data;
       }

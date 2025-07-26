@@ -46,11 +46,11 @@
                 </div>
               </div>
               
-              <div class="px-6 pb-[100px] overflow-y-auto flex-1 max-h-[80vh]">
+              <div class="px-6 overflow-y-auto flex-1 max-h-[80vh]" :class="{ 'pb-[100px]': !!$slots.footer, 'pb-6': !$slots.footer }">
                 <slot />
               </div>
 
-              <div v-if="$slots.footer" class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0 absolute bottom-0 w-full bg-white rounded-b-xl">
+              <div v-if="$slots.footer" class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0 absolute bottom-0 w-full bg-white dark:bg-gray-800 rounded-b-xl">
                 <slot name="footer" />
               </div>
             </div>
