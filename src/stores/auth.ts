@@ -33,11 +33,16 @@ export const useAuthStore = defineStore('auth', () => {
       });
 
       if (response.data) {
-        const { access_token, user: userData } = response.data;
+        const { access_token } = response.data;
         localStorage.setItem('auth_token', access_token);
-        localStorage.setItem('user', JSON.stringify(userData));
-        user.value = userData;
-        return { success: true };
+        await getProfile();
+        if (user.value) {
+          return { success: true };
+        } else {
+          // If getProfile fails, token is invalid or profile is missing
+          logout();
+          return { success: false, error: 'Failed to fetch user profile.' };
+        }
       }
 
       return { success: false, error: response.error };
@@ -58,11 +63,15 @@ export const useAuthStore = defineStore('auth', () => {
       });
 
       if (response.data) {
-        const { access_token, user: userData } = response.data;
+        const { access_token } = response.data;
         localStorage.setItem('auth_token', access_token);
-        localStorage.setItem('user', JSON.stringify(userData));
-        user.value = userData;
-        return { success: true };
+        await getProfile();
+        if (user.value) {
+          return { success: true };
+        } else {
+          logout();
+          return { success: false, error: 'Failed to fetch user profile after registration.' };
+        }
       }
 
       return { success: false, error: response.error };
@@ -85,9 +94,13 @@ export const useAuthStore = defineStore('auth', () => {
       if (response.data) {
         user.value = response.data;
         localStorage.setItem('user', JSON.stringify(response.data));
+      } else {
+        // This case might happen if token is valid but profile endpoint fails
+        logout();
       }
     } catch (error) {
       console.error('Failed to fetch profile:', error);
+      logout(); // Also logout on error
     }
   };
 

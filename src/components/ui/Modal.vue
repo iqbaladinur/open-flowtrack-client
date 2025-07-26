@@ -10,22 +10,22 @@
     >
       <div
         v-if="modelValue"
-        class="fixed inset-0 z-50"
+        class="fixed inset-0 z-50 flex items-end sm:items-center sm:justify-center"
         @click="closeOnOutsideClick && $emit('update:modelValue', false)"
       >
         <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" aria-hidden="true"></div>
 
         <Transition
           enter-active-class="transition-transform duration-300 ease-out"
-          enter-from-class="translate-y-full sm:scale-95"
-          enter-to-class="translate-y-0 sm:scale-100"
+          enter-from-class="translate-y-full"
+          enter-to-class="translate-y-0"
           leave-active-class="transition-transform duration-300 ease-in"
-          leave-from-class="translate-y-0 sm:scale-100"
-          leave-to-class="translate-y-full sm:scale-95"
+          leave-from-class="translate-y-0"
+          leave-to-class="translate-y-full"
         >
           <div
             v-if="modelValue"
-            class="fixed bottom-0 left-0 right-0 max-h-[90vh] transform rounded-t-2xl bg-white dark:bg-gray-800 shadow-xl transition-all sm:relative sm:bottom-auto sm:left-auto sm:right-auto sm:my-8 sm:w-full sm:max-w-md sm:rounded-xl"
+            class="w-full max-h-[90vh] transform rounded-t-2xl bg-white dark:bg-gray-800 shadow-xl transition-all sm:my-8 sm:max-w-md sm:rounded-xl"
             @click.stop
           >
             <div class="flex flex-col h-full">

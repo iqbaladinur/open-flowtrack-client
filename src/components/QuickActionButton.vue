@@ -10,7 +10,7 @@
     >
       <slot name="icon"></slot>
     </div>
-    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+    <span class="text-xs font-medium text-gray-700 dark:text-gray-300">
       <slot></slot>
     </span>
   </component>

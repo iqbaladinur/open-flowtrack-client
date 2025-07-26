@@ -83,18 +83,18 @@
 
     <!-- Mobile Bottom Navigation -->
     <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 safe-area-bottom">
-      <div class="flex items-center justify-around py-2">
+      <div class="grid grid-cols-5">
         <router-link 
           v-for="item in bottomNavigation" 
           :key="item.name"
           :to="item.to"
-          class="flex flex-col items-center px-3 py-2 transition-colors"
+          class="flex flex-col items-center justify-center py-2 transition-colors"
           :class="$route.name === item.name 
             ? 'text-primary-600 dark:text-primary-400' 
             : 'text-gray-500 dark:text-gray-400'"
         >
-          <component :is="item.icon" class="w-5 h-5 mb-1" />
-          <span class="text-xs font-medium">{{ item.name }}</span>
+          <component :is="item.icon" class="w-5 h-5 my-1" />
+          <!-- <span class="text-xs font-medium text-center">{{ item.name }}</span> -->
         </router-link>
       </div>
     </nav>
@@ -135,6 +135,7 @@ const bottomNavigation = [
   { name: 'Transactions', to: '/transactions', icon: ArrowUpDown },
   { name: 'Wallets', to: '/wallets', icon: Wallet },
   { name: 'Categories', to: '/categories', icon: Tag },
+  { name: 'Budgets', to: '/budgets', icon: Target },
   { name: 'Reports', to: '/reports', icon: BarChart3 },
 ];
 

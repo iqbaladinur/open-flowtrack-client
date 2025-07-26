@@ -135,6 +135,7 @@
           <QuickActionButton
             @click="showAddTransactionModal = true"
             icon-bg-class="bg-success-100 dark:bg-success-900"
+            class="text-center"
           >
             <template #icon>
               <Plus class="w-5 h-5 text-success-600 dark:text-success-400" />
@@ -145,6 +146,7 @@
           <QuickActionButton
             @click="showAddExpenseModal = true"
             icon-bg-class="bg-error-100 dark:bg-error-900"
+            class="text-center"
           >
             <template #icon>
               <Minus class="w-5 h-5 text-error-600 dark:text-error-400" />
@@ -155,6 +157,7 @@
           <QuickActionButton
             to="/wallets"
             icon-bg-class="bg-primary-100 dark:bg-primary-900"
+            class="text-center"
           >
             <template #icon>
               <Wallet class="w-5 h-5 text-primary-600 dark:text-primary-400" />
@@ -165,6 +168,7 @@
           <QuickActionButton
             to="/budgets"
             icon-bg-class="bg-warning-100 dark:bg-warning-900"
+            class="text-center"
           >
             <template #icon>
               <Target class="w-5 h-5 text-warning-600 dark:text-warning-400" />
@@ -326,7 +330,7 @@ const formatCurrency = (amount: number, currency: 'USD' | 'IDR') => {
     // @ts-ignore
     options.maximumFractionDigits = 0;
   }
-
+  // @ts-ignore
   return new Intl.NumberFormat(currency === 'IDR' ? 'id-ID' : 'en-US', options).format(amount);
 };
 
