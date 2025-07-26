@@ -114,13 +114,66 @@
           </div>
         </div>
 
-        <!-- Chart -->
+        <!-- Time Series Chart -->
         <div class="card p-6">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             {{ reportTitle }} ({{ selectedCurrency }})
           </h2>
           <div class="h-96">
             <TimeSeriesChart v-if="!loading" :chart-data="chartData" />
+          </div>
+        </div>
+
+        <!-- Breakdown Reports -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:items-start">
+          <!-- Category Report -->
+          <div class="card p-6">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Breakdown by Category</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">({{ selectedCurrency }})</p>
+              </div>
+              <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg">
+                <button @click="categoryReportType = 'expense'" :class="['btn btn-sm', categoryReportType === 'expense' ? 'bg-white dark:bg-gray-600 shadow' : '']">Spending</button>
+                <button @click="categoryReportType = 'income'" :class="['btn btn-sm', categoryReportType === 'income' ? 'bg-white dark:bg-gray-600 shadow' : '']">Income</button>
+              </div>
+            </div>
+            <div v-if="categoryChartData.labels.length === 0" class="text-center py-8">
+              <PieChart class="w-12 h-12 text-gray-400 mx-auto mb-2" />
+              <p class="text-gray-500 dark:text-gray-400">No {{ categoryReportType }} data</p>
+            </div>
+            <div v-else class="h-80">
+              <CategoryPieChart :chart-data="categoryChartData" />
+            </div>
+          </div>
+
+          <!-- Wallet Report -->
+          <div class="card p-6">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Flow by Wallet ({{ selectedCurrency }})
+            </h2>
+            <div v-if="walletReportData.length === 0" class="text-center py-8">
+              <Wallet class="w-12 h-12 text-gray-400 mx-auto mb-2" />
+              <p class="text-gray-500 dark:text-gray-400">No wallet data available</p>
+            </div>
+            <div v-else class="space-y-4">
+              <div
+                v-for="item in walletReportData"
+                :key="item.name"
+                class="p-4 rounded-lg border border-gray-200 dark:border-gray-700"
+              >
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="font-medium text-gray-900 dark:text-white truncate">{{ item.name }}</h3>
+                  <span class="font-bold text-lg" :class="item.net >= 0 ? 'text-success-600' : 'text-error-600'">
+                    {{ formatCurrency(item.net) }}
+                  </span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-success-500">+{{ formatCurrency(item.income) }}</span>
+                  <span class="text-error-500">-{{ formatCurrency(item.expense) }}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -134,7 +187,8 @@ import { useTransactionsStore } from '@/stores/transactions';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import TimeSeriesChart from '@/components/TimeSeriesChart.vue';
-import { Calendar, CalendarClock, BarChart3, SlidersHorizontal } from 'lucide-vue-next';
+import CategoryPieChart from '@/components/CategoryPieChart.vue';
+import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, Wallet } from 'lucide-vue-next';
 import type { Transaction, CurrencyType } from '@/types';
 
 type ReportView = 'monthly' | 'yearly' | 'custom';
@@ -144,6 +198,7 @@ const transactionsStore = useTransactionsStore();
 
 const currentView = ref<ReportView>('monthly');
 const customAggregationLevel = ref<AggregationLevel>('monthly');
+const categoryReportType = ref<'income' | 'expense'>('expense');
 const loading = ref(false);
 const transactions = ref<Transaction[]>([]);
 const selectedCurrency = ref<CurrencyType>('IDR');
@@ -200,16 +255,16 @@ const formatCurrency = (amount: number) => {
 const getStartOfWeek = (d: Date) => {
   const date = new Date(d.getTime());
   const day = date.getUTCDay();
-  const diff = date.getUTCDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+  const diff = date.getUTCDate() - day + (day === 0 ? -6 : 1);
   return new Date(date.setUTCDate(diff));
 }
 
 const chartData = computed(() => {
+  // ... (logic from previous step remains the same)
   const data = filteredTransactions.value;
   let aggregation: AggregationLevel;
   let startDate: Date, endDate: Date;
 
-  // Determine aggregation level and date range
   switch (currentView.value) {
     case 'monthly':
       aggregation = 'daily';
@@ -231,10 +286,8 @@ const chartData = computed(() => {
   const totals = new Map<string, { income: number; expense: number }>();
   const labels: string[] = [];
 
-  // 1. Generate all labels and initialize totals map based on the date range
   if (startDate && endDate && startDate <= endDate) {
     let currentDate = new Date(startDate);
-    
     if (aggregation === 'monthly') {
       currentDate = new Date(Date.UTC(startDate.getUTCFullYear(), startDate.getUTCMonth(), 1));
     }
@@ -270,19 +323,13 @@ const chartData = computed(() => {
     }
   }
 
-  // 2. Populate the totals map with transaction data
   data.forEach(t => {
     const date = new Date(t.date);
     let key = '';
-    if (aggregation === 'daily') {
-      key = date.toISOString().split('T')[0];
-    } else if (aggregation === 'weekly') {
-      key = getStartOfWeek(date).toISOString().split('T')[0];
-    } else if (aggregation === 'monthly') {
-      key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
-    } else if (aggregation === 'yearly') {
-      key = String(date.getUTCFullYear());
-    }
+    if (aggregation === 'daily') key = date.toISOString().split('T')[0];
+    else if (aggregation === 'weekly') key = getStartOfWeek(date).toISOString().split('T')[0];
+    else if (aggregation === 'monthly') key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
+    else if (aggregation === 'yearly') key = String(date.getUTCFullYear());
 
     if (totals.has(key)) {
       const current = totals.get(key)!;
@@ -291,7 +338,6 @@ const chartData = computed(() => {
     }
   });
 
-  // 3. Generate final datasets
   const incomeData = labels.map(label => totals.get(label)?.income || 0);
   const expenseData = labels.map(label => totals.get(label)?.expense || 0);
 
@@ -304,7 +350,6 @@ const chartData = computed(() => {
   };
 });
 
-
 const summary = computed(() => {
   return filteredTransactions.value.reduce((acc, t) => {
     if (t.type === 'income') acc.totalIncome += t.amount;
@@ -312,6 +357,48 @@ const summary = computed(() => {
     acc.net = acc.totalIncome - acc.totalExpense;
     return acc;
   }, { totalIncome: 0, totalExpense: 0, net: 0 });
+});
+
+const categoryChartData = computed(() => {
+  const categoryTotals = new Map<string, { name: string, color: string, total: number }>();
+  
+  filteredTransactions.value
+    .filter(t => t.type === categoryReportType.value)
+    .forEach(t => {
+      if (t.category) {
+        const current = categoryTotals.get(t.category.id) || { name: t.category.name, color: t.category.color, total: 0 };
+        current.total += t.amount;
+        categoryTotals.set(t.category.id, current);
+      }
+    });
+
+  const sortedCategories = Array.from(categoryTotals.values()).sort((a, b) => b.total - a.total);
+
+  return {
+    labels: sortedCategories.map(c => c.name),
+    datasets: [{
+      data: sortedCategories.map(c => c.total),
+      backgroundColor: sortedCategories.map(c => `${c.color}CC`), // Append alpha value
+    }],
+  };
+});
+
+const walletReportData = computed(() => {
+  const walletTotals = new Map<string, { name: string, income: number, expense: number }>();
+
+  filteredTransactions.value.forEach(t => {
+    if (t.wallet) {
+      const current = walletTotals.get(t.wallet.id) || { name: t.wallet.name, income: 0, expense: 0 };
+      if (t.type === 'income') current.income += t.amount;
+      else current.expense += t.amount;
+      walletTotals.set(t.wallet.id, current);
+    }
+  });
+
+  return Array.from(walletTotals.values()).map(w => ({
+    ...w,
+    net: w.income - w.expense,
+  })).sort((a, b) => b.net - a.net);
 });
 
 const fetchReportData = async () => {
