@@ -25,7 +25,19 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const config = error.config;
+
+    // These are the endpoints that we expect to return 401 for failed authentication attempts (e.g., wrong password).
+    // We don't want to redirect to /login in these cases, as the component should handle the error message.
+    const excludedFromRedirect =
+      config.method.toLowerCase() === 'post' &&
+      [
+        '/auth/login',
+        '/auth/register',
+        '/auth/forgot-password',
+      ].includes(config.url);
+
+    if (error.response?.status === 401 && !excludedFromRedirect) {
       localStorage.removeItem('auth_token');
       localStorage.removeItem('user');
       window.location.href = '/login';

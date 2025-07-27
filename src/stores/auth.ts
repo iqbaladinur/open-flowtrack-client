@@ -56,22 +56,17 @@ export const useAuthStore = defineStore('auth', () => {
   const register = async (email: string, password: string, fullName?: string) => {
     loading.value = true;
     try {
-      const response = await api.post<AuthResponse>('/auth/register', {
+      const response = await api.post('/auth/register', {
         email,
         password,
         full_name: fullName,
       });
 
+      // The register endpoint does not return a token.
+      // It just confirms that the user has been created.
+      // The user should then be redirected to the login page.
       if (response.data) {
-        const { access_token } = response.data;
-        localStorage.setItem('auth_token', access_token);
-        await getProfile();
-        if (user.value) {
-          return { success: true };
-        } else {
-          logout();
-          return { success: false, error: 'Failed to fetch user profile after registration.' };
-        }
+        return { success: true };
       }
 
       return { success: false, error: response.error };
