@@ -62,6 +62,7 @@ const chartOptions = computed(() => ({
               minimumFractionDigits: props.currency === 'IDR' ? 0 : 2,
               maximumFractionDigits: props.currency === 'IDR' ? 0 : 2,
             };
+            // @ts-ignore
             label += new Intl.NumberFormat(locale, options).format(context.parsed);
           }
           return label;

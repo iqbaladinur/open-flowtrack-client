@@ -192,7 +192,6 @@ import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { useThemeStore } from '@/stores/theme';
 import { 
-  DollarSign, 
   User, 
   LogOut, 
   Home, 

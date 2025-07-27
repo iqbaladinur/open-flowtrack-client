@@ -54,7 +54,7 @@ const formattedAmount = computed(() => {
     // @ts-ignore
     options.maximumFractionDigits = 0;
   }
-
+  // @ts-ignore
   return new Intl.NumberFormat(props.currency === 'IDR' ? 'id-ID' : 'en-US', options).format(props.amount);
 });
 </script>

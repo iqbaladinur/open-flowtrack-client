@@ -85,7 +85,7 @@
 import type { Transaction } from '@/types';
 import { TrendingUp, TrendingDown, Edit2, Trash2 } from 'lucide-vue-next';
 
-const props = defineProps({
+defineProps({
   transaction: {
     type: Object as () => Transaction,
     required: true,

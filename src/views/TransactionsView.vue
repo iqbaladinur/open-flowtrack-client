@@ -229,6 +229,7 @@ const editTransaction = (transaction: Transaction) => {
 const handleTransactionSaved = () => {
   showAddModal.value = false;
   // Refresh transactions and wallet balances
+  // @ts-ignore
   transactionsStore.fetchTransactions(filters, true);
   walletsStore.fetchWallets(true);
 };

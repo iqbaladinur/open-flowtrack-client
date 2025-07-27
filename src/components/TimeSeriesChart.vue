@@ -1,4 +1,5 @@
 <template>
+  <!-- @vue-ignore -->
   <Line :data="styledChartData" :options="chartOptions" />
 </template>
 

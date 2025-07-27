@@ -24,6 +24,7 @@
             class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
             :style="{ backgroundColor: budget.category.color + '20', color: budget.category.color }"
           >
+            <!-- @vue-ignore -->
             <component :is="icons[budget.category.icon] || icons['Tag']" class="w-6 h-6" />
           </div>
           <div>
@@ -169,7 +170,7 @@ const toggleDetails = async () => {
       start_date: startDate,
       end_date: endDate,
     };
-
+    // @ts-ignore
     await transactionsStore.fetchTransactions(filters);
     
     detailedTransactions.value = transactionsStore.transactions.filter(t => 

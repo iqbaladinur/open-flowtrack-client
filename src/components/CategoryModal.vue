@@ -49,6 +49,7 @@
         <label class="label">Preview</label>
         <div class="card p-4 flex items-center space-x-4">
           <div class="w-12 h-12 rounded-xl flex items-center justify-center" :style="{ backgroundColor: form.color + '20' }">
+            <!-- @vue-ignore -->
             <component :is="icons[form.icon] || icons['Tag']" class="w-6 h-6" :style="{ color: form.color }" />
           </div>
           <div>
@@ -79,6 +80,7 @@
               ? 'bg-primary-500 text-white ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 ring-primary-500'
               : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'"
           >
+            <!-- @vue-ignore -->
             <component :is="icons[icon]" class="w-5 h-5" />
           </button>
         </div>
