@@ -68,6 +68,12 @@ const router = createRouter({
       component: () => import('@/views/ProfileView.vue'),
       meta: { auth: true },
     },
+    {
+      path: '/backup',
+      name: 'Backup',
+      component: () => import('@/views/BackupRestoreView.vue'),
+      meta: { auth: true },
+    },
   ],
 });
 
