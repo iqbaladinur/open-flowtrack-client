@@ -153,7 +153,7 @@ const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
 
 const showAddModal = ref(false);
-const showFilters = ref(true); // Show by default for better UX
+const showFilters = ref(false); // Show by default for better UX
 const selectedTransaction = ref<Transaction | null>(null);
 
 const filters = reactive({

@@ -4,10 +4,10 @@
     <header class="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 safe-area-top">
       <div class="flex items-center justify-between px-4 py-3">
         <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-            <DollarSign class="w-5 h-5 text-white" />
+          <div class="w-8 h-8 bg-green-600/30 rounded-lg flex items-center justify-center">
+            <TrendingUpDown class="w-5 h-5 text-white" />
           </div>
-          <h1 class="text-lg font-semibold text-gray-900 dark:text-white">Wallport</h1>
+          <h1 class="text-lg font-semibold text-gray-900 dark:text-white">FlowTrack</h1>
         </div>
         
         <button @click="showProfileMenu = !showProfileMenu" class="relative">
@@ -56,7 +56,7 @@
       <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 px-6">
         <div class="flex h-16 shrink-0 items-center">
           <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
+            <div class="w-8 h-8 bg-green-600/30 rounded-lg flex items-center justify-center">
               <TrendingUpDown class="w-5 h-5 text-white" />
             </div>
             <h1 class="text-xl font-bold text-gray-900 dark:text-white">FlowTrack</h1>

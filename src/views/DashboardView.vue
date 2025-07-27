@@ -13,24 +13,26 @@
 
       <!-- Summary Cards -->
       <div class="relative">
-        <div class="flex overflow-x-auto space-x-4 pb-4 -mb-4 lg:grid lg:grid-cols-4 lg:gap-4 lg:overflow-visible lg:space-x-0 lg:pb-0 lg:mb-0">
+        <!-- Tabs -->
+        <div class="card p-2 mb-4">
+          <div class="flex items-center space-x-1">
+            <button @click="activeTab = 'IDR'" :class="['btn', activeTab === 'IDR' ? 'btn-primary' : 'btn-secondary']">
+              <Banknote class="w-4 h-4 mr-2" />
+              IDR
+            </button>
+            <button @click="activeTab = 'USD'" :class="['btn', activeTab === 'USD' ? 'btn-primary' : 'btn-secondary']">
+              <DollarSign class="w-4 h-4 mr-2" />
+              USD
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <!-- Total Balance -->
           <SummaryCard
-            class="flex-shrink-0 w-72 lg:w-auto"
-            title="Total Balance (USD)"
-            :amount="totalBalanceUSD"
-            currency="USD"
-            icon-bg-class="bg-primary-100 dark:bg-primary-900"
-          >
-            <template #icon>
-              <Wallet class="w-6 h-6 text-primary-600 dark:text-primary-400" />
-            </template>
-          </SummaryCard>
-          <SummaryCard
-            class="flex-shrink-0 w-72 lg:w-auto"
-            title="Total Balance (IDR)"
-            :amount="totalBalanceIDR"
-            currency="IDR"
+            :title="`Total Balance (${activeTab})`"
+            :amount="totalBalance"
+            :currency="activeTab"
             icon-bg-class="bg-primary-100 dark:bg-primary-900"
           >
             <template #icon>
@@ -40,27 +42,13 @@
 
           <!-- Income -->
           <SummaryCard
-            class="flex-shrink-0 w-72 lg:w-auto"
-            title="Income (USD)"
-            :amount="monthlyIncomeUSD"
-            currency="USD"
+            :title="`Income (${activeTab})`"
+            :amount="monthlyIncome"
+            :currency="activeTab"
             amount-class="text-success-600"
             icon-bg-class="bg-success-100 dark:bg-success-900"
           >
-            <template #amount>+{{ formatCurrency(monthlyIncomeUSD, 'USD') }}</template>
-            <template #icon>
-              <TrendingUp class="w-6 h-6 text-success-600 dark:text-success-400" />
-            </template>
-          </SummaryCard>
-          <SummaryCard
-            class="flex-shrink-0 w-72 lg:w-auto"
-            title="Income (IDR)"
-            :amount="monthlyIncomeIDR"
-            currency="IDR"
-            amount-class="text-success-600"
-            icon-bg-class="bg-success-100 dark:bg-success-900"
-          >
-            <template #amount>+{{ formatCurrency(monthlyIncomeIDR, 'IDR') }}</template>
+            <template #amount>+{{ formatCurrency(monthlyIncome, activeTab) }}</template>
             <template #icon>
               <TrendingUp class="w-6 h-6 text-success-600 dark:text-success-400" />
             </template>
@@ -68,27 +56,13 @@
 
           <!-- Expenses -->
           <SummaryCard
-            class="flex-shrink-0 w-72 lg:w-auto"
-            title="Expenses (USD)"
-            :amount="monthlyExpensesUSD"
-            currency="USD"
+            :title="`Expenses (${activeTab})`"
+            :amount="monthlyExpenses"
+            :currency="activeTab"
             amount-class="text-error-600"
             icon-bg-class="bg-error-100 dark:bg-error-900"
           >
-            <template #amount>-{{ formatCurrency(monthlyExpensesUSD, 'USD') }}</template>
-            <template #icon>
-              <TrendingDown class="w-6 h-6 text-error-600 dark:text-error-400" />
-            </template>
-          </SummaryCard>
-          <SummaryCard
-            class="flex-shrink-0 w-72 lg:w-auto"
-            title="Expenses (IDR)"
-            :amount="monthlyExpensesIDR"
-            currency="IDR"
-            amount-class="text-error-600"
-            icon-bg-class="bg-error-100 dark:bg-error-900"
-          >
-            <template #amount>-{{ formatCurrency(monthlyExpensesIDR, 'IDR') }}</template>
+            <template #amount>-{{ formatCurrency(monthlyExpenses, activeTab) }}</template>
             <template #icon>
               <TrendingDown class="w-6 h-6 text-error-600 dark:text-error-400" />
             </template>
@@ -96,30 +70,14 @@
 
           <!-- Net Income -->
           <SummaryCard
-            class="flex-shrink-0 w-72 lg:w-auto"
-            title="Net Income (USD)"
-            :amount="netIncomeUSD"
-            currency="USD"
-            :amount-class="netIncomeUSD >= 0 ? 'text-success-600' : 'text-error-600'"
+            :title="`Net Income (${activeTab})`"
+            :amount="netIncome"
+            :currency="activeTab"
+            :amount-class="netIncome >= 0 ? 'text-success-600' : 'text-error-600'"
             icon-bg-class="bg-warning-100 dark:bg-warning-900"
           >
             <template #amount>
-              {{ netIncomeUSD >= 0 ? '+' : '' }}{{ formatCurrency(netIncomeUSD, 'USD') }}
-            </template>
-            <template #icon>
-              <BarChart3 class="w-6 h-6 text-warning-600 dark:text-warning-400" />
-            </template>
-          </SummaryCard>
-          <SummaryCard
-            class="flex-shrink-0 w-72 lg:w-auto"
-            title="Net Income (IDR)"
-            :amount="netIncomeIDR"
-            currency="IDR"
-            :amount-class="netIncomeIDR >= 0 ? 'text-success-600' : 'text-error-600'"
-            icon-bg-class="bg-warning-100 dark:bg-warning-900"
-          >
-            <template #amount>
-              {{ netIncomeIDR >= 0 ? '+' : '' }}{{ formatCurrency(netIncomeIDR, 'IDR') }}
+              {{ netIncome >= 0 ? '+' : '' }}{{ formatCurrency(netIncome, activeTab) }}
             </template>
             <template #icon>
               <BarChart3 class="w-6 h-6 text-warning-600 dark:text-warning-400" />
@@ -244,6 +202,8 @@ import {
   Minus,
   Target,
   ArrowUpDown,
+  DollarSign,
+  Banknote,
 } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
@@ -253,6 +213,7 @@ const transactionsStore = useTransactionsStore();
 const showAddTransactionModal = ref(false);
 const showAddExpenseModal = ref(false);
 const transactionType = ref<'income' | 'expense'>('income');
+const activeTab = ref<'USD' | 'IDR'>('IDR');
 
 const totalBalanceUSD = computed(() => {
   return walletsStore.wallets
@@ -308,6 +269,22 @@ const monthlyExpensesIDR = computed(() => {
 
 const netIncomeUSD = computed(() => monthlyIncomeUSD.value - monthlyExpensesUSD.value);
 const netIncomeIDR = computed(() => monthlyIncomeIDR.value - monthlyExpensesIDR.value);
+
+const totalBalance = computed(() => {
+  return activeTab.value === 'USD' ? totalBalanceUSD.value : totalBalanceIDR.value;
+});
+
+const monthlyIncome = computed(() => {
+  return activeTab.value === 'USD' ? monthlyIncomeUSD.value : monthlyIncomeIDR.value;
+});
+
+const monthlyExpenses = computed(() => {
+  return activeTab.value === 'USD' ? monthlyExpensesUSD.value : monthlyExpensesIDR.value;
+});
+
+const netIncome = computed(() => {
+  return activeTab.value === 'USD' ? netIncomeUSD.value : netIncomeIDR.value;
+});
 
 const recentTransactions = computed(() => {
   return transactionsStore.transactions
