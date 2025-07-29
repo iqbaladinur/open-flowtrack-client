@@ -5,25 +5,31 @@ export interface User {
   created_at: string;
 }
 
+export interface Config {
+  id: string;
+  currency: string;
+  fractions: number;
+  user_id: string;
+}
+
 export interface Wallet {
   id: string;
   name: string;
-  currency: 'USD' | 'IDR';
-  balance: number;
   initial_balance: number;
   created_at: string;
   updated_at: string;
+  current_balance?: number; // This is often returned from API calls
 }
 
 export interface Category {
-  id: string;
+  id?: string;
   name: string;
   type: 'income' | 'expense';
   icon: string;
   color: string;
-  is_default: boolean;
+  is_default?: boolean;
   user_id?: string;
-  created_at: string;
+  created_at?: string;
 }
 
 export interface Transaction {
@@ -45,10 +51,9 @@ export interface Transaction {
 export interface Budget {
   id: string;
   category_id: string;
-  limit_amount: string;
+  limit_amount: number;
   month: number;
   year: number;
-  currency: string;
   user_id: string;
   created_at: string;
   updated_at: string;
@@ -85,6 +90,13 @@ export interface WalletReport {
 
 export interface AuthResponse {
   access_token: string;
+  user: User;
+  config: Config;
+}
+
+export interface ProfileResponse {
+  user: User;
+  config: Config;
 }
 
 export interface ApiResponse<T = any> {
@@ -93,6 +105,5 @@ export interface ApiResponse<T = any> {
   error?: string;
 }
 
-export type CurrencyType = 'USD' | 'IDR';
 export type TransactionType = 'income' | 'expense';
 export type RecurringPattern = 'daily' | 'weekly' | 'monthly' | 'yearly';

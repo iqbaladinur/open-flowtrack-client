@@ -44,7 +44,7 @@ export const useBudgetsStore = defineStore('budgets', () => {
     if (response.data) {
       const index = budgets.value.findIndex((b) => b.id === id);
       if (index !== -1) {
-        budgets.value[index] = {...budgets.value[index], ...response.data};
+        budgets.value[index] = { ...budgets.value[index], ...response.data };
       }
       return { success: true };
     }

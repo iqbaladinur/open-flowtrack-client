@@ -15,41 +15,12 @@
         />
       </div>
 
-      <!-- Currency -->
-      <div>
-        <label for="currency" class="label">Currency</label>
-        <div class="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            @click="form.currency = 'USD'"
-            class="p-3 rounded-lg border-2 transition-all"
-            :class="form.currency === 'USD' 
-              ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300' 
-              : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
-          >
-            <DollarSign class="w-5 h-5 mx-auto mb-1" />
-            <span class="text-sm font-medium">USD ($)</span>
-          </button>
-          <button
-            type="button"
-            @click="form.currency = 'IDR'"
-            class="p-3 rounded-lg border-2 transition-all"
-            :class="form.currency === 'IDR' 
-              ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300' 
-              : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
-          >
-            <Banknote class="w-5 h-5 mx-auto mb-1" />
-            <span class="text-sm font-medium">IDR (Rp)</span>
-          </button>
-        </div>
-      </div>
-
       <!-- Initial Balance -->
       <div>
         <label for="balance" class="label">Initial Balance</label>
         <div class="relative">
           <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
-            {{ form.currency === 'USD' ? '$' : 'Rp' }}
+            {{ configStore.currency }}
           </span>
           <input
             id="balance"
@@ -57,13 +28,13 @@
             type="number"
             step="0.01"
             required
-            class="input pl-10"
+            class="input pl-12"
             placeholder="0.00"
             :disabled="loading"
           />
         </div>
         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          This will be your starting balance for this wallet
+          This will be your starting balance for this wallet.
         </p>
       </div>
 
@@ -99,10 +70,10 @@
 <script setup lang="ts">
 import { ref, reactive, computed, watch } from 'vue';
 import { useWalletsStore } from '@/stores/wallets';
+import { useConfigStore } from '@/stores/config';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import type { Wallet } from '@/types';
-import { DollarSign, Banknote } from 'lucide-vue-next';
 
 interface Props {
   modelValue: boolean;
@@ -119,20 +90,18 @@ const emit = defineEmits<{
 }>();
 
 const walletsStore = useWalletsStore();
+const configStore = useConfigStore();
 
 const loading = ref(false);
 const error = ref('');
 
 const form = reactive({
   name: '',
-  currency: 'USD' as 'USD' | 'IDR',
   initial_balance: 0,
 });
 
 const isFormValid = computed(() => {
-  return form.name.trim() && 
-         form.currency && 
-         form.initial_balance >= 0;
+  return form.name.trim() && form.initial_balance >= 0;
 });
 
 const handleSubmit = async () => {
@@ -144,7 +113,6 @@ const handleSubmit = async () => {
   try {
     const walletData = {
       name: form.name.trim(),
-      currency: form.currency,
       initial_balance: form.initial_balance,
     };
 
@@ -176,7 +144,6 @@ const isModalOpen = computed({
 const resetForm = () => {
   Object.assign(form, {
     name: '',
-    currency: 'USD' as 'USD' | 'IDR',
     initial_balance: 0,
   });
 };
@@ -186,7 +153,6 @@ watch(() => props.wallet, (newWallet) => {
   if (newWallet) {
     Object.assign(form, {
       name: newWallet.name,
-      currency: newWallet.currency,
       initial_balance: Number(newWallet.initial_balance) || 0,
     });
   } else {

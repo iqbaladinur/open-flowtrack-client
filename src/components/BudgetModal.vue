@@ -25,46 +25,12 @@
         </p>
       </div>
 
-      <!-- Currency -->
-      <div>
-        <label class="label">Currency</label>
-        <div class="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            @click="form.currency = 'USD'"
-            :disabled="!!budget"
-            class="p-3 rounded-lg border-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            :class="form.currency === 'USD' 
-              ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300' 
-              : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
-          >
-            <DollarSign class="w-5 h-5 mx-auto mb-1" />
-            <span class="text-sm font-medium">USD ($)</span>
-          </button>
-          <button
-            type="button"
-            @click="form.currency = 'IDR'"
-            :disabled="!!budget"
-            class="p-3 rounded-lg border-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            :class="form.currency === 'IDR' 
-              ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300' 
-              : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
-          >
-            <Banknote class="w-5 h-5 mx-auto mb-1" />
-            <span class="text-sm font-medium">IDR (Rp)</span>
-          </button>
-        </div>
-         <p v-if="budget" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          Currency cannot be changed when editing a budget.
-        </p>
-      </div>
-
       <!-- Budget Limit -->
       <div>
         <label for="limit" class="label">Budget Limit</label>
         <div class="relative">
           <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
-            {{ form.currency === 'USD' ? '$' : 'Rp' }}
+            {{ configStore.currency }}
           </span>
           <input
             id="limit"
@@ -73,7 +39,7 @@
             step="0.01"
             min="0"
             required
-            class="input pl-8"
+            class="input pl-12"
             placeholder="0.00"
             :disabled="loading"
           />
@@ -127,8 +93,8 @@
             {{ selectedCategory.name }} Budget
           </h4>
         </div>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          {{ months[form.month - 1] }} {{ form.year }} • {{ formatCurrency(form.limit_amount, form.currency) }} limit
+        <p class="text-sm text-gray-600 dark:text-gray-400 font-mono">
+          {{ months[form.month - 1] }} {{ form.year }} • {{ configStore.formatCurrency(form.limit_amount) }} limit
         </p>
       </div>
 
@@ -165,10 +131,10 @@
 import { ref, reactive, computed, watch, onMounted } from 'vue';
 import { useBudgetsStore } from '@/stores/budgets';
 import { useCategoriesStore } from '@/stores/categories';
+import { useConfigStore } from '@/stores/config';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import type { Budget, CurrencyType } from '@/types';
-import { DollarSign, Banknote } from 'lucide-vue-next';
+import type { Budget } from '@/types';
 
 interface Props {
   modelValue: boolean;
@@ -186,6 +152,7 @@ const emit = defineEmits<{
 
 const budgetsStore = useBudgetsStore();
 const categoriesStore = useCategoriesStore();
+const configStore = useConfigStore();
 
 const loading = ref(false);
 const error = ref('');
@@ -203,7 +170,6 @@ const form = reactive({
   limit_amount: 0,
   month: new Date().getMonth() + 1,
   year: currentYear,
-  currency: 'IDR' as CurrencyType,
 });
 
 const expenseCategories = computed(() => {
@@ -218,23 +184,13 @@ const isFormValid = computed(() => {
   return form.category_id && 
          form.limit_amount > 0 && 
          form.month >= 1 && form.month <= 12 && 
-         form.year &&
-         form.currency;
+         form.year;
 });
 
 const isModalOpen = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value),
 });
-
-const formatCurrency = (amount: number, currency: CurrencyType) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(amount);
-};
 
 const handleSubmit = async () => {
   if (!isFormValid.value || loading.value) return;
@@ -248,7 +204,6 @@ const handleSubmit = async () => {
       limit_amount: form.limit_amount,
       month: form.month,
       year: form.year,
-      currency: form.currency,
     };
 
     let result;
@@ -280,7 +235,6 @@ const resetForm = () => {
     limit_amount: 0,
     month: new Date().getMonth() + 1,
     year: currentYear,
-    currency: 'IDR' as CurrencyType,
   });
 };
 
@@ -289,10 +243,9 @@ watch(() => props.budget, (newBudget) => {
   if (newBudget) {
     Object.assign(form, {
       category_id: newBudget.category_id,
-      limit_amount: parseFloat(newBudget.limit_amount) || 0,
+      limit_amount: newBudget.limit_amount || 0,
       month: newBudget.month,
       year: newBudget.year,
-      currency: newBudget.currency as CurrencyType,
     });
   } else {
     resetForm();

@@ -41,6 +41,16 @@ export const useCategoriesStore = defineStore('categories', () => {
     return { success: false, error: response.error };
   };
 
+  const createManyCategories = async (categoriesData: Omit<Category, 'id' | 'created_at' | 'user_id' | 'is_default'>[]) => {
+    const response = await api.post<{ data: Category[] }>('/categories/bulk', { categories: categoriesData });
+    if (response.data) {
+      // Force a refresh of the categories list
+      await fetchCategories(true);
+      return { success: true };
+    }
+    return { success: false, error: response.error };
+  };
+
   const updateCategory = async (
     id: string,
     categoryData: Partial<{
@@ -82,6 +92,7 @@ export const useCategoriesStore = defineStore('categories', () => {
     loading,
     fetchCategories,
     createCategory,
+    createManyCategories,
     updateCategory,
     deleteCategory,
     getCategoriesByType,

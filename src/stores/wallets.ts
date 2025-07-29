@@ -30,7 +30,6 @@ export const useWalletsStore = defineStore('wallets', () => {
 
   const createWallet = async (walletData: {
     name: string;
-    currency: 'USD' | 'IDR';
     initial_balance: number;
   }) => {
     const response = await api.post<Wallet>('/wallets', walletData);
@@ -45,7 +44,6 @@ export const useWalletsStore = defineStore('wallets', () => {
     id: string,
     walletData: Partial<{
       name: string;
-      currency: 'USD' | 'IDR';
       initial_balance: number;
     }>
   ) => {

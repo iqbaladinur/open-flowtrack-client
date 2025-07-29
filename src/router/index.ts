@@ -1,97 +1,121 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import { useAuthStore } from '@/stores/auth';
+import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import DashboardView from '@/views/DashboardView.vue'
+import LoginView from '@/views/LoginView.vue'
+import RegisterView from '@/views/RegisterView.vue'
+import AuthCallbackView from '@/views/AuthCallbackView.vue'
+import WalletsView from '@/views/WalletsView.vue'
+import CategoriesView from '@/views/CategoriesView.vue'
+import TransactionsView from '@/views/TransactionsView.vue'
+import BudgetsView from '@/views/BudgetsView.vue'
+import ReportsView from '@/views/ReportsView.vue'
+import SettingsView from '@/views/SettingsView.vue'
+import ProfileView from '@/views/ProfileView.vue'
+import BackupRestoreView from '@/views/BackupRestoreView.vue'
+import OnboardingView from '@/views/OnboardingView.vue'
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      redirect: '/dashboard',
-    },
-    {
-      path: '/login',
-      name: 'Login',
-      component: () => import('@/views/LoginView.vue'),
-      meta: { guest: true },
-    },
-    {
-      path: '/register',
-      name: 'Register',
-      component: () => import('@/views/RegisterView.vue'),
-      meta: { guest: true },
-    },
-    {
-      path: '/auth/callback',
-      name: 'AuthCallback',
-      component: () => import('@/views/AuthCallbackView.vue'),
-      meta: { guest: true },
+      redirect: '/dashboard'
     },
     {
       path: '/dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/DashboardView.vue'),
-      meta: { auth: true },
+      name: 'dashboard',
+      component: DashboardView,
+      meta: { requiresAuth: true }
     },
     {
-      path: '/transactions',
-      name: 'Transactions',
-      component: () => import('@/views/TransactionsView.vue'),
-      meta: { auth: true },
+      path: '/login',
+      name: 'login',
+      component: LoginView
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView
+    },
+    {
+      path: '/auth/callback',
+      name: 'auth-callback',
+      component: AuthCallbackView
     },
     {
       path: '/wallets',
-      name: 'Wallets',
-      component: () => import('@/views/WalletsView.vue'),
-      meta: { auth: true },
+      name: 'wallets',
+      component: WalletsView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/categories',
-      name: 'Categories',
-      component: () => import('@/views/CategoriesView.vue'),
-      meta: { auth: true },
+      name: 'categories',
+      component: CategoriesView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/transactions',
+      name: 'transactions',
+      component: TransactionsView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/budgets',
-      name: 'Budgets',
-      component: () => import('@/views/BudgetsView.vue'),
-      meta: { auth: true },
+      name: 'budgets',
+      component: BudgetsView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/reports',
-      name: 'Reports',
-      component: () => import('@/views/ReportsView.vue'),
-      meta: { auth: true },
+      name: 'reports',
+      component: ReportsView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: SettingsView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/profile',
-      name: 'Profile',
-      component: () => import('@/views/ProfileView.vue'),
-      meta: { auth: true },
+      name: 'profile',
+      component: ProfileView,
+      meta: { requiresAuth: true }
     },
     {
-      path: '/backup',
-      name: 'Backup',
-      component: () => import('@/views/BackupRestoreView.vue'),
-      meta: { auth: true },
+      path: '/backup-restore',
+      name: 'backup-restore',
+      component: BackupRestoreView,
+      meta: { requiresAuth: true }
     },
-  ],
-});
+    {
+      path: '/onboarding',
+      name: 'onboarding',
+      component: OnboardingView,
+      meta: { requiresAuth: true }
+    }
+  ]
+})
 
-router.beforeEach((to, _from, next) => {
-  const authStore = useAuthStore();
-  
-  // Load user from storage if not already loaded
-  if (!authStore.user) {
-    authStore.loadUserFromStorage();
+router.beforeEach(async (to, _from, next) => {
+  const authStore = useAuthStore()
+
+  // ensure auth store is initialized
+  if (!authStore.user && localStorage.getItem('user_session')) {
+    await authStore.loadUserFromStorage()
   }
 
-  if (to.meta.auth && !authStore.isAuthenticated) {
-    next('/login');
-  } else if (to.meta.guest && authStore.isAuthenticated) {
-    next('/dashboard');
+  const isAuthenticated = authStore.isAuthenticated
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next({ name: 'login' })
+  } else if ((to.name === 'login' || to.name === 'register') && isAuthenticated) {
+    next({ name: 'dashboard' })
   } else {
-    next();
+    next()
   }
-});
+})
 
 export default router;

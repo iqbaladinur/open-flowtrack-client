@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
+  <div class="min-h-[100dvh] flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
       <div class="text-center">
         <div class="mx-auto w-16 h-16 bg-green-600/30 rounded-2xl flex items-center justify-center mb-6">
           <TrendingUpDown class="w-8 h-8 text-white" />
         </div>
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Welcome back</h2>
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-neon">Welcome back</h2>
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
           Sign in to your account to continue
         </p>
@@ -97,14 +97,17 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { reactive, ref, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { useCategoriesStore } from '@/stores/categories';
 import { TrendingUpDown } from 'lucide-vue-next';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
+const categoriesStore = useCategoriesStore();
 
 const form = reactive({
   email: '',
@@ -120,6 +123,15 @@ const googleAuthUrl = computed(() => {
   return `${baseUrl}/v1/auth/google`;
 });
 
+const checkOnboardingAndRedirect = async () => {
+  await categoriesStore.fetchCategories(true); // Force refresh
+  if (categoriesStore.categories.length === 0) {
+    router.push('/onboarding');
+  } else {
+    router.push('/dashboard');
+  }
+};
+
 const handleLogin = async () => {
   if (loading.value) return;
   
@@ -129,7 +141,7 @@ const handleLogin = async () => {
   try {
     const result = await authStore.login(form.email, form.password);
     if (result.success) {
-      router.push('/dashboard');
+      await checkOnboardingAndRedirect();
     } else {
       error.value = result.error || 'Login failed. Please try again.';
     }
@@ -139,6 +151,14 @@ const handleLogin = async () => {
     loading.value = false;
   }
 };
+
+// Check for Google Auth callback
+onMounted(() => {
+  if (route.query.google_auth_success === 'true') {
+    loading.value = true;
+    checkOnboardingAndRedirect();
+  }
+});
 </script>
 
 <style scoped>

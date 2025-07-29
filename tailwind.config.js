@@ -7,7 +7,12 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"IBM Plex Sans"', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'monospace'],
+      },
       colors: {
+        neon: '#adff2f',
         primary: {
           50: '#eff6ff',
           100: '#dbeafe',

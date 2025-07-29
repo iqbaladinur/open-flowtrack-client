@@ -3,7 +3,7 @@
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Header -->
       <div>
-        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">Reports</h1>
+        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Reports</h1>
         <p class="text-gray-600 dark:text-gray-400 mt-1">
           Analyze your financial trends over time
         </p>
@@ -72,21 +72,6 @@
         </div>
       </div>
       
-      <!-- Currency Selector -->
-      <div v-if="availableCurrencies.length > 0" class="card p-4">
-        <label class="label">Currency</label>
-        <div class="flex items-center space-x-2">
-          <button
-            v-for="currency in availableCurrencies"
-            :key="currency"
-            @click="selectedCurrency = currency"
-            :class="['btn', selectedCurrency === currency ? 'btn-primary' : 'btn-secondary']"
-          >
-            {{ currency }}
-          </button>
-        </div>
-      </div>
-
       <!-- Report Content -->
       <div v-if="loading" class="card p-6 flex items-center justify-center h-96">
         <LoadingSpinner />
@@ -100,16 +85,16 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div class="card p-6">
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Income</p>
-            <p class="text-2xl font-bold text-success-600">{{ formatCurrency(summary.totalIncome) }}</p>
+            <p class="text-2xl font-bold text-success-600 font-mono">{{ configStore.formatCurrency(summary.totalIncome) }}</p>
           </div>
           <div class="card p-6">
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Expense</p>
-            <p class="text-2xl font-bold text-error-600">{{ formatCurrency(summary.totalExpense) }}</p>
+            <p class="text-2xl font-bold text-error-600 font-mono">{{ configStore.formatCurrency(summary.totalExpense) }}</p>
           </div>
           <div class="card p-6">
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Net Income</p>
-            <p class="text-2xl font-bold" :class="summary.net >= 0 ? 'text-success-600' : 'text-error-600'">
-              {{ formatCurrency(summary.net) }}
+            <p class="text-2xl font-bold font-mono" :class="summary.net >= 0 ? 'text-success-600' : 'text-error-600'">
+              {{ configStore.formatCurrency(summary.net) }}
             </p>
           </div>
         </div>
@@ -117,7 +102,7 @@
         <!-- Time Series Chart -->
         <div class="card p-6">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            {{ reportTitle }} ({{ selectedCurrency }})
+            {{ reportTitle }} ({{ configStore.currency }})
           </h2>
           <div class="h-96">
             <TimeSeriesChart v-if="!loading" :chart-data="chartData" />
@@ -131,7 +116,7 @@
             <div class="flex justify-between items-start mb-4">
               <div>
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Breakdown by Category</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400">({{ selectedCurrency }})</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">({{ configStore.currency }})</p>
               </div>
               <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg">
                 <button @click="categoryReportType = 'expense'" :class="['btn btn-sm', categoryReportType === 'expense' ? 'bg-white dark:bg-gray-600 shadow' : '']">Spending</button>
@@ -150,7 +135,7 @@
           <!-- Wallet Report -->
           <div class="card p-6">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              Flow by Wallet ({{ selectedCurrency }})
+              Flow by Wallet ({{ configStore.currency }})
             </h2>
             <div v-if="walletReportData.length === 0" class="text-center py-8">
               <Wallet class="w-12 h-12 text-gray-400 mx-auto mb-2" />
@@ -164,13 +149,13 @@
               >
                 <div class="flex items-center justify-between mb-2">
                   <h3 class="font-medium text-gray-900 dark:text-white truncate">{{ item.name }}</h3>
-                  <span class="font-bold text-lg" :class="item.net >= 0 ? 'text-success-600' : 'text-error-600'">
-                    {{ formatCurrency(item.net) }}
+                  <span class="font-bold text-lg font-mono" :class="item.net >= 0 ? 'text-success-600' : 'text-error-600'">
+                    {{ configStore.formatCurrency(item.net) }}
                   </span>
                 </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-success-500">+{{ formatCurrency(item.income) }}</span>
-                  <span class="text-error-500">-{{ formatCurrency(item.expense) }}</span>
+                <div class="flex justify-between text-sm font-mono">
+                  <span class="text-success-500">+{{ configStore.formatCurrency(item.income) }}</span>
+                  <span class="text-error-500">-{{ configStore.formatCurrency(item.expense) }}</span>
                 </div>
               </div>
             </div>
@@ -184,24 +169,25 @@
 <script setup lang="ts">
 import { ref, reactive, computed, watch } from 'vue';
 import { useTransactionsStore } from '@/stores/transactions';
+import { useConfigStore } from '@/stores/config';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import TimeSeriesChart from '@/components/TimeSeriesChart.vue';
 import CategoryPieChart from '@/components/CategoryPieChart.vue';
 import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, Wallet } from 'lucide-vue-next';
-import type { Transaction, CurrencyType } from '@/types';
+import type { Transaction } from '@/types';
 
 type ReportView = 'monthly' | 'yearly' | 'custom';
 type AggregationLevel = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
 const transactionsStore = useTransactionsStore();
+const configStore = useConfigStore();
 
 const currentView = ref<ReportView>('monthly');
 const customAggregationLevel = ref<AggregationLevel>('monthly');
 const categoryReportType = ref<'income' | 'expense'>('expense');
 const loading = ref(false);
 const transactions = ref<Transaction[]>([]);
-const selectedCurrency = ref<CurrencyType>('IDR');
 
 const now = new Date();
 const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -225,15 +211,6 @@ const yearList = computed(() => {
   return years;
 });
 
-const availableCurrencies = computed(() => {
-  const currencies = new Set(transactions.value.map(t => t.wallet?.currency));
-  return Array.from(currencies).filter(Boolean) as CurrencyType[];
-});
-
-const filteredTransactions = computed(() => {
-  return transactions.value.filter(t => t.wallet?.currency === selectedCurrency.value);
-});
-
 const reportTitle = computed(() => {
   switch (currentView.value) {
     case 'monthly': return `Monthly Report for ${months[selectedDate.monthly.month - 1]} ${selectedDate.monthly.year}`;
@@ -243,28 +220,21 @@ const reportTitle = computed(() => {
   }
 });
 
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: selectedCurrency.value,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount);
-};
-
 const getStartOfWeek = (d: Date) => {
   const date = new Date(d.getTime());
   const day = date.getUTCDay();
-  const diff = date.getUTCDate() - day + (day === 0 ? -6 : 1);
-  return new Date(date.setUTCDate(diff));
+  const diff = date.getUTCDate() - day + (day === 0 ? -6 : 1); // Monday as start of week
+  const newDate = new Date(date.setUTCDate(diff));
+  newDate.setUTCHours(0, 0, 0, 0);
+  return newDate;
 }
 
 const chartData = computed(() => {
-  // ... (logic from previous step remains the same)
-  const data = filteredTransactions.value;
+  const data = transactions.value;
   let aggregation: AggregationLevel;
   let startDate: Date, endDate: Date;
 
+  // Determine aggregation level and date range from the view settings
   switch (currentView.value) {
     case 'monthly':
       aggregation = 'daily';
@@ -278,20 +248,19 @@ const chartData = computed(() => {
       break;
     case 'custom':
       aggregation = customAggregationLevel.value;
-      startDate = new Date(selectedDate.custom.start);
-      endDate = new Date(selectedDate.custom.end);
+      // Ensure custom dates are parsed as UTC by appending Z
+      startDate = new Date(selectedDate.custom.start + 'T00:00:00Z');
+      endDate = new Date(selectedDate.custom.end + 'T00:00:00Z');
       break;
   }
 
   const totals = new Map<string, { income: number; expense: number }>();
   const labels: string[] = [];
 
+  // Pre-populate labels and totals map for the entire range to ensure all periods are shown
   if (startDate && endDate && startDate <= endDate) {
-    let currentDate = new Date(startDate);
-    if (aggregation === 'monthly') {
-      currentDate = new Date(Date.UTC(startDate.getUTCFullYear(), startDate.getUTCMonth(), 1));
-    }
-
+    let currentDate = new Date(startDate.getTime());
+    
     while (currentDate <= endDate) {
       let key = '';
       if (aggregation === 'daily') {
@@ -302,7 +271,7 @@ const chartData = computed(() => {
       } else if (aggregation === 'weekly') {
         const weekStart = getStartOfWeek(new Date(currentDate));
         key = weekStart.toISOString().split('T')[0];
-        if (!totals.has(key)) {
+        if (!labels.includes(key)) {
           labels.push(key);
           totals.set(key, { income: 0, expense: 0 });
         }
@@ -314,7 +283,7 @@ const chartData = computed(() => {
         currentDate.setUTCMonth(currentDate.getUTCMonth() + 1);
       } else if (aggregation === 'yearly') {
         key = String(currentDate.getUTCFullYear());
-        if (!totals.has(key)) {
+        if (!labels.includes(key)) {
           labels.push(key);
           totals.set(key, { income: 0, expense: 0 });
         }
@@ -323,18 +292,30 @@ const chartData = computed(() => {
     }
   }
 
-  data.forEach(t => {
-    const date = new Date(t.date);
+  // Group transactions into the pre-populated periods
+  data.forEach(transaction => {
+    // IMPORTANT: Use the 'date' property from the transaction.
+    // Parse it as UTC. The 'Z' at the end of the string ensures this.
+    const transactionDate = new Date(transaction.date);
+    
     let key = '';
-    if (aggregation === 'daily') key = date.toISOString().split('T')[0];
-    else if (aggregation === 'weekly') key = getStartOfWeek(date).toISOString().split('T')[0];
-    else if (aggregation === 'monthly') key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
-    else if (aggregation === 'yearly') key = String(date.getUTCFullYear());
+    if (aggregation === 'daily') {
+      key = transactionDate.toISOString().split('T')[0];
+    } else if (aggregation === 'weekly') {
+      key = getStartOfWeek(transactionDate).toISOString().split('T')[0];
+    } else if (aggregation === 'monthly') {
+      key = `${transactionDate.getUTCFullYear()}-${String(transactionDate.getUTCMonth() + 1).padStart(2, '0')}`;
+    } else if (aggregation === 'yearly') {
+      key = String(transactionDate.getUTCFullYear());
+    }
 
     if (totals.has(key)) {
-      const current = totals.get(key)!;
-      if (t.type === 'income') current.income += t.amount;
-      else current.expense += t.amount;
+      const currentTotals = totals.get(key)!;
+      if (transaction.type === 'income') {
+        currentTotals.income += transaction.amount;
+      } else {
+        currentTotals.expense += transaction.amount;
+      }
     }
   });
 
@@ -351,7 +332,7 @@ const chartData = computed(() => {
 });
 
 const summary = computed(() => {
-  return filteredTransactions.value.reduce((acc, t) => {
+  return transactions.value.reduce((acc, t) => {
     if (t.type === 'income') acc.totalIncome += t.amount;
     else acc.totalExpense += t.amount;
     acc.net = acc.totalIncome - acc.totalExpense;
@@ -362,12 +343,14 @@ const summary = computed(() => {
 const categoryChartData = computed(() => {
   const categoryTotals = new Map<string, { name: string, color: string, total: number }>();
   
-  filteredTransactions.value
+  transactions.value
     .filter(t => t.type === categoryReportType.value)
     .forEach(t => {
       if (t.category) {
+        // @ts-ignore
         const current = categoryTotals.get(t.category.id) || { name: t.category.name, color: t.category.color, total: 0 };
         current.total += t.amount;
+        // @ts-ignore
         categoryTotals.set(t.category.id, current);
       }
     });
@@ -386,7 +369,7 @@ const categoryChartData = computed(() => {
 const walletReportData = computed(() => {
   const walletTotals = new Map<string, { name: string, income: number, expense: number }>();
 
-  filteredTransactions.value.forEach(t => {
+  transactions.value.forEach(t => {
     if (t.wallet) {
       const current = walletTotals.get(t.wallet.id) || { name: t.wallet.name, income: 0, expense: 0 };
       if (t.type === 'income') current.income += t.amount;
@@ -420,8 +403,8 @@ const fetchReportData = async () => {
         transactions.value = [];
         return;
       }
-      startDate = new Date(selectedDate.custom.start);
-      endDate = new Date(selectedDate.custom.end);
+      startDate = new Date(selectedDate.custom.start + 'T00:00:00Z');
+      endDate = new Date(selectedDate.custom.end + 'T00:00:00Z');
       break;
   }
   
@@ -433,13 +416,10 @@ const fetchReportData = async () => {
   await transactionsStore.fetchTransactions(filters, true);
   transactions.value = transactionsStore.transactions;
 
-  if (!availableCurrencies.value.includes(selectedCurrency.value)) {
-    selectedCurrency.value = availableCurrencies.value[0] || 'IDR';
-  }
-
   loading.value = false;
 };
 
 watch([currentView, selectedDate, customAggregationLevel], fetchReportData, { immediate: true, deep: true });
 
 </script>
+

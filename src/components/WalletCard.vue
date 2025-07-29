@@ -19,8 +19,8 @@
     </div>
 
     <!-- Wallet Icon -->
-    <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-xl flex items-center justify-center mb-4">
-      <WalletIcon class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+    <div class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-xl flex items-center justify-center mb-4">
+      <WalletIcon class="w-4 h-4 text-primary-600 dark:text-primary-400" />
     </div>
 
     <!-- Wallet Info -->
@@ -33,24 +33,17 @@
         <div class="flex items-center justify-between">
           <span class="text-sm text-gray-500 dark:text-gray-400">Current Balance</span>
           <span
-            class="text-xl font-bold"
-            :class="wallet.balance >= 0 ? 'text-success-600 dark:text-success-400' : 'text-error-600 dark:text-error-400'"
+            class="text-sm font-medium font-mono"
+            :class="(wallet.current_balance || 0) >= 0 ? 'text-success-600 dark:text-success-400' : 'text-error-600 dark:text-error-400'"
           >
-            {{ formatCurrency(wallet.balance) }}
+            {{ configStore.formatCurrency(wallet.current_balance || 0) }}
           </span>
         </div>
         
         <div class="flex items-center justify-between">
           <span class="text-sm text-gray-500 dark:text-gray-400">Initial Balance</span>
-          <span class="text-sm text-gray-600 dark:text-gray-400">
-            {{ formatCurrency(wallet.initial_balance) }}
-          </span>
-        </div>
-        
-        <div class="flex items-center justify-between">
-          <span class="text-sm text-gray-500 dark:text-gray-400">Currency</span>
-          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-            {{ wallet.currency }}
+          <span class="text-sm text-gray-600 dark:text-gray-400 font-mono font-medium">
+            {{ configStore.formatCurrency(wallet.initial_balance) }}
           </span>
         </div>
       </div>
@@ -59,19 +52,19 @@
       <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
         <div class="flex items-center space-x-2">
           <component
-            :is="wallet.balance >= wallet.initial_balance ? TrendingUp : TrendingDown"
+            :is="(wallet.current_balance || 0) >= wallet.initial_balance ? TrendingUp : TrendingDown"
             class="w-4 h-4"
-            :class="wallet.balance >= wallet.initial_balance 
+            :class="(wallet.current_balance || 0) >= wallet.initial_balance 
               ? 'text-success-500' 
               : 'text-error-500'"
           />
           <span
-            class="text-sm font-medium"
-            :class="wallet.balance >= wallet.initial_balance 
+            class="text-sm font-medium font-mono"
+            :class="(wallet.current_balance || 0) >= wallet.initial_balance 
               ? 'text-success-600 dark:text-success-400' 
               : 'text-error-600 dark:text-error-400'"
           >
-            {{ wallet.balance >= wallet.initial_balance ? '+' : '' }}{{ formatCurrency(Math.abs(wallet.balance - wallet.initial_balance)) }}
+            {{ (wallet.current_balance || 0) >= wallet.initial_balance ? '+' : '' }}{{ configStore.formatCurrency(Math.abs((wallet.current_balance || 0) - wallet.initial_balance)) }}
           </span>
           <span class="text-xs text-gray-500 dark:text-gray-400">
             from initial
@@ -84,9 +77,10 @@
 
 <script setup lang="ts">
 import type { Wallet } from '@/types';
+import { useConfigStore } from '@/stores/config';
 import { Wallet as WalletIcon, Edit2, Trash2, TrendingUp, TrendingDown } from 'lucide-vue-next';
 
-const props = defineProps({
+defineProps({
   wallet: {
     type: Object as () => Wallet,
     required: true,
@@ -95,12 +89,5 @@ const props = defineProps({
 
 defineEmits(['edit', 'delete']);
 
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: props.wallet.currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(amount);
-};
+const configStore = useConfigStore();
 </script>

@@ -3,7 +3,7 @@
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Welcome Section -->
       <div class="mb-8">
-        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-neon mb-2">
           Welcome back, {{ authStore.user?.full_name || 'User' }}!
         </h1>
         <p class="text-gray-600 dark:text-gray-400">
@@ -12,83 +12,74 @@
       </div>
 
       <!-- Summary Cards -->
-      <div class="relative">
-        <!-- Tabs -->
-        <div class="card p-2 mb-4">
-          <div class="flex items-center space-x-1">
-            <button @click="activeTab = 'IDR'" :class="['btn', activeTab === 'IDR' ? 'btn-primary' : 'btn-secondary']">
-              <Banknote class="w-4 h-4 mr-2" />
-              IDR
-            </button>
-            <button @click="activeTab = 'USD'" :class="['btn', activeTab === 'USD' ? 'btn-primary' : 'btn-secondary']">
-              <DollarSign class="w-4 h-4 mr-2" />
-              USD
-            </button>
+      <div class="flex sm:grid sm:grid-cols-4 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <!-- Total Balance -->
+        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 shadow-lg">
+          <div class="flex flex-col h-full">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-primary-100 dark:bg-primary-900/50 mb-3">
+              <Wallet class="w-4 h-4 text-primary-600 dark:text-primary-400" />
+            </div>
+            <div class="mt-auto">
+              <p class="text-xs text-gray-500 dark:text-gray-400">Total Balance</p>
+              <p class="text-xs font-medium text-gray-900 dark:text-white font-mono">
+                {{ configStore.formatCurrency(totalBalance) }}
+              </p>
+            </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Total Balance -->
-          <SummaryCard
-            :title="`Total Balance (${activeTab})`"
-            :amount="totalBalance"
-            :currency="activeTab"
-            icon-bg-class="bg-primary-100 dark:bg-primary-900"
-          >
-            <template #icon>
-              <Wallet class="w-6 h-6 text-primary-600 dark:text-primary-400" />
-            </template>
-          </SummaryCard>
+        <!-- Monthly Income -->
+        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 shadow-lg -ml-4 sm:ml-0">
+          <div class="flex flex-col h-full">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-success-100 dark:bg-success-900/50 mb-3">
+              <TrendingUp class="w-4 h-4 text-success-600 dark:text-success-400" />
+            </div>
+            <div class="mt-auto">
+              <p class="text-xs text-gray-500 dark:text-gray-400">Income</p>
+              <p class="text-xs font-medium text-success-600 dark:text-success-400 font-mono">
+                +{{ configStore.formatCurrency(monthlyIncome) }}
+              </p>
+            </div>
+          </div>
+        </div>
 
-          <!-- Income -->
-          <SummaryCard
-            :title="`Income (${activeTab})`"
-            :amount="monthlyIncome"
-            :currency="activeTab"
-            amount-class="text-success-600"
-            icon-bg-class="bg-success-100 dark:bg-success-900"
-          >
-            <template #amount>+{{ formatCurrency(monthlyIncome, activeTab) }}</template>
-            <template #icon>
-              <TrendingUp class="w-6 h-6 text-success-600 dark:text-success-400" />
-            </template>
-          </SummaryCard>
+        <!-- Monthly Expenses -->
+        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 shadow-lg -ml-4 sm:ml-0">
+          <div class="flex flex-col h-full">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-error-100 dark:bg-error-900/50 mb-3">
+              <TrendingDown class="w-4 h-4 text-error-600 dark:text-error-400" />
+            </div>
+            <div class="mt-auto">
+              <p class="text-xs text-gray-500 dark:text-gray-400">Expenses</p>
+              <p class="text-xs font-medium text-error-600 dark:text-error-400 font-mono">
+                -{{ configStore.formatCurrency(monthlyExpenses) }}
+              </p>
+            </div>
+          </div>
+        </div>
 
-          <!-- Expenses -->
-          <SummaryCard
-            :title="`Expenses (${activeTab})`"
-            :amount="monthlyExpenses"
-            :currency="activeTab"
-            amount-class="text-error-600"
-            icon-bg-class="bg-error-100 dark:bg-error-900"
-          >
-            <template #amount>-{{ formatCurrency(monthlyExpenses, activeTab) }}</template>
-            <template #icon>
-              <TrendingDown class="w-6 h-6 text-error-600 dark:text-error-400" />
-            </template>
-          </SummaryCard>
-
-          <!-- Net Income -->
-          <SummaryCard
-            :title="`Net Income (${activeTab})`"
-            :amount="netIncome"
-            :currency="activeTab"
-            :amount-class="netIncome >= 0 ? 'text-success-600' : 'text-error-600'"
-            icon-bg-class="bg-warning-100 dark:bg-warning-900"
-          >
-            <template #amount>
-              {{ netIncome >= 0 ? '+' : '' }}{{ formatCurrency(netIncome, activeTab) }}
-            </template>
-            <template #icon>
-              <BarChart3 class="w-6 h-6 text-warning-600 dark:text-warning-400" />
-            </template>
-          </SummaryCard>
+        <!-- Net Income -->
+        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 shadow-lg -ml-4 sm:ml-0">
+          <div class="flex flex-col h-full">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-warning-100 dark:bg-warning-900/50 mb-3">
+              <BarChart3 class="w-4 h-4 text-warning-600 dark:text-warning-400" />
+            </div>
+            <div class="mt-auto">
+              <p class="text-xs text-gray-500 dark:text-gray-400">Net Income</p>
+              <p 
+                class="text-xs font-medium font-mono"
+                :class="netIncome >= 0 ? 'text-gray-800 dark:text-gray-200' : 'text-error-600 dark:text-error-400'"
+              >
+                {{ netIncome >= 0 ? '+' : '' }}{{ configStore.formatCurrency(netIncome) }}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Quick Actions -->
       <div class="card p-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-neon mb-4">Quick Actions</h2>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <QuickActionButton
             @click="showAddTransactionModal = true"
@@ -139,7 +130,7 @@
       <!-- Recent Transactions -->
       <div class="card p-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Transactions</h2>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">Recent Transactions</h2>
           <router-link
             to="/transactions"
             class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
@@ -188,9 +179,9 @@ import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useWalletsStore } from '@/stores/wallets';
 import { useTransactionsStore } from '@/stores/transactions';
+import { useConfigStore } from '@/stores/config';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import TransactionModal from '@/components/TransactionModal.vue';
-import SummaryCard from '@/components/SummaryCard.vue';
 import QuickActionButton from '@/components/QuickActionButton.vue';
 import TransactionItem from '@/components/TransactionItem.vue';
 import {
@@ -202,114 +193,54 @@ import {
   Minus,
   Target,
   ArrowUpDown,
-  DollarSign,
-  Banknote,
 } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
+const configStore = useConfigStore();
 
 const showAddTransactionModal = ref(false);
 const showAddExpenseModal = ref(false);
 const transactionType = ref<'income' | 'expense'>('income');
-const activeTab = ref<'USD' | 'IDR'>('IDR');
-
-const totalBalanceUSD = computed(() => {
-  return walletsStore.wallets
-    .filter(w => w.currency === 'USD')
-    .reduce((sum, wallet) => sum + wallet.balance, 0);
-});
-
-const totalBalanceIDR = computed(() => {
-  return walletsStore.wallets
-    .filter(w => w.currency === 'IDR')
-    .reduce((sum, wallet) => sum + wallet.balance, 0);
-});
-
-const monthlyIncomeUSD = computed(() => {
-  const currentMonth = new Date().toISOString().slice(0, 7);
-  return transactionsStore.transactions
-    .filter(t => {
-      const wallet = walletsStore.wallets.find(w => w.id === t.wallet_id);
-      return t.type === 'income' && t.date.startsWith(currentMonth) && wallet?.currency === 'USD';
-    })
-    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
-});
-
-const monthlyIncomeIDR = computed(() => {
-  const currentMonth = new Date().toISOString().slice(0, 7);
-  return transactionsStore.transactions
-    .filter(t => {
-      const wallet = walletsStore.wallets.find(w => w.id === t.wallet_id);
-      return t.type === 'income' && t.date.startsWith(currentMonth) && wallet?.currency === 'IDR';
-    })
-    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
-});
-
-const monthlyExpensesUSD = computed(() => {
-  const currentMonth = new Date().toISOString().slice(0, 7);
-  return transactionsStore.transactions
-    .filter(t => {
-      const wallet = walletsStore.wallets.find(w => w.id === t.wallet_id);
-      return t.type === 'expense' && t.date.startsWith(currentMonth) && wallet?.currency === 'USD';
-    })
-    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
-});
-
-const monthlyExpensesIDR = computed(() => {
-  const currentMonth = new Date().toISOString().slice(0, 7);
-  return transactionsStore.transactions
-    .filter(t => {
-      const wallet = walletsStore.wallets.find(w => w.id === t.wallet_id);
-      return t.type === 'expense' && t.date.startsWith(currentMonth) && wallet?.currency === 'IDR';
-    })
-    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
-});
-
-const netIncomeUSD = computed(() => monthlyIncomeUSD.value - monthlyExpensesUSD.value);
-const netIncomeIDR = computed(() => monthlyIncomeIDR.value - monthlyExpensesIDR.value);
 
 const totalBalance = computed(() => {
-  return activeTab.value === 'USD' ? totalBalanceUSD.value : totalBalanceIDR.value;
+  return walletsStore.wallets.reduce((sum, wallet) => sum + (wallet.current_balance || 0), 0);
 });
 
 const monthlyIncome = computed(() => {
-  return activeTab.value === 'USD' ? monthlyIncomeUSD.value : monthlyIncomeIDR.value;
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const currentMonth = `${year}-${month}`;
+  return transactionsStore.transactions
+    .filter(t => t.type === 'income' && t.date.startsWith(currentMonth))
+    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
 });
 
 const monthlyExpenses = computed(() => {
-  return activeTab.value === 'USD' ? monthlyExpensesUSD.value : monthlyExpensesIDR.value;
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const currentMonth = `${year}-${month}`;
+  return transactionsStore.transactions
+    .filter(t => t.type === 'expense' && t.date.startsWith(currentMonth))
+    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
 });
 
-const netIncome = computed(() => {
-  return activeTab.value === 'USD' ? netIncomeUSD.value : netIncomeIDR.value;
-});
+const netIncome = computed(() => monthlyIncome.value - monthlyExpenses.value);
 
 const recentTransactions = computed(() => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const currentMonth = `${year}-${month}`;
   return transactionsStore.transactions
+    .filter(t => t.date.startsWith(currentMonth))
     .slice()
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
 });
-
-const formatCurrency = (amount: number, currency: 'USD' | 'IDR') => {
-  const options = {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  };
-  
-  if (currency === 'IDR') {
-    // @ts-ignore
-    options.minimumFractionDigits = 0;
-    // @ts-ignore
-    options.maximumFractionDigits = 0;
-  }
-  // @ts-ignore
-  return new Intl.NumberFormat(currency === 'IDR' ? 'id-ID' : 'en-US', options).format(amount);
-};
 
 const handleTransactionAdded = () => {
   showAddTransactionModal.value = false;
