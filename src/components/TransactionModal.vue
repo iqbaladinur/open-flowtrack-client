@@ -62,7 +62,7 @@
             :key="wallet.id"
             :value="wallet.id"
           >
-            {{ wallet.name }} ({{ wallet.currency === 'USD' ? '$' : 'Rp' }}{{ formatCurrency(wallet.balance) }})
+            {{ wallet.name }} ({{ configStore.formatCurrency(wallet.current_balance || 0) }})
           </option>
         </select>
       </div>
@@ -179,6 +179,7 @@ import { ref, reactive, computed, watch, onMounted } from 'vue';
 import { useWalletsStore } from '@/stores/wallets';
 import { useCategoriesStore } from '@/stores/categories';
 import { useTransactionsStore } from '@/stores/transactions';
+import { useConfigStore } from '@/stores/config';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import type { Transaction } from '@/types';
@@ -207,6 +208,7 @@ const isModalOpen = computed({
 const walletsStore = useWalletsStore();
 const categoriesStore = useCategoriesStore();
 const transactionsStore = useTransactionsStore();
+const configStore = useConfigStore();
 
 const loading = ref(false);
 const error = ref('');
@@ -232,13 +234,6 @@ const isFormValid = computed(() => {
          form.category_id && 
          form.date;
 });
-
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(amount);
-};
 
 const handleSubmit = async () => {
   if (!isFormValid.value || loading.value) return;

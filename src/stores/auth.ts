@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { useApi } from '@/composables/useApi';
-import type { User, AuthResponse } from '@/types';
+import { useConfigStore } from './config';
+import type { User, AuthResponse, ProfileResponse, Config } from '@/types';
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);
   const loading = ref(false);
   const api = useApi();
+  const configStore = useConfigStore();
 
   const isAuthenticated = computed(() => !!user.value);
 
@@ -17,6 +19,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (token && userData) {
       try {
         user.value = JSON.parse(userData);
+        configStore.loadConfigFromStorage();
       } catch (error) {
         console.error('Failed to parse user data:', error);
         logout();
@@ -33,16 +36,12 @@ export const useAuthStore = defineStore('auth', () => {
       });
 
       if (response.data) {
-        const { access_token } = response.data;
+        const { access_token, user: userData, config } = response.data;
         localStorage.setItem('auth_token', access_token);
-        await getProfile();
-        if (user.value) {
-          return { success: true };
-        } else {
-          // If getProfile fails, token is invalid or profile is missing
-          logout();
-          return { success: false, error: 'Failed to fetch user profile.' };
-        }
+        localStorage.setItem('user', JSON.stringify(userData));
+        user.value = userData;
+        configStore.setConfig(config);
+        return { success: true };
       }
 
       return { success: false, error: response.error };
@@ -80,15 +79,19 @@ export const useAuthStore = defineStore('auth', () => {
   const logout = () => {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user');
+    localStorage.removeItem('config');
     user.value = null;
+    configStore.setConfig({} as Config); // Reset config store
   };
 
   const getProfile = async () => {
     try {
-      const response = await api.get<User>('/auth/profile');
+      const response = await api.get<ProfileResponse>('/auth/profile');
       if (response.data) {
-        user.value = response.data;
-        localStorage.setItem('user', JSON.stringify(response.data));
+        const { user: userData, config } = response.data;
+        user.value = userData;
+        configStore.setConfig(config);
+        localStorage.setItem('user', JSON.stringify(userData));
       } else {
         // This case might happen if token is valid but profile endpoint fails
         logout();
@@ -119,10 +122,10 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
-  const handleGoogleLogin = (token: string, userData: User) => {
+  const handleGoogleLogin = async (token: string) => {
     localStorage.setItem('auth_token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    user.value = userData;
+    // After getting token, we must fetch profile to get user and config data
+    await getProfile();
   };
 
   return {

@@ -38,8 +38,8 @@
       <!-- Budget Details & Progress -->
       <div class="mt-5">
         <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
-          <span>Spent: {{ formatCurrency(budget.total_spent, budget.currency as CurrencyType) }}</span>
-          <span>Limit: {{ formatCurrency(parseFloat(budget.limit_amount), budget.currency as CurrencyType) }}</span>
+          <span>Spent: {{ configStore.formatCurrency(budget.total_spent) }}</span>
+          <span>Limit: {{ configStore.formatCurrency(budget.limit_amount) }}</span>
         </div>
         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
           <div
@@ -54,7 +54,7 @@
             class="text-2xl font-bold"
             :class="isOverspent ? 'text-error-500' : 'text-success-600 dark:text-success-400'"
           >
-            {{ formatCurrency(remainingAmount, budget.currency as CurrencyType) }}
+            {{ configStore.formatCurrency(remainingAmount) }}
           </p>
         </div>
       </div>
@@ -91,7 +91,8 @@
 import { ref, computed } from 'vue';
 import type { PropType } from 'vue';
 import { useTransactionsStore } from '@/stores/transactions';
-import type { Budget, Transaction, CurrencyType } from '@/types';
+import { useConfigStore } from '@/stores/config';
+import type { Budget, Transaction } from '@/types';
 import * as icons from 'lucide-vue-next';
 import { Edit2, Trash2, ChevronDown, CalendarDays } from 'lucide-vue-next';
 import TransactionItem from './TransactionItem.vue';
@@ -110,15 +111,16 @@ defineEmits<{
 }>();
 
 const transactionsStore = useTransactionsStore();
+const configStore = useConfigStore();
 
 const isDetailsVisible = ref(false);
 const isLoadingDetails = ref(false);
 const detailedTransactions = ref<Transaction[]>([]);
 
-const isOverspent = computed(() => props.budget.total_spent > parseFloat(props.budget.limit_amount));
+const isOverspent = computed(() => props.budget.total_spent > props.budget.limit_amount);
 
 const remainingAmount = computed(() => {
-  const remaining = parseFloat(props.budget.limit_amount) - props.budget.total_spent;
+  const remaining = props.budget.limit_amount - props.budget.total_spent;
   return Math.abs(remaining);
 });
 
@@ -131,17 +133,8 @@ const progressBarClass = computed(() => {
   return 'bg-blue-500';
 });
 
-const formatCurrency = (amount: number, currency: CurrencyType) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(amount);
-};
-
 const getBudgetProgress = (budget: Budget) => {
-  const limit = parseFloat(budget.limit_amount);
+  const limit = budget.limit_amount;
   if (limit === 0) return 100; // If limit is 0, any spending is 100% over
   return (budget.total_spent / limit) * 100;
 };
@@ -170,8 +163,8 @@ const toggleDetails = async () => {
       start_date: startDate,
       end_date: endDate,
     };
-    // @ts-ignore
-    await transactionsStore.fetchTransactions(filters);
+    
+    await transactionsStore.fetchTransactions(filters, true);
     
     detailedTransactions.value = transactionsStore.transactions.filter(t => 
       t.category_id === props.budget.category_id &&

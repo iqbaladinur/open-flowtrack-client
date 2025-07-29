@@ -13,26 +13,12 @@
 
       <!-- Summary Cards -->
       <div class="relative">
-        <!-- Tabs -->
-        <div class="card p-2 mb-4">
-          <div class="flex items-center space-x-1">
-            <button @click="activeTab = 'IDR'" :class="['btn', activeTab === 'IDR' ? 'btn-primary' : 'btn-secondary']">
-              <Banknote class="w-4 h-4 mr-2" />
-              IDR
-            </button>
-            <button @click="activeTab = 'USD'" :class="['btn', activeTab === 'USD' ? 'btn-primary' : 'btn-secondary']">
-              <DollarSign class="w-4 h-4 mr-2" />
-              USD
-            </button>
-          </div>
-        </div>
-
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <!-- Total Balance -->
           <SummaryCard
-            :title="`Total Balance (${activeTab})`"
+            :title="`Total Balance (${configStore.currency})`"
             :amount="totalBalance"
-            :currency="activeTab"
+            :currency="configStore.currency"
             icon-bg-class="bg-primary-100 dark:bg-primary-900"
           >
             <template #icon>
@@ -42,13 +28,13 @@
 
           <!-- Income -->
           <SummaryCard
-            :title="`Income (${activeTab})`"
+            :title="`Income (${configStore.currency})`"
             :amount="monthlyIncome"
-            :currency="activeTab"
+            :currency="configStore.currency"
             amount-class="text-success-600"
             icon-bg-class="bg-success-100 dark:bg-success-900"
           >
-            <template #amount>+{{ formatCurrency(monthlyIncome, activeTab) }}</template>
+            <template #amount>+{{ configStore.formatCurrency(monthlyIncome) }}</template>
             <template #icon>
               <TrendingUp class="w-6 h-6 text-success-600 dark:text-success-400" />
             </template>
@@ -56,13 +42,13 @@
 
           <!-- Expenses -->
           <SummaryCard
-            :title="`Expenses (${activeTab})`"
+            :title="`Expenses (${configStore.currency})`"
             :amount="monthlyExpenses"
-            :currency="activeTab"
+            :currency="configStore.currency"
             amount-class="text-error-600"
             icon-bg-class="bg-error-100 dark:bg-error-900"
           >
-            <template #amount>-{{ formatCurrency(monthlyExpenses, activeTab) }}</template>
+            <template #amount>-{{ configStore.formatCurrency(monthlyExpenses) }}</template>
             <template #icon>
               <TrendingDown class="w-6 h-6 text-error-600 dark:text-error-400" />
             </template>
@@ -70,14 +56,14 @@
 
           <!-- Net Income -->
           <SummaryCard
-            :title="`Net Income (${activeTab})`"
+            :title="`Net Income (${configStore.currency})`"
             :amount="netIncome"
-            :currency="activeTab"
+            :currency="configStore.currency"
             :amount-class="netIncome >= 0 ? 'text-success-600' : 'text-error-600'"
             icon-bg-class="bg-warning-100 dark:bg-warning-900"
           >
             <template #amount>
-              {{ netIncome >= 0 ? '+' : '' }}{{ formatCurrency(netIncome, activeTab) }}
+              {{ netIncome >= 0 ? '+' : '' }}{{ configStore.formatCurrency(netIncome) }}
             </template>
             <template #icon>
               <BarChart3 class="w-6 h-6 text-warning-600 dark:text-warning-400" />
@@ -188,6 +174,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useWalletsStore } from '@/stores/wallets';
 import { useTransactionsStore } from '@/stores/transactions';
+import { useConfigStore } from '@/stores/config';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import TransactionModal from '@/components/TransactionModal.vue';
 import SummaryCard from '@/components/SummaryCard.vue';
@@ -202,114 +189,54 @@ import {
   Minus,
   Target,
   ArrowUpDown,
-  DollarSign,
-  Banknote,
 } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
+const configStore = useConfigStore();
 
 const showAddTransactionModal = ref(false);
 const showAddExpenseModal = ref(false);
 const transactionType = ref<'income' | 'expense'>('income');
-const activeTab = ref<'USD' | 'IDR'>('IDR');
-
-const totalBalanceUSD = computed(() => {
-  return walletsStore.wallets
-    .filter(w => w.currency === 'USD')
-    .reduce((sum, wallet) => sum + wallet.balance, 0);
-});
-
-const totalBalanceIDR = computed(() => {
-  return walletsStore.wallets
-    .filter(w => w.currency === 'IDR')
-    .reduce((sum, wallet) => sum + wallet.balance, 0);
-});
-
-const monthlyIncomeUSD = computed(() => {
-  const currentMonth = new Date().toISOString().slice(0, 7);
-  return transactionsStore.transactions
-    .filter(t => {
-      const wallet = walletsStore.wallets.find(w => w.id === t.wallet_id);
-      return t.type === 'income' && t.date.startsWith(currentMonth) && wallet?.currency === 'USD';
-    })
-    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
-});
-
-const monthlyIncomeIDR = computed(() => {
-  const currentMonth = new Date().toISOString().slice(0, 7);
-  return transactionsStore.transactions
-    .filter(t => {
-      const wallet = walletsStore.wallets.find(w => w.id === t.wallet_id);
-      return t.type === 'income' && t.date.startsWith(currentMonth) && wallet?.currency === 'IDR';
-    })
-    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
-});
-
-const monthlyExpensesUSD = computed(() => {
-  const currentMonth = new Date().toISOString().slice(0, 7);
-  return transactionsStore.transactions
-    .filter(t => {
-      const wallet = walletsStore.wallets.find(w => w.id === t.wallet_id);
-      return t.type === 'expense' && t.date.startsWith(currentMonth) && wallet?.currency === 'USD';
-    })
-    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
-});
-
-const monthlyExpensesIDR = computed(() => {
-  const currentMonth = new Date().toISOString().slice(0, 7);
-  return transactionsStore.transactions
-    .filter(t => {
-      const wallet = walletsStore.wallets.find(w => w.id === t.wallet_id);
-      return t.type === 'expense' && t.date.startsWith(currentMonth) && wallet?.currency === 'IDR';
-    })
-    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
-});
-
-const netIncomeUSD = computed(() => monthlyIncomeUSD.value - monthlyExpensesUSD.value);
-const netIncomeIDR = computed(() => monthlyIncomeIDR.value - monthlyExpensesIDR.value);
 
 const totalBalance = computed(() => {
-  return activeTab.value === 'USD' ? totalBalanceUSD.value : totalBalanceIDR.value;
+  return walletsStore.wallets.reduce((sum, wallet) => sum + (wallet.current_balance || 0), 0);
 });
 
 const monthlyIncome = computed(() => {
-  return activeTab.value === 'USD' ? monthlyIncomeUSD.value : monthlyIncomeIDR.value;
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const currentMonth = `${year}-${month}`;
+  return transactionsStore.transactions
+    .filter(t => t.type === 'income' && t.date.startsWith(currentMonth))
+    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
 });
 
 const monthlyExpenses = computed(() => {
-  return activeTab.value === 'USD' ? monthlyExpensesUSD.value : monthlyExpensesIDR.value;
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const currentMonth = `${year}-${month}`;
+  return transactionsStore.transactions
+    .filter(t => t.type === 'expense' && t.date.startsWith(currentMonth))
+    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
 });
 
-const netIncome = computed(() => {
-  return activeTab.value === 'USD' ? netIncomeUSD.value : netIncomeIDR.value;
-});
+const netIncome = computed(() => monthlyIncome.value - monthlyExpenses.value);
 
 const recentTransactions = computed(() => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const currentMonth = `${year}-${month}`;
   return transactionsStore.transactions
+    .filter(t => t.date.startsWith(currentMonth))
     .slice()
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
 });
-
-const formatCurrency = (amount: number, currency: 'USD' | 'IDR') => {
-  const options = {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  };
-  
-  if (currency === 'IDR') {
-    // @ts-ignore
-    options.minimumFractionDigits = 0;
-    // @ts-ignore
-    options.maximumFractionDigits = 0;
-  }
-  // @ts-ignore
-  return new Intl.NumberFormat(currency === 'IDR' ? 'id-ID' : 'en-US', options).format(amount);
-};
 
 const handleTransactionAdded = () => {
   showAddTransactionModal.value = false;

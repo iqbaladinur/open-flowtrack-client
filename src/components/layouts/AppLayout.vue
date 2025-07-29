@@ -205,7 +205,8 @@ import {
   Moon,
   Laptop,
   TrendingUpDown,
-  Database
+  Database,
+  Settings,
 } from 'lucide-vue-next';
 
 const router = useRouter();
@@ -223,6 +224,7 @@ const navigation = [
   { name: 'Budgets', to: '/budgets', icon: Target },
   { name: 'Reports', to: '/reports', icon: BarChart3 },
   { name: 'Backup Data', to: '/backup', icon: Database },
+  { name: 'Settings', to: '/settings', icon: Settings },
 ];
 
 const mainBottomNav = navigation.slice(0, 4);

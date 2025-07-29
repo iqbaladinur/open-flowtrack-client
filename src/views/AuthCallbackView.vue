@@ -14,32 +14,23 @@ import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import type { User } from '@/types';
 
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 
-onMounted(() => {
+onMounted(async () => {
   const token = route.query.token as string;
-  let user: User | null = null;
 
-  try {
-    const userQuery = route.query.user;
-    if (typeof userQuery === 'string') {
-      user = JSON.parse(userQuery);
+  if (token) {
+    await authStore.handleGoogleLogin(token);
+    if (authStore.isAuthenticated) {
+      router.push('/dashboard');
+    } else {
+      router.push('/login?error=google_auth_failed');
     }
-  } catch (e) {
-    console.error('Failed to parse user data from URL:', e);
-    router.push('/login?error=google_auth_failed');
-    return;
-  }
-
-  if (token && user) {
-    authStore.handleGoogleLogin(token, user);
-    router.push('/dashboard');
   } else {
-    console.error('Missing token or user data in Google auth callback');
+    console.error('Missing token in Google auth callback');
     router.push('/login?error=google_auth_failed');
   }
 });

@@ -47,7 +47,7 @@
                 ? 'text-success-600 dark:text-success-400' 
                 : 'text-error-600 dark:text-error-400'"
             >
-              {{ transaction.type === 'income' ? '+' : '-' }}{{ formatCurrency(transaction.amount, transaction.wallet?.currency) }}
+              {{ transaction.type === 'income' ? '+' : '-' }}{{ configStore.formatCurrency(transaction.amount) }}
             </p>
           </div>
         </div>
@@ -83,6 +83,7 @@
 
 <script setup lang="ts">
 import type { Transaction } from '@/types';
+import { useConfigStore } from '@/stores/config';
 import { TrendingUp, TrendingDown, Edit2, Trash2 } from 'lucide-vue-next';
 
 defineProps({
@@ -102,15 +103,7 @@ defineProps({
 
 defineEmits(['edit', 'delete']);
 
-const formatCurrency = (amount: number, currency?: 'USD' | 'IDR') => {
-  const locale = currency === 'USD' ? 'en-US' : 'id-ID';
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(amount);
-};
+const configStore = useConfigStore();
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
