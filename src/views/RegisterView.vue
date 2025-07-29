@@ -5,7 +5,7 @@
         <div class="mx-auto w-16 h-16 bg-green-600/30 rounded-2xl flex items-center justify-center mb-6">
           <TrendingUpDown class="w-8 h-8 text-white" />
         </div>
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Create account</h2>
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-neon">Create account</h2>
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
           Start managing your finances today
         </p>

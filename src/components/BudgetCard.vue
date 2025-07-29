@@ -21,14 +21,14 @@
       <div class="flex items-start justify-between">
         <div class="flex items-center gap-4">
           <div
-            class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+            class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
             :style="{ backgroundColor: budget.category.color + '20', color: budget.category.color }"
           >
             <!-- @vue-ignore -->
-            <component :is="icons[budget.category.icon] || icons['Tag']" class="w-6 h-6" />
+            <component :is="icons[budget.category.icon] || icons['Tag']" class="w-4 h-4" />
           </div>
           <div>
-            <h3 class="font-bold text-lg text-gray-900 dark:text-white">
+            <h3 class="font-bold text-sm text-gray-900 dark:text-white">
               {{ budget.category.name }}
             </h3>
           </div>
@@ -36,7 +36,7 @@
       </div>
 
       <!-- Budget Details & Progress -->
-      <div class="mt-5">
+      <div class="mt-2">
         <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1 font-mono">
           <span>Spent: {{ configStore.formatCurrency(budget.total_spent) }}</span>
           <span>Limit: {{ configStore.formatCurrency(budget.limit_amount) }}</span>
@@ -49,9 +49,9 @@
           ></div>
         </div>
         <div class="text-center mt-3">
-          <p class="text-sm text-gray-500 dark:text-gray-400">{{ isOverspent ? 'Overspent by' : 'Remaining' }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ isOverspent ? 'Overspent by' : 'Remaining' }}</p>
           <p 
-            class="text-2xl font-bold font-mono"
+            class="text-lg font-bold font-mono"
             :class="isOverspent ? 'text-error-500' : 'text-success-600 dark:text-success-400'"
           >
             {{ configStore.formatCurrency(remainingAmount) }}
@@ -163,7 +163,7 @@ const toggleDetails = async () => {
       start_date: startDate,
       end_date: endDate,
     };
-    
+    // @ts-ignore
     await transactionsStore.fetchTransactions(filters, true);
     
     detailedTransactions.value = transactionsStore.transactions.filter(t => 

@@ -28,6 +28,7 @@
       class="w-10 h-10 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110" 
       :style="{ backgroundColor: category.color + '20' }"
     >
+      <!-- @vue-ignore -->
       <component :is="icons[category.icon] || icons['Tag']" class="w-5 h-5" :style="{ color: category.color }" />
     </div>
 

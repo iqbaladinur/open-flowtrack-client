@@ -4,7 +4,7 @@
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">Categories</h1>
+          <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Categories</h1>
           <p class="text-gray-600 dark:text-gray-400 mt-1">
             Organize your transactions by category
           </p>

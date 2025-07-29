@@ -3,7 +3,7 @@
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Welcome Section -->
       <div class="mb-8">
-        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-neon mb-2">
           Welcome back, {{ authStore.user?.full_name || 'User' }}!
         </h1>
         <p class="text-gray-600 dark:text-gray-400">
@@ -79,7 +79,7 @@
 
       <!-- Quick Actions -->
       <div class="card p-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-neon mb-4">Quick Actions</h2>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <QuickActionButton
             @click="showAddTransactionModal = true"
@@ -130,7 +130,7 @@
       <!-- Recent Transactions -->
       <div class="card p-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Transactions</h2>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">Recent Transactions</h2>
           <router-link
             to="/transactions"
             class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"

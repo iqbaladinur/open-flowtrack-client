@@ -80,7 +80,7 @@ import type { Wallet } from '@/types';
 import { useConfigStore } from '@/stores/config';
 import { Wallet as WalletIcon, Edit2, Trash2, TrendingUp, TrendingDown } from 'lucide-vue-next';
 
-const props = defineProps({
+defineProps({
   wallet: {
     type: Object as () => Wallet,
     required: true,

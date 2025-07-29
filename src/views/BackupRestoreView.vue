@@ -3,7 +3,7 @@
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Header -->
       <div>
-        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">Backup & Restore</h1>
+        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Backup & Restore</h1>
         <p class="text-gray-600 dark:text-gray-400 mt-1">
           Manage your application data backups.
         </p>
@@ -11,7 +11,7 @@
 
       <!-- Create Backup -->
       <div class="card p-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Create Backup</h2>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-neon mb-4">Create Backup</h2>
         <p class="text-gray-600 dark:text-gray-400 mb-4">
           Download a backup of all your data. Keep this file in a safe place.
         </p>
@@ -29,7 +29,7 @@
 
       <!-- Restore Backup -->
       <div class="card p-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Restore from Backup</h2>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-neon mb-4">Restore from Backup</h2>
         <p class="text-gray-600 dark:text-gray-400 mb-4">
           Restore your data from a backup file. This will overwrite all existing data.
         </p>

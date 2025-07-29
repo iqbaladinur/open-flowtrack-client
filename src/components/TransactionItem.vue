@@ -7,6 +7,7 @@
         class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-1"
         :style="{ backgroundColor: transaction.category.color + '20', color: transaction.category.color }"
       >
+        <!-- @vue-ignore -->
         <component :is="icons[transaction.category.icon] || icons['Tag']" class="w-5 h-5" />
       </div>
 

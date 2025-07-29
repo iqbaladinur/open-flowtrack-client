@@ -7,7 +7,7 @@
           <div class="w-8 h-8 bg-green-600/30 rounded-lg flex items-center justify-center">
             <TrendingUpDown class="w-5 h-5 text-white" />
           </div>
-          <h1 class="text-lg font-semibold text-gray-900 dark:text-white">FlowTrack</h1>
+          <h1 class="text-lg font-semibold text-gray-900 dark:text-neon">FlowTrack</h1>
         </div>
         
         <button @click="showProfileMenu = !showProfileMenu" class="relative">
@@ -59,7 +59,7 @@
             <div class="w-8 h-8 bg-green-600/30 rounded-lg flex items-center justify-center">
               <TrendingUpDown class="w-5 h-5 text-white" />
             </div>
-            <h1 class="text-xl font-bold text-gray-900 dark:text-white">FlowTrack</h1>
+            <h1 class="text-xl font-bold text-gray-900 dark:text-neon">FlowTrack</h1>
           </div>
         </div>
         <nav class="flex flex-1 flex-col">

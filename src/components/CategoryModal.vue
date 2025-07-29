@@ -65,6 +65,7 @@
                   class="w-10 h-10 rounded-xl flex items-center justify-center mb-2" 
                   :style="{ backgroundColor: form.color + '20' }"
                 >
+                  <!-- @vue-ignore -->
                   <component :is="icons[form.icon] || icons['Tag']" class="w-5 h-5" :style="{ color: form.color }" />
                 </div>
 

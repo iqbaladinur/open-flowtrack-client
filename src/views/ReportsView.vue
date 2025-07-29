@@ -3,7 +3,7 @@
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Header -->
       <div>
-        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">Reports</h1>
+        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Reports</h1>
         <p class="text-gray-600 dark:text-gray-400 mt-1">
           Analyze your financial trends over time
         </p>
