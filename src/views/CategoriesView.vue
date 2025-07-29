@@ -98,6 +98,7 @@ const categories = computed(() => {
       return category.type === filterType.value;
     })
     .slice()
+    // @ts-ignore
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 });
 

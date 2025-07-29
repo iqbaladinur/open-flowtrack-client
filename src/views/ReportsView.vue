@@ -347,8 +347,10 @@ const categoryChartData = computed(() => {
     .filter(t => t.type === categoryReportType.value)
     .forEach(t => {
       if (t.category) {
+        // @ts-ignore
         const current = categoryTotals.get(t.category.id) || { name: t.category.name, color: t.category.color, total: 0 };
         current.total += t.amount;
+        // @ts-ignore
         categoryTotals.set(t.category.id, current);
       }
     });

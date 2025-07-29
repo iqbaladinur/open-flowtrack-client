@@ -13,11 +13,13 @@
 import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { useCategoriesStore } from '@/stores/categories';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
+const categoriesStore = useCategoriesStore();
 
 onMounted(async () => {
   const token = route.query.token as string;
@@ -25,7 +27,12 @@ onMounted(async () => {
   if (token) {
     await authStore.handleGoogleLogin(token);
     if (authStore.isAuthenticated) {
-      router.push('/dashboard');
+      await categoriesStore.fetchCategories(true); // Force refresh
+      if (categoriesStore.categories.length === 0) {
+        router.push('/onboarding');
+      } else {
+        router.push('/dashboard');
+      }
     } else {
       router.push('/login?error=google_auth_failed');
     }

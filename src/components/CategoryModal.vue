@@ -208,6 +208,7 @@ const handleSubmit = async () => {
 
     let result;
     if (props.category) {
+      // @ts-ignore
       result = await categoriesStore.updateCategory(props.category.id, categoryData);
     } else {
       result = await categoriesStore.createCategory(categoryData);

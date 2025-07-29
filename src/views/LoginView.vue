@@ -97,14 +97,17 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { reactive, ref, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { useCategoriesStore } from '@/stores/categories';
 import { TrendingUpDown } from 'lucide-vue-next';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
+const categoriesStore = useCategoriesStore();
 
 const form = reactive({
   email: '',
@@ -120,6 +123,15 @@ const googleAuthUrl = computed(() => {
   return `${baseUrl}/v1/auth/google`;
 });
 
+const checkOnboardingAndRedirect = async () => {
+  await categoriesStore.fetchCategories(true); // Force refresh
+  if (categoriesStore.categories.length === 0) {
+    router.push('/onboarding');
+  } else {
+    router.push('/dashboard');
+  }
+};
+
 const handleLogin = async () => {
   if (loading.value) return;
   
@@ -129,7 +141,7 @@ const handleLogin = async () => {
   try {
     const result = await authStore.login(form.email, form.password);
     if (result.success) {
-      router.push('/dashboard');
+      await checkOnboardingAndRedirect();
     } else {
       error.value = result.error || 'Login failed. Please try again.';
     }
@@ -139,6 +151,14 @@ const handleLogin = async () => {
     loading.value = false;
   }
 };
+
+// Check for Google Auth callback
+onMounted(() => {
+  if (route.query.google_auth_success === 'true') {
+    loading.value = true;
+    checkOnboardingAndRedirect();
+  }
+});
 </script>
 
 <style scoped>

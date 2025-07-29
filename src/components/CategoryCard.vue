@@ -13,7 +13,7 @@
     </div>
 
     <!-- Delete Button (visible on hover on desktop) -->
-    <div class="absolute top-1 right-1 transition-opacity">
+    <div v-if="category.id" class="absolute top-1 right-1 transition-opacity">
       <button
         @click.stop="$emit('delete', category.id)"
         class="p-1.5 rounded-full text-gray-400 bg-white/50 dark:bg-gray-800/50 hover:bg-red-100 dark:hover:bg-red-900/50 hover:text-error-600 dark:hover:text-error-400"
