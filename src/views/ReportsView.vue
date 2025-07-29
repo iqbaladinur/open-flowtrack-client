@@ -85,15 +85,15 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div class="card p-6">
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Income</p>
-            <p class="text-2xl font-bold text-success-600">{{ configStore.formatCurrency(summary.totalIncome) }}</p>
+            <p class="text-2xl font-bold text-success-600 font-mono">{{ configStore.formatCurrency(summary.totalIncome) }}</p>
           </div>
           <div class="card p-6">
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Expense</p>
-            <p class="text-2xl font-bold text-error-600">{{ configStore.formatCurrency(summary.totalExpense) }}</p>
+            <p class="text-2xl font-bold text-error-600 font-mono">{{ configStore.formatCurrency(summary.totalExpense) }}</p>
           </div>
           <div class="card p-6">
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Net Income</p>
-            <p class="text-2xl font-bold" :class="summary.net >= 0 ? 'text-success-600' : 'text-error-600'">
+            <p class="text-2xl font-bold font-mono" :class="summary.net >= 0 ? 'text-success-600' : 'text-error-600'">
               {{ configStore.formatCurrency(summary.net) }}
             </p>
           </div>
@@ -149,11 +149,11 @@
               >
                 <div class="flex items-center justify-between mb-2">
                   <h3 class="font-medium text-gray-900 dark:text-white truncate">{{ item.name }}</h3>
-                  <span class="font-bold text-lg" :class="item.net >= 0 ? 'text-success-600' : 'text-error-600'">
+                  <span class="font-bold text-lg font-mono" :class="item.net >= 0 ? 'text-success-600' : 'text-error-600'">
                     {{ configStore.formatCurrency(item.net) }}
                   </span>
                 </div>
-                <div class="flex justify-between text-sm">
+                <div class="flex justify-between text-sm font-mono">
                   <span class="text-success-500">+{{ configStore.formatCurrency(item.income) }}</span>
                   <span class="text-error-500">-{{ configStore.formatCurrency(item.expense) }}</span>
                 </div>

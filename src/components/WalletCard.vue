@@ -19,8 +19,8 @@
     </div>
 
     <!-- Wallet Icon -->
-    <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-xl flex items-center justify-center mb-4">
-      <WalletIcon class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+    <div class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-xl flex items-center justify-center mb-4">
+      <WalletIcon class="w-4 h-4 text-primary-600 dark:text-primary-400" />
     </div>
 
     <!-- Wallet Info -->
@@ -33,7 +33,7 @@
         <div class="flex items-center justify-between">
           <span class="text-sm text-gray-500 dark:text-gray-400">Current Balance</span>
           <span
-            class="text-xl font-bold"
+            class="text-sm font-medium font-mono"
             :class="(wallet.current_balance || 0) >= 0 ? 'text-success-600 dark:text-success-400' : 'text-error-600 dark:text-error-400'"
           >
             {{ configStore.formatCurrency(wallet.current_balance || 0) }}
@@ -42,7 +42,7 @@
         
         <div class="flex items-center justify-between">
           <span class="text-sm text-gray-500 dark:text-gray-400">Initial Balance</span>
-          <span class="text-sm text-gray-600 dark:text-gray-400">
+          <span class="text-sm text-gray-600 dark:text-gray-400 font-mono font-medium">
             {{ configStore.formatCurrency(wallet.initial_balance) }}
           </span>
         </div>
@@ -59,7 +59,7 @@
               : 'text-error-500'"
           />
           <span
-            class="text-sm font-medium"
+            class="text-sm font-medium font-mono"
             :class="(wallet.current_balance || 0) >= wallet.initial_balance 
               ? 'text-success-600 dark:text-success-400' 
               : 'text-error-600 dark:text-error-400'"

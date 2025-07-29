@@ -262,9 +262,11 @@ watch(
 );
 
 onMounted(async () => {
+  setDateRange('monthly');
   await Promise.all([
     walletsStore.fetchWallets(),
-    transactionsStore.fetchTransactions(),
+    // The initial fetch will now use the default monthly filter
+    // transactionsStore.fetchTransactions(), 
   ]);
 });
 </script>

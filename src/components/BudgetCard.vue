@@ -37,7 +37,7 @@
 
       <!-- Budget Details & Progress -->
       <div class="mt-5">
-        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1 font-mono">
           <span>Spent: {{ configStore.formatCurrency(budget.total_spent) }}</span>
           <span>Limit: {{ configStore.formatCurrency(budget.limit_amount) }}</span>
         </div>
@@ -51,7 +51,7 @@
         <div class="text-center mt-3">
           <p class="text-sm text-gray-500 dark:text-gray-400">{{ isOverspent ? 'Overspent by' : 'Remaining' }}</p>
           <p 
-            class="text-2xl font-bold"
+            class="text-2xl font-bold font-mono"
             :class="isOverspent ? 'text-error-500' : 'text-success-600 dark:text-success-400'"
           >
             {{ configStore.formatCurrency(remainingAmount) }}

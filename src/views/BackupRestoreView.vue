@@ -33,7 +33,7 @@
         <p class="text-gray-600 dark:text-gray-400 mb-4">
           Restore your data from a backup file. This will overwrite all existing data.
         </p>
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center">
           <input type="file" @change="handleFileChange" ref="fileInput" class="hidden" accept=".json">
           <button @click="triggerFileInput" class="btn btn-secondary">
             <Upload class="w-5 h-5 mr-2" />
@@ -41,7 +41,7 @@
           </button>
           <span v-if="selectedFile" class="text-gray-600 dark:text-gray-400">{{ selectedFile.name }}</span>
         </div>
-        <button @click="restoreBackup" class="btn btn-danger mt-4" :disabled="!selectedFile || loading">
+        <button @click="restoreBackup" class="mt-4 btn btn-error" :disabled="!selectedFile || loading">
            <span v-if="loading" class="flex items-center">
             <LoadingSpinner class="w-5 h-5 mr-2" />
             Restoring...

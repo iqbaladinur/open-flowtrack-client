@@ -22,46 +22,72 @@
           <button
             type="button"
             @click="form.type = 'income'"
-            class="p-3 rounded-lg border-2 transition-all"
+            class="py-2 rounded-lg border-2 transition-all"
             :class="form.type === 'income' 
               ? 'border-success-500 bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300' 
               : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
           >
             <TrendingUp class="w-5 h-5 mx-auto mb-1" />
-            <span class="text-sm font-medium">Income</span>
+            <span class="text-xs font-medium">Income</span>
           </button>
           <button
             type="button"
             @click="form.type = 'expense'"
-            class="p-3 rounded-lg border-2 transition-all"
+            class="py-2 rounded-lg border-2 transition-all"
             :class="form.type === 'expense' 
               ? 'border-error-500 bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300' 
               : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
           >
             <TrendingDown class="w-5 h-5 mx-auto mb-1" />
-            <span class="text-sm font-medium">Expense</span>
+            <span class="text-xs font-medium">Expense</span>
           </button>
         </div>
       </div>
 
       <!-- Preview -->
-      <div>
-        <label class="label">Preview</label>
-        <div class="card p-4 flex items-center space-x-4">
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center" :style="{ backgroundColor: form.color + '20' }">
-            <!-- @vue-ignore -->
-            <component :is="icons[form.icon] || icons['Tag']" class="w-6 h-6" :style="{ color: form.color }" />
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="label">Preview</label>
+          <div class="flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <div class="w-24">
+              <div class="card p-3 aspect-square flex flex-col items-center justify-center text-center relative">
+                <!-- Type Indicator -->
+                <div class="absolute top-1.5 left-1.5">
+                  <component
+                    :is="form.type === 'income' ? TrendingUp : TrendingDown"
+                    class="w-3.5 h-3.5"
+                    :class="form.type === 'income' ? 'text-success-500' : 'text-error-500'"
+                  />
+                </div>
+
+                <!-- Category Icon -->
+                <div 
+                  class="w-10 h-10 rounded-xl flex items-center justify-center mb-2" 
+                  :style="{ backgroundColor: form.color + '20' }"
+                >
+                  <component :is="icons[form.icon] || icons['Tag']" class="w-5 h-5" :style="{ color: form.color }" />
+                </div>
+
+                <!-- Category Info -->
+                <h3 class="text-xs font-medium text-gray-700 dark:text-gray-300 truncate w-full">
+                  {{ form.name || 'Category' }}
+                </h3>
+              </div>
+            </div>
           </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-              {{ form.name || 'Category Name' }}
-            </h3>
-            <span 
-              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
-              :class="form.type === 'income' ? 'bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-200' : 'bg-error-100 text-error-800 dark:bg-error-900 dark:text-error-200'"
+        </div>
+
+        <!-- Color -->
+        <div class="flex flex-col">
+          <label for="color" class="label flex-shrink-0">Color</label>
+          <div class="relative flex-1 flex flex-col">
+            <input id="color" v-model="form.color" type="color" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+            <div 
+              class="w-full rounded-lg border-2 border-gray-200 dark:border-gray-700 flex items-center justify-center px-3 flex-1"
+              :style="{ backgroundColor: form.color + '33' }"
             >
-              {{ form.type }}
-            </span>
+              <div class="w-12 h-12 rounded" :style="{ backgroundColor: form.color }"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -69,7 +95,7 @@
       <!-- Icon -->
       <div>
         <label class="label">Icon</label>
-        <div class="grid grid-cols-6 sm:grid-cols-8 gap-2 max-h-48 overflow-y-auto p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <div class="grid grid-cols-6 sm:grid-cols-8 gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
           <button
             v-for="icon in iconList"
             :key="icon"
@@ -83,20 +109,6 @@
             <!-- @vue-ignore -->
             <component :is="icons[icon]" class="w-5 h-5" />
           </button>
-        </div>
-      </div>
-
-      <!-- Color -->
-      <div>
-        <label for="color" class="label">Color</label>
-        <div class="relative">
-          <input id="color" v-model="form.color" type="color" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-          <div 
-            class="w-full h-10 rounded-lg border-2 border-gray-200 dark:border-gray-700 flex items-center justify-center px-3"
-            :style="{ backgroundColor: form.color + '33' }"
-          >
-            <div class="w-full h-4 rounded" :style="{ backgroundColor: form.color }"></div>
-          </div>
         </div>
       </div>
 

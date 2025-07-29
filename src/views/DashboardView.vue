@@ -12,63 +12,68 @@
       </div>
 
       <!-- Summary Cards -->
-      <div class="relative">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Total Balance -->
-          <SummaryCard
-            :title="`Total Balance (${configStore.currency})`"
-            :amount="totalBalance"
-            :currency="configStore.currency"
-            icon-bg-class="bg-primary-100 dark:bg-primary-900"
-          >
-            <template #icon>
-              <Wallet class="w-6 h-6 text-primary-600 dark:text-primary-400" />
-            </template>
-          </SummaryCard>
+      <div class="flex sm:grid sm:grid-cols-4 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <!-- Total Balance -->
+        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 shadow-lg">
+          <div class="flex flex-col h-full">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-primary-100 dark:bg-primary-900/50 mb-3">
+              <Wallet class="w-4 h-4 text-primary-600 dark:text-primary-400" />
+            </div>
+            <div class="mt-auto">
+              <p class="text-xs text-gray-500 dark:text-gray-400">Total Balance</p>
+              <p class="text-xs font-medium text-gray-900 dark:text-white font-mono">
+                {{ configStore.formatCurrency(totalBalance) }}
+              </p>
+            </div>
+          </div>
+        </div>
 
-          <!-- Income -->
-          <SummaryCard
-            :title="`Income (${configStore.currency})`"
-            :amount="monthlyIncome"
-            :currency="configStore.currency"
-            amount-class="text-success-600"
-            icon-bg-class="bg-success-100 dark:bg-success-900"
-          >
-            <template #amount>+{{ configStore.formatCurrency(monthlyIncome) }}</template>
-            <template #icon>
-              <TrendingUp class="w-6 h-6 text-success-600 dark:text-success-400" />
-            </template>
-          </SummaryCard>
+        <!-- Monthly Income -->
+        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 shadow-lg -ml-4 sm:ml-0">
+          <div class="flex flex-col h-full">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-success-100 dark:bg-success-900/50 mb-3">
+              <TrendingUp class="w-4 h-4 text-success-600 dark:text-success-400" />
+            </div>
+            <div class="mt-auto">
+              <p class="text-xs text-gray-500 dark:text-gray-400">Income</p>
+              <p class="text-xs font-medium text-success-600 dark:text-success-400 font-mono">
+                +{{ configStore.formatCurrency(monthlyIncome) }}
+              </p>
+            </div>
+          </div>
+        </div>
 
-          <!-- Expenses -->
-          <SummaryCard
-            :title="`Expenses (${configStore.currency})`"
-            :amount="monthlyExpenses"
-            :currency="configStore.currency"
-            amount-class="text-error-600"
-            icon-bg-class="bg-error-100 dark:bg-error-900"
-          >
-            <template #amount>-{{ configStore.formatCurrency(monthlyExpenses) }}</template>
-            <template #icon>
-              <TrendingDown class="w-6 h-6 text-error-600 dark:text-error-400" />
-            </template>
-          </SummaryCard>
+        <!-- Monthly Expenses -->
+        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 shadow-lg -ml-4 sm:ml-0">
+          <div class="flex flex-col h-full">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-error-100 dark:bg-error-900/50 mb-3">
+              <TrendingDown class="w-4 h-4 text-error-600 dark:text-error-400" />
+            </div>
+            <div class="mt-auto">
+              <p class="text-xs text-gray-500 dark:text-gray-400">Expenses</p>
+              <p class="text-xs font-medium text-error-600 dark:text-error-400 font-mono">
+                -{{ configStore.formatCurrency(monthlyExpenses) }}
+              </p>
+            </div>
+          </div>
+        </div>
 
-          <!-- Net Income -->
-          <SummaryCard
-            :title="`Net Income (${configStore.currency})`"
-            :amount="netIncome"
-            :currency="configStore.currency"
-            :amount-class="netIncome >= 0 ? 'text-success-600' : 'text-error-600'"
-            icon-bg-class="bg-warning-100 dark:bg-warning-900"
-          >
-            <template #amount>
-              {{ netIncome >= 0 ? '+' : '' }}{{ configStore.formatCurrency(netIncome) }}
-            </template>
-            <template #icon>
-              <BarChart3 class="w-6 h-6 text-warning-600 dark:text-warning-400" />
-            </template>
-          </SummaryCard>
+        <!-- Net Income -->
+        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 shadow-lg -ml-4 sm:ml-0">
+          <div class="flex flex-col h-full">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-warning-100 dark:bg-warning-900/50 mb-3">
+              <BarChart3 class="w-4 h-4 text-warning-600 dark:text-warning-400" />
+            </div>
+            <div class="mt-auto">
+              <p class="text-xs text-gray-500 dark:text-gray-400">Net Income</p>
+              <p 
+                class="text-xs font-medium font-mono"
+                :class="netIncome >= 0 ? 'text-gray-800 dark:text-gray-200' : 'text-error-600 dark:text-error-400'"
+              >
+                {{ netIncome >= 0 ? '+' : '' }}{{ configStore.formatCurrency(netIncome) }}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -177,7 +182,6 @@ import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import TransactionModal from '@/components/TransactionModal.vue';
-import SummaryCard from '@/components/SummaryCard.vue';
 import QuickActionButton from '@/components/QuickActionButton.vue';
 import TransactionItem from '@/components/TransactionItem.vue';
 import {

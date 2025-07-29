@@ -61,6 +61,7 @@
             v-for="wallet in walletsStore.wallets"
             :key="wallet.id"
             :value="wallet.id"
+            class="font-mono"
           >
             {{ wallet.name }} ({{ configStore.formatCurrency(wallet.current_balance || 0) }})
           </option>

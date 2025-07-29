@@ -93,7 +93,7 @@
             {{ selectedCategory.name }} Budget
           </h4>
         </div>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+        <p class="text-sm text-gray-600 dark:text-gray-400 font-mono">
           {{ months[form.month - 1] }} {{ form.year }} • {{ configStore.formatCurrency(form.limit_amount) }} limit
         </p>
       </div>
