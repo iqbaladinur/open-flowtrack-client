@@ -68,6 +68,11 @@ export const useWalletsStore = defineStore('wallets', () => {
     return wallets.value.find((w) => w.id === id);
   };
 
+  const getWalletByIdFromServer = async (id: string, params?: { start_date?: string, end_date?: string }) => {
+    const response = await api.get<Wallet>(`/wallets/${id}`, { params });
+    return response?.data;
+  }
+
   return {
     wallets,
     loading,
@@ -76,5 +81,6 @@ export const useWalletsStore = defineStore('wallets', () => {
     updateWallet,
     deleteWallet,
     getWalletById,
+    getWalletByIdFromServer
   };
 });

@@ -35,13 +35,17 @@
       </div>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <WalletCard
+        <div
           v-for="wallet in wallets"
           :key="wallet.id"
-          :wallet="wallet"
-          @edit="editWallet"
-          @delete="deleteWallet"
-        />
+          class="cursor-pointer"
+          @click="goToWalletDetail(wallet.id)"
+        >
+          <WalletCard
+            :wallet="wallet"
+            :enable-actions="false"
+          />
+        </div>
       </div>
     </div>
 
@@ -56,6 +60,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { useWalletsStore } from '@/stores/wallets';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import WalletModal from '@/components/WalletModal.vue';
@@ -68,6 +73,7 @@ import {
 } from 'lucide-vue-next';
 
 const walletsStore = useWalletsStore();
+const router = useRouter();
 
 const showAddModal = ref(false);
 const selectedWallet = ref<Wallet | null>(null);
@@ -78,22 +84,12 @@ const wallets = computed(() => {
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 });
 
-const editWallet = (wallet: Wallet) => {
-  selectedWallet.value = wallet;
-  showAddModal.value = true;
-};
-
-const deleteWallet = async (id: string) => {
-  if (confirm('Are you sure you want to delete this wallet? This action cannot be undone.')) {
-    const result = await walletsStore.deleteWallet(id);
-    if (!result.success && result.error) {
-      alert(result.error);
-    }
-  }
-};
-
 const handleWalletSaved = () => {
   showAddModal.value = false;
+};
+
+const goToWalletDetail = (walletId: string) => {
+  router.push(`/wallet/${walletId}`);
 };
 
 watch(showAddModal, (isShowing) => {
