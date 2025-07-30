@@ -233,6 +233,7 @@ const setCustomFilter = () => {
 watch([startDate, endDate], fetchWalletData, { immediate: true });
 
 const handleWalletSaved = async () => {
+  showModal.value = false;
   await fetchWalletData();
 }
 
