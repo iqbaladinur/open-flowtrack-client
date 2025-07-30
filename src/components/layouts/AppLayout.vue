@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Mobile Header -->
-    <header class="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 safe-area-top">
+    <header class="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 safe-area-top">
       <div class="flex items-center justify-between px-4 py-3">
         <div class="flex items-center space-x-3">
           <div class="w-8 h-8 bg-green-600/30 rounded-lg flex items-center justify-center">
