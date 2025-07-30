@@ -13,6 +13,7 @@
     "@vueuse/core": "^13.5.0",
     "axios": "^1.11.0",
     "chart.js": "^4.5.0",
+    "date-fns": "^4.1.0",
     "lucide-vue-next": "^0.525.0",
     "pinia": "^3.0.3",
     "vue": "^3.4.38",

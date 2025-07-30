@@ -1,18 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import DashboardView from '@/views/DashboardView.vue'
-import LoginView from '@/views/LoginView.vue'
-import RegisterView from '@/views/RegisterView.vue'
-import AuthCallbackView from '@/views/AuthCallbackView.vue'
-import WalletsView from '@/views/WalletsView.vue'
-import CategoriesView from '@/views/CategoriesView.vue'
-import TransactionsView from '@/views/TransactionsView.vue'
-import BudgetsView from '@/views/BudgetsView.vue'
-import ReportsView from '@/views/ReportsView.vue'
-import SettingsView from '@/views/SettingsView.vue'
-import ProfileView from '@/views/ProfileView.vue'
-import BackupRestoreView from '@/views/BackupRestoreView.vue'
-import OnboardingView from '@/views/OnboardingView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,87 +11,93 @@ const router = createRouter({
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: DashboardView,
+      component: () => import('@/views/DashboardView.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/login',
       name: 'login',
-      component: LoginView
+      component: () => import('@/views/LoginView.vue')
     },
     {
       path: '/register',
       name: 'register',
-      component: RegisterView
+      component: () => import('@/views/RegisterView.vue')
     },
     {
       path: '/auth/callback',
       name: 'auth-callback',
-      component: AuthCallbackView
+      component: () => import('@/views/AuthCallbackView.vue')
     },
     {
       path: '/wallets',
       name: 'wallets',
-      component: WalletsView,
+      component: () => import('@/views/WalletsView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/wallet/:id',
+      name: 'wallet-detail',
+      component: () => import('@/views/WalletDetailView.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/categories',
       name: 'categories',
-      component: CategoriesView,
+      component: () => import('@/views/CategoriesView.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/transactions',
       name: 'transactions',
-      component: TransactionsView,
+      component: () => import('@/views/TransactionsView.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/budgets',
       name: 'budgets',
-      component: BudgetsView,
+      component: () => import('@/views/BudgetsView.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/reports',
       name: 'reports',
-      component: ReportsView,
+      component: () => import('@/views/ReportsView.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/settings',
       name: 'settings',
-      component: SettingsView,
+      component: () => import('@/views/SettingsView.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/profile',
       name: 'profile',
-      component: ProfileView,
+      component: () => import('@/views/ProfileView.vue'),
       meta: { requiresAuth: true }
     },
     {
-      path: '/backup-restore',
-      name: 'backup-restore',
-      component: BackupRestoreView,
+      path: '/backup',
+      name: 'backup',
+      component: () => import('@/views/BackupRestoreView.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/onboarding',
       name: 'onboarding',
-      component: OnboardingView,
+      component: () => import('@/views/OnboardingView.vue'),
       meta: { requiresAuth: true }
     }
   ]
 })
 
-router.beforeEach(async (to, _from, next) => {
+router.beforeEach((to, _from, next) => {
   const authStore = useAuthStore()
 
   // ensure auth store is initialized
-  if (!authStore.user && localStorage.getItem('user_session')) {
-    await authStore.loadUserFromStorage()
+  if (!authStore.isAuthenticated && localStorage.getItem('auth_token')) {
+    authStore.loadUserFromStorage()
   }
 
   const isAuthenticated = authStore.isAuthenticated
