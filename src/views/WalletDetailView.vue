@@ -1,6 +1,6 @@
 <template>
   <AppLayout>
-    <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
+    <div class="pt-0 pb-2 px-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Header -->
       <div v-if="wallet" class="flex items-center gap-4 justify-between">
         <router-link to="/wallets" class="btn-icon flex gap-4 items-center">
@@ -50,18 +50,28 @@
         />
 
         <!-- Period Summary -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="card p-4">
-            <p class="text-sm text-gray-500 dark:text-gray-400">Total Income (Period)</p>
-            <p class="text-xl font-semibold text-success-600 dark:text-success-400">
-              {{ configStore.formatCurrency(wallet.total_income || 0) }}
-            </p>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="card p-4 flex items-center flex-col gap-4 justify-center">
+            <div class="p-2 bg-success-100 dark:bg-success-900/50 rounded-full">
+              <TrendingUp class="w-4 h-4 text-success-600 dark:text-success-400" />
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 text-center">Income</p>
+              <p class="text-xs font-semibold text-success-600 dark:text-success-400">
+                {{ configStore.formatCurrency(periodIncome) }}
+              </p>
+            </div>
           </div>
-          <div class="card p-4">
-            <p class="text-sm text-gray-500 dark:text-gray-400">Total Expense (Period)</p>
-            <p class="text-xl font-semibold text-error-600 dark:text-error-400">
-              {{ configStore.formatCurrency(wallet.total_expense || 0) }}
-            </p>
+          <div class="card p-4 flex items-center flex-col gap-4 justify-center">
+            <div class="p-2 bg-error-100 dark:bg-error-900/50 rounded-full">
+              <TrendingDown class="w-4 h-4 text-error-600 dark:text-error-400" />
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 text-center">Expense</p>
+              <p class="text-xs font-semibold text-error-600 dark:text-error-400">
+                {{ configStore.formatCurrency(periodExpense) }}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -118,7 +128,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import WalletCard from '@/components/WalletCard.vue';
 import TransactionItem from '@/components/TransactionItem.vue';
 import type { Wallet, Transaction } from '@/types';
-import { ArrowLeft, Edit2, Trash2 } from 'lucide-vue-next';
+import { ArrowLeft, Edit2, Trash2, TrendingUp, TrendingDown } from 'lucide-vue-next';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear } from 'date-fns';
 import WalletModal from '@/components/WalletModal.vue';
 
@@ -140,6 +150,18 @@ const startDate = ref(format(startOfMonth(now), 'yyyy-MM-dd'));
 const endDate = ref(format(endOfMonth(now), 'yyyy-MM-dd'));
 
 const transactions = computed<Transaction[]>(() => transactionsStore.transactions);
+
+const periodIncome = computed(() => {
+  return transactions.value
+    .filter(t => t.type === 'income')
+    .reduce((sum, t) => sum + t.amount, 0);
+});
+
+const periodExpense = computed(() => {
+  return transactions.value
+    .filter(t => t.type === 'expense')
+    .reduce((sum, t) => sum + t.amount, 0);
+});
 
 const fetchWalletData = async () => {
   loading.value = true;
