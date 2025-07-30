@@ -75,16 +75,34 @@
           </div>
         </div>
 
-        <!-- Filters -->
-        <div class="flex flex-wrap items-center gap-2">
-          <button @click="setFilter('today')" :class="['btn-sm', selectedFilter === 'today' ? 'btn-primary' : 'btn-secondary']">Today</button>
-          <button @click="setFilter('week')" :class="['btn-sm', selectedFilter === 'week' ? 'btn-primary' : 'btn-secondary']">This Week</button>
-          <button @click="setFilter('month')" :class="['btn-sm', selectedFilter === 'month' ? 'btn-primary' : 'btn-secondary']">This Month</button>
-          <button @click="setFilter('year')" :class="['btn-sm', selectedFilter === 'year' ? 'btn-primary' : 'btn-secondary']">This Year</button>
-          <div class="flex items-center gap-2">
-            <input type="date" v-model="startDate" @change="setCustomFilter" class="input-sm" />
-            <span class="text-gray-500">-</span>
-            <input type="date" v-model="endDate" @change="setCustomFilter" class="input-sm" />
+        <!-- Filter Toggle Button -->
+        <div class="flex justify-end">
+          <button @click="showFilters = !showFilters" class="btn btn-primary">
+            <Filter class="w-4 h-4 mr-2" />
+            <span>{{ showFilters ? 'Hide' : 'Show' }} Filters</span>
+          </button>
+        </div>
+
+        <!-- Filters Card -->
+        <div v-if="showFilters" class="card p-4">
+          <div class="space-y-4">
+            <div>
+              <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Quick Select</label>
+              <div class="flex flex-wrap items-center gap-2 mt-2">
+                <button @click="setFilter('today')" :class="['btn-sm', selectedFilter === 'today' ? 'btn-primary' : 'btn-secondary']">Today</button>
+                <button @click="setFilter('week')" :class="['btn-sm', selectedFilter === 'week' ? 'btn-primary' : 'btn-secondary']">This Week</button>
+                <button @click="setFilter('month')" :class="['btn-sm', selectedFilter === 'month' ? 'btn-primary' : 'btn-secondary']">This Month</button>
+                <button @click="setFilter('year')" :class="['btn-sm', selectedFilter === 'year' ? 'btn-primary' : 'btn-secondary']">This Year</button>
+              </div>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Custom Range</label>
+              <div class="flex flex-col sm:flex-row items-center gap-2 mt-2">
+                <input type="date" v-model="startDate" @change="setCustomFilter" class="input w-full" />
+                <span class="text-gray-500 hidden sm:block">-</span>
+                <input type="date" v-model="endDate" @change="setCustomFilter" class="input w-full" />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -128,7 +146,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import WalletCard from '@/components/WalletCard.vue';
 import TransactionItem from '@/components/TransactionItem.vue';
 import type { Wallet, Transaction } from '@/types';
-import { ArrowLeft, Edit2, Trash2, TrendingUp, TrendingDown } from 'lucide-vue-next';
+import { ArrowLeft, Edit2, Trash2, TrendingUp, TrendingDown, Filter } from 'lucide-vue-next';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear } from 'date-fns';
 import WalletModal from '@/components/WalletModal.vue';
 
@@ -143,6 +161,7 @@ const wallet = ref<Wallet | null>(null);
 const selectedWallet = ref<Wallet | null>(null);
 const showModal = ref<boolean>(false);
 const loading = ref(true);
+const showFilters = ref(false);
 
 const selectedFilter = ref('month');
 const now = new Date();
