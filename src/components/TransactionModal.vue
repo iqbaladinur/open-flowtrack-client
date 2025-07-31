@@ -248,7 +248,7 @@ const handleSubmit = async () => {
       amount: Number(form.amount),
       wallet_id: form.wallet_id,
       category_id: form.category_id,
-      date: form.date,
+      date: new Date(form.date).toISOString(),
       note: form.note || undefined,
       is_recurring: form.is_recurring,
       recurring_pattern: form.is_recurring ? form.recurring_pattern : undefined,

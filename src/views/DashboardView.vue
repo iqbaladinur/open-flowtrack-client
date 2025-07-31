@@ -239,11 +239,14 @@ const recentTransactions = computed(() => {
 const handleTransactionAdded = () => {
   showAddTransactionModal.value = false;
   // Force refresh data
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date();
+  today.setHours(24, 0, 0);
+  const todayIso = today.toISOString();
+
   transactionsStore.fetchTransactions({
-    end_date: today
+    end_date: todayIso
   }, true);
-  walletsStore.fetchWallets(true, undefined, today);
+  walletsStore.fetchWallets(true, undefined, todayIso);
 };
 
 const toggleAddTransaction = (type: 'income' | 'expense') => {
@@ -252,8 +255,10 @@ const toggleAddTransaction = (type: 'income' | 'expense') => {
 }
 
 onMounted(async () => {
-  const today = new Date().toISOString().split('T')[0];
-  walletsStore.fetchWallets(true, undefined, today);
-  transactionsStore.fetchTransactions({ end_date: today });
+  const today = new Date();
+  today.setHours(24, 0, 0);
+  const todayIso = today.toISOString();
+  walletsStore.fetchWallets(true, undefined, todayIso);
+  transactionsStore.fetchTransactions({ end_date: todayIso });
 });
 </script>

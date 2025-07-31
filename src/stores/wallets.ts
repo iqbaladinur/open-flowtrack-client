@@ -13,8 +13,6 @@ export const useWalletsStore = defineStore('wallets', () => {
     if ((wallets.value.length > 0 && !force) || loading.value) {
       return;
     }
-
-    console.log(end_date);
     
     loading.value = true;
     try {

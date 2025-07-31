@@ -60,6 +60,7 @@
         <div>
           <label class="label mb-2">Date Range</label>
           <div class="flex flex-wrap gap-2">
+            <button @click="setDateRange()" :class="['btn', !dateRangePreset ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">All</button>
             <button @click="setDateRange('today')" :class="['btn', dateRangePreset === 'today' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">Today</button>
             <button @click="setDateRange('weekly')" :class="['btn', dateRangePreset === 'weekly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Week</button>
             <button @click="setDateRange('monthly')" :class="['btn', dateRangePreset === 'monthly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Month</button>
@@ -148,7 +149,7 @@ import {
   Wallet,
   RotateCcw,
 } from 'lucide-vue-next';
-import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear } from 'date-fns';
+import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, endOfDay } from 'date-fns';
 
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
@@ -173,10 +174,11 @@ const transactions = computed(() => {
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 });
 
-const setDateRange = (preset: 'today' | 'weekly' | 'monthly' | 'yearly') => {
-  dateRangePreset.value = preset;
+const setDateRange = (preset?: 'today' | 'weekly' | 'monthly' | 'yearly') => {
+  dateRangePreset.value = preset || null;
   showCustomDateRange.value = false;
   const today = new Date();
+  today.setHours(24, 0, 0); //set today always as end date
   let startDate = new Date();
   let endDate = new Date();
   switch (preset) {
@@ -198,8 +200,8 @@ const setDateRange = (preset: 'today' | 'weekly' | 'monthly' | 'yearly') => {
       break;
   }
 
-  filters.start_date = startDate.toISOString();
-  filters.end_date = endDate.toISOString();
+  filters.start_date = dateRangePreset.value ? startDate.toISOString() : '';
+  filters.end_date = dateRangePreset.value ? endDate.toISOString() : '';
 };
 
 const toggleCustomDateRange = () => {
@@ -259,15 +261,17 @@ watch(
     const cleanedFilters = Object.fromEntries(
       Object.entries(newFilters).filter(([, value]) => value !== '')
     );
-    transactionsStore.fetchTransactions(cleanedFilters);
+    
+    transactionsStore.fetchTransactions(cleanedFilters, Object.keys(cleanedFilters).length === 0);
   },
   { deep: true }
 );
 
 onMounted(async () => {
   setDateRange('monthly');
+  const today = endOfDay(new Date());
   await Promise.all([
-    walletsStore.fetchWallets(),
+    walletsStore.fetchWallets(true, undefined, today.toISOString()),
     // The initial fetch will now use the default monthly filter
     // transactionsStore.fetchTransactions(), 
   ]);
