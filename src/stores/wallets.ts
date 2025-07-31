@@ -8,18 +8,31 @@ export const useWalletsStore = defineStore('wallets', () => {
   const loading = ref(false);
   const api = useApi();
 
-  const fetchWallets = async (force = false) => {
+  const fetchWallets = async (force = false, start_date?: string, end_date?: string) => {
     // If we have data and we're not forcing a refresh, or if we are already loading, do nothing.
     if ((wallets.value.length > 0 && !force) || loading.value) {
       return;
     }
+
+    console.log(end_date);
     
     loading.value = true;
     try {
-      const today = new Date().toISOString().split('T')[0];
+
+      const params:any = {};
+      
+      if (start_date) {
+        params['start_date'] = start_date;
+      }
+
+      if (end_date) {
+        params['end_date'] = end_date;
+      }
+
       const response = await api.get<Wallet[]>('/wallets', {
-        params: { date: today },
+        params,
       });
+
       if (response.data) {
         wallets.value = response.data;
       }

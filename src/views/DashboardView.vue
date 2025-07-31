@@ -82,7 +82,7 @@
         <h2 class="text-lg font-semibold text-gray-900 dark:text-neon mb-4">Quick Actions</h2>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <QuickActionButton
-            @click="showAddTransactionModal = true"
+            @click="toggleAddTransaction('income')"
             icon-bg-class="bg-success-100 dark:bg-success-900"
             class="text-center"
           >
@@ -93,7 +93,7 @@
           </QuickActionButton>
 
           <QuickActionButton
-            @click="showAddExpenseModal = true"
+            @click="toggleAddTransaction('expense')"
             icon-bg-class="bg-error-100 dark:bg-error-900"
             class="text-center"
           >
@@ -162,13 +162,9 @@
 
     <!-- Add Transaction Modals -->
     <TransactionModal
+      v-if="showAddTransactionModal"
       v-model="showAddTransactionModal"
       :type="transactionType"
-      @success="handleTransactionAdded"
-    />
-    <TransactionModal
-      v-model="showAddExpenseModal"
-      type="expense"
       @success="handleTransactionAdded"
     />
   </AppLayout>
@@ -201,7 +197,6 @@ const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
 
 const showAddTransactionModal = ref(false);
-const showAddExpenseModal = ref(false);
 const transactionType = ref<'income' | 'expense'>('income');
 
 const totalBalance = computed(() => {
@@ -244,16 +239,22 @@ const recentTransactions = computed(() => {
 
 const handleTransactionAdded = () => {
   showAddTransactionModal.value = false;
-  showAddExpenseModal.value = false;
   // Force refresh data
-  transactionsStore.fetchTransactions({}, true);
-  walletsStore.fetchWallets(true);
+  const today = new Date().toISOString().split('T')[0];
+  transactionsStore.fetchTransactions({
+    end_date: today
+  }, true);
+  walletsStore.fetchWallets(true, undefined, today);
 };
 
+const toggleAddTransaction = (type: 'income' | 'expense') => {
+  showAddTransactionModal.value = true;
+  transactionType.value = type;
+}
+
 onMounted(async () => {
-  await Promise.all([
-    walletsStore.fetchWallets(),
-    transactionsStore.fetchTransactions(),
-  ]);
+  const today = new Date().toISOString().split('T')[0];
+  walletsStore.fetchWallets(true, undefined, today);
+  transactionsStore.fetchTransactions({ end_date: today });
 });
 </script>
