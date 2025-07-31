@@ -311,8 +311,9 @@ watch(() => form.type, () => {
 });
 
 onMounted(async () => {
+  const today = new Date().toISOString().split('T')[0];
   await Promise.all([
-    walletsStore.fetchWallets(),
+    walletsStore.fetchWallets(false, undefined, today),
     categoriesStore.fetchCategories(),
   ]);
 });

@@ -162,7 +162,6 @@
 
     <!-- Add Transaction Modals -->
     <TransactionModal
-      v-if="showAddTransactionModal"
       v-model="showAddTransactionModal"
       :type="transactionType"
       @success="handleTransactionAdded"

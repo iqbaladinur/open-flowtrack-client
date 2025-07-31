@@ -67,7 +67,7 @@
             <li>
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="item in navigation" :key="item.name">
-                  <router-link :to="item.to" class="group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold" :class="$route.name === item.name ? 'bg-gray-100 dark:bg-gray-700 text-primary-600 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-primary-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700'">
+                  <router-link :to="item.to" class="group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold" :class="$route.name?.toString()?.toLocaleLowerCase() === item.name?.toLocaleLowerCase() ? 'bg-gray-100 dark:bg-gray-700 text-primary-600 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-primary-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700'">
                     <component :is="item.icon" class="h-5 w-5 shrink-0" />
                     {{ item.name }}
                   </router-link>
