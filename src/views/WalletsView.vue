@@ -99,6 +99,6 @@ watch(showAddModal, (isShowing) => {
 });
 
 onMounted(() => {
-  walletsStore.fetchWallets();
+  walletsStore.fetchWallets(true);
 });
 </script>

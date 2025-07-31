@@ -205,6 +205,7 @@ const fetchWalletData = async () => {
 const setFilter = (filter: 'today' | 'week' | 'month' | 'year') => {
   selectedFilter.value = filter;
   const today = new Date();
+  today.setHours(7, 0, 0);
   switch (filter) {
     case 'today':
       startDate.value = format(today, 'yyyy-MM-dd');
