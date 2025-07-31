@@ -148,6 +148,7 @@ import {
   Wallet,
   RotateCcw,
 } from 'lucide-vue-next';
+import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear } from 'date-fns';
 
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
@@ -177,26 +178,28 @@ const setDateRange = (preset: 'today' | 'weekly' | 'monthly' | 'yearly') => {
   showCustomDateRange.value = false;
   const today = new Date();
   let startDate = new Date();
-  
+  let endDate = new Date();
   switch (preset) {
     case 'today':
       startDate = today;
+      endDate = today;
       break;
     case 'weekly':
-      const firstDay = today.getDate() - today.getDay();
-      startDate = new Date(new Date().setDate(firstDay));
-      startDate.setHours(0, 0, 0, 0);
+      startDate = startOfWeek(today);
+      endDate = endOfWeek(today);
       break;
     case 'monthly':
-      startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+      startDate = startOfMonth(today);
+      endDate = endOfMonth(today);
       break;
     case 'yearly':
-      startDate = new Date(today.getFullYear(), 0, 1);
+      startDate = startOfYear(today);
+      endDate = endOfYear(today);
       break;
   }
 
-  filters.start_date = startDate.toISOString().split('T')[0];
-  filters.end_date = new Date().toISOString().split('T')[0];
+  filters.start_date = startDate.toISOString();
+  filters.end_date = endDate.toISOString();
 };
 
 const toggleCustomDateRange = () => {
