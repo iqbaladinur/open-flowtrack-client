@@ -125,7 +125,7 @@
           :key="item.name"
           :to="item.to"
           class="flex flex-col items-center justify-center text-center py-2 transition-colors"
-          :class="$route.name === item.name 
+          :class="$route.name?.toString()?.toLowerCase() === item.name?.toLowerCase() 
             ? 'text-primary-600 dark:text-primary-400' 
             : 'text-gray-500 dark:text-gray-400'"
         >
@@ -231,7 +231,7 @@ const mainBottomNav = navigation.slice(0, 4);
 const moreMenuNav = navigation.slice(4);
 
 const isMoreMenuActive = computed(() => {
-  return moreMenuNav.some(item => item.name === route.name);
+  return moreMenuNav.some(item => item.name?.toLowerCase() === route.name?.toString()?.toLowerCase());
 });
 
 const logout = () => {

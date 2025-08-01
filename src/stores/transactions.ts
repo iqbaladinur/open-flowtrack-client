@@ -54,8 +54,7 @@ export const useTransactionsStore = defineStore('transactions', () => {
     recurring_pattern?: 'daily' | 'weekly' | 'monthly' | 'yearly';
   }) => {
     const response = await api.post<Transaction>('/transactions', transactionData);
-    if (response.data) {
-      await fetchTransactions({}, true); // Force refresh
+    if (response.data) { // Force refresh
       return { success: true };
     }
     return { success: false, error: response.error };
@@ -76,7 +75,6 @@ export const useTransactionsStore = defineStore('transactions', () => {
   ) => {
     const response = await api.patch<Transaction>(`/transactions/${id}`, transactionData);
     if (response.data) {
-      await fetchTransactions({}, true); // Force refresh
       return { success: true };
     }
     return { success: false, error: response.error };

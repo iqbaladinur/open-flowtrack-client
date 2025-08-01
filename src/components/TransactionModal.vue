@@ -7,7 +7,7 @@
         <div class="grid grid-cols-2 gap-2">
           <button
             type="button"
-            @click="form.type = 'income'"
+            @click="toggleFormType('income')"
             class="p-3 rounded-lg border-2 transition-all"
             :class="form.type === 'income' 
               ? 'border-success-500 bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300' 
@@ -18,7 +18,7 @@
           </button>
           <button
             type="button"
-            @click="form.type = 'expense'"
+            @click="toggleFormType('expense')"
             class="p-3 rounded-lg border-2 transition-all"
             :class="form.type === 'expense' 
               ? 'border-error-500 bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300' 
@@ -185,6 +185,7 @@ import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import type { Transaction } from '@/types';
 import { TrendingUp, TrendingDown } from 'lucide-vue-next';
+import { format } from 'date-fns';
 
 interface Props {
   modelValue: boolean;
@@ -219,7 +220,7 @@ const form = reactive({
   amount: 0,
   wallet_id: '',
   category_id: '',
-  date: new Date().toISOString().split('T')[0],
+  date: format(new Date(), 'yyyy-MM-dd'),
   note: '',
   is_recurring: false,
   recurring_pattern: 'monthly' as 'daily' | 'weekly' | 'monthly' | 'yearly',
@@ -295,7 +296,7 @@ watch(() => props.transaction, (newTransaction) => {
       amount: newTransaction.amount,
       wallet_id: newTransaction.wallet_id,
       category_id: newTransaction.category_id,
-      date: newTransaction.date.split('T')[0],
+      date: format(new Date(newTransaction.date), 'yyyy-MM-dd'),
       note: newTransaction.note || '',
       is_recurring: newTransaction.is_recurring,
       recurring_pattern: newTransaction.recurring_pattern || 'monthly',
@@ -306,14 +307,17 @@ watch(() => props.transaction, (newTransaction) => {
 }, { immediate: true });
 
 // Watch form type changes to reset category
-watch(() => form.type, () => {
+function toggleFormType(type: 'income' | 'expense') {
+  form.type = type;
   form.category_id = '';
-});
+}
 
 onMounted(async () => {
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date();
+  today.setHours(24, 0, 0);
+  const todayIso = today.toISOString();
   await Promise.all([
-    walletsStore.fetchWallets(false, undefined, today),
+    walletsStore.fetchWallets(false, undefined, todayIso),
     categoriesStore.fetchCategories(),
   ]);
 });

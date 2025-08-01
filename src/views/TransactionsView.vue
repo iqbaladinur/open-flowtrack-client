@@ -79,8 +79,8 @@
           </div>
         </div>
 
-        <div class="mt-4 flex justify-end">
-          <button @click="resetFilters" class="btn btn-secondary">
+        <div class="mt-4 flex justify-start">
+          <button @click="resetFilters" class="btn btn-success">
             <RotateCcw class="w-4 h-4 mr-1.5" />
             Reset Filters
           </button>
@@ -191,7 +191,9 @@ const setDateRange = (preset?: 'today' | 'weekly' | 'monthly' | 'yearly') => {
       endDate = endOfWeek(today);
       break;
     case 'monthly':
-      startDate = startOfMonth(today);
+      const startMonth = startOfMonth(today);
+      startMonth.setHours(0, 0, 0); 
+      startDate = startMonth;
       endDate = endOfMonth(today);
       break;
     case 'yearly':
@@ -234,9 +236,9 @@ const editTransaction = (transaction: Transaction) => {
 const handleTransactionSaved = () => {
   showAddModal.value = false;
   // Refresh transactions and wallet balances
-  // @ts-ignore
-  transactionsStore.fetchTransactions(filters, true);
-  walletsStore.fetchWallets(true);
+  const today = endOfDay(new Date()).toISOString();
+  getTransactions(filters);
+  walletsStore.fetchWallets(true, undefined, today);
 };
 
 watch(showAddModal, (isShowing) => {
@@ -254,21 +256,24 @@ const deleteTransaction = async (id: string) => {
   }
 };
 
+const getTransactions = (filters: any) => {
+  const cleanedFilters = Object.fromEntries(
+    Object.entries(filters).filter(([, value]) => value !== '')
+  );
+  transactionsStore.fetchTransactions(cleanedFilters, Object.keys(cleanedFilters).length === 0);
+}
+
 // Watch filters and fetch transactions when they change
 watch(
   filters,
   (newFilters) => {
-    const cleanedFilters = Object.fromEntries(
-      Object.entries(newFilters).filter(([, value]) => value !== '')
-    );
-    
-    transactionsStore.fetchTransactions(cleanedFilters, Object.keys(cleanedFilters).length === 0);
+    getTransactions(newFilters);
   },
   { deep: true }
 );
 
 onMounted(async () => {
-  setDateRange('monthly');
+  getTransactions(filters);
   const today = endOfDay(new Date());
   await Promise.all([
     walletsStore.fetchWallets(true, undefined, today.toISOString()),

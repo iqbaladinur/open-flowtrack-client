@@ -7,7 +7,7 @@
           Welcome back, {{ authStore.user?.full_name || 'User' }}!
         </h1>
         <p class="text-gray-600 dark:text-gray-400">
-          Here's your financial overview for today
+          Here's your financial overview until today
         </p>
       </div>
 
@@ -37,7 +37,7 @@
             <div class="mt-auto">
               <p class="text-xs text-gray-500 dark:text-gray-400">Income</p>
               <p class="text-xs font-medium text-success-600 dark:text-success-400 font-mono">
-                +{{ configStore.formatCurrency(monthlyIncome) }}
+                +{{ configStore.formatCurrency(alltimeIncome) }}
               </p>
             </div>
           </div>
@@ -52,7 +52,7 @@
             <div class="mt-auto">
               <p class="text-xs text-gray-500 dark:text-gray-400">Expenses</p>
               <p class="text-xs font-medium text-error-600 dark:text-error-400 font-mono">
-                -{{ configStore.formatCurrency(monthlyExpenses) }}
+                -{{ configStore.formatCurrency(allTimeExpense) }}
               </p>
             </div>
           </div>
@@ -189,6 +189,7 @@ import {
   Target,
   ArrowUpDown,
 } from 'lucide-vue-next';
+import { endOfDay } from 'date-fns';
 
 const authStore = useAuthStore();
 const walletsStore = useWalletsStore();
@@ -202,35 +203,22 @@ const totalBalance = computed(() => {
   return walletsStore.wallets.reduce((sum, wallet) => sum + (wallet.current_balance || 0), 0);
 });
 
-const monthlyIncome = computed(() => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = (now.getMonth() + 1).toString().padStart(2, '0');
-  const currentMonth = `${year}-${month}`;
+const alltimeIncome = computed(() => {
   return transactionsStore.transactions
-    .filter(t => t.type === 'income' && t.date.startsWith(currentMonth))
+    .filter(t => t.type === 'income')
     .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
 });
 
-const monthlyExpenses = computed(() => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = (now.getMonth() + 1).toString().padStart(2, '0');
-  const currentMonth = `${year}-${month}`;
+const allTimeExpense = computed(() => {
   return transactionsStore.transactions
-    .filter(t => t.type === 'expense' && t.date.startsWith(currentMonth))
+    .filter(t => t.type === 'expense')
     .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
 });
 
-const netIncome = computed(() => monthlyIncome.value - monthlyExpenses.value);
+const netIncome = computed(() => alltimeIncome.value - allTimeExpense.value);
 
 const recentTransactions = computed(() => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = (now.getMonth() + 1).toString().padStart(2, '0');
-  const currentMonth = `${year}-${month}`;
   return transactionsStore.transactions
-    .filter(t => t.date.startsWith(currentMonth))
     .slice()
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
@@ -239,8 +227,7 @@ const recentTransactions = computed(() => {
 const handleTransactionAdded = () => {
   showAddTransactionModal.value = false;
   // Force refresh data
-  const today = new Date();
-  today.setHours(24, 0, 0);
+  const today = endOfDay(new Date());
   const todayIso = today.toISOString();
 
   transactionsStore.fetchTransactions({
@@ -255,8 +242,7 @@ const toggleAddTransaction = (type: 'income' | 'expense') => {
 }
 
 onMounted(async () => {
-  const today = new Date();
-  today.setHours(24, 0, 0);
+  const today = endOfDay(new Date());
   const todayIso = today.toISOString();
   walletsStore.fetchWallets(true, undefined, todayIso);
   transactionsStore.fetchTransactions({ end_date: todayIso });
