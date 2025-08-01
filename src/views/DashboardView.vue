@@ -68,7 +68,11 @@
               <p class="text-xs text-gray-500 dark:text-gray-400">Net Income</p>
               <p 
                 class="text-xs font-medium font-mono"
-                :class="netIncome >= 0 ? 'text-gray-800 dark:text-gray-200' : 'text-error-600 dark:text-error-400'"
+                :class="{
+                  'text-success-600 dark:text-success-400': netIncome > 0,
+                  'text-gray-800 dark:text-gray-200': netIncome === 0,
+                  'text-error-600 dark:text-error-400': netIncome < 0,
+                }"
               >
                 {{ netIncome >= 0 ? '+' : '' }}{{ configStore.formatCurrency(netIncome) }}
               </p>
