@@ -89,6 +89,7 @@
             <div>
               <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Quick Select</label>
               <div class="flex flex-wrap items-center gap-2 mt-2">
+                <button @click="setFilter('all')" :class="['btn-sm', selectedFilter === 'all' ? 'btn-primary' : 'btn-secondary']">All Time</button>
                 <button @click="setFilter('today')" :class="['btn-sm', selectedFilter === 'today' ? 'btn-primary' : 'btn-secondary']">Today</button>
                 <button @click="setFilter('week')" :class="['btn-sm', selectedFilter === 'week' ? 'btn-primary' : 'btn-secondary']">This Week</button>
                 <button @click="setFilter('month')" :class="['btn-sm', selectedFilter === 'month' ? 'btn-primary' : 'btn-secondary']">This Month</button>
@@ -147,7 +148,7 @@ import WalletCard from '@/components/WalletCard.vue';
 import TransactionItem from '@/components/TransactionItem.vue';
 import type { Wallet, Transaction } from '@/types';
 import { ArrowLeft, Edit2, Trash2, TrendingUp, TrendingDown, Filter } from 'lucide-vue-next';
-import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear } from 'date-fns';
+import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay } from 'date-fns';
 import WalletModal from '@/components/WalletModal.vue';
 
 const route = useRoute();
@@ -163,10 +164,9 @@ const showModal = ref<boolean>(false);
 const loading = ref(true);
 const showFilters = ref(false);
 
-const selectedFilter = ref('month');
-const now = new Date();
-const startDate = ref(format(startOfMonth(now), 'yyyy-MM-dd'));
-const endDate = ref(format(endOfMonth(now), 'yyyy-MM-dd'));
+const selectedFilter = ref('all');
+const startDate = ref('');
+const endDate = ref('');
 
 const transactions = computed<Transaction[]>(() => transactionsStore.transactions);
 
@@ -185,12 +185,18 @@ const periodExpense = computed(() => {
 const fetchWalletData = async () => {
   loading.value = true;
   try {
+    const dateRange:{ start_date?: string, end_date?: string} = {};
+    if (startDate.value) {
+      dateRange.start_date = startDate.value;
+    }
+    if (endDate.value) {
+      dateRange.end_date = endDate.value;
+    }
     const [walletData] = await Promise.all([
-      walletsStore.getWalletByIdFromServer(walletId.value, { start_date: startDate.value, end_date: endDate.value }),
+      walletsStore.getWalletByIdFromServer(walletId.value, { ...dateRange }),
       transactionsStore.fetchTransactions({
         wallet_id: walletId.value,
-        start_date: startDate.value,
-        end_date: endDate.value,
+        ...dateRange
       }, true) // force refresh transactions
     ]);
     wallet.value = walletData || null;
@@ -202,27 +208,30 @@ const fetchWalletData = async () => {
   }
 };
 
-const setFilter = (filter: 'today' | 'week' | 'month' | 'year') => {
+const setFilter = (filter: 'today' | 'week' | 'month' | 'year' | 'all') => {
   selectedFilter.value = filter;
   const today = new Date();
   today.setHours(7, 0, 0);
   switch (filter) {
     case 'today':
-      startDate.value = format(today, 'yyyy-MM-dd');
-      endDate.value = format(today, 'yyyy-MM-dd');
+      startDate.value = startOfDay(today).toISOString();
+      endDate.value = endOfDay(today).toISOString();
       break;
     case 'week':
-      startDate.value = format(startOfWeek(today), 'yyyy-MM-dd');
-      endDate.value = format(endOfWeek(today), 'yyyy-MM-dd');
+      startDate.value = startOfWeek(today).toISOString();
+      endDate.value = endOfWeek(today).toISOString();
       break;
     case 'month':
-      startDate.value = format(startOfMonth(today), 'yyyy-MM-dd');
-      endDate.value = format(endOfMonth(today), 'yyyy-MM-dd');
+      startDate.value = startOfMonth(today).toISOString();
+      endDate.value = endOfMonth(today).toISOString();
       break;
     case 'year':
-      startDate.value = format(startOfYear(today), 'yyyy-MM-dd');
-      endDate.value = format(endOfYear(today), 'yyyy-MM-dd');
+      startDate.value = startOfYear(today).toISOString();
+      endDate.value = endOfYear(today).toISOString();
       break;
+    case 'all':
+      startDate.value = '';
+      endDate.value = '';
   }
 };
 
@@ -256,6 +265,6 @@ const deleteWallet = async () => {
 };
 
 onMounted(() => {
-  setFilter('month'); // Set initial filter and fetch data
+  setFilter('all'); // Set initial filter and fetch data
 });
 </script>
