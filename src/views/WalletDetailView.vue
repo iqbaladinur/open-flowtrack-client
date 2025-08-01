@@ -148,7 +148,7 @@ import WalletCard from '@/components/WalletCard.vue';
 import TransactionItem from '@/components/TransactionItem.vue';
 import type { Wallet, Transaction } from '@/types';
 import { ArrowLeft, Edit2, Trash2, TrendingUp, TrendingDown, Filter } from 'lucide-vue-next';
-import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay } from 'date-fns';
+import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay } from 'date-fns';
 import WalletModal from '@/components/WalletModal.vue';
 
 const route = useRoute();
