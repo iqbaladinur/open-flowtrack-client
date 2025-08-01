@@ -98,7 +98,7 @@ const selectedYear = ref(new Date().getFullYear());
 const yearList = computed(() => {
   const currentYear = new Date().getFullYear();
   const years = [];
-  for (let i = currentYear + 50; i >= currentYear - 50; i--) {
+  for (let i = currentYear + 25; i >= currentYear - 25; i--) {
     years.push(i);
   }
   return years;

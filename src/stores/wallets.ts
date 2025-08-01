@@ -45,7 +45,7 @@ export const useWalletsStore = defineStore('wallets', () => {
   }) => {
     const response = await api.post<Wallet>('/wallets', walletData);
     if (response.data) {
-      await fetchWallets(true); // Force refresh
+      // await fetchWallets(true); // Force refresh
       return { success: true };
     }
     return { success: false, error: response.error };
@@ -60,7 +60,7 @@ export const useWalletsStore = defineStore('wallets', () => {
   ) => {
     const response = await api.patch<Wallet>(`/wallets/${id}`, walletData);
     if (response.data) {
-      await fetchWallets(true); // Force refresh
+      // await fetchWallets(true); // Force refresh
       return { success: true };
     }
     return { success: false, error: response.error };

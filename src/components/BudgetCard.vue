@@ -97,6 +97,7 @@ import * as icons from 'lucide-vue-next';
 import { Edit2, Trash2, ChevronDown, CalendarDays } from 'lucide-vue-next';
 import TransactionItem from './TransactionItem.vue';
 import LoadingSpinner from './ui/LoadingSpinner.vue';
+import { startOfMonth, endOfMonth } from 'date-fns';
 
 const props = defineProps({
   budget: {
@@ -160,8 +161,8 @@ const toggleDetails = async () => {
     const filters = {
       type: 'expense',
       category_id: props.budget.category_id,
-      start_date: startDate,
-      end_date: endDate,
+      start_date: startOfMonth(new Date(startDate)).toISOString(),
+      end_date: endOfMonth(new Date(endDate)).toISOString(),
     };
     // @ts-ignore
     await transactionsStore.fetchTransactions(filters, true);

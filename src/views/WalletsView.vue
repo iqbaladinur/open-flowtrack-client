@@ -67,6 +67,7 @@ import WalletModal from '@/components/WalletModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import WalletCard from '@/components/WalletCard.vue';
 import type { Wallet } from '@/types';
+import { endOfDay } from 'date-fns';
 import {
   Plus,
   Wallet as WalletIcon,
@@ -81,16 +82,22 @@ const selectedWallet = ref<Wallet | null>(null);
 const wallets = computed(() => {
   return walletsStore.wallets
     .slice()
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
 });
 
 const handleWalletSaved = () => {
   showAddModal.value = false;
+  getWalletsData();
 };
 
 const goToWalletDetail = (walletId: string) => {
   router.push(`/wallet/${walletId}`);
 };
+
+const getWalletsData = () => {
+  const today = endOfDay(new Date()).toISOString();
+  walletsStore.fetchWallets(true, undefined, today);
+}
 
 watch(showAddModal, (isShowing) => {
   if (!isShowing) {
@@ -99,6 +106,6 @@ watch(showAddModal, (isShowing) => {
 });
 
 onMounted(() => {
-  walletsStore.fetchWallets(true);
+  getWalletsData();
 });
 </script>
