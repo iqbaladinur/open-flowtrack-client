@@ -25,7 +25,7 @@
       <div v-if="showFilters" class="card p-4 space-y-4">
         <!-- Type Filter -->
         <div>
-          <label class="label mb-2">Type</label>
+          <label class="label mb-2 px-2">Type</label>
           <div class="flex items-center space-x-2 overflow-x-auto py-2 px-2">
             <button @click="filters.type = ''" :class="['btn flex-shrink-0', filters.type === '' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">All Types</button>
             <button @click="filters.type = 'income'" :class="['btn flex-shrink-0', filters.type === 'income' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
@@ -41,7 +41,7 @@
 
         <!-- Wallet Filter -->
         <div>
-          <label class="label mb-2">Wallet</label>
+          <label class="label mb-2 px-2">Wallet</label>
           <div class="flex items-center space-x-2 overflow-x-auto py-2 px-2">
             <button @click="filters.wallet_id = ''" :class="['btn flex-shrink-0', filters.wallet_id === '' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">All Wallets</button>
             <button
@@ -58,8 +58,8 @@
 
         <!-- Date Range Filter -->
         <div>
-          <label class="label mb-2">Date Range</label>
-          <div class="flex flex-wrap gap-2">
+          <label class="label mb-2 px-2">Date Range</label>
+          <div class="flex flex-wrap gap-2 p-2">
             <button @click="setDateRange()" :class="['btn', !dateRangePreset ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">All</button>
             <button @click="setDateRange('today')" :class="['btn', dateRangePreset === 'today' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">Today</button>
             <button @click="setDateRange('weekly')" :class="['btn', dateRangePreset === 'weekly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Week</button>
@@ -67,7 +67,7 @@
             <button @click="setDateRange('yearly')" :class="['btn', dateRangePreset === 'yearly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Year</button>
             <button @click="toggleCustomDateRange" :class="['btn', showCustomDateRange ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">Custom</button>
           </div>
-          <div v-if="showCustomDateRange" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          <div v-if="showCustomDateRange" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 p-2">
             <div>
               <label for="start_date" class="label">Start Date</label>
               <input id="start_date" v-model="filters.start_date" type="date" class="input" @change="onCustomDateChange" />
@@ -79,7 +79,7 @@
           </div>
         </div>
 
-        <div class="mt-4 flex justify-start">
+        <div class="mt-10 flex justify-start px-2">
           <button @click="resetFilters" class="btn btn-success">
             <RotateCcw class="w-4 h-4 mr-1.5" />
             Reset Filters
@@ -93,7 +93,7 @@
           <LoadingSpinner fullHeight />
         </div>
 
-        <div v-else-if="transactions.length === 0" class="text-center py-12">
+        <div v-else-if="transactions.length === 0" class="text-center py-12 px-2">
           <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
             <ArrowUpDown class="w-8 h-8 text-gray-400" />
           </div>
