@@ -281,7 +281,7 @@ const resetForm = () => {
     amount: 0,
     wallet_id: '',
     category_id: '',
-    date: new Date().toISOString().split('T')[0],
+    date: format(new Date(), 'yyyy-MM-dd'),
     note: '',
     is_recurring: false,
     recurring_pattern: 'monthly',
@@ -305,6 +305,12 @@ watch(() => props.transaction, (newTransaction) => {
     resetForm();
   }
 }, { immediate: true });
+
+watch(() => props.type, (newType) => {
+  if (newType) {
+    form.type = newType;
+  }
+});
 
 // Watch form type changes to reset category
 function toggleFormType(type: 'income' | 'expense') {
