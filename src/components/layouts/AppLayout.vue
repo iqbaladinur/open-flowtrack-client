@@ -126,7 +126,7 @@
           :to="item.to"
           class="flex flex-col items-center justify-center text-center py-2 transition-colors"
           :class="$route.name?.toString()?.toLowerCase() === item.name?.toLowerCase() 
-            ? 'text-primary-600 dark:text-primary-400' 
+            ? 'text-primary-600 dark:text-neon' 
             : 'text-gray-500 dark:text-gray-400'"
         >
           <component :is="item.icon" class="w-5 h-5 mb-1" />
@@ -136,7 +136,7 @@
           @click="showMoreMenu = true"
           class="flex flex-col items-center justify-center text-center py-2 transition-colors"
           :class="isMoreMenuActive
-            ? 'text-primary-600 dark:text-primary-400' 
+            ? 'text-primary-600 dark:text-neon' 
             : 'text-gray-500 dark:text-gray-400'"
         >
           <Ellipsis class="w-5 h-5 mb-1" />
@@ -171,7 +171,7 @@
                   :to="item.to"
                   @click="showMoreMenu = false"
                   class="flex flex-col items-center justify-center text-center py-2 transition-colors"
-                  :class="$route.name === item.name ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500 dark:text-gray-400'"
+                  :class="$route.name?.toString()?.toLowerCase() === item.name?.toLowerCase() ? 'text-primary-600 dark:text-neon' : 'text-gray-500 dark:text-gray-400'"
                 >
                   <div class="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-2">
                     <component :is="item.icon" class="w-6 h-6" />
@@ -223,7 +223,7 @@ const navigation = [
   { name: 'Categories', to: '/categories', icon: Tag },
   { name: 'Budgets', to: '/budgets', icon: Target },
   { name: 'Reports', to: '/reports', icon: BarChart3 },
-  { name: 'Backup Data', to: '/backup', icon: Database },
+  { name: 'Backup', to: '/backup', icon: Database },
   { name: 'Settings', to: '/settings', icon: Settings },
 ];
 
