@@ -14,7 +14,7 @@
             @click="editWallet()"
             class="p-2 text-gray-600 dark:text-white rounded-full"
           >
-            <Edit2 class="w-4 h-4" />
+            <NotebookPen class="w-4 h-4" />
           </button>
           <button
             @click="deleteWallet()"
@@ -147,7 +147,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import WalletCard from '@/components/WalletCard.vue';
 import TransactionItem from '@/components/TransactionItem.vue';
 import type { Wallet, Transaction } from '@/types';
-import { ArrowLeft, Edit2, Trash2, TrendingUp, TrendingDown, Filter } from 'lucide-vue-next';
+import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen } from 'lucide-vue-next';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay } from 'date-fns';
 import WalletModal from '@/components/WalletModal.vue';
 

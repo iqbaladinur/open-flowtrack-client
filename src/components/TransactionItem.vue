@@ -57,7 +57,7 @@
               @click="$emit('edit', transaction)"
               class="p-2 rounded-full text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
             >
-              <Pencil class="w-4 h-4" />
+              <NotebookPen class="w-4 h-4" />
             </button>
             <button
               @click="$emit('delete', transaction.id)"
@@ -76,7 +76,7 @@
 import type { Transaction } from '@/types';
 import { useConfigStore } from '@/stores/config';
 import * as icons from 'lucide-vue-next';
-import { Pencil, Trash2, TrendingUp, TrendingDown } from 'lucide-vue-next';
+import { NotebookPen, Trash2, TrendingUp, TrendingDown } from 'lucide-vue-next';
 
 defineProps({
   transaction: {

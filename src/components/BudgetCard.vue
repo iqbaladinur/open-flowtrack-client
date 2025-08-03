@@ -10,7 +10,7 @@
         <div class="flex flex-col items-end gap-2">
           <div class="flex items-center space-x-1">
             <button @click="$emit('edit', budget)" class="p-2 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-              <Edit2 class="w-4 h-4" />
+              <NotebookPen class="w-4 h-4" />
             </button>
             <button @click="$emit('delete', budget.id)" class="p-2 rounded-full text-gray-400 hover:bg-red-100 dark:hover:bg-red-900/50 hover:text-error-600 dark:hover:text-error-400 transition-colors">
               <Trash2 class="w-4 h-4" />
@@ -37,18 +37,7 @@
 
       <!-- Budget Details & Progress -->
       <div class="mt-2">
-        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1 font-mono">
-          <span>Spent: {{ configStore.formatCurrency(budget.total_spent) }}</span>
-          <span>Limit: {{ configStore.formatCurrency(budget.limit_amount) }}</span>
-        </div>
-        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-          <div
-            class="h-1.5 rounded-full transition-all duration-500"
-            :class="progressBarClass"
-            :style="{ width: Math.min(getBudgetProgress(budget), 100) + '%' }"
-          ></div>
-        </div>
-        <div class="text-center mt-3">
+        <div class="text-left mb-3">
           <p class="text-xs text-gray-500 dark:text-gray-400">{{ isOverspent ? 'Overspent by' : 'Remaining' }}</p>
           <p 
             class="text-lg font-bold font-mono"
@@ -57,12 +46,23 @@
             {{ configStore.formatCurrency(remainingAmount) }}
           </p>
         </div>
+        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+          <span>Spent: {{ configStore.formatCurrency(budget.total_spent) }}</span>
+          <span>Limit: {{ configStore.formatCurrency(budget.limit_amount) }}</span>
+        </div>
+        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
+          <div
+            class="h-1 rounded-full transition-all duration-500"
+            :class="progressBarClass"
+            :style="{ width: Math.min(getBudgetProgress(budget), 100) + '%' }"
+          ></div>
+        </div>
       </div>
     </div>
 
     <!-- View Details Section -->
     <div class="border-t border-gray-200 dark:border-gray-700">
-      <button @click="toggleDetails" class="w-full text-sm py-3 px-5 font-medium text-primary-600 dark:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center justify-center gap-2 transition-colors">
+      <button @click="toggleDetails" class="w-full text-sm py-3 px-5 font-medium text-primary-600 dark:text-primary-400 bg-gray-50 dark:bg-gray-700/50 flex items-center justify-center gap-2 transition-colors">
         <span>{{ isDetailsVisible ? 'Hide' : 'View' }} Details</span>
         <ChevronDown class="w-4 h-4 transition-transform" :class="{ 'rotate-180': isDetailsVisible }" />
       </button>
@@ -94,7 +94,7 @@ import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
 import type { Budget, Transaction } from '@/types';
 import * as icons from 'lucide-vue-next';
-import { Edit2, Trash2, ChevronDown, CalendarDays } from 'lucide-vue-next';
+import { Trash2, ChevronDown, CalendarDays, NotebookPen } from 'lucide-vue-next';
 import TransactionItem from './TransactionItem.vue';
 import LoadingSpinner from './ui/LoadingSpinner.vue';
 import { startOfMonth, endOfMonth } from 'date-fns';

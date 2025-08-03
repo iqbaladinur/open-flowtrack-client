@@ -14,7 +14,7 @@
       <!-- Summary Cards -->
       <div class="flex sm:grid sm:grid-cols-4 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
         <!-- Total Balance -->
-        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 shadow-lg">
+        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1">
           <div class="flex flex-col h-full">
             <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-primary-100 dark:bg-primary-900/50 mb-3">
               <Wallet class="w-4 h-4 text-primary-600 dark:text-primary-400" />
@@ -29,7 +29,7 @@
         </div>
 
         <!-- Monthly Income -->
-        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 shadow-lg -ml-4 sm:ml-0">
+        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
           <div class="flex flex-col h-full">
             <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-success-100 dark:bg-success-900/50 mb-3">
               <TrendingUp class="w-4 h-4 text-success-600 dark:text-success-400" />
@@ -44,7 +44,7 @@
         </div>
 
         <!-- Monthly Expenses -->
-        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 shadow-lg -ml-4 sm:ml-0">
+        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
           <div class="flex flex-col h-full">
             <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-error-100 dark:bg-error-900/50 mb-3">
               <TrendingDown class="w-4 h-4 text-error-600 dark:text-error-400" />
@@ -59,7 +59,7 @@
         </div>
 
         <!-- Net Income -->
-        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 shadow-lg -ml-4 sm:ml-0">
+        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
           <div class="flex flex-col h-full">
             <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-warning-100 dark:bg-warning-900/50 mb-3">
               <BarChart3 class="w-4 h-4 text-warning-600 dark:text-warning-400" />
