@@ -54,6 +54,7 @@
 
 <script setup lang="ts">
 import { X } from 'lucide-vue-next';
+import { watch } from 'vue';
 
 interface Props {
   modelValue: boolean;
@@ -61,8 +62,18 @@ interface Props {
   closeOnOutsideClick?: boolean;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   closeOnOutsideClick: true,
+});
+
+const body = document.body;
+
+watch(() => props.modelValue, (newVal) => {
+  if (newVal) {
+    body.style.overflow = 'hidden';
+  } else {
+    body.style.overflow = 'auto';
+  }
 });
 
 defineEmits<{
