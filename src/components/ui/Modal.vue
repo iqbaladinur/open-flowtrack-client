@@ -8,10 +8,10 @@
       <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" aria-hidden="true"></div>
 
       <Transition
-        enter-active-class="transition-transform duration-300 ease-out"
+        enter-active-class="transition-transform duration-200 ease-out"
         enter-from-class="translate-y-full"
         enter-to-class="translate-y-0"
-        leave-active-class="transition-transform duration-300 ease-in"
+        leave-active-class="transition-transform duration-200 ease-in"
         leave-from-class="translate-y-0"
         leave-to-class="translate-y-full"
       >
