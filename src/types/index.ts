@@ -107,3 +107,8 @@ export interface ApiResponse<T = any> {
 
 export type TransactionType = 'income' | 'expense';
 export type RecurringPattern = 'daily' | 'weekly' | 'monthly' | 'yearly';
+
+export interface AnalyticsResponse {
+  analytics: string;
+  source: 'api' | 'cache';
+}
