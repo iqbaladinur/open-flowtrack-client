@@ -11,7 +11,9 @@ export const useAnalyticsStore = defineStore('analytics', () => {
   const fetchAnalyticsSugestion = async ({ start_date, end_date}: { start_date: string, end_date: string }) => {
     loading.value = true;
     try {
-      const response = await api.post<AnalyticsResponse>(`/analytics/generate`, { start_date, end_date });
+      const startDate = new Date(start_date).toISOString().split('T')[0];
+      const endDate = new Date(end_date).toISOString().split('T')[0];
+      const response = await api.post<AnalyticsResponse>(`/analytics/generate`, { startDate, endDate });
       if (response.data) {
         analyticsSugestion.value = response.data.analytics.split('|')?.map(item => item.trim()) || [];
       }

@@ -131,6 +131,27 @@
         </div>
       </div>
 
+      <!-- AI Suggestions -->
+      <div class="card p-6">
+        <div class="flex items-center mb-4">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/50 mr-3">
+            <BrainCircuit class="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+          </div>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">What happened last 30 days?</h2>
+        </div>
+        <div v-if="analyticsLoading" class="flex justify-center items-center py-8">
+          <LoadingSpinner class="w-8 h-8" />
+        </div>
+        <div v-else-if="analyticsSugestion.length > 0" class="space-y-2">
+          <p v-for="(suggestion, index) in analyticsSugestion" :key="index" class="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+            {{ suggestion }}
+          </p>
+        </div>
+        <div v-else class="text-center py-8">
+          <p class="text-gray-500 dark:text-gray-400">No suggestions available at the moment.</p>
+        </div>
+      </div>
+
       <!-- Recent Transactions -->
       <div class="card p-6">
         <div class="flex items-center justify-between mb-4">
@@ -175,14 +196,17 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
 import { useWalletsStore } from '@/stores/wallets';
 import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
+import { useAnalyticsStore } from '@/stores/analytics';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import TransactionModal from '@/components/TransactionModal.vue';
 import QuickActionButton from '@/components/QuickActionButton.vue';
 import TransactionItem from '@/components/TransactionItem.vue';
+import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import {
   Wallet,
   TrendingUp,
@@ -192,13 +216,16 @@ import {
   Minus,
   Target,
   ArrowUpDown,
+  BrainCircuit,
 } from 'lucide-vue-next';
-import { endOfDay } from 'date-fns';
+import { endOfDay, subMonths } from 'date-fns';
 
 const authStore = useAuthStore();
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
+const analyticsStore = useAnalyticsStore();
+const { analyticsSugestion, loading: analyticsLoading } = storeToRefs(analyticsStore);
 
 const showAddTransactionModal = ref(false);
 const transactionType = ref<'income' | 'expense'>('income');
@@ -250,5 +277,13 @@ onMounted(async () => {
   const todayIso = today.toISOString();
   walletsStore.fetchWallets(true, undefined, todayIso);
   transactionsStore.fetchTransactions({ end_date: todayIso });
+
+  const endDateForAnalytics = new Date();
+  const startDateForAnalytics = subMonths(endDateForAnalytics, 1);
+
+  analyticsStore.fetchAnalyticsSugestion({
+    start_date: startDateForAnalytics.toISOString(),
+    end_date: endDateForAnalytics.toISOString(),
+  });
 });
 </script>
