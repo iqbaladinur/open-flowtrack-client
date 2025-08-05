@@ -26,7 +26,7 @@
       </div>
 
       <!-- Loading State -->
-      <div v-if="loading" class="card p-8">
+      <div v-if="loading && !wallet" class="card p-8">
         <LoadingSpinner fullHeight />
       </div>
 
@@ -99,9 +99,9 @@
             <div>
               <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Custom Range</label>
               <div class="flex flex-col sm:flex-row items-center gap-2 mt-2">
-                <input type="date" v-model="startDate" @change="setCustomFilter" class="input w-full" />
+                <input type="date" v-model="startDate" @change="setCustomFilter" class="input w-full" placeholder="Start Date" />
                 <span class="text-gray-500 hidden sm:block">-</span>
-                <input type="date" v-model="endDate" @change="setCustomFilter" class="input w-full" />
+                <input type="date" v-model="endDate" @change="setCustomFilter" class="input w-full" placeholder="End Date" />
               </div>
             </div>
           </div>
@@ -193,7 +193,7 @@ const fetchWalletData = async () => {
       dateRange.end_date = endDate.value;
     }
     const [walletData] = await Promise.all([
-      walletsStore.getWalletByIdFromServer(walletId.value, { ...dateRange }),
+      walletsStore.getWalletByIdFromServer(walletId.value, { end_date: dateRange.end_date || undefined }),
       transactionsStore.fetchTransactions({
         wallet_id: walletId.value,
         ...dateRange
