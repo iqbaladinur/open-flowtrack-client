@@ -142,8 +142,8 @@
         <div v-if="analyticsLoading" class="flex justify-center items-center py-8">
           <LoadingSpinner class="w-8 h-8" />
         </div>
-        <div v-else-if="analyticsSugestion.length > 0" class="space-y-2">
-          <p v-for="(suggestion, index) in analyticsSugestion" :key="index" class="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+        <div v-else-if="analyticsSugestion.length > 0" class="flex gap-2 flex-wrap">
+          <p v-for="(suggestion, index) in analyticsSugestion" :key="index" class="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 px-3 py-2 rounded-lg w-full lg:whitespace-nowrap lg:w-auto">
             {{ suggestion }}
           </p>
         </div>
