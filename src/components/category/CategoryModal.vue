@@ -147,7 +147,7 @@ import { ref, reactive, computed, watch } from 'vue';
 import { useCategoriesStore } from '@/stores/categories';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import type { Category } from '@/types';
+import type { Category } from '@/types/category';
 import * as icons from 'lucide-vue-next';
 import { TrendingUp, TrendingDown } from 'lucide-vue-next';
 

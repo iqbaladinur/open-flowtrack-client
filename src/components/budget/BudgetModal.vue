@@ -134,7 +134,7 @@ import { useCategoriesStore } from '@/stores/categories';
 import { useConfigStore } from '@/stores/config';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import type { Budget } from '@/types';
+import type { Budget } from '@/types/budget';
 
 interface Props {
   modelValue: boolean;

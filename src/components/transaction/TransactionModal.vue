@@ -183,7 +183,7 @@ import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import type { Transaction } from '@/types';
+import type { Transaction } from '@/types/transaction';
 import { TrendingUp, TrendingDown } from 'lucide-vue-next';
 import { format } from 'date-fns';
 

@@ -73,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Transaction } from '@/types';
+import type { Transaction } from '@/types/transaction';
 import { useConfigStore } from '@/stores/config';
 import * as icons from 'lucide-vue-next';
 import { NotebookPen, Trash2, TrendingUp, TrendingDown } from 'lucide-vue-next';

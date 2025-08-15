@@ -81,11 +81,11 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { useBudgetsStore } from '@/stores/budgets';
 import AppLayout from '@/components/layouts/AppLayout.vue';
-import BudgetModal from '@/components/BudgetModal.vue';
+import BudgetModal from '@/components/budget/BudgetModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import BudgetCard from '@/components/BudgetCard.vue';
+import BudgetCard from '@/components/budget/BudgetCard.vue';
 import Modal from '@/components/ui/Modal.vue';
-import type { Budget } from '@/types';
+import type { Budget } from '@/types/budget';
 import { Plus, Target, Calendar } from 'lucide-vue-next';
 
 const budgetsStore = useBudgetsStore();

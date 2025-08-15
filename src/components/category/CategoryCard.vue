@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Category } from '@/types';
+import type { Category } from '@/types/category';
 import { Trash2, TrendingUp, TrendingDown } from 'lucide-vue-next';
 import * as icons from 'lucide-vue-next';
 

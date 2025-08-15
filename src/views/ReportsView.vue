@@ -175,10 +175,10 @@ import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import TimeSeriesChart from '@/components/TimeSeriesChart.vue';
-import CategoryPieChart from '@/components/CategoryPieChart.vue';
+import TimeSeriesChart from '@/components/reports/TimeSeriesChart.vue';
+import CategoryPieChart from '@/components/reports/CategoryPieChart.vue';
 import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, Wallet, TrendingUp, TrendingDown } from 'lucide-vue-next';
-import type { Transaction } from '@/types';
+import type { Transaction } from '@/types/transaction';
 
 type ReportView = 'monthly' | 'yearly' | 'custom';
 type AggregationLevel = 'daily' | 'weekly' | 'monthly' | 'yearly';

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useApi } from '@/composables/useApi'
-import type { Config } from '@/types'
+import type { Config } from '@/types/config'
 
 export const popularCurrencies = [
   { code: 'USD', name: 'US Dollar' },

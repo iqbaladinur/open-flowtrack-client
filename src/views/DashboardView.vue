@@ -203,9 +203,9 @@ import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
 import { useAnalyticsStore } from '@/stores/analytics';
 import AppLayout from '@/components/layouts/AppLayout.vue';
-import TransactionModal from '@/components/TransactionModal.vue';
-import QuickActionButton from '@/components/QuickActionButton.vue';
-import TransactionItem from '@/components/TransactionItem.vue';
+import TransactionModal from '@/components/transaction/TransactionModal.vue';
+import QuickActionButton from '@/components/shared/QuickActionButton.vue';
+import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import {
   Wallet,

@@ -92,11 +92,12 @@ import { ref, computed } from 'vue';
 import type { PropType } from 'vue';
 import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
-import type { Budget, Transaction } from '@/types';
+import type { Budget } from '@/types/budget';
+import type { Transaction } from '@/types/transaction';
 import * as icons from 'lucide-vue-next';
 import { Trash2, ChevronDown, CalendarDays, NotebookPen } from 'lucide-vue-next';
-import TransactionItem from './TransactionItem.vue';
-import LoadingSpinner from './ui/LoadingSpinner.vue';
+import TransactionItem from '@/components/transaction/TransactionItem.vue';
+import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import { startOfMonth, endOfMonth } from 'date-fns';
 
 const props = defineProps({
