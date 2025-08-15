@@ -66,7 +66,7 @@
                   :style="{ backgroundColor: form.color + '20' }"
                 >
                   <!-- @vue-ignore -->
-                  <component :is="icons[form.icon] || icons['Tag']" class="w-5 h-5" :style="{ color: form.color }" />
+                  <component :is="getIcon(form.icon)" class="w-5 h-5" :style="{ color: form.color }" />
                 </div>
 
                 <!-- Category Info -->
@@ -108,7 +108,7 @@
               : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'"
           >
             <!-- @vue-ignore -->
-            <component :is="icons[icon]" class="w-5 h-5" />
+            <component :is="getIcon(icon)" class="w-5 h-5" />
           </button>
         </div>
       </div>
@@ -148,19 +148,10 @@ import { useCategoriesStore } from '@/stores/categories';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import type { Category } from '@/types/category';
-import * as icons from 'lucide-vue-next';
+import { getIcon, iconList } from '@/utils/icons';
 import { TrendingUp, TrendingDown } from 'lucide-vue-next';
 
-const iconList = [
-  'Tag', 'Home', 'Car', 'UtensilsCrossed', 'ShoppingBag', 'HeartPulse', 
-  'GraduationCap', 'Briefcase', 'Gift', 'Film', 'Plane', 'Phone', 
-  'Bolt', 'PawPrint', 'Landmark', 'Shirt', 'Book', 'Coffee', 
-  'Dumbbell', 'Wrench', 'Baby', 'Pizza', 'Gamepad2', 'Music', 'Receipt',
-  'DollarSign', 'CreditCard', 'PiggyBank', 'Bus', 'Train',
-  'Building', 'Hospital', 'Droplets', 'Wind', 'Sun', 'Moon', 'Cloud',
-  'Laptop', 'Smartphone', 'Tablet', 'Headphones', 'Watch', 'MousePointer',
-  'ShoppingCart', 'Ticket', 'Trophy', 'Users', 'User', 'Key'
-];
+
 
 interface Props {
   modelValue: boolean;

@@ -29,7 +29,7 @@
       :style="{ backgroundColor: category.color + '20' }"
     >
       <!-- @vue-ignore -->
-      <component :is="icons[category.icon] || icons['Tag']" class="w-5 h-5" :style="{ color: category.color }" />
+      <component :is="getIcon(category.icon)" class="w-5 h-5" :style="{ color: category.color }" />
     </div>
 
     <!-- Category Info -->
@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import type { Category } from '@/types/category';
 import { Trash2, TrendingUp, TrendingDown } from 'lucide-vue-next';
-import * as icons from 'lucide-vue-next';
+import { getIcon } from '@/utils/icons';
 
 defineProps({
   category: {

@@ -8,7 +8,7 @@
         :style="{ backgroundColor: transaction.category.color + '20', color: transaction.category.color }"
       >
         <!-- @vue-ignore -->
-        <component :is="icons[transaction.category.icon] || icons['Tag']" class="w-5 h-5" />
+        <component :is="getIcon(transaction.category.icon)" class="w-5 h-5" />
       </div>
 
       <!-- Main Content -->
@@ -75,7 +75,7 @@
 <script setup lang="ts">
 import type { Transaction } from '@/types/transaction';
 import { useConfigStore } from '@/stores/config';
-import * as icons from 'lucide-vue-next';
+import { getIcon } from '@/utils/icons';
 import { NotebookPen, Trash2, TrendingUp, TrendingDown } from 'lucide-vue-next';
 
 defineProps({
