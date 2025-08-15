@@ -144,12 +144,13 @@ import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import WalletCard from '@/components/WalletCard.vue';
-import TransactionItem from '@/components/TransactionItem.vue';
-import type { Wallet, Transaction } from '@/types';
+import WalletCard from '@/components/wallet/WalletCard.vue';
+import TransactionItem from '@/components/transaction/TransactionItem.vue';
+import type { Wallet } from '@/types/wallet';
+import type { Transaction } from '@/types/transaction';
 import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen } from 'lucide-vue-next';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay } from 'date-fns';
-import WalletModal from '@/components/WalletModal.vue';
+import WalletModal from '@/components/wallet/WalletModal.vue';
 
 const route = useRoute();
 const router = useRouter();

@@ -136,10 +136,10 @@ import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { useWalletsStore } from '@/stores/wallets';
 import { useTransactionsStore } from '@/stores/transactions';
 import AppLayout from '@/components/layouts/AppLayout.vue';
-import TransactionModal from '@/components/TransactionModal.vue';
+import TransactionModal from '@/components/transaction/TransactionModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import TransactionItem from '@/components/TransactionItem.vue';
-import type { Transaction } from '@/types';
+import TransactionItem from '@/components/transaction/TransactionItem.vue';
+import type { Transaction } from '@/types/transaction';
 import {
   Plus,
   ArrowUpDown,

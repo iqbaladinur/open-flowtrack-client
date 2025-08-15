@@ -72,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Wallet } from '@/types';
+import type { Wallet } from '@/types/wallet';
 import { useConfigStore } from '@/stores/config';
 import { Edit2, Trash2, TrendingUp, TrendingDown } from 'lucide-vue-next';
 

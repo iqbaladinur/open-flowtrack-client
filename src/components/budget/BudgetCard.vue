@@ -25,7 +25,7 @@
             :style="{ backgroundColor: budget.category.color + '20', color: budget.category.color }"
           >
             <!-- @vue-ignore -->
-            <component :is="icons[budget.category.icon] || icons['Tag']" class="w-4 h-4" />
+            <component :is="getIcon(budget.category.icon)" class="w-4 h-4" />
           </div>
           <div>
             <h3 class="font-bold text-sm text-gray-900 dark:text-white">
@@ -92,11 +92,12 @@ import { ref, computed } from 'vue';
 import type { PropType } from 'vue';
 import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
-import type { Budget, Transaction } from '@/types';
-import * as icons from 'lucide-vue-next';
+import type { Budget } from '@/types/budget';
+import type { Transaction } from '@/types/transaction';
+import { getIcon } from '@/utils/icons';
 import { Trash2, ChevronDown, CalendarDays, NotebookPen } from 'lucide-vue-next';
-import TransactionItem from './TransactionItem.vue';
-import LoadingSpinner from './ui/LoadingSpinner.vue';
+import TransactionItem from '@/components/transaction/TransactionItem.vue';
+import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import { startOfMonth, endOfMonth } from 'date-fns';
 
 const props = defineProps({

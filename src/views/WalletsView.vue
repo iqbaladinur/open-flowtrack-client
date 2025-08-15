@@ -63,10 +63,10 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useWalletsStore } from '@/stores/wallets';
 import AppLayout from '@/components/layouts/AppLayout.vue';
-import WalletModal from '@/components/WalletModal.vue';
+import WalletModal from '@/components/wallet/WalletModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import WalletCard from '@/components/WalletCard.vue';
-import type { Wallet } from '@/types';
+import WalletCard from '@/components/wallet/WalletCard.vue';
+import type { Wallet } from '@/types/wallet';
 import { endOfDay } from 'date-fns';
 import {
   Plus,

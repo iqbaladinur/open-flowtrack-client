@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useApi } from '@/composables/useApi';
-import type { Budget } from '@/types';
+import type { Budget } from '@/types/budget';
 
 export const useBudgetsStore = defineStore('budgets', () => {
   const budgets = ref<Budget[]>([]);

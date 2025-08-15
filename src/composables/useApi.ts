@@ -1,6 +1,6 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { ref } from 'vue';
-import type { ApiResponse } from '@/types';
+import type { ApiResponse } from '@/types/api';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 const VERSION = '/v1'

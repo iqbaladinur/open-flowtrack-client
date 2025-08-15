@@ -73,7 +73,7 @@ import { useWalletsStore } from '@/stores/wallets';
 import { useConfigStore } from '@/stores/config';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import type { Wallet } from '@/types';
+import type { Wallet } from '@/types/wallet';
 
 interface Props {
   modelValue: boolean;

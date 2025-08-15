@@ -72,9 +72,9 @@ import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCategoriesStore } from '@/stores/categories';
 import { useConfigStore } from '@/stores/config';
-import type { Category } from '@/types';
-import CategoryCard from '@/components/CategoryCard.vue';
-import OnboardingSettings from '@/components/OnboardingSettings.vue';
+import type { Category } from '@/types/category';
+import CategoryCard from '@/components/category/CategoryCard.vue';
+import OnboardingSettings from '@/components/onboarding/OnboardingSettings.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 
 const router = useRouter();

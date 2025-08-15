@@ -79,10 +79,10 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { useCategoriesStore } from '@/stores/categories';
 import AppLayout from '@/components/layouts/AppLayout.vue';
-import CategoryModal from '@/components/CategoryModal.vue';
+import CategoryModal from '@/components/category/CategoryModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import CategoryCard from '@/components/CategoryCard.vue';
-import type { Category } from '@/types';
+import CategoryCard from '@/components/category/CategoryCard.vue';
+import type { Category } from '@/types/category';
 import { Plus, Tag, TrendingUp, TrendingDown, LayoutGrid } from 'lucide-vue-next';
 
 const categoriesStore = useCategoriesStore();
