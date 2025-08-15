@@ -5,7 +5,7 @@
     class="flex flex-col items-center p-4 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-primary-500 dark:hover:border-primary-400 transition-colors group"
   >
     <div
-      class="w-10 h-10 rounded-lg flex items-center justify-center mb-2 group-hover:bg-opacity-80 transition-colors"
+      class="w-10 h-10 rounded-xl flex items-center justify-center mb-2 group-hover:bg-opacity-80 transition-colors"
       :class="iconBgClass"
     >
       <slot name="icon"></slot>
