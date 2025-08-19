@@ -59,6 +59,41 @@
           </button>
         </form>
       </div>
+
+      <!-- Date Settings -->
+      <div class="card p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-neon mb-4">
+          Date Settings
+        </h3>
+        <form @submit.prevent="updateDateSettings" class="space-y-4">
+          <div>
+            <label for="firstDayOfMonth" class="label">First Day of Month</label>
+            <input
+              id="firstDayOfMonth"
+              v-model.number="dateSettingsForm.firstDayOfMonth"
+              type="number"
+              min="1"
+              max="28"
+              class="input"
+            />
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              Set the starting day of your financial month (1-28).
+            </p>
+          </div>
+
+          <div v-if="dateSettingsUpdateSuccess" class="p-3 rounded-lg bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800">
+            <p class="text-sm text-success-700 dark:text-success-300">Date settings updated successfully!</p>
+          </div>
+
+          <button
+            type="submit"
+            class="btn-primary"
+            :disabled="!hasDateSettingsChanges"
+          >
+            <span>Save Date Settings</span>
+          </button>
+        </form>
+      </div>
     </div>
   </AppLayout>
 </template>
@@ -71,9 +106,9 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 
 const configStore = useConfigStore();
 
+// --- Currency Settings ---
 const currencyUpdateError = ref('');
 const currencyUpdateSuccess = ref(false);
-
 const currencyForm = reactive({
   currency: 'USD',
   fractions: 2,
@@ -111,6 +146,32 @@ watch(() => configStore.config, (newConfig) => {
   }
 }, { immediate: true });
 
+
+// --- Date Settings ---
+const dateSettingsUpdateSuccess = ref(false);
+const dateSettingsForm = reactive({
+  firstDayOfMonth: 1,
+});
+
+const hasDateSettingsChanges = computed(() => {
+  return dateSettingsForm.firstDayOfMonth !== configStore.firstDayOfMonth;
+});
+
+const updateDateSettings = () => {
+  if (!hasDateSettingsChanges.value) return;
+  configStore.updateFirstDayOfMonth(dateSettingsForm.firstDayOfMonth);
+  dateSettingsUpdateSuccess.value = true;
+  setTimeout(() => {
+    dateSettingsUpdateSuccess.value = false;
+  }, 3000);
+};
+
+watch(() => configStore.firstDayOfMonth, (newDay) => {
+  dateSettingsForm.firstDayOfMonth = newDay;
+}, { immediate: true });
+
+
+// --- Lifecycle Hooks ---
 onMounted(() => {
   if (!configStore.config) {
     configStore.fetchConfig();

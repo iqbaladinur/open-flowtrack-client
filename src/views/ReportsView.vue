@@ -18,7 +18,7 @@
           <button @click="currentView = 'yearly'" :class="['btn', currentView === 'yearly' ? 'btn-primary' : 'btn-secondary']">
             <CalendarClock class="w-4 h-4 mr-2" /> Yearly
           </button>
-          <button @click="currentView = 'custom'" :class="['btn', currentView === 'custom' ? 'btn-primary' : 'btn-secondary']">
+          <button @click="selectCustomView" :class="['btn', currentView === 'custom' ? 'btn-primary' : 'btn-secondary']">
             <SlidersHorizontal class="w-4 h-4 mr-2" /> Custom
           </button>
         </div>
@@ -179,6 +179,7 @@ import TimeSeriesChart from '@/components/reports/TimeSeriesChart.vue';
 import CategoryPieChart from '@/components/reports/CategoryPieChart.vue';
 import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, Wallet, TrendingUp, TrendingDown } from 'lucide-vue-next';
 import type { Transaction } from '@/types/transaction';
+import { format } from 'date-fns';
 
 type ReportView = 'monthly' | 'yearly' | 'custom';
 type AggregationLevel = 'daily' | 'weekly' | 'monthly' | 'yearly';
@@ -424,6 +425,26 @@ const fetchReportData = async () => {
   transactions.value = transactionsStore.transactions;
 
   loading.value = false;
+};
+
+const selectCustomView = () => {
+  const today = new Date();
+  const firstDay = configStore.firstDayOfMonth;
+  
+  let startDate = new Date(today.getFullYear(), today.getMonth(), firstDay);
+
+  if (today.getDate() < firstDay) {
+    startDate.setMonth(startDate.getMonth() - 1);
+  }
+
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + 30);
+
+  selectedDate.custom.start = format(startDate, 'yyyy-MM-dd');
+  selectedDate.custom.end = format(endDate, 'yyyy-MM-dd');
+  
+  customAggregationLevel.value = 'daily';
+  currentView.value = 'custom';
 };
 
 watch([currentView, selectedDate, customAggregationLevel], fetchReportData, { immediate: true, deep: true });

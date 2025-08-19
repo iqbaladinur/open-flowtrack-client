@@ -21,8 +21,12 @@ export const useConfigStore = defineStore('config', () => {
   const loading = ref(false)
   const api = useApi()
 
+  // --- API-based state ---
   const currency = computed(() => config.value?.currency || 'USD')
   const fractions = computed(() => config.value?.fractions || 2)
+
+  // --- LocalStorage-based state ---
+  const firstDayOfMonth = ref(1)
 
   const setConfig = (newConfig: Config) => {
     config.value = newConfig
@@ -39,6 +43,9 @@ export const useConfigStore = defineStore('config', () => {
         localStorage.removeItem('config')
       }
     }
+    
+    const savedDay = localStorage.getItem('firstDayOfMonth');
+    firstDayOfMonth.value = savedDay ? parseInt(savedDay, 10) : 1;
   }
 
   const fetchConfig = async () => {
@@ -69,6 +76,13 @@ export const useConfigStore = defineStore('config', () => {
     }
   }
 
+  const updateFirstDayOfMonth = (day: number) => {
+    if (day >= 1 && day <= 28) {
+      firstDayOfMonth.value = day;
+      localStorage.setItem('firstDayOfMonth', day.toString());
+    }
+  }
+
   const formatCurrency = (amount: number) => {
     const options: Intl.NumberFormatOptions = {
       style: 'currency',
@@ -83,15 +97,20 @@ export const useConfigStore = defineStore('config', () => {
     return new Intl.NumberFormat(locale, options).format(amount)
   }
 
+  // Initialize from storage on store creation
+  loadConfigFromStorage();
+
   return {
     config,
     loading,
     currency,
     fractions,
+    firstDayOfMonth,
     setConfig,
     loadConfigFromStorage,
     fetchConfig,
     updateConfig,
+    updateFirstDayOfMonth,
     formatCurrency
   }
 })

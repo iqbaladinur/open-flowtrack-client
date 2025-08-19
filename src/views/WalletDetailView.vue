@@ -104,6 +104,7 @@
                 <button @click="setFilter('week')" :class="['btn-sm', selectedFilter === 'week' ? 'btn-primary' : 'btn-secondary']">This Week</button>
                 <button @click="setFilter('month')" :class="['btn-sm', selectedFilter === 'month' ? 'btn-primary' : 'btn-secondary']">This Month</button>
                 <button @click="setFilter('year')" :class="['btn-sm', selectedFilter === 'year' ? 'btn-primary' : 'btn-secondary']">This Year</button>
+                <button @click="setFilter('custom')" :class="['btn-sm', selectedFilter === 'custom' ? 'btn-primary' : 'btn-secondary']">Custom</button>
               </div>
             </div>
             <div>
@@ -176,7 +177,7 @@ import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import type { Wallet } from '@/types/wallet';
 import type { Transaction } from '@/types/transaction';
 import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen } from 'lucide-vue-next';
-import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay } from 'date-fns';
+import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay } from 'date-fns';
 import WalletModal from '@/components/wallet/WalletModal.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
 
@@ -239,27 +240,39 @@ const fetchWalletData = async () => {
   }
 };
 
-const setFilter = (filter: 'today' | 'week' | 'month' | 'year' | 'all') => {
+const setFilter = (filter: 'today' | 'week' | 'month' | 'year' | 'all' | 'custom') => {
   selectedFilter.value = filter;
   const today = new Date();
-  today.setHours(7, 0, 0);
+
   switch (filter) {
     case 'today':
-      startDate.value = startOfDay(today).toISOString();
-      endDate.value = endOfDay(today).toISOString();
+      startDate.value = format(startOfDay(today), 'yyyy-MM-dd');
+      endDate.value = format(endOfDay(today), 'yyyy-MM-dd');
       break;
     case 'week':
-      startDate.value = startOfWeek(today).toISOString();
-      endDate.value = endOfWeek(today).toISOString();
+      startDate.value = format(startOfWeek(today), 'yyyy-MM-dd');
+      endDate.value = format(endOfWeek(today), 'yyyy-MM-dd');
       break;
     case 'month':
-      startDate.value = startOfMonth(today).toISOString();
-      endDate.value = endOfMonth(today).toISOString();
+      startDate.value = format(startOfMonth(today), 'yyyy-MM-dd');
+      endDate.value = format(endOfMonth(today), 'yyyy-MM-dd');
       break;
     case 'year':
-      startDate.value = startOfYear(today).toISOString();
-      endDate.value = endOfYear(today).toISOString();
+      startDate.value = format(startOfYear(today), 'yyyy-MM-dd');
+      endDate.value = format(endOfYear(today), 'yyyy-MM-dd');
       break;
+    case 'custom': {
+      const firstDay = configStore.firstDayOfMonth;
+      let customStartDate = new Date(today.getFullYear(), today.getMonth(), firstDay);
+      if (today.getDate() < firstDay) {
+        customStartDate.setMonth(customStartDate.getMonth() - 1);
+      }
+      const customEndDate = new Date(customStartDate);
+      customEndDate.setDate(customStartDate.getDate() + 30);
+      startDate.value = format(customStartDate, 'yyyy-MM-dd');
+      endDate.value = format(customEndDate, 'yyyy-MM-dd');
+      break;
+    }
     case 'all':
       startDate.value = '';
       endDate.value = '';

@@ -141,6 +141,7 @@
 import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { useWalletsStore } from '@/stores/wallets';
 import { useTransactionsStore } from '@/stores/transactions';
+import { useConfigStore } from '@/stores/config';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
@@ -155,10 +156,11 @@ import {
   Wallet,
   RotateCcw,
 } from 'lucide-vue-next';
-import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, endOfDay } from 'date-fns';
+import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, endOfDay, format } from 'date-fns';
 
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
+const configStore = useConfigStore();
 
 const showAddModal = ref(false);
 const showFilters = ref(false); // Show by default for better UX
@@ -215,7 +217,25 @@ const setDateRange = (preset?: 'today' | 'weekly' | 'monthly' | 'yearly') => {
 const toggleCustomDateRange = () => {
   showCustomDateRange.value = !showCustomDateRange.value;
   dateRangePreset.value = showCustomDateRange.value ? 'custom' : null;
-  if (!showCustomDateRange.value) {
+  
+  if (showCustomDateRange.value) {
+    const today = new Date();
+    const firstDay = configStore.firstDayOfMonth;
+    
+    let startDate = new Date(today.getFullYear(), today.getMonth(), firstDay);
+
+    // If today's date is before the first day of this calendar month,
+    // it means we are still in the previous financial month.
+    if (today.getDate() < firstDay) {
+      startDate.setMonth(startDate.getMonth() - 1);
+    }
+
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + 30);
+
+    filters.start_date = format(startDate, 'yyyy-MM-dd');
+    filters.end_date = format(endDate, 'yyyy-MM-dd');
+  } else {
     filters.start_date = '';
     filters.end_date = '';
   }
