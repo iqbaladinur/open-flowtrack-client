@@ -1,6 +1,33 @@
 <template>
   <Modal v-model="isModalOpen" :title="wallet ? 'Edit Wallet' : 'Add Wallet'">
-    <form @submit.prevent="handleSubmit" id="wallet-form" class="space-y-4">
+    <form @submit.prevent="handleSubmit" id="wallet-form" class="space-y-6 pt-4">
+      <!-- Initial Balance -->
+      <div class="text-center">
+        <label for="balance" class="label sr-only">Initial Balance</label>
+        <div class="relative inline-block">
+          <span
+            class="absolute left-4 top-1/2 transform -translate-y-1/2 text-xl text-gray-400 dark:text-gray-500"
+          >
+            {{ configStore.currency }}
+          </span>
+          <input
+            id="balance"
+            v-model.number="form.initial_balance"
+            type="number"
+            step="0.01"
+            required
+            class="w-full bg-transparent text-right text-4xl font-bold pl-14 pr-4 py-4 focus:ring-0 border-none outline-none"
+            placeholder="0.00"
+            :disabled="loading"
+            autofocus
+            autocomplete="off"
+          />
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+          Enter the starting balance for this wallet.
+        </p>
+      </div>
+
       <!-- Wallet Name -->
       <div>
         <label for="name" class="label">Wallet Name</label>
@@ -12,34 +39,15 @@
           class="input"
           placeholder="e.g., Main Bank Account"
           :disabled="loading"
+          autocomplete="off"
         />
       </div>
 
-      <!-- Initial Balance -->
-      <div>
-        <label for="balance" class="label">Initial Balance</label>
-        <div class="relative">
-          <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
-            {{ configStore.currency }}
-          </span>
-          <input
-            id="balance"
-            v-model.number="form.initial_balance"
-            type="number"
-            step="0.01"
-            required
-            class="input pl-12"
-            placeholder="0.00"
-            :disabled="loading"
-          />
-        </div>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          This will be your starting balance for this wallet.
-        </p>
-      </div>
-
       <!-- Error Display -->
-      <div v-if="error" class="p-3 rounded-lg bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800">
+      <div
+        v-if="error"
+        class="p-3 rounded-lg bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800"
+      >
         <p class="text-sm text-error-700 dark:text-error-300">{{ error }}</p>
       </div>
     </form>
