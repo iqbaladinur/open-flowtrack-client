@@ -345,7 +345,7 @@ const summary = computed(() => {
 
 const categoryChartData = computed(() => {
   const categoryTotals = new Map<string, { name: string, color: string, total: number }>();
-  
+
   transactions.value
     .filter(t => t.type === categoryReportType.value)
     .forEach(t => {
@@ -359,9 +359,13 @@ const categoryChartData = computed(() => {
     });
 
   const sortedCategories = Array.from(categoryTotals.values()).sort((a, b) => b.total - a.total);
+  const totalAmount = sortedCategories.reduce((sum, cat) => sum + cat.total, 0);
 
   return {
-    labels: sortedCategories.map(c => c.name),
+    labels: sortedCategories.map(c => {
+      const percentage = totalAmount > 0 ? ((c.total / totalAmount) * 100).toFixed(1) : '0.0';
+      return `${c.name} (${percentage}%)`;
+    }),
     datasets: [{
       data: sortedCategories.map(c => c.total),
       backgroundColor: sortedCategories.map(c => `${c.color}CC`), // Append alpha value
