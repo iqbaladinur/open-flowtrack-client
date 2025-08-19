@@ -14,7 +14,7 @@
             <Filter class="w-4 h-4 mr-2" />
             {{ showFilters ? 'Hide' : 'Show' }} Filters
           </button>
-          <button @click="showAddModal = true" class="btn-primary">
+          <button @click="showAddModal = true" class="btn-primary hidden sm:flex">
             <Plus class="w-4 h-4 mr-2" />
             Add Transaction
           </button>
@@ -121,6 +121,12 @@
         </div>
       </div>
     </div>
+
+    <!-- Floating Add Button for Mobile -->
+    <button @click="showAddModal = true" class="sm:hidden fixed bottom-[70px] right-6 z-[20] btn-primary rounded-full p-4 shadow-lg flex items-center justify-center">
+      <Plus class="w-6 h-6" />
+      <span class="sr-only">Add Transaction</span>
+    </button>
 
     <!-- Add/Edit Transaction Modal -->
     <TransactionModal
