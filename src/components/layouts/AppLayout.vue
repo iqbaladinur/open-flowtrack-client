@@ -52,33 +52,39 @@
     </header>
 
     <!-- Desktop Sidebar -->
-    <aside class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
+    <aside class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:flex lg:flex-col transition-all duration-300 ease-in-out" :class="uiStore.isSidebarMinimized ? 'lg:w-20' : 'lg:w-64'">
+      <button @click="uiStore.toggleSidebar" class="absolute top-6 -right-3 z-10 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-full p-1 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+        <ChevronsLeft class="w-4 h-4 transition-transform duration-300" :class="uiStore.isSidebarMinimized && 'rotate-180'" />
+      </button>
       <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 px-6">
-        <div class="flex h-16 shrink-0 items-center">
+        <div class="flex h-16 shrink-0 items-center" :class="uiStore.isSidebarMinimized && 'justify-center'">
           <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 bg-green-600/30 rounded-lg flex items-center justify-center">
+            <div class="w-8 h-8 bg-green-600/30 rounded-lg flex items-center justify-center shrink-0">
               <TrendingUpDown class="w-5 h-5 text-white" />
             </div>
-            <h1 class="text-xl font-bold text-gray-900 dark:text-neon">FlowTrack</h1>
+            <h1 v-show="!uiStore.isSidebarMinimized" class="text-xl font-bold text-gray-900 dark:text-neon">FlowTrack</h1>
           </div>
         </div>
         <nav class="flex flex-1 flex-col">
           <ul role="list" class="flex flex-1 flex-col gap-y-7">
             <li>
               <ul role="list" class="-mx-2 space-y-1">
-                <li v-for="item in navigation" :key="item.name">
-                  <router-link :to="item.to" class="group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold" :class="$route.name?.toString()?.toLocaleLowerCase() === item.name?.toLocaleLowerCase() ? 'bg-gray-100 dark:bg-gray-700 text-primary-600 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-primary-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700'">
+                <li v-for="item in navigation" :key="item.name" :title="item.name">
+                  <router-link :to="item.to" class="group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold" :class="[
+                    $route.name?.toString()?.toLocaleLowerCase() === item.name?.toLocaleLowerCase() ? 'bg-gray-100 dark:bg-gray-700 text-primary-600 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-primary-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700',
+                    uiStore.isSidebarMinimized && 'justify-center'
+                  ]">
                     <component :is="item.icon" class="h-5 w-5 shrink-0" />
-                    {{ item.name }}
+                    <span v-show="!uiStore.isSidebarMinimized" class="truncate">{{ item.name }}</span>
                   </router-link>
                 </li>
               </ul>
             </li>
             
             <li class="-mx-6 mt-auto">
-              <div class="border-t border-gray-200 dark:border-gray-700 py-4 px-6">
-                <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Theme</p>
-                <div class="flex justify-around p-1 rounded-lg bg-gray-100 dark:bg-gray-700/50">
+              <div class="border-t border-gray-200 dark:border-gray-700 py-4" :class="uiStore.isSidebarMinimized ? 'px-4' : 'px-6'">
+                <p v-show="!uiStore.isSidebarMinimized" class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Theme</p>
+                <div class="flex p-1 rounded-lg bg-gray-100 dark:bg-gray-700/50" :class="uiStore.isSidebarMinimized ? 'flex-col space-y-1' : 'justify-around'">
                   <button @click="themeStore.setTheme('light')" class="p-2 rounded-md flex-1 text-center" :class="{ 'bg-white dark:bg-gray-600 shadow': themeStore.theme === 'light' }">
                     <Sun class="w-5 h-5 text-gray-700 dark:text-gray-300 mx-auto" />
                   </button>
@@ -90,17 +96,16 @@
                   </button>
                 </div>
               </div>
-              <div class="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-700">
-                <div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+              <div class="flex items-center gap-x-4 py-3 text-sm font-semibold leading-6 text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-700" :class="uiStore.isSidebarMinimized ? 'justify-center px-2' : 'px-6'">
+                <div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center shrink-0">
                   <User class="w-4 h-4 text-gray-600 dark:text-gray-300" />
                 </div>
-                <span class="sr-only">Your profile</span>
-                <div class="flex-1 min-w-0">
+                <div v-show="!uiStore.isSidebarMinimized" class="flex-1 min-w-0">
                   <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
                     {{ authStore.user?.full_name || authStore.user?.email }}
                   </p>
                 </div>
-                <button @click="logout" class="p-2 -mr-2 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                <button v-show="!uiStore.isSidebarMinimized" @click="logout" class="p-2 -mr-2 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                   <LogOut class="w-5 h-5" />
                 </button>
               </div>
@@ -111,7 +116,7 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="lg:pl-64">
+    <main class="transition-all duration-300 ease-in-out" :class="uiStore.isSidebarMinimized ? 'lg:pl-20' : 'lg:pl-64'">
       <div class="pt-16 pb-24 lg:pt-0 lg:pb-0">
         <slot />
       </div>
@@ -191,6 +196,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { useThemeStore } from '@/stores/theme';
+import { useUIStore } from '@/stores/ui';
 import { 
   User, 
   LogOut, 
@@ -207,12 +213,14 @@ import {
   TrendingUpDown,
   Database,
   Settings,
+  ChevronsLeft,
 } from 'lucide-vue-next';
 
 const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
 const themeStore = useThemeStore();
+const uiStore = useUIStore();
 const showProfileMenu = ref(false);
 const showMoreMenu = ref(false);
 
