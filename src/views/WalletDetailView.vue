@@ -75,8 +75,18 @@
           </div>
         </div>
 
-        <!-- Filter Toggle Button -->
-        <div class="flex justify-end">
+        <!-- Action Buttons -->
+        <div class="flex justify-end items-center gap-2">
+          <div class="hidden sm:flex items-center gap-2">
+            <button @click="openTransactionModal('income')" class="btn btn-success">
+              <TrendingUp class="w-4 h-4 mr-2" />
+              <span>Income</span>
+            </button>
+            <button @click="openTransactionModal('expense')" class="btn btn-error">
+              <TrendingDown class="w-4 h-4 mr-2" />
+              <span>Expense</span>
+            </button>
+          </div>
           <button @click="showFilters = !showFilters" class="btn btn-primary">
             <Filter class="w-4 h-4 mr-2" />
             <span>{{ showFilters ? 'Hide' : 'Show' }} Filters</span>
@@ -129,10 +139,27 @@
       </div>
     </div>
   </AppLayout>
+  <!-- Floating Action Buttons for Mobile -->
+  <div class="sm:hidden fixed bottom-[70px] right-6 z-[20] flex flex-col gap-3">
+    <button @click="openTransactionModal('income')" class="btn-success rounded-full p-3 shadow-lg flex items-center justify-center">
+      <TrendingUp class="w-5 h-5" />
+      <span class="sr-only">Add Income</span>
+    </button>
+    <button @click="openTransactionModal('expense')" class="btn-error rounded-full p-3 shadow-lg flex items-center justify-center">
+      <TrendingDown class="w-5 h-5" />
+      <span class="sr-only">Add Expense</span>
+    </button>
+  </div>
   <WalletModal
     v-model="showModal"
     :wallet="selectedWallet"
     @success="handleWalletSaved"
+  />
+  <TransactionModal
+    v-model="showTransactionModal"
+    :type="transactionType"
+    :wallet-id="walletId"
+    @success="handleTransactionSaved"
   />
 </template>
 
@@ -151,6 +178,7 @@ import type { Transaction } from '@/types/transaction';
 import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen } from 'lucide-vue-next';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay } from 'date-fns';
 import WalletModal from '@/components/wallet/WalletModal.vue';
+import TransactionModal from '@/components/transaction/TransactionModal.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -162,6 +190,8 @@ const walletId = ref(route.params.id as string);
 const wallet = ref<Wallet | null>(null);
 const selectedWallet = ref<Wallet | null>(null);
 const showModal = ref<boolean>(false);
+const showTransactionModal = ref<boolean>(false);
+const transactionType = ref<'income' | 'expense'>('expense');
 const loading = ref(true);
 const showFilters = ref(false);
 
@@ -246,6 +276,16 @@ watch([startDate, endDate], fetchWalletData, { immediate: true });
 const handleWalletSaved = async () => {
   showModal.value = false;
   await fetchWalletData();
+}
+
+const handleTransactionSaved = async () => {
+  showTransactionModal.value = false;
+  await fetchWalletData();
+}
+
+const openTransactionModal = (type: 'income' | 'expense') => {
+  transactionType.value = type;
+  showTransactionModal.value = true;
 }
 
 const editWallet = () => {

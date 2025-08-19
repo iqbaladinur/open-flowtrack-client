@@ -1,5 +1,5 @@
 <template>
-  <Modal v-model="isModalOpen" :title="transaction ? 'Edit Transaction' : 'Add Transaction'">
+  <Modal v-model="isModalOpen" :title="modalTitle">
     <form @submit.prevent="handleSubmit" id="transaction-form" class="space-y-6 pt-4">
       <!-- Amount -->
       <div class="text-center">
@@ -214,10 +214,12 @@ interface Props {
   modelValue: boolean;
   transaction?: Transaction | null;
   type?: 'income' | 'expense';
+  walletId?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   transaction: null,
+  walletId: '',
 });
 
 const emit = defineEmits<{
@@ -234,6 +236,19 @@ const walletsStore = useWalletsStore();
 const categoriesStore = useCategoriesStore();
 const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
+
+const modalTitle = computed(() => {
+  if (props.transaction) {
+    return 'Edit Transaction';
+  }
+  if (props.type === 'income') {
+    return 'Add Income';
+  }
+  if (props.type === 'expense') {
+    return 'Add Expense';
+  }
+  return 'Add Transaction';
+});
 
 const loading = ref(false);
 const error = ref('');
@@ -312,22 +327,32 @@ const resetForm = () => {
 };
 
 // Watch for transaction changes to populate form
-watch(() => props.transaction, (newTransaction) => {
-  if (newTransaction) {
+watch(() => props.modelValue, (isOpen) => {
+  if (!isOpen) return;
+
+  if (props.transaction) {
+    // Editing mode: populate form from transaction prop
     Object.assign(form, {
-      type: newTransaction.type,
-      amount: newTransaction.amount,
-      wallet_id: newTransaction.wallet_id,
-      category_id: newTransaction.category_id,
-      date: format(new Date(newTransaction.date), 'yyyy-MM-dd'),
-      note: newTransaction.note || '',
-      is_recurring: newTransaction.is_recurring,
-      recurring_pattern: newTransaction.recurring_pattern || 'monthly',
+      type: props.transaction.type,
+      amount: props.transaction.amount,
+      wallet_id: props.transaction.wallet_id,
+      category_id: props.transaction.category_id,
+      date: format(new Date(props.transaction.date), 'yyyy-MM-dd'),
+      note: props.transaction.note || '',
+      is_recurring: props.transaction.is_recurring,
+      recurring_pattern: props.transaction.recurring_pattern || 'monthly',
     });
   } else {
+    // New transaction mode: reset and pre-fill
     resetForm();
+    if (props.walletId) {
+      form.wallet_id = props.walletId;
+    }
+    if (props.type) {
+      form.type = props.type;
+    }
   }
-}, { immediate: true });
+});
 
 watch(() => props.type, (newType) => {
   if (newType) {
