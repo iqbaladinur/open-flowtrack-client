@@ -1,6 +1,31 @@
 <template>
   <Modal v-model="isModalOpen" :title="budget ? 'Edit Budget' : 'Create Budget'">
     <form @submit.prevent="handleSubmit" id="budget-form" class="space-y-4">
+      <div class="text-center">
+        <label for="limit" class="label sr-only">Budget Limit</label>
+        <div class="relative inline-block">
+          <span
+            class="absolute left-4 top-1/2 transform -translate-y-1/2 text-xl text-gray-400 dark:text-gray-500"
+          >
+            {{ configStore.currency }}
+          </span>
+          <input
+            id="limit"
+            v-model.number="form.limit_amount"
+            type="number"
+            step="0.01"
+            required
+            class="w-full bg-transparent text-right text-4xl font-bold pl-14 pr-4 py-4 focus:ring-0 border-none outline-none"
+            placeholder="0.00"
+            :disabled="loading"
+            autofocus
+            autocomplete="off"
+          />
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+          Enter the limit for this budget.
+        </p>
+      </div>
       <!-- Category -->
       <div>
         <label for="category" class="label">Category</label>
@@ -23,27 +48,6 @@
         <p v-if="budget" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
           Category cannot be changed when editing a budget.
         </p>
-      </div>
-
-      <!-- Budget Limit -->
-      <div>
-        <label for="limit" class="label">Budget Limit</label>
-        <div class="relative">
-          <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
-            {{ configStore.currency }}
-          </span>
-          <input
-            id="limit"
-            v-model.number="form.limit_amount"
-            type="number"
-            step="0.01"
-            min="0"
-            required
-            class="input pl-12"
-            placeholder="0.00"
-            :disabled="loading"
-          />
-        </div>
       </div>
 
       <!-- Month and Year -->
@@ -243,7 +247,7 @@ watch(() => props.budget, (newBudget) => {
   if (newBudget) {
     Object.assign(form, {
       category_id: newBudget.category_id,
-      limit_amount: newBudget.limit_amount || 0,
+      limit_amount: Number(newBudget.limit_amount) || 0,
       month: newBudget.month,
       year: newBudget.year,
     });
