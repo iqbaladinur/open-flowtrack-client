@@ -299,7 +299,8 @@ watch(
 );
 
 onMounted(async () => {
-  getTransactions(filters);
+  // getTransactions(filters);
+  toggleCustomDateRange();
   const today = endOfDay(new Date());
   await Promise.all([
     walletsStore.fetchWallets(true, undefined, today.toISOString()),
