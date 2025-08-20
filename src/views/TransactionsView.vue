@@ -14,6 +14,10 @@
             <Filter class="w-4 h-4 mr-2" />
             {{ showFilters ? 'Hide' : 'Show' }} Filters
           </button>
+          <button @click="exportToJson" class="btn-secondary">
+            <Download class="w-4 h-4 mr-2" />
+            Export
+          </button>
           <button @click="showAddModal = true" class="btn-primary hidden sm:flex">
             <Plus class="w-4 h-4 mr-2" />
             Add Transaction
@@ -155,6 +159,7 @@ import {
   Filter,
   Wallet,
   RotateCcw,
+  Download
 } from 'lucide-vue-next';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, endOfDay, format } from 'date-fns';
 
@@ -243,6 +248,37 @@ const toggleCustomDateRange = () => {
 
 const onCustomDateChange = () => {
   dateRangePreset.value = 'custom';
+};
+
+const exportToJson = () => {
+  const data = transactions.value;
+  if (data.length === 0) {
+    alert('No transactions to export.');
+    return;
+  }
+
+  const dataStr = JSON.stringify(data, null, 2);
+  const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+
+  let filename = 'transactions';
+  const startDate = filters.start_date ? format(new Date(filters.start_date), 'yyyy-MM-dd') : '';
+  const endDate = filters.end_date ? format(new Date(filters.end_date), 'yyyy-MM-dd') : '';
+
+  if (startDate && endDate) {
+    filename += `_${startDate}_to_${endDate}`;
+  } else if (startDate) {
+    filename += `_from_${startDate}`;
+  } else if (endDate) {
+    filename += `_until_${endDate}`;
+  } else {
+    filename += '_all';
+  }
+  filename += '.json';
+
+  const linkElement = document.createElement('a');
+  linkElement.setAttribute('href', dataUri);
+  linkElement.setAttribute('download', filename);
+  linkElement.click();
 };
 
 const resetFilters = () => {

@@ -9,10 +9,16 @@
             Manage your accounts and balances
           </p>
         </div>
-        <button @click="showAddModal = true" class="btn-primary hidden sm:flex">
-          <Plus class="w-4 h-4 mr-2" />
-          Add Wallet
-        </button>
+        <div class="flex items-center gap-2">
+          <button @click="exportToJson" class="btn-secondary flex">
+            <Download class="w-4 h-4 mr-2" />
+            Export
+          </button>
+          <button @click="showAddModal = true" class="btn-primary hidden sm:flex">
+            <Plus class="w-4 h-4 mr-2" />
+            Add Wallet
+          </button>
+        </div>
       </div>
 
       <!-- Wallets Grid -->
@@ -73,10 +79,11 @@ import WalletModal from '@/components/wallet/WalletModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import WalletCard from '@/components/wallet/WalletCard.vue';
 import type { Wallet } from '@/types/wallet';
-import { endOfDay } from 'date-fns';
+import { endOfDay, format } from 'date-fns';
 import {
   Plus,
   Wallet as WalletIcon,
+  Download,
 } from 'lucide-vue-next';
 
 const walletsStore = useWalletsStore();
@@ -94,6 +101,25 @@ const wallets = computed(() => {
 const handleWalletSaved = () => {
   showAddModal.value = false;
   getWalletsData();
+};
+
+const exportToJson = () => {
+  const data = wallets.value;
+  if (data.length === 0) {
+    alert('No wallets to export.');
+    return;
+  }
+
+  const dataStr = JSON.stringify(data, null, 2);
+  const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+
+  const today = format(new Date(), 'yyyy-MM-dd');
+  const filename = `wallets_${today}.json`;
+
+  const linkElement = document.createElement('a');
+  linkElement.setAttribute('href', dataUri);
+  linkElement.setAttribute('download', filename);
+  linkElement.click();
 };
 
 const goToWalletDetail = (walletId: string) => {
