@@ -10,16 +10,10 @@
           </div>
         </router-link>
         <div class="flex items-center space-x-2 justify-center my-2">
-          <button
-            @click="editWallet()"
-            class="p-2 text-gray-600 dark:text-white rounded-full"
-          >
+          <button @click="editWallet()" class="p-2 text-gray-600 dark:text-white rounded-full">
             <NotebookPen class="w-4 h-4" />
           </button>
-          <button
-            @click="deleteWallet()"
-            class="p-2 text-gray-600 dark:text-white rounded-full"
-          >
+          <button @click="deleteWallet()" class="p-2 text-gray-600 dark:text-white rounded-full">
             <Trash2 class="w-4 h-4" />
           </button>
         </div>
@@ -44,17 +38,24 @@
       <!-- Content -->
       <div v-else class="space-y-6">
         <!-- Wallet Card -->
-        <WalletCard
-          :wallet="wallet"
-          :enableActions="false"
-        />
+        <div class="pb-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="font-semibold text-gray-800 dark:text-white text-sm">Wallet Period</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ walletEndDate }}</p>
+        </div>
+        <WalletCard :wallet="wallet" :enableActions="false" />
 
         <!-- Period Summary -->
-        <div class="flex sm:grid sm:grid-cols-4 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div class="pb-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="font-semibold text-gray-800 dark:text-white text-sm">This Period Recap</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ dateRangeSubtitle }}</p>
+        </div>
+        <div
+          class="flex sm:grid sm:grid-cols-3 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
           <!-- Income -->
           <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 sm:ml-0">
             <div class="flex flex-col h-full">
-              <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-success-100 dark:bg-success-900/50 mb-3">
+              <div
+                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-success-100 dark:bg-success-900/50 mb-3">
                 <TrendingUp class="w-4 h-4 text-success-600 dark:text-success-400" />
               </div>
               <div class="mt-auto">
@@ -69,7 +70,8 @@
           <!-- Expense -->
           <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
             <div class="flex flex-col h-full">
-              <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-error-100 dark:bg-error-900/50 mb-3">
+              <div
+                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-error-100 dark:bg-error-900/50 mb-3">
                 <TrendingDown class="w-4 h-4 text-error-600 dark:text-error-400" />
               </div>
               <div class="mt-auto">
@@ -84,19 +86,17 @@
           <!-- Net Income -->
           <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
             <div class="flex flex-col h-full">
-              <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-warning-100 dark:bg-warning-900/50 mb-3">
+              <div
+                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-warning-100 dark:bg-warning-900/50 mb-3">
                 <BarChart3 class="w-4 h-4 text-warning-600 dark:text-warning-400" />
               </div>
               <div class="mt-auto">
                 <p class="text-xs text-gray-500 dark:text-gray-400">Net Income</p>
-                <p 
-                  class="text-xs font-medium font-mono"
-                  :class="{
-                    'text-success-600 dark:text-success-400': netIncome > 0,
-                    'text-gray-800 dark:text-gray-200': netIncome === 0,
-                    'text-error-600 dark:text-error-400': netIncome < 0,
-                  }"
-                >
+                <p class="text-xs font-medium font-mono" :class="{
+                  'text-success-600 dark:text-success-400': netIncome > 0,
+                  'text-gray-800 dark:text-gray-200': netIncome === 0,
+                  'text-error-600 dark:text-error-400': netIncome < 0,
+                }">
                   {{ netIncome >= 0 ? '+' : '' }}{{ configStore.formatCurrency(netIncome) }}
                 </p>
               </div>
@@ -116,6 +116,14 @@
               <span>Expense</span>
             </button>
           </div>
+          <button @click="showCategoryFilterModal = true" class="btn btn-secondary">
+            <FilterX class="w-4 h-4 mr-2" />
+            <span>Exclude Categories</span>
+            <span v-if="excludedCategoryIds.length > 0"
+              class="ml-2 px-2 py-0.5 bg-primary-100 text-primary-800 dark:bg-primary-900/50 dark:text-primary-300 text-xs rounded-full">
+              {{ excludedCategoryIds.length }}
+            </span>
+          </button>
           <button @click="showFilters = !showFilters" class="btn btn-primary">
             <Filter class="w-4 h-4 mr-2" />
             <span>{{ showFilters ? 'Hide' : 'Show' }} Filters</span>
@@ -128,20 +136,29 @@
             <div>
               <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Quick Select</label>
               <div class="flex flex-wrap items-center gap-2 mt-2">
-                <button @click="setFilter('all')" :class="['btn-sm', selectedFilter === 'all' ? 'btn-primary' : 'btn-secondary']">All Time</button>
-                <button @click="setFilter('today')" :class="['btn-sm', selectedFilter === 'today' ? 'btn-primary' : 'btn-secondary']">Today</button>
-                <button @click="setFilter('week')" :class="['btn-sm', selectedFilter === 'week' ? 'btn-primary' : 'btn-secondary']">This Week</button>
-                <button @click="setFilter('month')" :class="['btn-sm', selectedFilter === 'month' ? 'btn-primary' : 'btn-secondary']">This Month</button>
-                <button @click="setFilter('year')" :class="['btn-sm', selectedFilter === 'year' ? 'btn-primary' : 'btn-secondary']">This Year</button>
-                <button @click="setFilter('custom')" :class="['btn-sm', selectedFilter === 'custom' ? 'btn-primary' : 'btn-secondary']">Custom Period</button>
+                <button @click="setFilter('all')"
+                  :class="['btn-sm', selectedFilter === 'all' ? 'btn-primary' : 'btn-secondary']">All Time</button>
+                <button @click="setFilter('today')"
+                  :class="['btn-sm', selectedFilter === 'today' ? 'btn-primary' : 'btn-secondary']">Today</button>
+                <button @click="setFilter('week')"
+                  :class="['btn-sm', selectedFilter === 'week' ? 'btn-primary' : 'btn-secondary']">This Week</button>
+                <button @click="setFilter('month')"
+                  :class="['btn-sm', selectedFilter === 'month' ? 'btn-primary' : 'btn-secondary']">This Month</button>
+                <button @click="setFilter('year')"
+                  :class="['btn-sm', selectedFilter === 'year' ? 'btn-primary' : 'btn-secondary']">This Year</button>
+                <button @click="setFilter('custom')"
+                  :class="['btn-sm', selectedFilter === 'custom' ? 'btn-primary' : 'btn-secondary']">Custom
+                  Period</button>
               </div>
             </div>
             <div v-show="selectedFilter === 'custom'">
               <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Custom Range</label>
               <div class="flex flex-col sm:flex-row items-center gap-2 mt-2">
-                <input type="date" v-model="startDate" @change="setCustomFilter" class="input w-full" placeholder="Start Date" />
+                <input type="date" v-model="startDate" @change="setCustomFilter" class="input w-full"
+                  placeholder="Start Date" />
                 <span class="text-gray-500 hidden sm:block">-</span>
-                <input type="date" v-model="endDate" @change="setCustomFilter" class="input w-full" placeholder="End Date" />
+                <input type="date" v-model="endDate" @change="setCustomFilter" class="input w-full"
+                  placeholder="End Date" />
               </div>
             </div>
           </div>
@@ -156,12 +173,13 @@
           <div v-if="transactionsStore.loading" class="p-8">
             <LoadingSpinner />
           </div>
-          <div v-else-if="transactions.length === 0" class="p-8 text-center">
+          <div v-else-if="filteredTransactions.length === 0" class="p-8 text-center">
             <p class="text-gray-500 dark:text-gray-400">No transactions found for the selected period.</p>
           </div>
           <div v-else>
             <ul>
-              <li v-for="transaction in transactions" :key="transaction.id" class="border-b border-gray-200 dark:border-gray-700 last:border-b-0">
+              <li v-for="transaction in filteredTransactions" :key="transaction.id"
+                class="border-b border-gray-200 dark:border-gray-700 last:border-b-0">
                 <TransactionItem :transaction="transaction" />
               </li>
             </ul>
@@ -172,26 +190,22 @@
   </AppLayout>
   <!-- Floating Action Buttons for Mobile -->
   <div class="sm:hidden fixed bottom-[70px] right-6 z-[20] flex flex-col gap-3">
-    <button @click="openTransactionModal('income')" class="btn-success rounded-full p-3 shadow-lg flex items-center justify-center">
+    <button @click="openTransactionModal('income')"
+      class="btn-success rounded-full p-3 shadow-lg flex items-center justify-center">
       <TrendingUp class="w-5 h-5" />
       <span class="sr-only">Add Income</span>
     </button>
-    <button @click="openTransactionModal('expense')" class="btn-error rounded-full p-3 shadow-lg flex items-center justify-center">
+    <button @click="openTransactionModal('expense')"
+      class="btn-error rounded-full p-3 shadow-lg flex items-center justify-center">
       <TrendingDown class="w-5 h-5" />
       <span class="sr-only">Add Expense</span>
     </button>
   </div>
-  <WalletModal
-    v-model="showModal"
-    :wallet="selectedWallet"
-    @success="handleWalletSaved"
-  />
-  <TransactionModal
-    v-model="showTransactionModal"
-    :type="transactionType"
-    :wallet-id="walletId"
-    @success="handleTransactionSaved"
-  />
+  <WalletModal v-model="showModal" :wallet="selectedWallet" @success="handleWalletSaved" />
+  <TransactionModal v-model="showTransactionModal" :type="transactionType" :wallet-id="walletId"
+    @success="handleTransactionSaved" />
+  <CategoryFilterModal v-model="showCategoryFilterModal" :categories="categories"
+    :excluded-categories="excludedCategoryIds" @update:excluded-categories="excludedCategoryIds = $event" />
 </template>
 
 <script setup lang="ts">
@@ -200,22 +214,25 @@ import { useRoute, useRouter } from 'vue-router';
 import { useWalletsStore } from '@/stores/wallets';
 import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
+import { useCategoriesStore } from '@/stores/categories';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import WalletCard from '@/components/wallet/WalletCard.vue';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import type { Wallet } from '@/types/wallet';
 import type { Transaction } from '@/types/transaction';
-import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, BarChart3 } from 'lucide-vue-next';
+import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, BarChart3, FilterX } from 'lucide-vue-next';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay, parseISO } from 'date-fns';
 import WalletModal from '@/components/wallet/WalletModal.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
+import CategoryFilterModal from '@/components/category/CategoryFilterModal.vue';
 
 const route = useRoute();
 const router = useRouter();
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
+const categoriesStore = useCategoriesStore();
 
 const walletId = ref(route.params.id as string);
 const wallet = ref<Wallet | null>(null);
@@ -225,21 +242,34 @@ const showTransactionModal = ref<boolean>(false);
 const transactionType = ref<'income' | 'expense'>('expense');
 const loading = ref(true);
 const showFilters = ref(false);
+const showCategoryFilterModal = ref(false);
+const excludedCategoryIds = ref<string[]>([]);
 
 const selectedFilter = ref('all');
 const startDate = ref('');
 const endDate = ref('');
 
-const transactions = computed<Transaction[]>(() => transactionsStore.transactions);
+const categories = computed(() => categoriesStore.categories);
+
+const filteredTransactions = computed<Transaction[]>(() => {
+  const allTransactions = transactionsStore.transactions;
+  if (excludedCategoryIds.value.length === 0) {
+    return allTransactions;
+  }
+  return allTransactions.filter(t => {
+    // Keep transactions without a category or if their category is not in the excluded list
+    return !t.category_id || !excludedCategoryIds.value.includes(t.category_id);
+  });
+});
 
 const periodIncome = computed(() => {
-  return transactions.value
+  return filteredTransactions.value
     .filter(t => t.type === 'income')
     .reduce((sum, t) => sum + t.amount, 0);
 });
 
 const periodExpense = computed(() => {
-  return transactions.value
+  return filteredTransactions.value
     .filter(t => t.type === 'expense')
     .reduce((sum, t) => sum + t.amount, 0);
 });
@@ -276,10 +306,18 @@ const dateRangeSubtitle = computed(() => {
   return 'All Time';
 });
 
+const walletEndDate = computed(() => {
+  if (endDate.value) {
+    return 'Until ' + format(parseISO(endDate.value), 'dd MMM yyyy');
+  }
+
+  return 'All Time';
+})
+
 const fetchWalletData = async () => {
   loading.value = true;
   try {
-    const dateRange:{ start_date?: string, end_date?: string} = {};
+    const dateRange: { start_date?: string, end_date?: string } = {};
     if (startDate.value) {
       dateRange.start_date = startDate.value;
     }
@@ -381,6 +419,7 @@ const deleteWallet = async () => {
 };
 
 onMounted(() => {
+  categoriesStore.fetchCategories();
   const defaultFilter = configStore.firstDayOfMonth === 1 ? 'all' : 'custom';
   setFilter(defaultFilter); // Set initial filter and fetch data
 });
