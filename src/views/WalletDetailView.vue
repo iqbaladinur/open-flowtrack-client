@@ -133,10 +133,10 @@
                 <button @click="setFilter('week')" :class="['btn-sm', selectedFilter === 'week' ? 'btn-primary' : 'btn-secondary']">This Week</button>
                 <button @click="setFilter('month')" :class="['btn-sm', selectedFilter === 'month' ? 'btn-primary' : 'btn-secondary']">This Month</button>
                 <button @click="setFilter('year')" :class="['btn-sm', selectedFilter === 'year' ? 'btn-primary' : 'btn-secondary']">This Year</button>
-                <button @click="setFilter('custom')" :class="['btn-sm', selectedFilter === 'custom' ? 'btn-primary' : 'btn-secondary']">Custom</button>
+                <button @click="setFilter('custom')" :class="['btn-sm', selectedFilter === 'custom' ? 'btn-primary' : 'btn-secondary']">Custom Period</button>
               </div>
             </div>
-            <div>
+            <div v-show="selectedFilter === 'custom'">
               <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Custom Range</label>
               <div class="flex flex-col sm:flex-row items-center gap-2 mt-2">
                 <input type="date" v-model="startDate" @change="setCustomFilter" class="input w-full" placeholder="Start Date" />
@@ -317,7 +317,7 @@ const setCustomFilter = () => {
   // The watch effect will trigger the data fetch
 }
 
-watch([startDate, endDate], fetchWalletData, { immediate: true });
+watch([startDate, endDate], fetchWalletData, { immediate: false });
 
 const handleWalletSaved = async () => {
   showModal.value = false;
@@ -352,6 +352,7 @@ const deleteWallet = async () => {
 };
 
 onMounted(() => {
-  setFilter('all'); // Set initial filter and fetch data
+  const defaultFilter = configStore.firstDayOfMonth === 1 ? 'all' : 'custom';
+  setFilter(defaultFilter); // Set initial filter and fetch data
 });
 </script>
