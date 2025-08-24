@@ -50,27 +50,56 @@
         />
 
         <!-- Period Summary -->
-        <div class="grid grid-cols-2 gap-4">
-          <div class="card p-4 flex items-center flex-col gap-4 justify-center">
-            <div class="p-2 bg-success-100 dark:bg-success-900/50 rounded-full">
-              <TrendingUp class="w-4 h-4 text-success-600 dark:text-success-400" />
-            </div>
-            <div>
-              <p class="text-xs text-gray-500 dark:text-gray-400 text-center">Income</p>
-              <p class="text-xs font-semibold text-success-600 dark:text-success-400">
-                {{ configStore.formatCurrency(periodIncome) }}
-              </p>
+        <div class="flex sm:grid sm:grid-cols-4 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <!-- Income -->
+          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 sm:ml-0">
+            <div class="flex flex-col h-full">
+              <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-success-100 dark:bg-success-900/50 mb-3">
+                <TrendingUp class="w-4 h-4 text-success-600 dark:text-success-400" />
+              </div>
+              <div class="mt-auto">
+                <p class="text-xs text-gray-500 dark:text-gray-400">Income</p>
+                <p class="text-xs font-medium text-success-600 dark:text-success-400 font-mono">
+                  {{ configStore.formatCurrency(periodIncome) }}
+                </p>
+              </div>
             </div>
           </div>
-          <div class="card p-4 flex items-center flex-col gap-4 justify-center">
-            <div class="p-2 bg-error-100 dark:bg-error-900/50 rounded-full">
-              <TrendingDown class="w-4 h-4 text-error-600 dark:text-error-400" />
+
+          <!-- Expense -->
+          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
+            <div class="flex flex-col h-full">
+              <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-error-100 dark:bg-error-900/50 mb-3">
+                <TrendingDown class="w-4 h-4 text-error-600 dark:text-error-400" />
+              </div>
+              <div class="mt-auto">
+                <p class="text-xs text-gray-500 dark:text-gray-400">Expenses</p>
+                <p class="text-xs font-medium text-error-600 dark:text-error-400 font-mono">
+                  {{ configStore.formatCurrency(periodExpense) }}
+                </p>
+              </div>
             </div>
-            <div>
-              <p class="text-xs text-gray-500 dark:text-gray-400 text-center">Expense</p>
-              <p class="text-xs font-semibold text-error-600 dark:text-error-400">
-                {{ configStore.formatCurrency(periodExpense) }}
-              </p>
+          </div>
+
+          <!-- Net Income -->
+          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
+            <div class="flex flex-col h-full">
+              <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-warning-100 dark:bg-warning-900/50 mb-3">
+                <BarChart3 class="w-4 h-4 text-warning-600 dark:text-warning-400" />
+              </div>
+              <div class="mt-auto">
+                <p class="text-xs text-gray-500 dark:text-gray-400">Net Income</p>
+                <p 
+                  class="text-xs font-medium font-mono"
+                  :class="{
+                    'text-success-600 dark:text-success-400': netIncome > 0,
+                    'text-gray-800 dark:text-gray-200': netIncome === 0,
+                    'text-error-600 dark:text-error-400': netIncome < 0,
+                  }"
+                >
+                  {{ netIncome >= 0 ? '+' : '' }}{{ configStore.formatCurrency(netIncome) }}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -176,7 +205,7 @@ import WalletCard from '@/components/wallet/WalletCard.vue';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import type { Wallet } from '@/types/wallet';
 import type { Transaction } from '@/types/transaction';
-import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen } from 'lucide-vue-next';
+import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, BarChart3 } from 'lucide-vue-next';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay } from 'date-fns';
 import WalletModal from '@/components/wallet/WalletModal.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
@@ -212,6 +241,10 @@ const periodExpense = computed(() => {
   return transactions.value
     .filter(t => t.type === 'expense')
     .reduce((sum, t) => sum + t.amount, 0);
+});
+
+const netIncome = computed(() => {
+  return periodIncome.value - periodExpense.value
 });
 
 const fetchWalletData = async () => {
