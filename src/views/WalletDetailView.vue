@@ -151,6 +151,7 @@
         <div class="card">
           <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <h3 class="font-semibold text-gray-800 dark:text-white">Transaction History</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ dateRangeSubtitle }}</p>
           </div>
           <div v-if="transactionsStore.loading" class="p-8">
             <LoadingSpinner />
@@ -206,7 +207,7 @@ import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import type { Wallet } from '@/types/wallet';
 import type { Transaction } from '@/types/transaction';
 import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, BarChart3 } from 'lucide-vue-next';
-import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay } from 'date-fns';
+import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay, parseISO } from 'date-fns';
 import WalletModal from '@/components/wallet/WalletModal.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
 
@@ -245,6 +246,34 @@ const periodExpense = computed(() => {
 
 const netIncome = computed(() => {
   return periodIncome.value - periodExpense.value
+});
+
+const dateRangeSubtitle = computed(() => {
+  const start = startDate.value;
+  const end = endDate.value;
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return '';
+    try {
+      return format(parseISO(dateString), 'dd MMM yyyy');
+    } catch (e) {
+      return dateString;
+    }
+  };
+
+  if (start && end) {
+    if (start === end) {
+      return formatDate(start);
+    }
+    return `${formatDate(start)} - ${formatDate(end)}`;
+  }
+  if (start) {
+    return `From ${formatDate(start)}`;
+  }
+  if (end) {
+    return `Until ${formatDate(end)}`;
+  }
+  return 'All Time';
 });
 
 const fetchWalletData = async () => {
