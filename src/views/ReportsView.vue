@@ -19,7 +19,7 @@
             <CalendarClock class="w-4 h-4 mr-2" /> Yearly
           </button>
           <button @click="selectCustomView" :class="['btn', currentView === 'custom' ? 'btn-primary' : 'btn-secondary']">
-            <SlidersHorizontal class="w-4 h-4 mr-2" /> Custom
+            <SlidersHorizontal class="w-4 h-4 mr-2" /> Custom Period
           </button>
         </div>
       </div>
@@ -59,6 +59,10 @@
               <label for="custom-end" class="label">End Date</label>
               <input id="custom-end" v-model="selectedDate.custom.end" type="date" class="input" />
             </div>
+          </div>
+          <div class="flex justify-evenly lg:justify-end items-center gap-2 mt-4">
+            <button @click="goToPreviousPeriod" class="btn btn-primary flex-1 lg:flex-none">Previous Period</button>
+            <button @click="goToNextPeriod" class="btn btn-primary flex-1 lg:flex-none">Next Period</button>
           </div>
           <div>
             <label class="label">Group By</label>
@@ -179,7 +183,7 @@ import TimeSeriesChart from '@/components/reports/TimeSeriesChart.vue';
 import CategoryPieChart from '@/components/reports/CategoryPieChart.vue';
 import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, Wallet, TrendingUp, TrendingDown } from 'lucide-vue-next';
 import type { Transaction } from '@/types/transaction';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 type ReportView = 'monthly' | 'yearly' | 'custom';
 type AggregationLevel = 'daily' | 'weekly' | 'monthly' | 'yearly';
@@ -438,7 +442,8 @@ const selectCustomView = () => {
   }
 
   const endDate = new Date(startDate);
-  endDate.setDate(startDate.getDate() + 30);
+  endDate.setMonth(startDate.getMonth() + 1);
+  endDate.setDate(firstDay - 1);
 
   selectedDate.custom.start = format(startDate, 'yyyy-MM-dd');
   selectedDate.custom.end = format(endDate, 'yyyy-MM-dd');
@@ -446,6 +451,44 @@ const selectCustomView = () => {
   customAggregationLevel.value = 'daily';
   currentView.value = 'custom';
 };
+
+const navigatePeriod = (direction: 'previous' | 'next') => {
+  if (!selectedDate.custom.start || !selectedDate.custom.end) return;
+  
+  const firstDay = configStore.firstDayOfMonth;
+  const start = parseISO(selectedDate.custom.start);
+  
+  if (direction === 'previous') {
+    // Move to previous month's configured date
+    const newStart = new Date(start);
+    newStart.setMonth(newStart.getMonth() - 1);
+    newStart.setDate(firstDay);
+    
+    // Set end date to day before the configured date
+    const newEnd = new Date(newStart);
+    newEnd.setMonth(newEnd.getMonth() + 1);
+    newEnd.setDate(firstDay - 1);
+    
+    selectedDate.custom.start = format(newStart, 'yyyy-MM-dd');
+    selectedDate.custom.end = format(newEnd, 'yyyy-MM-dd');
+  } else {
+    // Move to next month's configured date
+    const newStart = new Date(start);
+    newStart.setMonth(newStart.getMonth() + 1);
+    newStart.setDate(firstDay);
+    
+    // Set end date to day before the configured date
+    const newEnd = new Date(newStart);
+    newEnd.setMonth(newEnd.getMonth() + 1);
+    newEnd.setDate(firstDay - 1);
+    
+    selectedDate.custom.start = format(newStart, 'yyyy-MM-dd');
+    selectedDate.custom.end = format(newEnd, 'yyyy-MM-dd');
+  }
+}
+
+const goToPreviousPeriod = () => navigatePeriod('previous');
+const goToNextPeriod = () => navigatePeriod('next');
 
 watch([currentView, selectedDate, customAggregationLevel], fetchReportData, { immediate: true, deep: true });
 
