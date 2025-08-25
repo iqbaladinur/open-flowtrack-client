@@ -38,7 +38,13 @@
       <!-- Content -->
       <div v-else class="space-y-6">
         <!-- Wallet Card -->
-        <WalletCard :wallet="wallet" :enableActions="false" />
+        <WalletCard :wallet="wallet" :enableActions="false">
+          <template #description>
+            <p class="text-gray-500 dark:text-gray-400 text-xs -mt-3 mb-2">
+              {{ walletEndDate }}
+            </p>
+          </template>
+        </WalletCard>
         <!-- Period Summary -->
         <div>
           <div class="border-gray-200 dark:border-gray-700 mb-2">

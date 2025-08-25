@@ -3,10 +3,12 @@
     <div class="card px-6 py-4 hover:shadow-md transition-shadow relative group">
       <!-- Wallet Info -->
       <div>
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
-          {{ wallet.name }}
-        </h3>
-        
+        <div>
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
+            {{ wallet.name }}
+          </h3>
+          <slot name="description" />
+        </div>
         <div class="space-y-2">
           <div class="flex items-center justify-between">
             <span
