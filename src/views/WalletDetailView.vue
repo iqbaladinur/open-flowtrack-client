@@ -387,6 +387,7 @@ const setFilter = (filter: 'today' | 'week' | 'month' | 'year' | 'all' | 'custom
     case 'all':
       startDate.value = '';
       endDate.value = '';
+      break;
   }
 };
 
@@ -471,5 +472,8 @@ onMounted(() => {
   categoriesStore.fetchCategories();
   const defaultFilter = configStore.firstDayOfMonth === 1 ? 'all' : 'custom';
   setFilter(defaultFilter); // Set initial filter and fetch data
+  if (defaultFilter === 'all') {
+    fetchWalletData();
+  }
 });
 </script>
