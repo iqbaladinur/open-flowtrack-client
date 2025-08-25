@@ -71,16 +71,22 @@
             <button @click="setDateRange('yearly')" :class="['btn', dateRangePreset === 'yearly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Year</button>
             <button @click="toggleCustomDateRange" :class="['btn', showCustomDateRange ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">Custom Period</button>
           </div>
-          <div v-if="showCustomDateRange" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 p-2">
-            <div>
-              <label for="start_date" class="label">Start Date</label>
-              <input id="start_date" v-model="filters.start_date" type="date" class="input" @change="onCustomDateChange" />
+          <template v-if="showCustomDateRange">
+            <div v-if="showCustomDateRange" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 p-2">
+              <div>
+                <label for="start_date" class="label">Start Date</label>
+                <input id="start_date" v-model="filters.start_date" type="date" class="input" @change="onCustomDateChange" />
+              </div>
+              <div>
+                <label for="end_date" class="label">End Date</label>
+                <input id="end_date" v-model="filters.end_date" type="date" class="input" @change="onCustomDateChange" />
+              </div>
             </div>
-            <div>
-              <label for="end_date" class="label">End Date</label>
-              <input id="end_date" v-model="filters.end_date" type="date" class="input" @change="onCustomDateChange" />
+            <div class="flex justify-evenly lg:justify-start items-center gap-2 mt-4 p-2">
+              <button @click="goToPreviousPeriod" class="btn btn-primary flex-1 lg:flex-none">Previous Period</button>
+              <button @click="goToNextPeriod" class="btn btn-primary flex-1 lg:flex-none">Next Period</button>
             </div>
-          </div>
+          </template>
         </div>
 
         <div class="mt-10 flex justify-start px-2">
@@ -161,7 +167,7 @@ import {
   RotateCcw,
   Download
 } from 'lucide-vue-next';
-import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, endOfDay, format } from 'date-fns';
+import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, endOfDay, format, parseISO } from 'date-fns';
 
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
@@ -236,7 +242,8 @@ const toggleCustomDateRange = () => {
     }
 
     const endDate = new Date(startDate);
-    endDate.setDate(startDate.getDate() + 30);
+    endDate.setMonth(startDate.getMonth() + 1);
+    endDate.setDate(firstDay - 1);
 
     filters.start_date = format(startDate, 'yyyy-MM-dd');
     filters.end_date = format(endDate, 'yyyy-MM-dd');
@@ -324,6 +331,44 @@ const getTransactions = (filters: any) => {
   );
   transactionsStore.fetchTransactions(cleanedFilters, Object.keys(cleanedFilters).length === 0);
 }
+
+const navigatePeriod = (direction: 'previous' | 'next') => {
+  if (!filters.start_date || !filters.end_date) return;
+  
+  const firstDay = configStore.firstDayOfMonth;
+  const start = parseISO(filters.start_date);
+  
+  if (direction === 'previous') {
+    // Move to previous month's configured date
+    const newStart = new Date(start);
+    newStart.setMonth(newStart.getMonth() - 1);
+    newStart.setDate(firstDay);
+    
+    // Set end date to day before the configured date
+    const newEnd = new Date(newStart);
+    newEnd.setMonth(newEnd.getMonth() + 1);
+    newEnd.setDate(firstDay - 1);
+    
+    filters.start_date = format(newStart, 'yyyy-MM-dd');
+    filters.end_date = format(newEnd, 'yyyy-MM-dd');
+  } else {
+    // Move to next month's configured date
+    const newStart = new Date(start);
+    newStart.setMonth(newStart.getMonth() + 1);
+    newStart.setDate(firstDay);
+    
+    // Set end date to day before the configured date
+    const newEnd = new Date(newStart);
+    newEnd.setMonth(newEnd.getMonth() + 1);
+    newEnd.setDate(firstDay - 1);
+    
+    filters.start_date = format(newStart, 'yyyy-MM-dd');
+    filters.end_date = format(newEnd, 'yyyy-MM-dd');
+  }
+}
+
+const goToPreviousPeriod = () => navigatePeriod('previous');
+const goToNextPeriod = () => navigatePeriod('next');
 
 // Watch filters and fetch transactions when they change
 watch(
