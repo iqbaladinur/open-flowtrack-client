@@ -69,7 +69,7 @@
             <button @click="setDateRange('weekly')" :class="['btn', dateRangePreset === 'weekly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Week</button>
             <button @click="setDateRange('monthly')" :class="['btn', dateRangePreset === 'monthly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Month</button>
             <button @click="setDateRange('yearly')" :class="['btn', dateRangePreset === 'yearly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Year</button>
-            <button @click="toggleCustomDateRange" :class="['btn', showCustomDateRange ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">Custom</button>
+            <button @click="toggleCustomDateRange" :class="['btn', showCustomDateRange ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">Custom Period</button>
           </div>
           <div v-if="showCustomDateRange" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 p-2">
             <div>

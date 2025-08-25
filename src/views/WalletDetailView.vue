@@ -38,67 +38,64 @@
       <!-- Content -->
       <div v-else class="space-y-6">
         <!-- Wallet Card -->
-        <div class="pb-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 class="font-semibold text-gray-800 dark:text-white text-sm">Wallet Period</h3>
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ walletEndDate }}</p>
-        </div>
         <WalletCard :wallet="wallet" :enableActions="false" />
-
         <!-- Period Summary -->
-        <div class="pb-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 class="font-semibold text-gray-800 dark:text-white text-sm">This Period Recap</h3>
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ dateRangeSubtitle }}</p>
-        </div>
-        <div
-          class="flex sm:grid sm:grid-cols-3 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
-          <!-- Income -->
-          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 sm:ml-0">
-            <div class="flex flex-col h-full">
-              <div
-                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-success-100 dark:bg-success-900/50 mb-3">
-                <TrendingUp class="w-4 h-4 text-success-600 dark:text-success-400" />
-              </div>
-              <div class="mt-auto">
-                <p class="text-xs text-gray-500 dark:text-gray-400">Income</p>
-                <p class="text-xs font-medium text-success-600 dark:text-success-400 font-mono">
-                  {{ configStore.formatCurrency(periodIncome) }}
-                </p>
+        <div>
+          <div class="border-gray-200 dark:border-gray-700 mb-2">
+            <h3 class="text-gray-800 dark:text-white text-xs">This Period Recap</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ dateRangeSubtitle }}</p>
+          </div>
+          <div
+            class="flex sm:grid sm:grid-cols-3 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+            <!-- Income -->
+            <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 sm:ml-0">
+              <div class="flex flex-col h-full">
+                <div
+                  class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-success-100 dark:bg-success-900/50 mb-3">
+                  <TrendingUp class="w-4 h-4 text-success-600 dark:text-success-400" />
+                </div>
+                <div class="mt-auto">
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Income</p>
+                  <p class="text-xs font-medium text-success-600 dark:text-success-400 font-mono">
+                    {{ configStore.formatCurrency(periodIncome) }}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Expense -->
-          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
-            <div class="flex flex-col h-full">
-              <div
-                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-error-100 dark:bg-error-900/50 mb-3">
-                <TrendingDown class="w-4 h-4 text-error-600 dark:text-error-400" />
-              </div>
-              <div class="mt-auto">
-                <p class="text-xs text-gray-500 dark:text-gray-400">Expenses</p>
-                <p class="text-xs font-medium text-error-600 dark:text-error-400 font-mono">
-                  {{ configStore.formatCurrency(periodExpense) }}
-                </p>
+            <!-- Expense -->
+            <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
+              <div class="flex flex-col h-full">
+                <div
+                  class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-error-100 dark:bg-error-900/50 mb-3">
+                  <TrendingDown class="w-4 h-4 text-error-600 dark:text-error-400" />
+                </div>
+                <div class="mt-auto">
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Expenses</p>
+                  <p class="text-xs font-medium text-error-600 dark:text-error-400 font-mono">
+                    {{ configStore.formatCurrency(periodExpense) }}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Net Income -->
-          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
-            <div class="flex flex-col h-full">
-              <div
-                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-warning-100 dark:bg-warning-900/50 mb-3">
-                <BarChart3 class="w-4 h-4 text-warning-600 dark:text-warning-400" />
-              </div>
-              <div class="mt-auto">
-                <p class="text-xs text-gray-500 dark:text-gray-400">Net Income</p>
-                <p class="text-xs font-medium font-mono" :class="{
-                  'text-success-600 dark:text-success-400': netIncome > 0,
-                  'text-gray-800 dark:text-gray-200': netIncome === 0,
-                  'text-error-600 dark:text-error-400': netIncome < 0,
-                }">
-                  {{ netIncome >= 0 ? '+' : '' }}{{ configStore.formatCurrency(netIncome) }}
-                </p>
+            <!-- Net Income -->
+            <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
+              <div class="flex flex-col h-full">
+                <div
+                  class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-warning-100 dark:bg-warning-900/50 mb-3">
+                  <BarChart3 class="w-4 h-4 text-warning-600 dark:text-warning-400" />
+                </div>
+                <div class="mt-auto">
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Net Income</p>
+                  <p class="text-xs font-medium font-mono" :class="{
+                    'text-success-600 dark:text-success-400': netIncome > 0,
+                    'text-gray-800 dark:text-gray-200': netIncome === 0,
+                    'text-error-600 dark:text-error-400': netIncome < 0,
+                  }">
+                    {{ netIncome >= 0 ? '+' : '' }}{{ configStore.formatCurrency(netIncome) }}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -159,6 +156,10 @@
                 <span class="text-gray-500 hidden sm:block">-</span>
                 <input type="date" v-model="endDate" @change="setCustomFilter" class="input w-full"
                   placeholder="End Date" />
+              </div>
+              <div class="flex justify-evenly lg:justify-end items-center gap-2 mt-4">
+                <button @click="goToPreviousPeriod" class="btn btn-primary flex-1 lg:flex-none">Previous Period</button>
+                <button @click="goToNextPeriod" class="btn btn-primary flex-1 lg:flex-none">Next Period</button>
               </div>
             </div>
           </div>
@@ -367,8 +368,12 @@ const setFilter = (filter: 'today' | 'week' | 'month' | 'year' | 'all' | 'custom
       if (today.getDate() < firstDay) {
         customStartDate.setMonth(customStartDate.getMonth() - 1);
       }
+      
+      // Calculate end date as one day before next month's configured date
       const customEndDate = new Date(customStartDate);
-      customEndDate.setDate(customStartDate.getDate() + 30);
+      customEndDate.setMonth(customEndDate.getMonth() + 1);
+      customEndDate.setDate(firstDay - 1);
+      
       startDate.value = format(customStartDate, 'yyyy-MM-dd');
       endDate.value = format(customEndDate, 'yyyy-MM-dd');
       break;
@@ -383,6 +388,44 @@ const setCustomFilter = () => {
   selectedFilter.value = 'custom';
   // The watch effect will trigger the data fetch
 }
+
+const navigatePeriod = (direction: 'previous' | 'next') => {
+  if (!startDate.value || !endDate.value) return;
+  
+  const firstDay = configStore.firstDayOfMonth;
+  const start = parseISO(startDate.value);
+  
+  if (direction === 'previous') {
+    // Move to previous month's configured date
+    const newStart = new Date(start);
+    newStart.setMonth(newStart.getMonth() - 1);
+    newStart.setDate(firstDay);
+    
+    // Set end date to day before the configured date
+    const newEnd = new Date(newStart);
+    newEnd.setMonth(newEnd.getMonth() + 1);
+    newEnd.setDate(firstDay - 1);
+    
+    startDate.value = format(newStart, 'yyyy-MM-dd');
+    endDate.value = format(newEnd, 'yyyy-MM-dd');
+  } else {
+    // Move to next month's configured date
+    const newStart = new Date(start);
+    newStart.setMonth(newStart.getMonth() + 1);
+    newStart.setDate(firstDay);
+    
+    // Set end date to day before the configured date
+    const newEnd = new Date(newStart);
+    newEnd.setMonth(newEnd.getMonth() + 1);
+    newEnd.setDate(firstDay - 1);
+    
+    startDate.value = format(newStart, 'yyyy-MM-dd');
+    endDate.value = format(newEnd, 'yyyy-MM-dd');
+  }
+}
+
+const goToPreviousPeriod = () => navigatePeriod('previous');
+const goToNextPeriod = () => navigatePeriod('next');
 
 watch([startDate, endDate], fetchWalletData, { immediate: false });
 
