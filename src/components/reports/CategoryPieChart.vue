@@ -37,7 +37,7 @@ const chartOptions = {
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      position: 'top' as const,
+      position: 'bottom' as const,
       labels: {
         color: isDarkMode ? '#d1d5db' : '#374151',
       },
