@@ -134,10 +134,13 @@
       <!-- AI Suggestions -->
       <div class="card p-6">
         <div class="flex items-center mb-4">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/50 mr-3">
+          <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/50 mr-3">
             <BrainCircuit class="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
           </div>
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">What happened last 30 days?</h2>
+          <div>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">What happened this period?</h2>
+            <p class="text-xs text-gray-500 dark:text-gray-400 italic">({{ periodicAnalytics.start }} - {{ periodicAnalytics.end }})</p>
+          </div>
         </div>
         <div v-if="analyticsLoading" class="flex justify-center items-center py-8">
           <LoadingSpinner class="w-8 h-8" />
@@ -218,7 +221,8 @@ import {
   ArrowUpDown,
   BrainCircuit,
 } from 'lucide-vue-next';
-import { endOfDay, subMonths } from 'date-fns';
+import { endOfDay, format } from 'date-fns';
+import { reactive } from 'vue';
 
 const authStore = useAuthStore();
 const walletsStore = useWalletsStore();
@@ -232,6 +236,11 @@ const transactionType = ref<'income' | 'expense'>('income');
 
 const totalBalance = computed(() => {
   return walletsStore.wallets.reduce((sum, wallet) => sum + (wallet.current_balance || 0), 0);
+});
+
+const periodicAnalytics = reactive({
+  start: '',
+  end: ''
 });
 
 const alltimeIncome = computed(() => {
@@ -272,18 +281,36 @@ const toggleAddTransaction = (type: 'income' | 'expense') => {
   transactionType.value = type;
 }
 
+function getAIAnalytics() {
+  const today = new Date();
+  const firstDay = configStore.firstDayOfMonth;
+  
+  let startDate = new Date(today.getFullYear(), today.getMonth(), firstDay);
+
+  // If today's date is before the first day of this calendar month,
+  // it means we are still in the previous financial month.
+  if (today.getDate() < firstDay) {
+    startDate.setMonth(startDate.getMonth() - 1);
+  }
+
+  const endDate = new Date(startDate);
+  endDate.setMonth(startDate.getMonth() + 1);
+  endDate.setDate(firstDay - 1);
+
+  periodicAnalytics.start = format(startDate, 'dd-MMM-yyyy');
+  periodicAnalytics.end = format(endDate, 'dd-MMM-yyyy');
+
+  analyticsStore.fetchAnalyticsSugestion({
+    start_date: format(startDate, 'yyyy-MM-dd'),
+    end_date: format(endDate, 'yyyy-MM-dd')
+  });
+}
+
 onMounted(async () => {
   const today = endOfDay(new Date());
   const todayIso = today.toISOString();
   walletsStore.fetchWallets(true, undefined, todayIso);
   transactionsStore.fetchTransactions({ end_date: todayIso });
-
-  const endDateForAnalytics = new Date();
-  const startDateForAnalytics = subMonths(endDateForAnalytics, 1);
-
-  analyticsStore.fetchAnalyticsSugestion({
-    start_date: startDateForAnalytics.toISOString(),
-    end_date: endDateForAnalytics.toISOString(),
-  });
+  getAIAnalytics();
 });
 </script>
