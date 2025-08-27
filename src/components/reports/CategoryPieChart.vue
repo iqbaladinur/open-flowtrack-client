@@ -23,6 +23,7 @@ defineProps({
       datasets: {
         data: number[];
         backgroundColor: string[];
+        borderColor?: string[];
       }[];
     }>,
     required: true,

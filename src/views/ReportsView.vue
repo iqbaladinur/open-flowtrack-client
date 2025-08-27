@@ -373,7 +373,8 @@ const categoryChartData = computed(() => {
     }),
     datasets: [{
       data: sortedCategories.map(c => c.total),
-      backgroundColor: sortedCategories.map(c => `${c.color}CC`), // Append alpha value
+      backgroundColor: sortedCategories.map(c => `${c.color}4d`), // Append alpha value
+      borderColor: sortedCategories.map(c => `${c.color}`), // Append alpha value
     }],
   };
 });
