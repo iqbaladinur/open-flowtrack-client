@@ -84,6 +84,7 @@ const fileInput = ref<HTMLInputElement | null>(null);
 const canShare = ref(false);
 
 onMounted(() => {
+  //@ts-ignore
   if (navigator.share) {
     canShare.value = true;
   }
