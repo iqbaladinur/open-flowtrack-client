@@ -98,7 +98,7 @@ const createBackup = async () => {
     link.href = URL.createObjectURL(blob);
     link.download = `flowtrack_backup_${new Date().toISOString().split('T')[0]}.json`;
     link.click();
-    URL.revokeObjectURL(link.hrf);
+    URL.revokeObjectURL(link.href);
   } catch (error) {
     console.error('Failed to create backup:', error);
     // You might want to show a user-friendly error message here
