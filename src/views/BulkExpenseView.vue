@@ -5,17 +5,11 @@
       <div class="flex justify-between gap-4">
         <div>
           <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-neon">
-            Bulk Expense via OCR
+            Bulk Expense
           </h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1">
+          <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
             Upload an image to extract transactions
           </p>
-        </div>
-        <div>
-          <router-link to="/transactions" class="btn btn-secondary self-end sm:self-auto">
-            <ArrowLeft class="w-4 h-4 mr-2" />
-            Back
-          </router-link>
         </div>
       </div>
 
