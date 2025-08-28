@@ -280,7 +280,7 @@ import AppLayout from "@/components/layouts/AppLayout.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import { ArrowLeft, UploadCloud, X, Check } from "lucide-vue-next";
 import { format } from "date-fns";
-import router from "@/router";
+import { useRouter } from "vue-router";
 
 interface PreviewTransaction {
   date: string;
@@ -292,6 +292,7 @@ interface PreviewTransaction {
   selected: boolean;
 }
 
+const router = useRouter();
 const walletsStore = useWalletsStore();
 const categoriesStore = useCategoriesStore();
 const transactionsStore = useTransactionsStore();
