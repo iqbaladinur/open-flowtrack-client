@@ -126,10 +126,10 @@
                     <input type="checkbox" @change="toggleSelectAll" :checked="isAllSelected" class="checkbox checkbox-sm checkbox-primary" />
                   </th>
                   <th class="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider w-40">Date</th>
-                  <th class="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Note</th>
                   <th class="p-4 text-right text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider w-40">Amount</th>
                   <th class="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider w-48">Wallet</th>
                   <th class="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider w-48">Category</th>
+                  <th class="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Note</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -139,9 +139,6 @@
                   </td>
                   <td class="p-2 align-middle">
                     <input type="date" v-model="item.date" class="input input-sm input-bordered w-full" />
-                  </td>
-                  <td class="p-2 align-middle">
-                    <input type="text" v-model="item.note" class="input input-sm input-bordered w-full" placeholder="Transaction note..." />
                   </td>
                   <td class="p-2 align-middle">
                     <input type="number" v-model="item.amount" class="input input-sm input-bordered w-full text-right" placeholder="0.00" />
@@ -157,6 +154,9 @@
                       <option disabled value="">Select Category</option>
                       <option v-for="category in expenseCategories" :key="category.id" :value="category.id">{{ category.name }}</option>
                     </select>
+                  </td>
+                  <td class="p-2 align-middle">
+                    <input type="text" v-model="item.note" class="input input-sm input-bordered w-full" placeholder="Transaction note..." />
                   </td>
                 </tr>
               </tbody>
