@@ -272,7 +272,7 @@ import { useTransactionsStore } from "@/stores/transactions";
 import { storeToRefs } from "pinia";
 import AppLayout from "@/components/layouts/AppLayout.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
-import { ArrowLeft, UploadCloud, X, Check } from "lucide-vue-next";
+import { UploadCloud, X, Check } from "lucide-vue-next";
 import { format } from "date-fns";
 import { useRouter } from "vue-router";
 
