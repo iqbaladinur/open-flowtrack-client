@@ -84,9 +84,9 @@
                 Image Preview
               </h3>
               <div
-                class="p-2 border rounded-md bg-gray-50 dark:bg-gray-800/50 h-[50vh] flex items-center justify-center">
+                class="p-2 border rounded-md bg-gray-50 dark:bg-gray-800/50 flex items-center justify-center">
                 <img v-if="imagePreviewUrl" :src="imagePreviewUrl" alt="Uploaded receipt"
-                  class="h-auto object-contain rounded" />
+                  class="h-auto lg:h-[48vh] object-contain rounded" />
               </div>
             </div>
 
