@@ -15,25 +15,25 @@
         <p class="text-gray-600 dark:text-gray-400 mb-4">
           Download a backup of all your data. Keep this file in a safe place.
         </p>
-        <div class="flex flex-col lg:flex-row gap-4">
-          <button @click="createBackup" class="btn btn-primary w-full lg:w-auto" :disabled="loadingDownload">
+        <div class="grid grid-cols-2 gap-4">
+          <button @click="createBackup" class="btn btn-primary lg:w-[200px]" :disabled="loadingDownload">
             <span v-if="loadingDownload" class="flex items-center gap-2">
               <LoadingSpinner size="sm"/>
               Creating...
             </span>
             <span v-else class="flex items-center gap-2">
               <Download class="w-5 h-5" />
-              Download Backup
+              Download
             </span>
           </button>
-          <button v-if="canShare" @click="shareBackup" class="btn btn-secondary w-full lg:w-auto lg:hidden" :disabled="loadingShare">
+          <button @click="shareBackup" class="btn btn-secondary lg:hidden" :disabled="loadingShare">
             <span v-if="loadingShare" class="flex items-center gap-2">
               <LoadingSpinner size="sm"/>
               Preparing...
             </span>
             <span v-else class="flex items-center gap-2">
               <Share2 class="w-5 h-5" />
-              Share Backup
+              Share
             </span>
           </button>
         </div>
@@ -81,14 +81,6 @@ const loadingDownload = ref(false);
 const loadingShare = ref(false);
 const selectedFile = ref<File | null>(null);
 const fileInput = ref<HTMLInputElement | null>(null);
-const canShare = ref(false);
-
-onMounted(() => {
-  //@ts-ignore
-  if (navigator.share) {
-    canShare.value = true;
-  }
-});
 
 const createBackup = async () => {
   loadingDownload.value = true;
@@ -111,23 +103,23 @@ const shareBackup = async () => {
   loadingShare.value = true;
   try {
     const blob = await backupStore.createBackup();
-    const file = new File([blob], `flowtrack_backup_${new Date().toISOString().split('T')[0]}.json`, {
-      type: 'application/json',
+    const file = new File([blob], `flowtrack_backup_${new Date().toISOString().split('T')[0]}.json.txt`, {
+      type: 'text/plain',
     });
 
-    if (navigator.share) {
-      await navigator.share({
-        title: 'FlowTrack Backup',
-        text: 'Here is your FlowTrack data backup.',
-        files: [file],
-      });
+    const shareData = {
+      title: 'FlowTrack Backup',
+      text: 'Here is your FlowTrack data backup.',
+      files: [file],
     }
-  } catch (error) {
-    console.error('Failed to share backup:', error);
-    // You might want to show a user-friendly error message here, but ignore AbortError
-    if ((error as DOMException).name !== 'AbortError') {
-      // Handle other errors
+
+    if (navigator.canShare(shareData)) {
+      await navigator.share(shareData);
+    } else {
+      throw new Error("File not supported!");
     }
+  } catch (error: any) {
+    alert('Failed to share:' + error?.message)
   } finally {
     loadingShare.value = false;
   }
