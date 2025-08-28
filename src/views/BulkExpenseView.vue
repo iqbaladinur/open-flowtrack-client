@@ -30,10 +30,7 @@
                   <label for="file-upload"
                     class="relative cursor-pointer rounded-md font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-500">
                     <span>Upload a file</span>
-                    <input id="file-upload" name="file-upload" type="file" class="sr-only" @change="handleImageUpload"
-                      accept="image/*"
-                      capture="environment"
-                    />
+                    <input id="file-upload" name="file-upload" type="file" class="sr-only" @change="handleImageUpload"/>
                   </label>
                   <p class="pl-1">or drag and drop</p>
                 </div>
@@ -46,10 +43,10 @@
 
           <div v-if="selectedImage" class="mt-4">
             <div class="flex items-center justify-between p-2 border rounded-md bg-gray-50 dark:bg-gray-800/50">
-              <div class="flex items-center gap-3">
-                <img :src="imagePreviewUrl" alt="Preview" class="h-12 w-12 rounded-md object-cover" />
-                <div class="text-sm font-medium">
-                  <p>{{ selectedImage.name }}</p>
+              <div class="flex items-center gap-3 truncate">
+                <img :src="imagePreviewUrl" alt="Preview" class="h-12 w-12 rounded-md object-cover flex-shrink-0" />
+                <div class="text-sm font-medium truncate">
+                  <p class="truncate">{{ selectedImage.name }}</p>
                   <p class="text-xs text-gray-500">
                     {{ (selectedImage.size / 1024).toFixed(2) }} KB
                   </p>
