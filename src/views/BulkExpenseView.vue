@@ -95,7 +95,7 @@
               <div class="p-2 border rounded-md bg-gray-50 dark:bg-gray-800/50 h-[50vh]">
                 <textarea 
                   v-model="ocrResultText" 
-                  class="textarea textarea-bordered w-full h-full min-h-[300px] font-mono dark:bg-white dark:text-black"
+                  class="textarea textarea-bordered w-full h-full min-h-[300px] font-mono dark:bg-white dark:text-black p-4"
                   placeholder="Extracted text will appear here..."
                 ></textarea>
               </div>
@@ -118,31 +118,43 @@
           <h2 class="card-title">Step 3: Review and Save Transactions</h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">Edit the details for each transaction below. Unchecked transactions will be ignored.</p>
           
-          <div class="overflow-x-auto">
-            <table class="table w-full">
-              <thead>
+          <div class="overflow-x-auto mt-4 border rounded-lg dark:border-gray-700">
+            <table class="table w-full table-auto">
+              <thead class="bg-gray-50 dark:bg-gray-800/50">
                 <tr>
-                  <th><input type="checkbox" @change="toggleSelectAll" :checked="isAllSelected" /></th>
-                  <th>Date</th>
-                  <th>Note</th>
-                  <th>Amount</th>
-                  <th>Wallet</th>
-                  <th>Category</th>
+                  <th class="p-4 w-12 text-center">
+                    <input type="checkbox" @change="toggleSelectAll" :checked="isAllSelected" class="checkbox checkbox-sm checkbox-primary" />
+                  </th>
+                  <th class="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider w-40">Date</th>
+                  <th class="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Note</th>
+                  <th class="p-4 text-right text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider w-40">Amount</th>
+                  <th class="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider w-48">Wallet</th>
+                  <th class="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider w-48">Category</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr v-for="(item, index) in previewedTransactions" :key="index">
-                  <td><input type="checkbox" v-model="item.selected" /></td>
-                  <td><input type="date" v-model="item.date" class="input input-bordered input-sm w-full" /></td>
-                  <td><input type="text" v-model="item.note" class="input input-bordered input-sm w-full" /></td>
-                  <td><input type="number" v-model="item.amount" class="input input-bordered input-sm w-full" /></td>
-                  <td>
-                    <select v-model="item.wallet_id" class="select select-bordered select-sm w-full">
+              <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                <tr v-for="(item, index) in previewedTransactions" :key="index" class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                  <td class="p-4 text-center">
+                    <input type="checkbox" v-model="item.selected" class="checkbox checkbox-sm checkbox-primary" />
+                  </td>
+                  <td class="p-2 align-middle">
+                    <input type="date" v-model="item.date" class="input input-sm input-bordered w-full" />
+                  </td>
+                  <td class="p-2 align-middle">
+                    <input type="text" v-model="item.note" class="input input-sm input-bordered w-full" placeholder="Transaction note..." />
+                  </td>
+                  <td class="p-2 align-middle">
+                    <input type="number" v-model="item.amount" class="input input-sm input-bordered w-full text-right" placeholder="0.00" />
+                  </td>
+                  <td class="p-2 align-middle">
+                    <select v-model="item.wallet_id" class="select select-sm select-bordered w-full input">
+                      <option disabled value="">Select Wallet</option>
                       <option v-for="wallet in wallets" :key="wallet.id" :value="wallet.id">{{ wallet.name }}</option>
                     </select>
                   </td>
-                  <td>
-                    <select v-model="item.category_id" class="select select-bordered select-sm w-full">
+                  <td class="p-2 align-middle">
+                    <select v-model="item.category_id" class="select select-sm select-bordered w-full input">
+                      <option disabled value="">Select Category</option>
                       <option v-for="category in expenseCategories" :key="category.id" :value="category.id">{{ category.name }}</option>
                     </select>
                   </td>
