@@ -93,6 +93,12 @@ export const useTransactionsStore = defineStore('transactions', () => {
     return transactions.value.find((t) => t.id === id);
   };
 
+  const mapExpenseTransaction = async (content: string) => {
+    return await api.post<{amount: number, category_id: string, note: string}[]>(`transactions/bulk-expense`, {
+      content: content
+    });
+  }
+
   return {
     transactions,
     loading,
@@ -101,5 +107,6 @@ export const useTransactionsStore = defineStore('transactions', () => {
     updateTransaction,
     deleteTransaction,
     getTransactionById,
+    mapExpenseTransaction,
   };
 });

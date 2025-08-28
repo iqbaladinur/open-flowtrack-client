@@ -55,6 +55,12 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/transactions/bulk-expense',
+      name: 'bulk-expense',
+      component: () => import('@/views/BulkExpenseView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/budgets',
       name: 'budgets',
       component: () => import('@/views/BudgetsView.vue'),

@@ -18,6 +18,10 @@
             <Download class="w-4 h-4 mr-2" />
             Export
           </button>
+          <router-link to="/transactions/bulk-expense" class="btn-secondary">
+            <UploadCloud class="w-4 h-4 mr-2" />
+            Bulk Expense
+          </router-link>
           <button @click="showAddModal = true" class="btn-primary hidden sm:flex">
             <Plus class="w-4 h-4 mr-2" />
             Add Transaction
@@ -165,7 +169,8 @@ import {
   Filter,
   Wallet,
   RotateCcw,
-  Download
+  Download,
+  UploadCloud
 } from 'lucide-vue-next';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, endOfDay, format, parseISO } from 'date-fns';
 
