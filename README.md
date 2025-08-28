@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="public/favicon.svg" alt="Wallport Logo" width="120" />
-  <h1>Wallport</h1>
+  <img src="public/favicon.svg" alt="FlowTrack Logo" width="120" />
+  <h1>FlowTrack</h1>
   <p>A modern, self-hostable personal finance application.</p>
   <p>
     <a href="#">
@@ -20,7 +20,7 @@
 
 ---
 
-Wallport is a clean and modern personal finance application designed to help you track your income and expenses with ease. It provides a beautiful and intuitive interface to manage your wallets, budgets, and categories, giving you a clear overview of your financial health through insightful reports.
+FlowTrack is a clean and modern personal finance application designed to help you track your income and expenses with ease. It provides a beautiful and intuitive interface to manage your wallets, budgets, and categories, giving you a clear overview of your financial health through insightful reports.
 
 ## ✨ Key Features
 
@@ -60,8 +60,8 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/wallport-fe.git
-    cd wallport-fe
+    git clone https://github.com/your-username/flowtrack-client.git
+    cd flowtrack-client
     ```
 
 2.  **Install dependencies:**
