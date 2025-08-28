@@ -73,7 +73,7 @@ Follow these instructions to get a copy of the project up and running on your lo
     Create a `.env.local` file in the root of the project and add the necessary environment variables.
     ```env
     # Base URL for the backend API
-    VITE_API_BASE_URL=http://localhost:8000/api
+    VITE_API_BASE_URL=http://localhost:8000/
     ```
 
 4.  **Run the development server:**

@@ -103,12 +103,13 @@ const shareBackup = async () => {
   loadingShare.value = true;
   try {
     const blob = await backupStore.createBackup();
-    const file = new File([blob], `flowtrack_backup_${new Date().toISOString().split('T')[0]}.json.txt`, {
+    const date = new Date().toISOString().split('T')[0];
+    const file = new File([blob], `flowtrack_backup_${date}.json.txt`, {
       type: 'text/plain',
     });
 
     const shareData = {
-      title: 'FlowTrack Backup',
+      title: `FlowTrack Backup ${date}`,
       text: 'Here is your FlowTrack data backup.',
       files: [file],
     }
