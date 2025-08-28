@@ -18,7 +18,7 @@
             <Download class="w-4 h-4 mr-2" />
             Export
           </button>
-          <router-link to="/transactions/bulk-expense" class="btn-secondary">
+          <router-link to="/transactions/bulk-expense" class="btn-secondary hidden lg:flex">
             <UploadCloud class="w-4 h-4 mr-2" />
             Bulk Expense
           </router-link>
@@ -137,10 +137,16 @@
     </div>
 
     <!-- Floating Add Button for Mobile -->
-    <button @click="showAddModal = true" class="sm:hidden fixed bottom-[70px] right-6 z-[20] btn-primary rounded-full p-4 shadow-lg flex items-center justify-center">
-      <Plus class="w-6 h-6" />
-      <span class="sr-only">Add Transaction</span>
-    </button>
+    <div class="fixed bottom-[70px] right-6 z-[20] sm:hidden">
+      <router-link to="/transactions/bulk-expense" class="btn bg-red-500/80 text-white rounded-full p-3 shadow-lg flex items-center justify-center">
+        <UploadCloud class="w-5 h-5" />
+        <span class="sr-only">Bulk Expense</span>
+      </router-link>
+      <button @click="showAddModal = true" class="btn-primary rounded-full p-3 shadow-lg flex items-center justify-center mt-2">
+        <Plus class="w-5 h-5" />
+        <span class="sr-only">Add Transaction</span>
+      </button>
+    </div>
 
     <!-- Add/Edit Transaction Modal -->
     <TransactionModal

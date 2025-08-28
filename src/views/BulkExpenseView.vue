@@ -5,17 +5,11 @@
       <div class="flex justify-between gap-4">
         <div>
           <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-neon">
-            Bulk Expense via OCR
+            Bulk Expense
           </h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1">
+          <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
             Upload an image to extract transactions
           </p>
-        </div>
-        <div>
-          <router-link to="/transactions" class="btn btn-secondary self-end sm:self-auto">
-            <ArrowLeft class="w-4 h-4 mr-2" />
-            Back
-          </router-link>
         </div>
       </div>
 
@@ -278,7 +272,7 @@ import { useTransactionsStore } from "@/stores/transactions";
 import { storeToRefs } from "pinia";
 import AppLayout from "@/components/layouts/AppLayout.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
-import { ArrowLeft, UploadCloud, X, Check } from "lucide-vue-next";
+import { UploadCloud, X, Check } from "lucide-vue-next";
 import { format } from "date-fns";
 import { useRouter } from "vue-router";
 
