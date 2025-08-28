@@ -446,7 +446,15 @@ const saveTransactions = async () => {
   );
 
   try {
-    await Promise.all(promises);
+    const results = await Promise.all(promises);
+    const successfulCreations = results.filter(r => r.success).length;
+    
+    alert(`${successfulCreations} of ${transactionsToSave.length} transactions saved successfully!`);
+    
+    currentStep.value = 1;
+    removeImage();
+    ocrResultText.value = '';
+    previewedTransactions.value = [];
     router.push({
       name: 'transactions'
     });
