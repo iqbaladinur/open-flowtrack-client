@@ -109,7 +109,7 @@ const shareBackup = async () => {
     });
 
     const shareData = {
-      title: `FlowTrack Backup ${date}`,
+      title: `FlowTrack_Backup_${date}.json`,
       text: 'Here is your FlowTrack data backup.',
       files: [file],
     }
