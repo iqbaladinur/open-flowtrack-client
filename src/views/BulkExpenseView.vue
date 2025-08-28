@@ -31,7 +31,9 @@
                     class="relative cursor-pointer rounded-md font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-500">
                     <span>Upload a file</span>
                     <input id="file-upload" name="file-upload" type="file" class="sr-only" @change="handleImageUpload"
-                      accept="image/*" />
+                      accept="image/*"
+                      capture="environment"
+                    />
                   </label>
                   <p class="pl-1">or drag and drop</p>
                 </div>
