@@ -396,25 +396,46 @@ const goToNextPeriod = () => navigatePeriod('next');
 const shareTransactions = async () => {
   loadingShare.value = true;
   try {
-    const blob = await backupStore.createBackup();
-    const date = new Date().toISOString().split('T')[0];
-    const file = new File([blob], `flowtrack_backup_${date}.json.txt`, {
-      type: 'text/plain',
-    });
+    const data = transactions.value;
+    if (data.length === 0) {
+      alert('No transactions to share.');
+      return;
+    }
+
+    const dataStr = JSON.stringify(data, null, 2);
+
+    let filename = 'transactions';
+    const startDate = filters.start_date ? format(new Date(filters.start_date), 'yyyy-MM-dd') : '';
+    const endDate = filters.end_date ? format(new Date(filters.end_date), 'yyyy-MM-dd') : '';
+
+    if (startDate && endDate) {
+      filename += `_${startDate}_to_${endDate}`;
+    } else if (startDate) {
+      filename += `_from_${startDate}`;
+    } else if (endDate) {
+      filename += `_until_${endDate}`;
+    } else {
+      filename += '_all';
+    }
+    
+    const jsonFilename = filename + '.json';
+    const txtFilename = filename + '.json.txt';
+
+    const file = new File([dataStr], txtFilename, { type: 'text/plain' });
 
     const shareData = {
-      title: `FlowTrack_Backup_${date}.json`,
-      text: 'Here is your FlowTrack data backup.',
+      title: jsonFilename,
+      text: 'Here are your exported transactions.',
       files: [file],
-    }
+    };
 
-    if (navigator.canShare(shareData)) {
+    if (navigator.share && navigator.canShare(shareData)) {
       await navigator.share(shareData);
     } else {
-      throw new Error("File not supported!");
+      throw new Error("Sharing not supported on this device.");
     }
   } catch (error: any) {
-    alert('Failed to share:' + error?.message)
+    alert('Failed to share: ' + error?.message);
   } finally {
     loadingShare.value = false;
   }
