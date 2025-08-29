@@ -9,10 +9,22 @@
             Manage your accounts and balances
           </p>
         </div>
-        <div class="flex items-center gap-2">
-          <button @click="exportToJson" class="btn-secondary flex">
-            <Download class="w-4 h-4 mr-2" />
-            Export
+        <div class="flex items-center gap-2 justify-end">
+          <button @click="exportToJson" class="btn btn-secondary gap-2 flex items-center">
+            <Download class="w-5 h-5" />
+            <span>
+              Export
+            </span>
+          </button>
+          <button @click="shareWallets" class="btn-secondary lg:hidden" :disabled="loadingShare">
+            <span v-if="loadingShare" class="flex items-center gap-2">
+              <LoadingSpinner size="sm"/>
+              Preparing...
+            </span>
+            <span v-else class="flex items-center gap-2">
+              <Share2 class="w-5 h-5" />
+              Share
+            </span>
           </button>
           <button @click="showAddModal = true" class="btn-primary hidden sm:flex">
             <Plus class="w-4 h-4 mr-2" />
@@ -84,6 +96,7 @@ import {
   Plus,
   Wallet as WalletIcon,
   Download,
+  Share2,
 } from 'lucide-vue-next';
 
 const walletsStore = useWalletsStore();
@@ -91,6 +104,7 @@ const router = useRouter();
 
 const showAddModal = ref(false);
 const selectedWallet = ref<Wallet | null>(null);
+const loadingShare = ref<boolean>(false);
 
 const wallets = computed(() => {
   return walletsStore.wallets
@@ -120,6 +134,40 @@ const exportToJson = () => {
   linkElement.setAttribute('href', dataUri);
   linkElement.setAttribute('download', filename);
   linkElement.click();
+};
+
+const shareWallets = async () => {
+  loadingShare.value = true;
+  try {
+    const data = wallets.value;
+    if (data.length === 0) {
+      alert('No wallets to share.');
+      return;
+    }
+
+    const dataStr = JSON.stringify(data, null, 2);
+    const today = format(new Date(), 'yyyy-MM-dd');
+    const jsonFilename = `wallets_${today}.json`;
+    const txtFilename = `wallets_${today}.json.txt`;
+
+    const file = new File([dataStr], txtFilename, { type: 'text/plain' });
+
+    const shareData = {
+      title: jsonFilename,
+      text: 'Here are your exported wallets.',
+      files: [file],
+    };
+
+    if (navigator.share && navigator.canShare(shareData)) {
+      await navigator.share(shareData);
+    } else {
+      throw new Error("Sharing not supported on this device.");
+    }
+  } catch (error: any) {
+    alert('Failed to share: ' + error?.message);
+  } finally {
+    loadingShare.value = false;
+  }
 };
 
 const goToWalletDetail = (walletId: string) => {
