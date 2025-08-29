@@ -96,7 +96,10 @@ const router = createRouter({
       component: () => import('@/views/OnboardingView.vue'),
       meta: { requiresAuth: true }
     }
-  ]
+  ],
+  scrollBehavior() {
+    return { top: 0, behavior: 'smooth' }
+  }
 })
 
 router.beforeEach((to, _from, next) => {
