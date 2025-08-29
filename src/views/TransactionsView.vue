@@ -2,7 +2,7 @@
   <AppLayout>
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Header -->
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Transactions</h1>
           <p class="text-gray-600 dark:text-gray-400 mt-1">

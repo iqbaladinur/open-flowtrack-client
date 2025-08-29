@@ -125,23 +125,26 @@
 
           <!-- Mobile View: List of Cards -->
           <div class="mt-4 space-y-4 lg:hidden">
-            <div class="flex items-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50">
+            <div class="flex items-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border-2 border-transparent" :class="{ 'border-gray-400 dark:border-neon': isAllSelected }">
               <label class="flex items-center cursor-pointer w-full">
-                <input type="checkbox" @change="toggleSelectAll" :checked="isAllSelected"
-                  class="checkbox checkbox-sm checkbox-primary" />
+                <input ref="selectAllTrx" type="checkbox" @change="toggleSelectAll" :checked="isAllSelected"
+                  class="checkbox checkbox-sm checkbox-primary hidden" />
+                <button class="w-6 h-6 border-2 flex items-center justify-center rounded-md dark:border-neon border-primary-500" @click="($refs.selectAllTrx as HTMLInputElement)?.click()">
+                  <Check v-if="isAllSelected" class="w-4 h-4 text-primary-500 dark:text-neon"></Check>
+                </button>
                 <span class="ml-3 text-sm font-medium">Select All Transactions</span>
               </label>
             </div>
             <div v-for="(item, index) in previewedTransactions" :key="`mobile-${index}`"
-              class="p-4 rounded-lg border dark:border-gray-700 border-gray-700" :class="{ 'dark:border-neon border-primary-500': item.selected }"
+              class="p-4 rounded-lg border-2 bg-gray-50 border-transparent dark:bg-gray-800/50 dark:border-gray-700 border-gray-700" :class="{ 'dark:border-neon border-gray-400': item.selected }"
             >
               <!-- Main content row -->
               <div class="flex items-center justify-between">
                 <h1 class="text-md">
                   Expense #{{ index + 1 }}
                 </h1>
-                <button class="w-6 h-6 border flex items-center justify-center rounded-md dark:border-neon border-primary-500" @click="item.selected = !item.selected">
-                  <Check v-if="item.selected" class="w-4 h-4"></Check>
+                <button class="w-6 h-6 border-2 flex items-center justify-center rounded-md dark:border-neon border-primary-500" @click="item.selected = !item.selected">
+                  <Check v-if="item.selected" class="w-4 h-4 text-primary-500 dark:text-neon"></Check>
                 </button>
               </div>
               <input type="checkbox" v-model="item.selected" class="hidden checkbox checkbox-sm checkbox-primary" />
