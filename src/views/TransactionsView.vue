@@ -14,9 +14,19 @@
             <Filter class="w-4 h-4 mr-2" />
             {{ showFilters ? 'Hide' : 'Show' }} Filters
           </button>
-          <button @click="exportToJson" class="btn-secondary">
-            <Download class="w-4 h-4 mr-2" />
-            Export
+          <button @click="exportToJson" class="btn btn-secondary gap-2 flex items-center">
+            <Download class="w-5 h-5" />
+            <span class="hidden lg:inline">
+              Export
+            </span>
+          </button>
+          <button @click="shareTransactions" class="btn-secondary lg:hidden" :disabled="loadingShare">
+            <span v-if="loadingShare" class="flex items-center gap-2">
+              <LoadingSpinner size="sm"/>
+            </span>
+            <span v-else class="flex items-center gap-2">
+              <Share2 class="w-5 h-5" />
+            </span>
           </button>
           <router-link to="/transactions/bulk-expense" class="btn-secondary hidden lg:flex">
             <UploadCloud class="w-4 h-4 mr-2" />
@@ -176,7 +186,8 @@ import {
   Wallet,
   RotateCcw,
   Download,
-  UploadCloud
+  UploadCloud,
+  Share2
 } from 'lucide-vue-next';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, endOfDay, format, parseISO } from 'date-fns';
 
@@ -187,6 +198,7 @@ const configStore = useConfigStore();
 const showAddModal = ref(false);
 const showFilters = ref(false); // Show by default for better UX
 const selectedTransaction = ref<Transaction | null>(null);
+const loadingShare = ref<boolean>(false);
 
 const filters = reactive({
   type: '',
@@ -380,6 +392,33 @@ const navigatePeriod = (direction: 'previous' | 'next') => {
 
 const goToPreviousPeriod = () => navigatePeriod('previous');
 const goToNextPeriod = () => navigatePeriod('next');
+
+const shareTransactions = async () => {
+  loadingShare.value = true;
+  try {
+    const blob = await backupStore.createBackup();
+    const date = new Date().toISOString().split('T')[0];
+    const file = new File([blob], `flowtrack_backup_${date}.json.txt`, {
+      type: 'text/plain',
+    });
+
+    const shareData = {
+      title: `FlowTrack_Backup_${date}.json`,
+      text: 'Here is your FlowTrack data backup.',
+      files: [file],
+    }
+
+    if (navigator.canShare(shareData)) {
+      await navigator.share(shareData);
+    } else {
+      throw new Error("File not supported!");
+    }
+  } catch (error: any) {
+    alert('Failed to share:' + error?.message)
+  } finally {
+    loadingShare.value = false;
+  }
+};
 
 // Watch filters and fetch transactions when they change
 watch(
