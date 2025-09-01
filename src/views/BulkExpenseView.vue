@@ -401,9 +401,10 @@ const removeImage = () => {
 
 const cropImage = () => {
   if (!cropper.value || !originalFile.value) return;
+  // @ts-ignore
   const canvas = cropper.value.getCroppedCanvas();
   if (!canvas) return;
-
+  // @ts-ignore
   canvas.toBlob((blob) => {
     if (blob) {
       const croppedFile = new File([blob], originalFile.value?.name || 'cropped.jpg', {
