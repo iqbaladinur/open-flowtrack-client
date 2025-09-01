@@ -16,9 +16,9 @@
       <!-- Step 1: Image Upload -->
       <div v-if="currentStep === 1" class="card bg-base-100 shadow p-6">
         <div class="card-body">
-          <h2 class="card-title">Step 1: Upload an Image</h2>
+          <h2 class="card-title">Step 1: Upload & Crop Image</h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Upload a clear image of a receipt or a list of expenses.
+            Upload a clear image of a receipt, crop it, and then process.
           </p>
 
           <div v-if="!selectedImage">
@@ -46,7 +46,7 @@
               <div class="flex items-center gap-3 truncate">
                 <img :src="imagePreviewUrl" alt="Preview" class="h-12 w-12 rounded-md object-cover flex-shrink-0" />
                 <div class="text-sm font-medium truncate">
-                  <p class="truncate">{{ selectedImage.name }}</p>
+                  <p class="truncate">{{ selectedImage.name }} (cropped)</p>
                   <p class="text-xs text-gray-500">
                     {{ (selectedImage.size / 1024).toFixed(2) }} KB
                   </p>
@@ -67,6 +67,29 @@
           </div>
         </div>
       </div>
+
+      <!-- Cropper Modal -->
+      <Modal v-model="isCropModalOpen" title="Crop Image">
+        <div class="w-full h-[50vh]">
+          <VueCropper
+            v-if="rawImageForCropper"
+            ref="cropper"
+            :src="rawImageForCropper"
+            alt="Image to crop"
+            :aspect-ratio="0"
+            :guides="true"
+            :view-mode="2"
+            :auto-crop-area="0.8"
+            :background="false"
+          />
+        </div>
+        <template #footer>
+          <div class="flex justify-end gap-2">
+            <button @click="cancelCrop" class="btn btn-ghost">Cancel</button>
+            <button @click="cropImage" class="btn btn-primary">Crop & Use</button>
+          </div>
+        </template>
+      </Modal>
 
       <!-- Step 2: Review and Edit (Side-by-Side) -->
       <div v-if="currentStep === 2" class="card bg-base-100 shadow p-6">
@@ -266,7 +289,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, nextTick } from "vue";
 import { createWorker } from "tesseract.js";
 import { useWalletsStore } from "@/stores/wallets";
 import { useCategoriesStore } from "@/stores/categories";
@@ -274,9 +297,12 @@ import { useTransactionsStore } from "@/stores/transactions";
 import { storeToRefs } from "pinia";
 import AppLayout from "@/components/layouts/AppLayout.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
+import Modal from "@/components/ui/Modal.vue";
 import { UploadCloud, X, Check } from "lucide-vue-next";
 import { format } from "date-fns";
 import { useRouter } from "vue-router";
+import VueCropper from "vue-cropperjs";
+import "vue-cropperjs/node_modules/cropperjs/dist/cropper.css";
 
 interface PreviewTransaction {
   date: string;
@@ -299,12 +325,17 @@ const { categories } = storeToRefs(categoriesStore);
 const currentStep = ref(1);
 const selectedImage = ref<File | null>(null);
 const imagePreviewUrl = ref<string | undefined>(undefined);
+const rawImageForCropper = ref<string | undefined>(undefined);
 const ocrResultText = ref("");
 const previewedTransactions = ref<PreviewTransaction[]>([]);
 
 const ocrLoading = ref(false);
 const previewLoading = ref(false);
 const savingLoading = ref(false);
+
+const isCropModalOpen = ref(false);
+const cropper = ref<typeof VueCropper | null>(null);
+const originalFile = ref<File | null>(null);
 
 const expenseCategories = computed(() =>
   categories.value.filter((c) => c.type === "expense")
@@ -324,13 +355,16 @@ const triggerFileInput = () => {
   document.getElementById("file-upload")?.click();
 };
 
-const processFile = (file: File) => {
+const processFile = async (file: File) => {
   if (!file.type.startsWith("image/")) {
     alert("Please upload an image file.");
     return;
   }
-  selectedImage.value = file;
-  imagePreviewUrl.value = URL.createObjectURL(file);
+  originalFile.value = file;
+  rawImageForCropper.value = URL.createObjectURL(file);
+  
+  await nextTick();
+  isCropModalOpen.value = true;
 };
 
 const handleImageUpload = (event: Event) => {
@@ -348,14 +382,46 @@ const handleDrop = (event: DragEvent) => {
 
 const removeImage = () => {
   selectedImage.value = null;
+  originalFile.value = null;
+
   if (imagePreviewUrl.value) {
     URL.revokeObjectURL(imagePreviewUrl.value);
     imagePreviewUrl.value = undefined;
   }
+  if (rawImageForCropper.value) {
+    URL.revokeObjectURL(rawImageForCropper.value);
+    rawImageForCropper.value = undefined;
+  }
+
   const fileInput = document.getElementById("file-upload") as HTMLInputElement;
   if (fileInput) {
     fileInput.value = "";
   }
+};
+
+const cropImage = () => {
+  if (!cropper.value || !originalFile.value) return;
+  const canvas = cropper.value.getCroppedCanvas();
+  if (!canvas) return;
+
+  canvas.toBlob((blob) => {
+    if (blob) {
+      const croppedFile = new File([blob], originalFile.value?.name || 'cropped.jpg', {
+        type: blob.type,
+      });
+      selectedImage.value = croppedFile;
+      if (imagePreviewUrl.value) {
+        URL.revokeObjectURL(imagePreviewUrl.value);
+      }
+      imagePreviewUrl.value = URL.createObjectURL(croppedFile);
+    }
+    isCropModalOpen.value = false;
+  });
+};
+
+const cancelCrop = () => {
+  isCropModalOpen.value = false;
+  removeImage();
 };
 
 const processImage = async () => {
