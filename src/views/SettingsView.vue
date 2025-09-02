@@ -192,8 +192,6 @@ watch(() => configStore.firstDayOfMonth, (newDay) => {
 
 // --- Lifecycle Hooks ---
 onMounted(() => {
-  if (!configStore.config) {
-    configStore.fetchConfig();
-  }
+  configStore.fetchConfig();
 });
 </script>
