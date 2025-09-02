@@ -139,7 +139,7 @@
           </div>
           <div>
             <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">What happened this period?</h2>
-            <p class="text-xs text-gray-500 dark:text-gray-400 italic">({{ periodicAnalytics.start }} - {{ periodicAnalytics.end }})</p>
+            <p v-if="configStore.isApiKeyAiExist" class="text-xs text-gray-500 dark:text-gray-400 italic">({{ periodicAnalytics.start }} - {{ periodicAnalytics.end }})</p>
           </div>
         </div>
         <div v-if="analyticsLoading" class="flex justify-center items-center py-8">
@@ -151,7 +151,9 @@
           </p>
         </div>
         <div v-else class="text-center py-8">
-          <p class="text-gray-500 dark:text-gray-400">No suggestions available at the moment.</p>
+          <p class="text-gray-500 dark:text-gray-400">
+            {{ configStore.isApiKeyAiExist ? 'No suggestions available at the moment.' : 'Add gemini apikey on settings to enable this feature.' }}
+          </p>
         </div>
       </div>
 
@@ -282,6 +284,9 @@ const toggleAddTransaction = (type: 'income' | 'expense') => {
 }
 
 function getAIAnalytics() {
+  if (!configStore.isApiKeyAiExist) {
+    return;
+  }
   const today = new Date();
   const firstDay = configStore.firstDayOfMonth;
   
