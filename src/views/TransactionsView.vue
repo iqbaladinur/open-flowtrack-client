@@ -429,12 +429,16 @@ const shareTransactions = async () => {
       const date = new Date(tx.date).toISOString().split("T")[0]; // YYYY-MM-DD
       const category = tx.category?.name || "Uncategorized";
       const wallet = tx.wallet?.name || "Unknown Wallet";
-
-      return `${type} of ${amount} on ${date} for ${category} (from ${wallet})`;
+      const note = tx.note;
+      return `${date}: ${type} of ${amount} for ${category} (${note || "no note"}) on wallet ${wallet}`;
     });
 
     // Concatenate into one big prompt-friendly string
-    const llmFriendlyData = formatted.join("\n");
+    const llmFriendlyData = `
+      Here is my transactions data for the selected period (${filename?.replace('transactions', '')}):
+
+      ${formatted.join("\n")}
+    `;
 
     const shareData = {
       title: jsonFilename,
