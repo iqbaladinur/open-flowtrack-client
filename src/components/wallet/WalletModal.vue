@@ -6,7 +6,7 @@
         <label for="balance" class="label sr-only">Initial Balance</label>
         <div class="relative inline-block">
           <span
-            class="absolute left-4 top-1/2 transform -translate-y-1/2 text-xl text-gray-400 dark:text-gray-500"
+            class="absolute left-0 top-1/2 transform -translate-y-1/2 text-xl text-gray-400 dark:text-gray-500 px-1 rounded-md dark:bg-gray-700/90 bg-gray-200/90"
           >
             {{ configStore.currency }}
           </span>
@@ -41,6 +41,39 @@
           :disabled="loading"
           autocomplete="off"
         />
+      </div>
+
+      <!-- Hidden Wallet -->
+      <div class="flex items-center justify-between rounded-lg p-3 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+        <div>
+          <label for="hidden-toggle" class="font-medium text-gray-900 dark:text-gray-100">
+            Hide this wallet
+          </label>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            Excluded from total calculations.
+          </p>
+        </div>
+        <button
+          type="button"
+          @click="form.hidden = !form.hidden"
+          :class="[
+            form.hidden ? 'bg-primary-600 dark:bg-neon' : 'bg-gray-200 dark:bg-gray-700',
+            'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900'
+          ]"
+          role="switch"
+          :aria-checked="form.hidden"
+          id="hidden-toggle"
+          :disabled="loading"
+        >
+          <span class="sr-only">Use setting</span>
+          <span
+            aria-hidden="true"
+            :class="[
+              form.hidden ? 'translate-x-5' : 'translate-x-0',
+              'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
+            ]"
+          />
+        </button>
       </div>
 
       <!-- Error Display -->
@@ -106,6 +139,7 @@ const error = ref('');
 const form = reactive({
   name: '',
   initial_balance: 0,
+  hidden: false,
 });
 
 const isFormValid = computed(() => {
@@ -122,6 +156,7 @@ const handleSubmit = async () => {
     const walletData = {
       name: form.name.trim(),
       initial_balance: form.initial_balance,
+      hidden: form.hidden,
     };
 
     let result;
@@ -153,6 +188,7 @@ const resetForm = () => {
   Object.assign(form, {
     name: '',
     initial_balance: 0,
+    hidden: false,
   });
 };
 
@@ -162,6 +198,7 @@ watch(() => props.wallet, (newWallet) => {
     Object.assign(form, {
       name: newWallet.name,
       initial_balance: Number(newWallet.initial_balance) || 0,
+      hidden: newWallet.hidden
     });
   } else {
     resetForm();

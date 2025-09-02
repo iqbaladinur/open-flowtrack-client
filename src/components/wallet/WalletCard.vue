@@ -1,11 +1,20 @@
 <template>
   <div>
-    <div class="card px-6 py-4 hover:shadow-md transition-shadow relative group">
+    <div
+      class="card px-6 py-4 hover:shadow-md transition-all relative group"
+      :class="{ 'border-2 border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/20': wallet.hidden }"
+    >
       <!-- Wallet Info -->
       <div>
         <div>
-          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
-            {{ wallet.name }}
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2 flex items-start gap-2">
+            <span>{{ wallet.name }}</span>
+            <span
+              v-if="wallet.hidden"
+              class="text-[9px] font-normal px-3 py-0 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-full"
+            >
+              Excluded
+            </span>
           </h3>
           <slot name="description" />
         </div>
