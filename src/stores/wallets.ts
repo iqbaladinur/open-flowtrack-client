@@ -32,6 +32,8 @@ export const useWalletsStore = defineStore('wallets', () => {
       });
 
       if (response.data) {
+        response.data.sort((a, b) => a.name.localeCompare(b.name));
+        response.data.sort((a, b) => Number(b.hidden) - Number(a.hidden));
         wallets.value = response.data;
       }
     } finally {
