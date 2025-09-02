@@ -6,7 +6,7 @@
         <label for="amount" class="label sr-only">Amount</label>
         <div class="relative inline-block">
           <span
-            class="absolute left-4 top-1/2 transform -translate-y-1/2 text-xl text-gray-400 dark:text-gray-500"
+            class="absolute left-0 top-1/2 transform -translate-y-1/2 text-xl text-gray-400 dark:text-gray-500 px-1 rounded-md dark:bg-gray-700/90 bg-gray-200/90"
           >
             {{ configStore.currency }}
           </span>
