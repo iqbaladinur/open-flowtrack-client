@@ -434,8 +434,7 @@ const shareTransactions = async () => {
     });
 
     // Concatenate into one big prompt-friendly string
-    const llmFriendlyData = `
-      Here is my transactions data for the selected period (${filename?.replace('transactions', '')}):
+    const llmFriendlyData = `Here is my transactions data for the selected period (${filename?.replace('transactions', '')}):
 
       ${formatted.join("\n")}
     `;
