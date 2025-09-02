@@ -44,7 +44,7 @@
             <label for="fractions" class="label">Gemini Api Key</label>
             <input
               id="geminiApiKey"
-              v-model="currencyForm.geminiApiKey"
+              v-model="currencyForm.gemini_api_key"
               type="password"
               class="input"
               placeholder="Your Api Key"
@@ -116,22 +116,23 @@ import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { useConfigStore, popularCurrencies } from '@/stores/config';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
+import { Config } from '@/types/config';
 
 const configStore = useConfigStore();
 
 // --- Currency Settings ---
 const currencyUpdateError = ref('');
 const currencyUpdateSuccess = ref(false);
-const currencyForm = reactive({
+const currencyForm = reactive<Partial<Config>>({
   currency: 'USD',
   fractions: 2,
-  geminiApiKey: ''
+  gemini_api_key: ''
 });
 
 const hasCurrencyChanges = computed(() => {
   return currencyForm.currency !== configStore.currency
     || currencyForm.fractions !== configStore.fractions
-    || currencyForm.geminiApiKey !== configStore.geminiApiKey;
+    || currencyForm.gemini_api_key !== configStore.gemini_api_key;
 });
 
 const updateCurrencySettings = async () => {
@@ -143,7 +144,7 @@ const updateCurrencySettings = async () => {
   const result = await configStore.updateConfig({
     currency: currencyForm.currency,
     fractions: currencyForm.fractions,
-    gemini_api_key: currencyForm.geminiApiKey
+    gemini_api_key: currencyForm.gemini_api_key
   });
 
   if (result.success) {
@@ -160,6 +161,7 @@ watch(() => configStore.config, (newConfig) => {
   if (newConfig) {
     currencyForm.currency = newConfig.currency;
     currencyForm.fractions = newConfig.fractions;
+    currencyForm.gemini_api_key = newConfig.gemini_api_key;
   }
 }, { immediate: true });
 

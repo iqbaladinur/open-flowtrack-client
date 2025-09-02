@@ -24,12 +24,12 @@ export const useConfigStore = defineStore('config', () => {
   // --- API-based state ---
   const currency = computed(() => config.value?.currency || 'USD')
   const fractions = computed(() => config.value?.fractions || 2)
-  const geminiApiKey = computed(() => config.value?.gemini_api_key || '')
+  const gemini_api_key = computed(() => config.value?.gemini_api_key || '')
 
   // --- LocalStorage-based state ---
   const firstDayOfMonth = ref(1)
   const isApiKeyAiExist = computed(() => {
-    return !!config.value?.gemini_api_key
+    return !!gemini_api_key.value;
   });
 
   const setConfig = (newConfig: Config) => {
@@ -110,7 +110,7 @@ export const useConfigStore = defineStore('config', () => {
     loading,
     currency,
     fractions,
-    geminiApiKey,
+    gemini_api_key,
     firstDayOfMonth,
     isApiKeyAiExist,
     setConfig,
