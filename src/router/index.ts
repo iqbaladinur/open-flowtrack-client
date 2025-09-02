@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useConfigStore } from '@/stores/config'
 import nprogress from 'nprogress'
 
 const router = createRouter({
@@ -105,6 +106,7 @@ const router = createRouter({
 router.beforeEach((to, _from, next) => {
   nprogress.start()
   const authStore = useAuthStore()
+  const configStore = useConfigStore()
 
   // ensure auth store is initialized
   if (!authStore.isAuthenticated && localStorage.getItem('auth_token')) {
@@ -112,6 +114,12 @@ router.beforeEach((to, _from, next) => {
   }
 
   const isAuthenticated = authStore.isAuthenticated
+
+  if (to.name === 'bulk-expense' && !configStore.isApiKeyAiExist) {
+    nprogress.done();
+    next({ name: _from.name });
+    return false;
+  }
 
   if (to.meta.requiresAuth && !isAuthenticated) {
     next({ name: 'login' })
