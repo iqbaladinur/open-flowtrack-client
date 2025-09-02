@@ -114,7 +114,7 @@
           Calculation Settings
         </h3>
         <div class="space-y-4">
-          <div class="flex item-start lg:items-center justify-between rounded-lg p-3 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+          <div class="flex item-start lg:items-center justify-between rounded-lg p-3 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 gap-4">
             <div>
               <label for="hidden-toggle" class="font-medium text-gray-900 dark:text-gray-100">
                 Include hidden wallets in calculation
