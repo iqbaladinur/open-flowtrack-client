@@ -107,6 +107,49 @@
           </button>
         </form>
       </div>
+
+      <!-- Calculation Settings -->
+      <div class="card p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-neon mb-4">
+          Calculation Settings
+        </h3>
+        <div class="space-y-4">
+          <div class="flex item-start lg:items-center justify-between rounded-lg p-3 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+            <div>
+              <label for="hidden-toggle" class="font-medium text-gray-900 dark:text-gray-100">
+                Include hidden wallets in calculation
+              </label>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Enable this to include balances from hidden wallets in total calculations across the app.
+              </p>
+            </div>
+            <button
+              type="button"
+              @click="calculationSettingsForm.includeHiddenWalletsInCalculation = !calculationSettingsForm.includeHiddenWalletsInCalculation"
+              :class="[
+                calculationSettingsForm.includeHiddenWalletsInCalculation ? 'bg-primary-600 dark:bg-neon' : 'bg-gray-200 dark:bg-gray-700',
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900'
+              ]"
+              role="switch"
+              :aria-checked="calculationSettingsForm.includeHiddenWalletsInCalculation"
+              id="hidden-toggle"
+            >
+              <span class="sr-only">Include hidden wallets in calculation</span>
+              <span
+                aria-hidden="true"
+                :class="[
+                  calculationSettingsForm.includeHiddenWalletsInCalculation ? 'translate-x-5' : 'translate-x-0',
+                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
+                ]"
+              />
+            </button>
+          </div>
+
+          <div v-if="calculationSettingsUpdateSuccess" class="p-3 rounded-lg bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800">
+            <p class="text-sm text-success-700 dark:text-success-300">Calculation settings updated successfully!</p>
+          </div>
+        </div>
+      </div>
     </div>
   </AppLayout>
 </template>
@@ -188,6 +231,26 @@ const updateDateSettings = () => {
 watch(() => configStore.firstDayOfMonth, (newDay) => {
   dateSettingsForm.firstDayOfMonth = newDay;
 }, { immediate: true });
+
+// --- Calculation Settings ---
+const calculationSettingsUpdateSuccess = ref(false);
+const calculationSettingsForm = reactive({
+  includeHiddenWalletsInCalculation: false,
+});
+
+watch(() => configStore.includeHiddenWalletsInCalculation, (newValue) => {
+  calculationSettingsForm.includeHiddenWalletsInCalculation = newValue;
+}, { immediate: true });
+
+watch(() => calculationSettingsForm.includeHiddenWalletsInCalculation, (newValue) => {
+  if (newValue !== configStore.includeHiddenWalletsInCalculation) {
+    configStore.updateIncludeHiddenWalletsInCalculation(newValue);
+    calculationSettingsUpdateSuccess.value = true;
+    setTimeout(() => {
+      calculationSettingsUpdateSuccess.value = false;
+    }, 3000);
+  }
+});
 
 
 // --- Lifecycle Hooks ---

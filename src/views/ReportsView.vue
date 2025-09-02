@@ -427,7 +427,8 @@ const fetchReportData = async () => {
   };
 
   await transactionsStore.fetchTransactions(filters, true);
-  transactions.value = transactionsStore.transactions;
+  transactions.value = transactionsStore.transactions
+    .filter(t => configStore.includeHiddenWalletsInCalculation ? true : !t.wallet?.hidden);
 
   loading.value = false;
 };

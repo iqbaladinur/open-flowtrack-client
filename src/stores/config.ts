@@ -28,9 +28,10 @@ export const useConfigStore = defineStore('config', () => {
 
   // --- LocalStorage-based state ---
   const firstDayOfMonth = ref(1)
+  const includeHiddenWalletsInCalculation = ref(false)
   const isApiKeyAiExist = computed(() => {
-    return !!gemini_api_key.value;
-  });
+    return !!gemini_api_key.value
+  })
 
   const setConfig = (newConfig: Config) => {
     config.value = newConfig
@@ -47,10 +48,14 @@ export const useConfigStore = defineStore('config', () => {
         localStorage.removeItem('config')
       }
     }
-    
-    const savedDay = localStorage.getItem('firstDayOfMonth');
-    firstDayOfMonth.value = savedDay ? parseInt(savedDay, 10) : 1;
 
+    const savedDay = localStorage.getItem('firstDayOfMonth')
+    firstDayOfMonth.value = savedDay ? parseInt(savedDay, 10) : 1
+
+    const savedIncludeHidden = localStorage.getItem('includeHiddenWalletsInCalculation')
+    includeHiddenWalletsInCalculation.value = savedIncludeHidden
+      ? JSON.parse(savedIncludeHidden)
+      : false
   }
 
   const fetchConfig = async () => {
@@ -65,7 +70,11 @@ export const useConfigStore = defineStore('config', () => {
     }
   }
 
-  const updateConfig = async (data: { currency?: string; fractions?: number, gemini_api_key?: string }) => {
+  const updateConfig = async (data: {
+    currency?: string
+    fractions?: number
+    gemini_api_key?: string
+  }) => {
     loading.value = true
     try {
       const response = await api.put<Config>('/config', data)
@@ -83,9 +92,14 @@ export const useConfigStore = defineStore('config', () => {
 
   const updateFirstDayOfMonth = (day: number) => {
     if (day >= 1 && day <= 28) {
-      firstDayOfMonth.value = day;
-      localStorage.setItem('firstDayOfMonth', day.toString());
+      firstDayOfMonth.value = day
+      localStorage.setItem('firstDayOfMonth', day.toString())
     }
+  }
+
+  const updateIncludeHiddenWalletsInCalculation = (value: boolean) => {
+    includeHiddenWalletsInCalculation.value = value
+    localStorage.setItem('includeHiddenWalletsInCalculation', JSON.stringify(value))
   }
 
   const formatCurrency = (amount: number) => {
@@ -103,7 +117,7 @@ export const useConfigStore = defineStore('config', () => {
   }
 
   // Initialize from storage on store creation
-  loadConfigFromStorage();
+  loadConfigFromStorage()
 
   return {
     config,
@@ -112,12 +126,14 @@ export const useConfigStore = defineStore('config', () => {
     fractions,
     gemini_api_key,
     firstDayOfMonth,
+    includeHiddenWalletsInCalculation,
     isApiKeyAiExist,
     setConfig,
     loadConfigFromStorage,
     fetchConfig,
     updateConfig,
     updateFirstDayOfMonth,
+    updateIncludeHiddenWalletsInCalculation,
     formatCurrency
   }
 })

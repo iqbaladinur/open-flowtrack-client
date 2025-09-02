@@ -152,9 +152,16 @@ const shareWallets = async () => {
 
     const file = new File([dataStr], txtFilename, { type: 'text/plain' });
 
+    const formatted = data.map(w => {
+      const status = w.hidden ? "Hidden" : "Visible";
+      return `${w.name}: Current balance ${w.current_balance}, Initial balance ${w.initial_balance} (${status})`;
+    });
+
+    const llmInput = formatted.join("\n");
+
     const shareData = {
       title: jsonFilename,
-      text: 'Here are your exported wallets.',
+      text: llmInput,
       files: [file],
     };
 

@@ -281,7 +281,7 @@ const onCustomDateChange = () => {
 };
 
 const exportToJson = () => {
-  const data = transactions.value;
+  const data = transactions.value.filter(t => configStore.includeHiddenWalletsInCalculation ? true : !t.wallet?.hidden);
   if (data.length === 0) {
     alert('No transactions to export.');
     return;
@@ -396,7 +396,7 @@ const goToNextPeriod = () => navigatePeriod('next');
 const shareTransactions = async () => {
   loadingShare.value = true;
   try {
-    const data = transactions.value;
+    const data = transactions.value.filter(t => configStore.includeHiddenWalletsInCalculation ? true : !t.wallet?.hidden);
     if (data.length === 0) {
       alert('No transactions to share.');
       return;
@@ -423,9 +423,22 @@ const shareTransactions = async () => {
 
     const file = new File([dataStr], txtFilename, { type: 'text/plain' });
 
+    const formatted = data.map(tx => {
+      const type = tx.type === "expense" ? "Expense" : "Income";
+      const amount = tx.amount;
+      const date = new Date(tx.date).toISOString().split("T")[0]; // YYYY-MM-DD
+      const category = tx.category?.name || "Uncategorized";
+      const wallet = tx.wallet?.name || "Unknown Wallet";
+
+      return `${type} of ${amount} on ${date} for ${category} (from ${wallet})`;
+    });
+
+    // Concatenate into one big prompt-friendly string
+    const llmFriendlyData = formatted.join("\n");
+
     const shareData = {
       title: jsonFilename,
-      text: 'Here are your exported transactions.',
+      text: llmFriendlyData,
       files: [file],
     };
 

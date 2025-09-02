@@ -237,7 +237,9 @@ const showAddTransactionModal = ref(false);
 const transactionType = ref<'income' | 'expense'>('income');
 
 const totalBalance = computed(() => {
-  return walletsStore.wallets.reduce((sum, wallet) => sum + (wallet.current_balance || 0), 0);
+  return walletsStore.wallets
+    .filter(w => configStore.includeHiddenWalletsInCalculation ? true : !w.hidden)
+    .reduce((sum, wallet) => sum + (wallet.current_balance || 0), 0);
 });
 
 const periodicAnalytics = reactive({
@@ -247,13 +249,25 @@ const periodicAnalytics = reactive({
 
 const alltimeIncome = computed(() => {
   return transactionsStore.transactions
-    .filter(t => t.type === 'income')
+    .filter(t => {
+      const type = t.type === 'income';
+      if (!configStore.includeHiddenWalletsInCalculation) {
+        return type && !t.wallet?.hidden
+      }
+      return type;
+    })
     .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
 });
 
 const allTimeExpense = computed(() => {
   return transactionsStore.transactions
-    .filter(t => t.type === 'expense')
+    .filter(t => {
+      const type = t.type === 'expense';
+      if (!configStore.includeHiddenWalletsInCalculation) {
+        return type && !t.wallet?.hidden
+      }
+      return type;
+    })
     .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
 });
 
