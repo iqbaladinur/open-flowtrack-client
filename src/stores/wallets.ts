@@ -32,9 +32,19 @@ export const useWalletsStore = defineStore('wallets', () => {
       });
 
       if (response.data) {
-        response.data.sort((a, b) => a.name.localeCompare(b.name));
-        response.data.sort((a, b) => Number(b.hidden) - Number(a.hidden));
-        wallets.value = response.data;
+        const sorted = [...response.data].sort((a, b) => {
+          // Step 1: is_main_wallet true goes first
+          if (a.is_main_wallet && !b.is_main_wallet) return -1;
+          if (!a.is_main_wallet && b.is_main_wallet) return 1;
+
+          // Step 2: hidden false before hidden true
+          if (!a.hidden && b.hidden) return -1;
+          if (a.hidden && !b.hidden) return 1;
+
+          // Step 3: sort alphabetically by name
+          return a.name.localeCompare(b.name);
+        });
+        wallets.value = sorted;
       }
     } finally {
       loading.value = false;
@@ -44,6 +54,8 @@ export const useWalletsStore = defineStore('wallets', () => {
   const createWallet = async (walletData: {
     name: string;
     initial_balance: number;
+    hidden: boolean;
+    is_main_wallet?: boolean;
   }) => {
     const response = await api.post<Wallet>('/wallets', walletData);
     if (response.data) {
@@ -58,6 +70,8 @@ export const useWalletsStore = defineStore('wallets', () => {
     walletData: Partial<{
       name: string;
       initial_balance: number;
+      hidden: boolean;
+      is_main_wallet?: boolean;
     }>
   ) => {
     const response = await api.patch<Wallet>(`/wallets/${id}`, walletData);

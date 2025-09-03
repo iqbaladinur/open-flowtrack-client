@@ -78,7 +78,7 @@
               :value="wallet.id"
               class="font-mono"
             >
-              {{ wallet.name }} ({{ configStore.formatCurrency(wallet.current_balance || 0) }})
+              {{ wallet.name }} {{ wallet.is_main_wallet ? '(Main)' : '' }} ({{ configStore.formatCurrency(wallet.current_balance || 0) }})
             </option>
           </select>
         </div>

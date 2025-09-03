@@ -76,6 +76,39 @@
         </button>
       </div>
 
+      <!-- Main Wallet -->
+      <div class="flex items-center justify-between rounded-lg p-3 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+        <div>
+          <label for="main-wallet-toggle" class="font-medium text-gray-900 dark:text-gray-100">
+            Set as main wallet
+          </label>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            This wallet will be shown first.
+          </p>
+        </div>
+        <button
+          type="button"
+          @click="form.is_main_wallet = !form.is_main_wallet"
+          :class="[
+            form.is_main_wallet ? 'bg-primary-600 dark:bg-neon' : 'bg-gray-200 dark:bg-gray-700',
+            'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900'
+          ]"
+          role="switch"
+          :aria-checked="form.is_main_wallet"
+          id="main-wallet-toggle"
+          :disabled="loading"
+        >
+          <span class="sr-only">Use setting</span>
+          <span
+            aria-hidden="true"
+            :class="[
+              form.is_main_wallet ? 'translate-x-5' : 'translate-x-0',
+              'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
+            ]"
+          />
+        </button>
+      </div>
+
       <!-- Error Display -->
       <div
         v-if="error"
@@ -140,6 +173,7 @@ const form = reactive({
   name: '',
   initial_balance: 0,
   hidden: false,
+  is_main_wallet: false,
 });
 
 const isFormValid = computed(() => {
@@ -157,6 +191,7 @@ const handleSubmit = async () => {
       name: form.name.trim(),
       initial_balance: form.initial_balance,
       hidden: form.hidden,
+      is_main_wallet: form.is_main_wallet,
     };
 
     let result;
@@ -189,6 +224,7 @@ const resetForm = () => {
     name: '',
     initial_balance: 0,
     hidden: false,
+    is_main_wallet: false,
   });
 };
 
@@ -198,7 +234,8 @@ watch(() => props.wallet, (newWallet) => {
     Object.assign(form, {
       name: newWallet.name,
       initial_balance: Number(newWallet.initial_balance) || 0,
-      hidden: newWallet.hidden
+      hidden: newWallet.hidden,
+      is_main_wallet: newWallet.is_main_wallet || false
     });
   } else {
     resetForm();

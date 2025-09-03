@@ -108,8 +108,7 @@ const loadingShare = ref<boolean>(false);
 
 const wallets = computed(() => {
   return walletsStore.wallets
-    .slice()
-    .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+    .slice();
 });
 
 const handleWalletSaved = () => {

@@ -456,10 +456,8 @@ const previewTransactions = async () => {
     );
 
     if (response.data) {
-      const defaultWalletId =
-        wallets.value.length > 0 ? wallets.value[0].id : "";
-      const defaultCategoryId =
-        expenseCategories.value.length > 0 ? expenseCategories.value[0].id : "";
+      const defaultWalletId = wallets.value.find(w => w.is_main_wallet)?.id || wallets.value.length > 0 ? wallets.value[0].id : "";
+      const defaultCategoryId = expenseCategories.value.length > 0 ? expenseCategories.value[0].id : "";
       const today = format(new Date(), "yyyy-MM-dd");
       previewedTransactions.value = <PreviewTransaction[]>response.data.map(
         (item) => ({

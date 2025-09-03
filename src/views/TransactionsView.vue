@@ -148,7 +148,7 @@
 
     <!-- Floating Add Button for Mobile -->
     <div class="fixed bottom-[70px] right-6 z-[20] sm:hidden">
-      <router-link to="/transactions/bulk-expense" class="btn bg-red-500/80 text-white rounded-full p-3 shadow-lg flex items-center justify-center">
+      <router-link v-if="configStore.isApiKeyAiExist" to="/transactions/bulk-expense" class="btn bg-red-500/80 text-white rounded-full p-3 shadow-lg flex items-center justify-center">
         <UploadCloud class="w-5 h-5" />
         <span class="sr-only">Bulk Expense</span>
       </router-link>
