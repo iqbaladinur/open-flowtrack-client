@@ -1,8 +1,34 @@
 <template>
-  <Pie :data="chartData" :options="chartOptions" />
+  <div class="flex items-center">
+    <div class="w-1/2 pr-4">
+      <ul>
+        <li
+          v-for="(label, index) in chartData.labels"
+          :key="index"
+          @click="toggleData(index)"
+          class="flex items-start cursor-pointer p-1 rounded text-xs"
+          :class="{ 'line-through text-slate-600 dark:text-white': !dataVisibility[index] }"
+        >
+          <span
+            class="w-4 h-4 mr-2 rounded-full mt-1"
+            :style="{
+              backgroundColor: chartData.datasets[0].backgroundColor[index],
+              borderColor: chartData.datasets[0].backgroundColor[index],
+              borderWidth: '2px',
+            }"
+          ></span>
+          <span class="whitespace-pre-wrap text-slate-600 dark:text-white text-xs">{{ Array.isArray(label) ? label.join('\n') : label }}</span>
+        </li>
+      </ul>
+    </div>
+    <div class="w-1/2">
+      <Pie ref="pieChart" :data="chartData" :options="chartOptions" />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
+import { ref, computed, watch, nextTick } from 'vue';
 import { Pie } from 'vue-chartjs';
 import {
   Chart as ChartJS,
@@ -11,14 +37,13 @@ import {
   Legend,
   ArcElement,
   CategoryScale,
+  type Chart,
 } from 'chart.js';
 import type { PropType } from 'vue';
-import { useThemeStore } from '@/stores/theme';
-import { computed } from 'vue';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
-defineProps({
+const props = defineProps({
   chartData: {
     type: Object as PropType<{
       labels: (string | string[])[];
@@ -32,32 +57,50 @@ defineProps({
   },
 });
 
-const themeStore = useThemeStore();
-const isDarkMode = computed(() => {
-  if (themeStore.theme === 'system') {
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  }
-  return themeStore.theme === 'dark';
-});
-
-const color = computed(() => (isDarkMode.value ? '#d1d5db' : '#030712'));
+const pieChart = ref<InstanceType<typeof Pie> | null>(null);
+const dataVisibility = ref<boolean[]>([]);
 
 const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      position: 'left' as const,
-      labels: {
-        color: color.value,
-        boxWidth: 10,
-        boxHeight: 10,
-        usePointStyle: true,
-        pointStyle: 'circle',
-        textAlign: 'left' as const,
-        padding: 10,
-      },
+      display: false, // Hide the default legend
     },
   },
 }));
+
+const initializeVisibility = () => {
+  const chart = pieChart.value?.chart as Chart | undefined;
+  if (chart && chart.data.labels) {
+    dataVisibility.value = chart.data.labels.map((_, i) => chart.getDataVisibility(i));
+  }
+};
+
+watch(pieChart, (newChart) => {
+  if (newChart) {
+    // Use nextTick to ensure the chart instance is fully mounted and ready
+    nextTick(() => {
+      initializeVisibility();
+    });
+  }
+});
+
+watch(() => props.chartData, () => {
+  nextTick(() => {
+    initializeVisibility();
+  });
+}, { deep: true });
+
+
+const toggleData = (index: number) => {
+  const chart = pieChart.value?.chart as Chart | undefined;
+  if (!chart) return;
+
+  chart.toggleDataVisibility(index);
+  chart.update();
+  
+  // Update our reactive state to reflect the change
+  dataVisibility.value[index] = chart.getDataVisibility(index);
+};
 </script>
