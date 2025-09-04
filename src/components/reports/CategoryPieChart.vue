@@ -1,7 +1,7 @@
 <template>
-  <div class="flex items-center">
-    <div class="w-1/2 pr-4">
-      <ul>
+  <div class="flex items-center" :class="{ 'flex-col-reverse gap-4 lg:flex-row lg:gap-0': chartData.labels?.length > devideconst }">
+    <div class="w-1/2 pr-4" :class="{ '!w-full': chartData.labels?.length > devideconst }">
+      <ul :class="{ 'grid grid-cols-2': chartData.labels?.length > devideconst }">
         <li
           v-for="(label, index) in chartData.labels"
           :key="index"
@@ -42,6 +42,8 @@ import {
 import type { PropType } from 'vue';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
+
+const devideconst = ref(7);
 
 const props = defineProps({
   chartData: {
