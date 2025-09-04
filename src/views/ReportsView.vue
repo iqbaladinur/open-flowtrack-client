@@ -369,7 +369,7 @@ const categoryChartData = computed(() => {
   return {
     labels: sortedCategories.map(c => {
       const percentage = totalAmount > 0 ? ((c.total / totalAmount) * 100).toFixed(1) : '0.0';
-      return `${c.name} (${percentage}%)`;
+      return [`${c.name} (${percentage}%)`, `${configStore.formatCurrency(c.total)}`];
     }),
     datasets: [{
       data: sortedCategories.map(c => c.total),

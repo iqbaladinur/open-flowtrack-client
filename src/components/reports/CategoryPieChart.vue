@@ -21,7 +21,7 @@ ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 defineProps({
   chartData: {
     type: Object as PropType<{
-      labels: string[];
+      labels: (string | string[])[];
       datasets: {
         data: number[];
         backgroundColor: string[];
