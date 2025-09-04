@@ -62,7 +62,7 @@
         <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
           <div class="flex flex-col h-full">
             <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-warning-100 dark:bg-warning-900/50 mb-3">
-              <BarChart3 class="w-4 h-4 text-warning-600 dark:text-warning-400" />
+              <Scale class="w-4 h-4 text-warning-600 dark:text-warning-400" />
             </div>
             <div class="mt-auto">
               <p class="text-xs text-gray-500 dark:text-gray-400">Net Income</p>
@@ -216,12 +216,12 @@ import {
   Wallet,
   TrendingUp,
   TrendingDown,
-  BarChart3,
   Plus,
   Minus,
   Target,
   ArrowUpDown,
   BrainCircuit,
+  Scale
 } from 'lucide-vue-next';
 import { endOfDay, format } from 'date-fns';
 import { reactive } from 'vue';

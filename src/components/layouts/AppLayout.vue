@@ -4,7 +4,7 @@
     <header class="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 safe-area-top">
       <div class="flex items-center justify-between px-4 py-3">
         <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 bg-green-600/30 rounded-lg flex items-center justify-center">
+          <div class="w-8 h-8 bg-green-400 dark:bg-green-600/30 rounded-lg flex items-center justify-center">
             <TrendingUpDown class="w-5 h-5 text-white" />
           </div>
           <h1 class="text-lg font-semibold text-gray-900 dark:text-neon">FlowTrack</h1>
@@ -59,10 +59,10 @@
       <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 px-6">
         <div class="flex h-16 shrink-0 items-center" :class="uiStore.isSidebarMinimized && 'justify-center'">
           <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 bg-green-600/30 rounded-lg flex items-center justify-center shrink-0">
+            <div class="w-8 h-8 bg-green-400 dark:bg-green-600/30 rounded-lg flex items-center justify-center shrink-0">
               <TrendingUpDown class="w-5 h-5 text-white" />
             </div>
-            <h1 v-show="!uiStore.isSidebarMinimized" class="text-xl font-bold text-gray-900 dark:text-neon">FlowTrack</h1>
+            <h1 v-show="!uiStore.isSidebarMinimized" class="text-xl font-bold text-slate-600 dark:text-neon">FlowTrack</h1>
           </div>
         </div>
         <nav class="flex flex-1 flex-col">
@@ -71,7 +71,7 @@
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="item in navigation" :key="item.name" :title="item.name">
                   <router-link :to="item.to" class="group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold" :class="[
-                    $route.name?.toString()?.toLocaleLowerCase() === item.name?.toLocaleLowerCase() ? 'bg-gray-100 dark:bg-gray-700 text-primary-600 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-primary-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700',
+                    $route.name?.toString()?.toLocaleLowerCase() === item.name?.toLocaleLowerCase() ? 'bg-gray-100 dark:bg-gray-700 text-primary-600 dark:text-neon' : 'text-gray-700 dark:text-gray-400 hover:text-primary-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700',
                     uiStore.isSidebarMinimized && 'justify-center'
                   ]">
                     <component :is="item.icon" class="h-5 w-5 shrink-0" />

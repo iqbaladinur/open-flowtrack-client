@@ -90,7 +90,7 @@
               <div class="flex flex-col h-full">
                 <div
                   class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-warning-100 dark:bg-warning-900/50 mb-3">
-                  <BarChart3 class="w-4 h-4 text-warning-600 dark:text-warning-400" />
+                  <Scale class="w-4 h-4 text-warning-600 dark:text-warning-400" />
                 </div>
                 <div class="mt-auto">
                   <p class="text-xs text-gray-500 dark:text-gray-400">Net Income</p>
@@ -110,11 +110,11 @@
         <!-- Action Buttons -->
         <div class="flex justify-end items-center gap-2">
           <div class="hidden sm:flex items-center gap-2">
-            <button @click="openTransactionModal('income')" class="btn btn-success">
+            <button @click="openTransactionModal('income')" class="btn btn-secondary !text-success-500">
               <TrendingUp class="w-4 h-4 mr-2" />
               <span>Income</span>
             </button>
-            <button @click="openTransactionModal('expense')" class="btn btn-error">
+            <button @click="openTransactionModal('expense')" class="btn btn-secondary !text-error-500">
               <TrendingDown class="w-4 h-4 mr-2" />
               <span>Expense</span>
             </button>
@@ -228,7 +228,7 @@ import WalletCard from '@/components/wallet/WalletCard.vue';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import type { Wallet } from '@/types/wallet';
 import type { Transaction } from '@/types/transaction';
-import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, BarChart3, FilterX } from 'lucide-vue-next';
+import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, FilterX, Scale } from 'lucide-vue-next';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay, parseISO } from 'date-fns';
 import WalletModal from '@/components/wallet/WalletModal.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';

@@ -91,6 +91,7 @@ const chartOptions = {
       grid: {
         color: isDarkMode ? '#374151' : '#e5e7eb',
         drawBorder: false,
+        display: false,
       },
     },
   },

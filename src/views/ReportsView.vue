@@ -116,28 +116,28 @@
         <!-- Breakdown Reports -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:items-start">
           <!-- Category Report -->
-          <div class="card p-6">
-            <div class="flex justify-between items-start mb-4">
+          <div class="card p-6 lg:min-h-[500px] flex flex-col gap-4">
+            <div class="flex justify-between items-start mb-4 flex-col md:flex-row gap-4">
               <div>
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Breakdown by Category</h2>
                 <p class="text-sm text-gray-500 dark:text-gray-400">({{ configStore.currency }})</p>
               </div>
-              <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg">
-                <button @click="categoryReportType = 'expense'" :class="['btn btn-sm', categoryReportType === 'expense' ? 'bg-white dark:bg-gray-600 shadow' : '']">Spending</button>
-                <button @click="categoryReportType = 'income'" :class="['btn btn-sm', categoryReportType === 'income' ? 'bg-white dark:bg-gray-600 shadow' : '']">Income</button>
+              <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full lg:w-auto">
+                <button @click="categoryReportType = 'expense'" :class="['btn btn-sm flex-1 lg:flex-auto', categoryReportType === 'expense' ? 'bg-white dark:bg-gray-600 shadow' : '']">Spending</button>
+                <button @click="categoryReportType = 'income'" :class="['btn btn-sm flex-1 lg:flex-auto', categoryReportType === 'income' ? 'bg-white dark:bg-gray-600 shadow' : '']">Income</button>
               </div>
             </div>
-            <div v-if="categoryChartData.labels.length === 0" class="text-center py-8">
+            <div v-if="categoryChartData.labels.length === 0" class="text-center py-8 flex-1 flex items-center justify-center flex-col">
               <PieChart class="w-12 h-12 text-gray-400 mx-auto mb-2" />
               <p class="text-gray-500 dark:text-gray-400">No {{ categoryReportType }} data</p>
             </div>
-            <div v-else class="h-80">
+            <div v-else class="flex-1">
               <CategoryPieChart :chart-data="categoryChartData" />
             </div>
           </div>
 
           <!-- Wallet Report -->
-          <div class="card p-6">
+          <div class="card p-6 lg:min-h-[500px]">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Flow by Wallet ({{ configStore.currency }})
             </h2>
