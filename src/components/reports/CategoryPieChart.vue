@@ -13,6 +13,8 @@ import {
   CategoryScale,
 } from 'chart.js';
 import type { PropType } from 'vue';
+import { useThemeStore } from '@/stores/theme';
+import { computed } from 'vue';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
@@ -30,18 +32,36 @@ defineProps({
   },
 });
 
-const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+const themeStore = useThemeStore();
+const isDarkMode = computed(() => {
+  if (themeStore.theme === 'system') {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  return themeStore.theme === 'dark';
+});
 
-const chartOptions = {
+const color = computed(() => (isDarkMode.value ? '#d1d5db' : '#030712'));
+
+const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      position: 'bottom' as const,
+      position: 'left' as const,
       labels: {
-        color: isDarkMode ? '#d1d5db' : '#374151',
+        color: color.value,
+        boxWidth: 10,
+        boxHeight: 10,
+        usePointStyle: true,
+        pointStyle: 'circle',
+        textAlign: 'left', 
+        padding: 10,
+        font: {             // font styling
+          size: 12,
+          weight: 'normal',
+        },
       },
     },
   },
-};
+}));
 </script>

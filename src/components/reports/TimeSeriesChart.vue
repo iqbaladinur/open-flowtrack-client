@@ -4,6 +4,7 @@
 </template>
 
 <script setup lang="ts">
+import { useThemeStore } from '@/stores/theme';
 import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
 import {
@@ -46,7 +47,13 @@ const props = defineProps({
   },
 });
 
-const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+const themeStore = useThemeStore();
+const isDarkMode = computed(() => {
+  if (themeStore.theme === 'system') {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  return themeStore.theme === 'dark';
+});
 
 const styledChartData = computed(() => ({
   labels: props.chartData.labels,
@@ -63,13 +70,13 @@ const styledChartData = computed(() => ({
   })),
 }));
 
-const chartOptions = {
+const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   scales: {
     x: {
       ticks: {
-        color: isDarkMode ? '#9ca3af' : '#6b7280',
+        color: isDarkMode.value ? '#9ca3af' : '#6b7280',
         font: {
           family: "'Inter', sans-serif",
         },
@@ -78,18 +85,18 @@ const chartOptions = {
         display: false,
       },
       border: {
-        color: isDarkMode ? '#374151' : '#e5e7eb',
+        color: isDarkMode.value ? '#374151' : '#e5e7eb',
       }
     },
     y: {
       ticks: {
-        color: isDarkMode ? '#9ca3af' : '#6b7280',
+        color: isDarkMode.value ? '#9ca3af' : '#6b7280',
         font: {
           family: "'Inter', sans-serif",
         },
       },
       grid: {
-        color: isDarkMode ? '#374151' : '#e5e7eb',
+        color: isDarkMode.value ? '#374151' : '#e5e7eb',
         drawBorder: false,
         display: false,
       },
@@ -100,7 +107,7 @@ const chartOptions = {
       position: 'top' as const,
       align: 'end' as const,
       labels: {
-        color: isDarkMode ? '#d1d5db' : '#374151',
+        color: isDarkMode.value ? '#d1d5db' : '#374151',
         boxWidth: 12,
         padding: 20,
         font: {
@@ -111,10 +118,10 @@ const chartOptions = {
     },
     tooltip: {
       enabled: true,
-      backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
-      titleColor: isDarkMode ? '#d1d5db' : '#374151',
-      bodyColor: isDarkMode ? '#9ca3af' : '#6b7280',
-      borderColor: isDarkMode ? '#374151' : '#e5e7eb',
+      backgroundColor: isDarkMode.value ? '#1f2937' : '#ffffff',
+      titleColor: isDarkMode.value ? '#d1d5db' : '#374151',
+      bodyColor: isDarkMode.value ? '#9ca3af' : '#6b7280',
+      borderColor: isDarkMode.value ? '#374151' : '#e5e7eb',
       borderWidth: 1,
       padding: 12,
       cornerRadius: 8,
@@ -135,5 +142,5 @@ const chartOptions = {
     intersect: false,
     mode: 'index' as const,
   },
-};
+}));
 </script>
