@@ -54,12 +54,8 @@ const chartOptions = computed(() => ({
         boxHeight: 10,
         usePointStyle: true,
         pointStyle: 'circle',
-        textAlign: 'left', 
+        textAlign: 'left' as const,
         padding: 10,
-        font: {             // font styling
-          size: 12,
-          weight: 'normal',
-        },
       },
     },
   },
