@@ -22,7 +22,7 @@
           </button>
           <button @click="shareTransactions" class="btn-secondary lg:hidden" :disabled="loadingShare">
             <span v-if="loadingShare" class="flex items-center gap-2">
-              <LoadingSpinner size="sm"/>
+              <LoadingSpinner size="w-5 h-5"/>
             </span>
             <span v-else class="flex items-center gap-2">
               <Share2 class="w-5 h-5" />
@@ -147,13 +147,13 @@
     </div>
 
     <!-- Floating Add Button for Mobile -->
-    <div class="fixed bottom-[70px] right-6 z-[20] sm:hidden">
-      <router-link v-if="configStore.isApiKeyAiExist" to="/transactions/bulk-expense" class="btn bg-red-500/80 text-white rounded-full p-3 shadow-lg flex items-center justify-center">
-        <UploadCloud class="w-5 h-5" />
+    <div class="fixed bottom-[70px] left-0 z-[20] sm:hidden w-full flex items-center justify-between px-6">
+      <router-link v-if="configStore.isApiKeyAiExist" to="/transactions/bulk-expense" class="btn bg-red-500/70 text-white rounded-full p-4 shadow-lg flex items-center justify-center flex-shrink-0">
+        <UploadCloud class="w-6 h-6" />
         <span class="sr-only">Bulk Expense</span>
       </router-link>
-      <button @click="showAddModal = true" class="btn-primary rounded-full p-3 shadow-lg flex items-center justify-center mt-2">
-        <Plus class="w-5 h-5" />
+      <button @click="showAddModal = true" class="btn-primary rounded-full p-4 shadow-lg flex items-center justify-center flex-shrink-0">
+        <Plus class="w-6 h-6" />
         <span class="sr-only">Add Transaction</span>
       </button>
     </div>
