@@ -6,6 +6,10 @@ onMounted(() => {
   nprogress.configure({
     showSpinner: false
   })
+
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    document.body.classList.add('is-standalone')
+  }
 })
 </script>
 

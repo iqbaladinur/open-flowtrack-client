@@ -57,6 +57,11 @@
   }
 }
 
+/* Hide install promotion UI in standalone mode */
+.is-standalone .install-prompt {
+  display: none;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar-track {
   @apply bg-gray-100 dark:bg-gray-800;

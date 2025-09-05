@@ -55,7 +55,7 @@
         </button>
       </div>
 
-      <div v-else class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 sm:gap-4">
+      <div v-else class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-9 gap-3 sm:gap-4">
         <CategoryCard
           v-for="category in categories"
           :key="category.id"

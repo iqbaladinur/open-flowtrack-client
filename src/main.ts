@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { registerSW } from 'virtual:pwa-register'
 import router from './router'
 import './style.css'
 import './assets/nprogress.css'
@@ -17,3 +18,5 @@ const themeStore = useThemeStore()
 themeStore.init()
 
 app.mount('#app')
+
+registerSW({ immediate: true })
