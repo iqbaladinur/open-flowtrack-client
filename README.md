@@ -28,6 +28,10 @@ FlowTrack is a clean and modern personal finance application designed to help yo
 - **Wallet Management:** Add and manage multiple accounts (e.g., cash, bank accounts, credit cards).
 - **Transaction Tracking:** Easily record your income and expenses with detailed categorization.
 - **Bulk Expense with OCR:** Quickly add multiple expenses by scanning receipts or invoices using OCR technology.
+- **AI integration:** make some small enhancement for ai features.  
+  - [x] Gemini
+  - [ ] OpenAI  
+  - [ ] Anthropic
 - **Budgeting:** Set monthly budgets for different categories to control your spending.
 - **Categorization:** Organize your transactions with customizable categories, icons, and colors.
 - **Financial Reports:** Visualize your spending habits with dynamic charts and reports (time-series and category-based).
