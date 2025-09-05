@@ -6,6 +6,19 @@ export type Theme = 'light' | 'dark' | 'system';
 export const useThemeStore = defineStore('theme', () => {
   const theme = ref<Theme>('system');
 
+  const updateThemeColorMeta = (isDark: boolean) => {
+    let color = isDark ? '#111827' : '#ffffff';
+    let metaThemeColor = document.querySelector('meta[name=theme-color]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', color);
+    } else {
+      metaThemeColor = document.createElement('meta');
+      metaThemeColor.setAttribute('name', 'theme-color');
+      metaThemeColor.setAttribute('content', color);
+      document.getElementsByTagName('head')[0].appendChild(metaThemeColor);
+    }
+  };
+
   const applyTheme = () => {
     const selectedTheme = theme.value;
     let isDark: boolean;
@@ -21,6 +34,7 @@ export const useThemeStore = defineStore('theme', () => {
     } else {
       document.documentElement.classList.remove('dark');
     }
+    updateThemeColorMeta(isDark);
   };
 
   const setTheme = (newTheme: Theme) => {

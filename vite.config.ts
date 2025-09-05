@@ -16,8 +16,15 @@ export default defineConfig({
         name: 'FlowTrack',
         short_name: 'FlowTrack',
         description: 'FlowTrack - Your personal finance manager',
-        theme_color: '#ffffff',
+        theme_color: '#111827',
+        background_color: '#111827',
         icons: [
+          {
+            src: 'pwa-maskable-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
+          },
           {
             src: 'pwa-144x144.png',
             sizes: '144x144',
