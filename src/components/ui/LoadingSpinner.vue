@@ -16,7 +16,6 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  size: 'md',
   fullHeight: false,
 });
 
@@ -29,6 +28,8 @@ const sizeClass = computed(() => {
       return 'w-4 h-4';
     case 'lg':
       return 'w-8 h-8';
+    case 'md':
+      return 'w-6 h-6';
     default:
       return props.size;
   }
