@@ -4,8 +4,8 @@
       <!-- Header -->
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Transactions</h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1">
+          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Transactions</h1>
+          <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
             Track all your income and expenses
           </p>
         </div>
@@ -77,13 +77,13 @@
         <!-- Date Range Filter -->
         <div>
           <label class="label mb-2 px-2">Date Range</label>
-          <div class="flex flex-wrap gap-2 p-2">
-            <button @click="setDateRange()" :class="['btn', !dateRangePreset ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">All</button>
-            <button @click="setDateRange('today')" :class="['btn', dateRangePreset === 'today' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">Today</button>
-            <button @click="setDateRange('weekly')" :class="['btn', dateRangePreset === 'weekly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Week</button>
-            <button @click="setDateRange('monthly')" :class="['btn', dateRangePreset === 'monthly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Month</button>
-            <button @click="setDateRange('yearly')" :class="['btn', dateRangePreset === 'yearly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Year</button>
-            <button @click="toggleCustomDateRange" :class="['btn', showCustomDateRange ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">Custom Period</button>
+          <div class="flex items-center space-x-2 overflow-x-auto py-2 px-2">
+            <button @click="setDateRange()" :class="['btn flex-shrink-0', !dateRangePreset ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">All</button>
+            <button @click="toggleCustomDateRange" :class="['btn flex-shrink-0', showCustomDateRange ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">Custom Period</button>
+            <button @click="setDateRange('today')" :class="['btn flex-shrink-0', dateRangePreset === 'today' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">Today</button>
+            <button @click="setDateRange('weekly')" :class="['btn flex-shrink-0', dateRangePreset === 'weekly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Week</button>
+            <button @click="setDateRange('monthly')" :class="['btn flex-shrink-0', dateRangePreset === 'monthly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Month</button>
+            <button @click="setDateRange('yearly')" :class="['btn flex-shrink-0', dateRangePreset === 'yearly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Year</button>
           </div>
           <template v-if="showCustomDateRange">
             <div v-if="showCustomDateRange" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 p-2">
@@ -104,7 +104,7 @@
         </div>
 
         <div class="mt-10 flex justify-start px-2">
-          <button @click="resetFilters" class="btn btn-success">
+          <button @click="resetFilters" class="btn btn-primary">
             <RotateCcw class="w-4 h-4 mr-1.5" />
             Reset Filters
           </button>
@@ -148,11 +148,11 @@
 
     <!-- Floating Add Button for Mobile -->
     <div class="fixed bottom-[70px] left-0 z-[20] sm:hidden w-full flex items-center justify-between px-6">
-      <router-link v-if="configStore.isApiKeyAiExist" to="/transactions/bulk-expense" class="btn bg-red-500/70 text-white rounded-full p-4 shadow-lg flex items-center justify-center flex-shrink-0">
+      <router-link v-if="configStore.isApiKeyAiExist" to="/transactions/bulk-expense" class="btn bg-red-500/70 text-white rounded-xl p-3 shadow-lg flex items-center justify-center flex-shrink-0">
         <UploadCloud class="w-6 h-6" />
         <span class="sr-only">Bulk Expense</span>
       </router-link>
-      <button @click="showAddModal = true" class="btn-primary rounded-full p-4 shadow-lg flex items-center justify-center flex-shrink-0">
+      <button @click="showAddModal = true" class="btn-primary rounded-xl p-3 shadow-lg flex items-center justify-center flex-shrink-0">
         <Plus class="w-6 h-6" />
         <span class="sr-only">Add Transaction</span>
       </button>

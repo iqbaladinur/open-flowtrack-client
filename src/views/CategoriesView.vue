@@ -4,8 +4,8 @@
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Categories</h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1">
+          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Categories</h1>
+          <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
             Organize your transactions by category
           </p>
         </div>
@@ -67,7 +67,7 @@
     </div>
 
     <!-- Floating Add Button for Mobile -->
-    <button @click="showAddModal = true" class="sm:hidden fixed bottom-[70px] right-6 z-[20] btn-primary rounded-full p-4 shadow-lg flex items-center justify-center">
+    <button @click="showAddModal = true" class="sm:hidden fixed bottom-[70px] right-6 z-[20] btn-primary rounded-xl p-3 shadow-lg flex items-center justify-center">
       <Plus class="w-6 h-6" />
       <span class="sr-only">Add Category</span>
     </button>

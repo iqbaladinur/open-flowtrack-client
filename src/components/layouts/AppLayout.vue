@@ -71,7 +71,7 @@
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="item in navigation" :key="item.name" :title="item.name">
                   <router-link :to="item.to" class="group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold" :class="[
-                    $route.name?.toString()?.toLocaleLowerCase() === item.name?.toLocaleLowerCase() ? 'bg-gray-100 dark:bg-gray-700 text-primary-600 dark:text-neon' : 'text-gray-700 dark:text-gray-400 hover:text-primary-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700',
+                    $route.name?.toString()?.toLocaleLowerCase() === item.name?.toLocaleLowerCase() ? 'bg-gray-100 dark:bg-gray-700 text-blue-700 dark:text-neon' : 'text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700',
                     uiStore.isSidebarMinimized && 'justify-center'
                   ]">
                     <component :is="item.icon" class="h-5 w-5 shrink-0" />
@@ -131,7 +131,7 @@
           :to="item.to"
           class="flex flex-col items-center justify-center text-center py-2 transition-colors"
           :class="$route.name?.toString()?.toLowerCase() === item.name?.toLowerCase() 
-            ? 'text-primary-600 dark:text-neon' 
+            ? 'text-blue-700 dark:text-neon' 
             : 'text-gray-500 dark:text-gray-400'"
         >
           <component :is="item.icon" class="w-5 h-5 mb-1" />
@@ -141,7 +141,7 @@
           @click="showMoreMenu = true"
           class="flex flex-col items-center justify-center text-center py-2 transition-colors"
           :class="isMoreMenuActive
-            ? 'text-primary-600 dark:text-neon' 
+            ? 'text-blue-700 dark:text-neon' 
             : 'text-gray-500 dark:text-gray-400'"
         >
           <Ellipsis class="w-5 h-5 mb-1" />
@@ -176,7 +176,7 @@
                   :to="item.to"
                   @click="showMoreMenu = false"
                   class="flex flex-col items-center justify-center text-center py-2 transition-colors"
-                  :class="$route.name?.toString()?.toLowerCase() === item.name?.toLowerCase() ? 'text-primary-600 dark:text-neon' : 'text-gray-500 dark:text-gray-400'"
+                  :class="$route.name?.toString()?.toLowerCase() === item.name?.toLowerCase() ? 'text-blue-700 dark:text-neon' : 'text-gray-500 dark:text-gray-400'"
                 >
                   <div class="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-2">
                     <component :is="item.icon" class="w-6 h-6" />
@@ -201,7 +201,6 @@ import {
   User, 
   LogOut, 
   Home, 
-  ArrowUpDown, 
   Wallet, 
   Target, 
   Tag,
@@ -226,8 +225,8 @@ const showMoreMenu = ref(false);
 
 const navigation = [
   { name: 'Dashboard', to: '/dashboard', icon: Home },
-  { name: 'Transactions', to: '/transactions', icon: ArrowUpDown },
   { name: 'Wallets', to: '/wallets', icon: Wallet },
+  { name: 'Transactions', to: '/transactions', icon: TrendingUpDown },
   { name: 'Categories', to: '/categories', icon: Tag },
   { name: 'Budgets', to: '/budgets', icon: Target },
   { name: 'Reports', to: '/reports', icon: BarChart3 },

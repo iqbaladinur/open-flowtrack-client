@@ -3,79 +3,86 @@
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Header -->
       <div>
-        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Reports</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">
+        <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Reports</h1>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
           Analyze your financial trends over time
         </p>
       </div>
 
       <!-- View Switcher -->
-      <div class="card p-2">
-        <div class="flex items-center justify-center sm:justify-start space-x-1 flex-wrap">
-          <button @click="currentView = 'monthly'" :class="['btn', currentView === 'monthly' ? 'btn-primary' : 'btn-secondary']">
+      <div class="card p-4">
+        <label class="label mb-2">Filter</label>
+        <div class="flex items-center justify-start space-x-1 flex-wrap">
+          <button @click="currentView = 'monthly'"
+            :class="['btn', currentView === 'monthly' ? 'btn-primary' : 'btn-secondary']">
             <Calendar class="w-4 h-4 mr-2" /> Monthly
           </button>
-          <button @click="currentView = 'yearly'" :class="['btn', currentView === 'yearly' ? 'btn-primary' : 'btn-secondary']">
+          <button @click="currentView = 'yearly'"
+            :class="['btn', currentView === 'yearly' ? 'btn-primary' : 'btn-secondary']">
             <CalendarClock class="w-4 h-4 mr-2" /> Yearly
           </button>
-          <button @click="selectCustomView" :class="['btn', currentView === 'custom' ? 'btn-primary' : 'btn-secondary']">
+          <button @click="selectCustomView"
+            :class="['btn', currentView === 'custom' ? 'btn-primary' : 'btn-secondary']">
             <SlidersHorizontal class="w-4 h-4 mr-2" /> Custom Period
           </button>
         </div>
-      </div>
 
-      <!-- Period Selector -->
-      <div class="card p-4 space-y-4">
-        <!-- Monthly Selector -->
-        <div v-if="currentView === 'monthly'" class="grid grid-cols-2 gap-4">
-          <div>
-            <label for="monthly-month" class="label">Month</label>
-            <select id="monthly-month" v-model="selectedDate.monthly.month" class="input">
-              <option v-for="(month, index) in months" :key="index" :value="index + 1">{{ month }}</option>
-            </select>
+        <div class="mt-4">
+          <!-- Monthly Selector -->
+          <div v-if="currentView === 'monthly'" class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="monthly-month" class="label">Month</label>
+              <select id="monthly-month" v-model="selectedDate.monthly.month" class="input">
+                <option v-for="(month, index) in months" :key="index" :value="index + 1">{{ month }}</option>
+              </select>
+            </div>
+            <div>
+              <label for="monthly-year" class="label">Year</label>
+              <select id="monthly-year" v-model="selectedDate.monthly.year" class="input">
+                <option v-for="year in yearList" :key="year" :value="year">{{ year }}</option>
+              </select>
+            </div>
           </div>
-          <div>
-            <label for="monthly-year" class="label">Year</label>
-            <select id="monthly-year" v-model="selectedDate.monthly.year" class="input">
+          <!-- Yearly Selector -->
+          <div v-if="currentView === 'yearly'">
+            <label for="yearly-year" class="label">Select Year</label>
+            <select id="yearly-year" v-model="selectedDate.yearly.year" class="input">
               <option v-for="year in yearList" :key="year" :value="year">{{ year }}</option>
             </select>
           </div>
-        </div>
-        <!-- Yearly Selector -->
-        <div v-if="currentView === 'yearly'">
-          <label for="yearly-year" class="label">Select Year</label>
-          <select id="yearly-year" v-model="selectedDate.yearly.year" class="input">
-            <option v-for="year in yearList" :key="year" :value="year">{{ year }}</option>
-          </select>
-        </div>
-        <!-- Custom Range Selector -->
-        <div v-if="currentView === 'custom'" class="space-y-4">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label for="custom-start" class="label">Start Date</label>
-              <input id="custom-start" v-model="selectedDate.custom.start" type="date" class="input" />
+          <!-- Custom Range Selector -->
+          <div v-if="currentView === 'custom'" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="custom-start" class="label">Start Date</label>
+                <input id="custom-start" v-model="selectedDate.custom.start" type="date" class="input" />
+              </div>
+              <div>
+                <label for="custom-end" class="label">End Date</label>
+                <input id="custom-end" v-model="selectedDate.custom.end" type="date" class="input" />
+              </div>
+            </div>
+            <div class="flex justify-evenly lg:justify-end items-center gap-2 mt-4">
+              <button @click="goToPreviousPeriod" class="btn btn-primary flex-1 lg:flex-none">Previous Period</button>
+              <button @click="goToNextPeriod" class="btn btn-primary flex-1 lg:flex-none">Next Period</button>
             </div>
             <div>
-              <label for="custom-end" class="label">End Date</label>
-              <input id="custom-end" v-model="selectedDate.custom.end" type="date" class="input" />
-            </div>
-          </div>
-          <div class="flex justify-evenly lg:justify-end items-center gap-2 mt-4">
-            <button @click="goToPreviousPeriod" class="btn btn-primary flex-1 lg:flex-none">Previous Period</button>
-            <button @click="goToNextPeriod" class="btn btn-primary flex-1 lg:flex-none">Next Period</button>
-          </div>
-          <div>
-            <label class="label">Group By</label>
-            <div class="flex items-center space-x-1 flex-wrap">
-              <button @click="customAggregationLevel = 'daily'" :class="['btn btn-sm', customAggregationLevel === 'daily' ? 'btn-primary' : 'btn-secondary']">Daily</button>
-              <button @click="customAggregationLevel = 'weekly'" :class="['btn btn-sm', customAggregationLevel === 'weekly' ? 'btn-primary' : 'btn-secondary']">Weekly</button>
-              <button @click="customAggregationLevel = 'monthly'" :class="['btn btn-sm', customAggregationLevel === 'monthly' ? 'btn-primary' : 'btn-secondary']">Monthly</button>
-              <button @click="customAggregationLevel = 'yearly'" :class="['btn btn-sm', customAggregationLevel === 'yearly' ? 'btn-primary' : 'btn-secondary']">Yearly</button>
+              <label class="label">Group By</label>
+              <div class="flex items-center space-x-1 flex-wrap">
+                <button @click="customAggregationLevel = 'daily'"
+                  :class="['btn btn-sm', customAggregationLevel === 'daily' ? 'btn-primary' : 'btn-secondary']">Daily</button>
+                <button @click="customAggregationLevel = 'weekly'"
+                  :class="['btn btn-sm', customAggregationLevel === 'weekly' ? 'btn-primary' : 'btn-secondary']">Weekly</button>
+                <button @click="customAggregationLevel = 'monthly'"
+                  :class="['btn btn-sm', customAggregationLevel === 'monthly' ? 'btn-primary' : 'btn-secondary']">Monthly</button>
+                <button @click="customAggregationLevel = 'yearly'"
+                  :class="['btn btn-sm', customAggregationLevel === 'yearly' ? 'btn-primary' : 'btn-secondary']">Yearly</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      
+
       <!-- Report Content -->
       <div v-if="loading" class="card p-6 flex items-center justify-center h-96">
         <LoadingSpinner />
@@ -89,11 +96,13 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div class="card p-6">
             <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Total Income</p>
-            <p class="text-sm font-medium text-success-600 font-mono">{{ configStore.formatCurrency(summary.totalIncome) }}</p>
+            <p class="text-sm font-medium text-success-600 font-mono">{{ configStore.formatCurrency(summary.totalIncome)
+              }}</p>
           </div>
           <div class="card p-6">
             <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Total Expense</p>
-            <p class="text-sm font-medium text-error-600 font-mono">{{ configStore.formatCurrency(summary.totalExpense) }}</p>
+            <p class="text-sm font-medium text-error-600 font-mono">{{ configStore.formatCurrency(summary.totalExpense)
+              }}</p>
           </div>
           <div class="card p-6">
             <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Net Income</p>
@@ -123,11 +132,14 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400">({{ configStore.currency }})</p>
               </div>
               <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full lg:w-auto">
-                <button @click="categoryReportType = 'expense'" :class="['btn btn-sm flex-1 lg:flex-auto', categoryReportType === 'expense' ? 'bg-white dark:bg-gray-600 shadow' : '']">Spending</button>
-                <button @click="categoryReportType = 'income'" :class="['btn btn-sm flex-1 lg:flex-auto', categoryReportType === 'income' ? 'bg-white dark:bg-gray-600 shadow' : '']">Income</button>
+                <button @click="categoryReportType = 'expense'"
+                  :class="['btn btn-sm flex-1 lg:flex-auto', categoryReportType === 'expense' ? 'bg-white dark:bg-gray-600 shadow' : '']">Spending</button>
+                <button @click="categoryReportType = 'income'"
+                  :class="['btn btn-sm flex-1 lg:flex-auto', categoryReportType === 'income' ? 'bg-white dark:bg-gray-600 shadow' : '']">Income</button>
               </div>
             </div>
-            <div v-if="categoryChartData.labels.length === 0" class="text-center py-8 flex-1 flex items-center justify-center flex-col">
+            <div v-if="categoryChartData.labels.length === 0"
+              class="text-center py-8 flex-1 flex items-center justify-center flex-col">
               <PieChart class="w-12 h-12 text-gray-400 mx-auto mb-2" />
               <p class="text-gray-500 dark:text-gray-400">No {{ categoryReportType }} data</p>
             </div>
@@ -146,11 +158,8 @@
               <p class="text-gray-500 dark:text-gray-400 px-2">No wallet data available</p>
             </div>
             <div v-else class="space-y-4">
-              <div
-                v-for="item in walletReportData"
-                :key="item.name"
-                class="p-4 rounded-lg border border-gray-200 dark:border-gray-700"
-              >
+              <div v-for="item in walletReportData" :key="item.name"
+                class="p-4 rounded-lg border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between mb-2">
                   <h3 class="font-medium text-gray-900 dark:text-white truncate">{{ item.name }}</h3>
                   <span :class="item.net >= 0 ? 'text-success-600' : 'text-error-600'" class="flex items-center gap-2">
@@ -203,9 +212,9 @@ const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 const selectedDate = reactive({
   monthly: { month: now.getMonth() + 1, year: now.getFullYear() },
   yearly: { year: now.getFullYear() },
-  custom: { 
-    start: startOfMonth.toISOString().split('T')[0], 
-    end: now.toISOString().split('T')[0] 
+  custom: {
+    start: startOfMonth.toISOString().split('T')[0],
+    end: now.toISOString().split('T')[0]
   },
 });
 
@@ -268,7 +277,7 @@ const chartData = computed(() => {
   // Pre-populate labels and totals map for the entire range to ensure all periods are shown
   if (startDate && endDate && startDate <= endDate) {
     let currentDate = new Date(startDate.getTime());
-    
+
     while (currentDate <= endDate) {
       let key = '';
       if (aggregation === 'daily') {
@@ -305,7 +314,7 @@ const chartData = computed(() => {
     // IMPORTANT: Use the 'date' property from the transaction.
     // Parse it as UTC. The 'Z' at the end of the string ensures this.
     const transactionDate = new Date(transaction.date);
-    
+
     let key = '';
     if (aggregation === 'daily') {
       key = transactionDate.toISOString().split('T')[0];
@@ -420,7 +429,7 @@ const fetchReportData = async () => {
       endDate = new Date(selectedDate.custom.end + 'T00:00:00Z');
       break;
   }
-  
+
   const filters = {
     start_date: startDate.toISOString().split('T')[0],
     end_date: endDate.toISOString().split('T')[0],
@@ -436,7 +445,7 @@ const fetchReportData = async () => {
 const selectCustomView = () => {
   const today = new Date();
   const firstDay = configStore.firstDayOfMonth;
-  
+
   let startDate = new Date(today.getFullYear(), today.getMonth(), firstDay);
 
   if (today.getDate() < firstDay) {
@@ -449,28 +458,28 @@ const selectCustomView = () => {
 
   selectedDate.custom.start = format(startDate, 'yyyy-MM-dd');
   selectedDate.custom.end = format(endDate, 'yyyy-MM-dd');
-  
+
   customAggregationLevel.value = 'daily';
   currentView.value = 'custom';
 };
 
 const navigatePeriod = (direction: 'previous' | 'next') => {
   if (!selectedDate.custom.start || !selectedDate.custom.end) return;
-  
+
   const firstDay = configStore.firstDayOfMonth;
   const start = parseISO(selectedDate.custom.start);
-  
+
   if (direction === 'previous') {
     // Move to previous month's configured date
     const newStart = new Date(start);
     newStart.setMonth(newStart.getMonth() - 1);
     newStart.setDate(firstDay);
-    
+
     // Set end date to day before the configured date
     const newEnd = new Date(newStart);
     newEnd.setMonth(newEnd.getMonth() + 1);
     newEnd.setDate(firstDay - 1);
-    
+
     selectedDate.custom.start = format(newStart, 'yyyy-MM-dd');
     selectedDate.custom.end = format(newEnd, 'yyyy-MM-dd');
   } else {
@@ -478,12 +487,12 @@ const navigatePeriod = (direction: 'previous' | 'next') => {
     const newStart = new Date(start);
     newStart.setMonth(newStart.getMonth() + 1);
     newStart.setDate(firstDay);
-    
+
     // Set end date to day before the configured date
     const newEnd = new Date(newStart);
     newEnd.setMonth(newEnd.getMonth() + 1);
     newEnd.setDate(firstDay - 1);
-    
+
     selectedDate.custom.start = format(newStart, 'yyyy-MM-dd');
     selectedDate.custom.end = format(newEnd, 'yyyy-MM-dd');
   }
@@ -495,4 +504,3 @@ const goToNextPeriod = () => navigatePeriod('next');
 watch([currentView, selectedDate, customAggregationLevel], fetchReportData, { immediate: true, deep: true });
 
 </script>
-

@@ -21,7 +21,7 @@
         </li>
       </ul>
     </div>
-    <div class="w-1/2">
+    <div class="w-1/2" :class="{ '!w-full p-6': chartData.labels?.length > devideconst }">
       <Pie ref="pieChart" :data="chartData" :options="chartOptions" />
     </div>
   </div>

@@ -198,12 +198,12 @@
   <!-- Floating Action Buttons for Mobile -->
   <div class="fixed bottom-[70px] left-0 z-[20] sm:hidden w-full flex items-center justify-between px-6">
     <button @click="openTransactionModal('income')"
-      class="btn-success rounded-full p-4 shadow-lg flex items-center justify-center">
+      class="btn-success bg-opacity-70 rounded-xl p-3 shadow-lg flex items-center justify-center">
       <TrendingUp class="w-6 h-6" />
       <span class="sr-only">Add Income</span>
     </button>
     <button @click="openTransactionModal('expense')"
-      class="btn-error rounded-full p-4 shadow-lg flex items-center justify-center">
+      class="btn-error bg-opacity-70 rounded-xl p-3 shadow-lg flex items-center justify-center">
       <TrendingDown class="w-6 h-6" />
       <span class="sr-only">Add Expense</span>
     </button>

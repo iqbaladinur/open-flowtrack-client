@@ -3,10 +3,10 @@
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Welcome Section -->
       <div class="mb-8">
-        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-neon mb-2">
+        <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon mb-2">
           Welcome back, {{ authStore.user?.full_name || 'User' }}!
         </h1>
-        <p class="text-gray-600 dark:text-gray-400">
+        <p class="text-gray-600 dark:text-gray-400 text-sm">
           Here's your financial overview until today
         </p>
       </div>
@@ -17,11 +17,11 @@
         <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1">
           <div class="flex flex-col h-full">
             <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-primary-100 dark:bg-primary-900/50 mb-3">
-              <Wallet class="w-4 h-4 text-primary-600 dark:text-primary-400" />
+              <Wallet class="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </div>
             <div class="mt-auto">
               <p class="text-xs text-gray-500 dark:text-gray-400">Total Balance</p>
-              <p class="text-xs font-medium text-gray-900 dark:text-white font-mono">
+              <p class="text-xs font-medium text-blue-900 dark:text-white font-mono">
                 {{ configStore.formatCurrency(totalBalance) }}
               </p>
             </div>
@@ -146,7 +146,7 @@
           <LoadingSpinner class="w-8 h-8" />
         </div>
         <div v-else-if="analyticsSugestion.length > 0" class="flex gap-2 flex-wrap">
-          <p v-for="(suggestion, index) in analyticsSugestion" :key="index" class="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 px-3 py-2 rounded-lg w-full lg:whitespace-nowrap lg:w-auto">
+          <p v-for="(suggestion, index) in analyticsSugestion" :key="index" class="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/10 px-3 py-2 rounded-lg w-full lg:whitespace-nowrap lg:w-auto">
             {{ suggestion }}
           </p>
         </div>
@@ -184,7 +184,7 @@
             v-for="transaction in recentTransactions"
             :key="transaction.id"
             :transaction="transaction"
-            class="rounded-xl"
+            class="rounded-xl -mx-3"
           />
         </div>
       </div>

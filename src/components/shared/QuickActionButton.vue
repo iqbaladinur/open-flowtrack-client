@@ -2,7 +2,7 @@
   <component
     :is="to ? 'router-link' : 'button'"
     :to="to"
-    class="flex flex-col items-center p-4 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-primary-500 dark:hover:border-primary-400 transition-colors group"
+    class="flex flex-col items-center p-4 rounded-lg transition-colors group bg-gray-50 dark:bg-gray-700/10"
   >
     <div
       class="w-10 h-10 rounded-xl flex items-center justify-center mb-2 group-hover:bg-opacity-80 transition-colors"
