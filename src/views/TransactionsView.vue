@@ -104,7 +104,7 @@
         </div>
 
         <div class="mt-10 flex justify-start px-2">
-          <button @click="resetFilters" class="btn btn-primary">
+          <button @click="resetFilters" class="btn btn-primary flex-1 lg:flex-none">
             <RotateCcw class="w-4 h-4 mr-1.5" />
             Reset Filters
           </button>

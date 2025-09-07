@@ -12,7 +12,7 @@
       <!-- View Switcher -->
       <div class="card p-4">
         <label class="label mb-2">Filter</label>
-        <div class="flex items-center justify-start space-x-1 flex-wrap">
+        <div class="flex items-center justify-start gap-1 flex-wrap">
           <button @click="currentView = 'monthly'"
             :class="['btn', currentView === 'monthly' ? 'btn-primary' : 'btn-secondary']">
             <Calendar class="w-4 h-4 mr-2" /> Monthly
@@ -23,7 +23,7 @@
           </button>
           <button @click="selectCustomView"
             :class="['btn', currentView === 'custom' ? 'btn-primary' : 'btn-secondary']">
-            <SlidersHorizontal class="w-4 h-4 mr-2" /> Custom Period
+            <SlidersHorizontal class="w-4 h-4 mr-2" /> Custom
           </button>
         </div>
 
@@ -62,7 +62,7 @@
                 <input id="custom-end" v-model="selectedDate.custom.end" type="date" class="input" />
               </div>
             </div>
-            <div class="flex justify-evenly lg:justify-end items-center gap-2 mt-4">
+            <div class="flex justify-evenly lg:justify-start items-center gap-2 mt-4">
               <button @click="goToPreviousPeriod" class="btn btn-primary flex-1 lg:flex-none">Previous Period</button>
               <button @click="goToNextPeriod" class="btn btn-primary flex-1 lg:flex-none">Next Period</button>
             </div>
