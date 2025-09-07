@@ -12,17 +12,17 @@
       <!-- View Switcher -->
       <div class="card p-4">
         <label class="label mb-2">Filter</label>
-        <div class="flex items-center justify-start gap-1 flex-wrap">
+        <div class="flex items-center justify-stretch lg:justify-start gap-1 flex-wrap">
           <button @click="currentView = 'monthly'"
-            :class="['btn', currentView === 'monthly' ? 'btn-primary' : 'btn-secondary']">
+            :class="['btn flex-1 lg:flex-none', currentView === 'monthly' ? 'btn-primary' : 'btn-secondary']">
             <Calendar class="w-4 h-4 mr-2" /> Monthly
           </button>
           <button @click="currentView = 'yearly'"
-            :class="['btn', currentView === 'yearly' ? 'btn-primary' : 'btn-secondary']">
+            :class="['btn flex-1 lg:flex-none', currentView === 'yearly' ? 'btn-primary' : 'btn-secondary']">
             <CalendarClock class="w-4 h-4 mr-2" /> Yearly
           </button>
           <button @click="selectCustomView"
-            :class="['btn', currentView === 'custom' ? 'btn-primary' : 'btn-secondary']">
+            :class="['btn flex-1 lg:flex-none', currentView === 'custom' ? 'btn-primary' : 'btn-secondary']">
             <SlidersHorizontal class="w-4 h-4 mr-2" /> Custom
           </button>
         </div>
