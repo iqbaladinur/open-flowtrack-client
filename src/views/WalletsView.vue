@@ -156,7 +156,7 @@ const shareWallets = async () => {
       return `${w.name}: Current balance ${w.current_balance}, Initial balance ${w.initial_balance} (${status})`;
     });
 
-    const llmInput = `Here is my wallet state: \n \'\'\'\n${formatted.join("\n")}\n\'\'\'`;
+    const llmInput = `Here is my wallet state: \n \`\`\`\n${formatted.join("\n")}\n\`\`\`\n\n`;
 
     const shareData = {
       title: jsonFilename,
