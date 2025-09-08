@@ -407,15 +407,20 @@ const shareTransactions = async () => {
     let filename = 'transactions';
     const startDate = filters.start_date ? format(new Date(filters.start_date), 'yyyy-MM-dd') : '';
     const endDate = filters.end_date ? format(new Date(filters.end_date), 'yyyy-MM-dd') : '';
+    let period = '';
 
     if (startDate && endDate) {
       filename += `_${startDate}_to_${endDate}`;
+      period = `${startDate} to ${endDate}`;
     } else if (startDate) {
       filename += `_from_${startDate}`;
+      period = `from ${startDate}`;
     } else if (endDate) {
       filename += `_until_${endDate}`;
+      period = `until ${endDate}`;
     } else {
       filename += '_all';
+      period = 'all';
     }
     
     const jsonFilename = filename + '.json';
@@ -426,7 +431,7 @@ const shareTransactions = async () => {
     const formatted = data.map(tx => {
       const type = tx.type === "expense" ? "Expense" : "Income";
       const amount = tx.amount;
-      const date = new Date(tx.date).toISOString().split("T")[0]; // YYYY-MM-DD
+      const date = format(tx.date, 'EEE, dd-MM-yyyy');
       const category = tx.category?.name || "Uncategorized";
       const wallet = tx.wallet?.name || "Unknown Wallet";
       const note = tx.note;
@@ -434,10 +439,8 @@ const shareTransactions = async () => {
     });
 
     // Concatenate into one big prompt-friendly string
-    const llmFriendlyData = `Here is my transactions data for the selected period (${filename?.replace('transactions', '')}):
-
-      ${formatted.join("\n")}
-    `;
+    const llmFriendlyData = `Here is my transactions data for the selected period (${period}): \n\n\`\`\`\n${formatted.join("\n")}\n\`\`\``;
+    console.log(llmFriendlyData);
 
     const shareData = {
       title: jsonFilename,
