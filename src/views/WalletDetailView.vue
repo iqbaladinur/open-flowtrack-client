@@ -187,7 +187,7 @@
             <ul>
               <li v-for="transaction in filteredTransactions" :key="transaction.id"
                 class="border-b border-gray-200 dark:border-gray-700 last:border-b-0">
-                <TransactionItem :transaction="transaction" />
+                <TransactionItem :transaction="transaction" :showActions="true" @edit="editTransactions" @delete="deleteTransaction" />
               </li>
             </ul>
           </div>
@@ -209,8 +209,13 @@
     </button>
   </div>
   <WalletModal v-model="showModal" :wallet="selectedWallet" @success="handleWalletSaved" />
-  <TransactionModal v-model="showTransactionModal" :type="transactionType" :wallet-id="walletId"
-    @success="handleTransactionSaved" />
+  <TransactionModal
+    v-model="showTransactionModal"
+    :transaction="selectedTransaction"
+    :type="transactionType"
+    :wallet-id="walletId"
+    @success="handleTransactionSaved"
+  />
   <CategoryFilterModal v-model="showCategoryFilterModal" :categories="categories"
     :excluded-categories="excludedCategoryIds" @update:excluded-categories="excludedCategoryIds = $event" />
 </template>
@@ -251,6 +256,7 @@ const loading = ref(true);
 const showFilters = ref(false);
 const showCategoryFilterModal = ref(false);
 const excludedCategoryIds = ref<string[]>([]);
+const selectedTransaction = ref<Transaction | null>(null);
 
 const selectedFilter = ref('all');
 const startDate = ref('');
@@ -446,8 +452,24 @@ const handleTransactionSaved = async () => {
   await fetchWalletData();
 }
 
+const editTransactions = (trx: Transaction) => {
+  selectedTransaction.value = trx;
+  transactionType.value = trx.type;
+  showTransactionModal.value = true;
+}
+
+const deleteTransaction = async (id: string) => {
+  if (confirm('Are you sure you want to delete this transaction?')) {
+    const result = await transactionsStore.deleteTransaction(id);
+    if (result.success) {
+      await fetchWalletData();
+    }
+  }
+};
+
 const openTransactionModal = (type: 'income' | 'expense') => {
   transactionType.value = type;
+  selectedTransaction.value = null;
   showTransactionModal.value = true;
 }
 
