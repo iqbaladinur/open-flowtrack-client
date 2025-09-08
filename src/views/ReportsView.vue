@@ -168,6 +168,25 @@
           </div>
         </div>
 
+        <!-- Expense Ratio Description -->
+        <div class="card p-4 text-sm text-gray-600 dark:text-gray-400 space-y-2">
+          <h3 class="font-bold text-gray-800 dark:text-gray-200">Understanding Your Expense Ratio</h3>
+          <div v-if="summary.totalIncome > 0">
+            <div v-if="summary.expenseRatio < 70">
+              <p><span class="font-semibold text-success-600 dark:text-success-400">Healthy Zone:</span> Your expense ratio is great! This suggests you have a strong handle on your finances, with income significantly higher than expenses. Keep it up!</p>
+            </div>
+            <div v-else-if="summary.expenseRatio >= 70 && summary.expenseRatio <= 80">
+              <p><span class="font-semibold text-orange-600 dark:text-orange-400">Caution Zone:</span> You're spending a significant portion of your income. It's a good time to review your budget and see if there are opportunities to save more.</p>
+            </div>
+            <div v-else-if="summary.expenseRatio > 80">
+              <p><span class="font-semibold text-error-600 dark:text-error-500">Danger Zone:</span> Your expenses are very close to your income. This is a high-risk situation. We strongly recommend creating a budget and cutting back on non-essential spending.</p>
+            </div>
+          </div>
+          <div v-else>
+            <p>Your expense ratio couldn't be calculated because there was no income in this period. The ratio shows what percentage of your income is spent.</p>
+          </div>
+        </div>
+
         <!-- Time Series Chart -->
         <div class="card p-6">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
