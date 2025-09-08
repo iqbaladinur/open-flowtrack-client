@@ -439,8 +439,7 @@ const shareTransactions = async () => {
     });
 
     // Concatenate into one big prompt-friendly string
-    const llmFriendlyData = `Here is my transactions data for the selected period (${period}): \n\n\`\`\`\n${formatted.join("\n")}\n\`\`\``;
-    console.log(llmFriendlyData);
+    const llmFriendlyData = `Here is my transactions data for the selected period (${period}): \n\n\`\`\`\n${formatted.join("\n")}\n\`\`\`\n\n`;
 
     const shareData = {
       title: jsonFilename,
