@@ -64,7 +64,7 @@ const styledChartData = computed(() => ({
     tension: 0.4, // Smooth, rounded lines
     fill: true,
     pointStyle: 'circle',
-    pointRadius: 4,
+    pointRadius: 0.1,
     pointHoverRadius: 6,
     borderWidth: 2.5,
   })),
@@ -80,6 +80,8 @@ const chartOptions = computed(() => ({
         font: {
           family: "'Inter', sans-serif",
         },
+        autoSkip: true,
+        maxTicksLimit: 4,
       },
       grid: {
         display: false,
@@ -94,6 +96,9 @@ const chartOptions = computed(() => ({
         font: {
           family: "'Inter', sans-serif",
         },
+        callback: function(value: number) {
+          return Intl.NumberFormat('en', { notation: 'compact' }).format(value);
+        }
       },
       grid: {
         color: isDarkMode.value ? '#374151' : '#e5e7eb',
