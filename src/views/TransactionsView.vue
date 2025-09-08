@@ -149,7 +149,7 @@
     <!-- Floating Add Button for Mobile -->
     <div class="fixed bottom-[70px] left-0 z-[20] sm:hidden w-full flex items-center justify-between px-6">
       <router-link v-if="configStore.isApiKeyAiExist" to="/transactions/bulk-expense" class="btn bg-red-500/70 text-white rounded-xl p-3 shadow-lg flex items-center justify-center flex-shrink-0">
-        <UploadCloud class="w-6 h-6" />
+        <ScanTextIcon class="w-6 h-6" />
         <span class="sr-only">Bulk Expense</span>
       </router-link>
       <button @click="showAddModal = true" class="btn-primary rounded-xl p-3 shadow-lg flex items-center justify-center flex-shrink-0">
@@ -186,8 +186,8 @@ import {
   Wallet,
   RotateCcw,
   Download,
-  UploadCloud,
-  Share2
+  Share2,
+  ScanTextIcon,
 } from 'lucide-vue-next';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, endOfDay, format, parseISO } from 'date-fns';
 

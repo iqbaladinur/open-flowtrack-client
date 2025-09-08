@@ -82,7 +82,7 @@
       </div>
 
       <!-- Quick Actions -->
-      <div class="card p-6">
+      <div class="card p-4">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-neon mb-4">Quick Actions</h2>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <QuickActionButton
@@ -113,7 +113,7 @@
             class="text-center"
           >
             <template #icon>
-              <Wallet class="w-5 h-5 text-primary-600 dark:text-primary-400" />
+              <Wallet class="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </template>
             Manage Wallets
           </QuickActionButton>
@@ -132,7 +132,7 @@
       </div>
 
       <!-- AI Suggestions -->
-      <div class="card p-6">
+      <div class="card p-4">
         <div class="flex items-center mb-4">
           <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/50 mr-3">
             <BrainCircuit class="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
@@ -158,14 +158,14 @@
       </div>
 
       <!-- Recent Transactions -->
-      <div class="card p-6">
+      <div class="card p-4">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">Recent Transactions</h2>
           <router-link
             to="/transactions"
             class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
           >
-            View all
+            <LucideArrowUpRightFromSquare class="w-4 h-4"/>
           </router-link>
         </div>
 
@@ -221,7 +221,8 @@ import {
   Target,
   ArrowUpDown,
   BrainCircuit,
-  Scale
+  Scale,
+  LucideArrowUpRightFromSquare
 } from 'lucide-vue-next';
 import { endOfDay, format } from 'date-fns';
 import { reactive } from 'vue';
@@ -326,6 +327,7 @@ function getAIAnalytics() {
 }
 
 onMounted(async () => {
+  configStore.fetchConfig();
   const today = endOfDay(new Date());
   const todayIso = today.toISOString();
   walletsStore.fetchWallets(true, undefined, todayIso);

@@ -116,6 +116,20 @@ export const useConfigStore = defineStore('config', () => {
     return new Intl.NumberFormat(locale, options).format(amount)
   }
 
+  const formatProsentase = (amount: number) => {
+    const options: Intl.NumberFormatOptions = {
+      style: 'decimal',
+      currency: currency.value,
+      minimumFractionDigits: fractions.value,
+      maximumFractionDigits: fractions.value
+    }
+
+    // The 'id-ID' locale is better for formatting IDR without decimals by default if fractions is 0
+    const locale = currency.value === 'IDR' ? 'id-ID' : 'en-US'
+
+    return new Intl.NumberFormat(locale, options).format(amount)
+  }
+
   // Initialize from storage on store creation
   loadConfigFromStorage()
 
@@ -134,6 +148,7 @@ export const useConfigStore = defineStore('config', () => {
     updateConfig,
     updateFirstDayOfMonth,
     updateIncludeHiddenWalletsInCalculation,
-    formatCurrency
+    formatCurrency,
+    formatProsentase
   }
 })

@@ -52,7 +52,7 @@
           </div>
           <!-- Custom Range Selector -->
           <div v-if="currentView === 'custom'" class="space-y-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-1">
               <div>
                 <label for="custom-start" class="label">Start Date</label>
                 <input id="custom-start" v-model="selectedDate.custom.start" type="date" class="input" />
@@ -62,7 +62,7 @@
                 <input id="custom-end" v-model="selectedDate.custom.end" type="date" class="input" />
               </div>
             </div>
-            <div class="flex justify-evenly lg:justify-start items-center gap-2 mt-4">
+            <div class="flex justify-evenly lg:justify-start items-center gap-1 mt-4">
               <button @click="goToPreviousPeriod" class="btn btn-primary flex-1 lg:flex-none">Previous Period</button>
               <button @click="goToNextPeriod" class="btn btn-primary flex-1 lg:flex-none">Next Period</button>
             </div>
@@ -93,22 +93,78 @@
       </div>
       <div v-else class="space-y-6">
         <!-- Summary Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div class="card p-6">
-            <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Total Income</p>
-            <p class="text-sm font-medium text-success-600 font-mono">{{ configStore.formatCurrency(summary.totalIncome)
-              }}</p>
+        <div
+          class="flex sm:grid sm:grid-cols-4 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <!-- Income -->
+          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 sm:ml-0">
+            <div class="flex flex-col h-full">
+              <div
+                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-success-100 dark:bg-success-900/50 mb-3">
+                <TrendingUp class="w-4 h-4 text-success-600 dark:text-success-400" />
+              </div>
+              <div class="mt-auto">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Total Income</p>
+                <p class="text-xs font-medium text-success-600 dark:text-success-400 font-mono">
+                  {{ configStore.formatCurrency(summary.totalIncome) }}
+                </p>
+              </div>
+            </div>
           </div>
-          <div class="card p-6">
-            <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Total Expense</p>
-            <p class="text-sm font-medium text-error-600 font-mono">{{ configStore.formatCurrency(summary.totalExpense)
-              }}</p>
+
+          <!-- Expense -->
+          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
+            <div class="flex flex-col h-full">
+              <div
+                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-error-100 dark:bg-error-900/50 mb-3">
+                <TrendingDown class="w-4 h-4 text-error-600 dark:text-error-400" />
+              </div>
+              <div class="mt-auto">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Total Expenses</p>
+                <p class="text-xs font-medium text-error-600 dark:text-error-400 font-mono">
+                  {{ configStore.formatCurrency(summary.totalExpense) }}
+                </p>
+              </div>
+            </div>
           </div>
-          <div class="card p-6">
-            <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">Net Income</p>
-            <p class="text-sm font-medium font-mono" :class="summary.net >= 0 ? 'text-success-600' : 'text-error-600'">
-              {{ configStore.formatCurrency(summary.net) }}
-            </p>
+
+          <!-- Net Income -->
+          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
+            <div class="flex flex-col h-full">
+              <div
+                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-warning-100 dark:bg-warning-900/50 mb-3">
+                <Scale class="w-4 h-4 text-warning-600 dark:text-warning-400" />
+              </div>
+              <div class="mt-auto">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Total Net Income</p>
+                <p class="text-xs font-medium font-mono" :class="{
+                  'text-success-600 dark:text-success-400': summary.net > 0,
+                  'text-gray-800 dark:text-gray-200': summary.net === 0,
+                  'text-error-600 dark:text-error-400': summary.net < 0,
+                }">
+                  {{ summary.net >= 0 ? '+' : '' }}{{ configStore.formatCurrency(summary.net) }}
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Expense Ratio -->
+          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
+            <div class="flex flex-col h-full">
+              <div
+                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-blue-100 dark:bg-blue-900/50 mb-3">
+                <PieChartIcon class="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div class="mt-auto">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Expense Ratio</p>
+                <p class="text-xs font-medium font-mono" :class="{
+                  'text-gray-800 dark:text-gray-200': summary.expenseRatio < 70,
+                  'text-orange-600 dark:text-orange-400': summary.expenseRatio >= 70 && summary.expenseRatio <= 80,
+                  'text-error-600 dark:text-error-500': summary.expenseRatio > 80,
+                }">
+                  {{ configStore.formatProsentase(summary.expenseRatio) }}%
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -190,7 +246,7 @@ import AppLayout from '@/components/layouts/AppLayout.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import TimeSeriesChart from '@/components/reports/TimeSeriesChart.vue';
 import CategoryPieChart from '@/components/reports/CategoryPieChart.vue';
-import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, Wallet, TrendingUp, TrendingDown } from 'lucide-vue-next';
+import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, Wallet, TrendingUp, TrendingDown, Scale, PieChartIcon } from 'lucide-vue-next';
 import type { Transaction } from '@/types/transaction';
 import { format, parseISO } from 'date-fns';
 
@@ -353,8 +409,9 @@ const summary = computed(() => {
     if (t.type === 'income') acc.totalIncome += t.amount;
     else acc.totalExpense += t.amount;
     acc.net = acc.totalIncome - acc.totalExpense;
+    acc.expenseRatio = acc.totalExpense / acc.totalIncome * 100
     return acc;
-  }, { totalIncome: 0, totalExpense: 0, net: 0 });
+  }, { totalIncome: 0, totalExpense: 0, net: 0, expenseRatio: 0 });
 });
 
 const categoryChartData = computed(() => {
