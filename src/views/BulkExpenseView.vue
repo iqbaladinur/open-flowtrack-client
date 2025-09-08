@@ -4,7 +4,7 @@
       <!-- Header -->
       <div class="flex justify-between gap-4">
         <div>
-          <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-neon">
+          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">
             Bulk Expense
           </h1>
           <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
@@ -14,7 +14,7 @@
       </div>
 
       <!-- Step 1: Image Upload -->
-      <div v-if="currentStep === 1" class="card bg-base-100 shadow p-6">
+      <div v-if="currentStep === 1" class="card bg-base-100 shadow p-2 lg:p-6">
         <div class="card-body">
           <h2 class="card-title">Step 1: Upload & Crop Image</h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
@@ -92,7 +92,7 @@
       </Modal>
 
       <!-- Step 2: Review and Edit (Side-by-Side) -->
-      <div v-if="currentStep === 2" class="card bg-base-100 shadow p-6">
+      <div v-if="currentStep === 2" class="card bg-base-100 shadow p-2 lg:p-6">
         <div class="card-body">
           <h2 class="card-title">Step 2: Review and Edit Extracted Text</h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
@@ -138,7 +138,7 @@
       </div>
 
       <!-- Step 3: Review and Save Transactions -->
-      <div v-if="currentStep === 3" class="card bg-base-100 shadow p-6">
+      <div v-if="currentStep === 3" class="card bg-base-100 shadow p-2 lg:p-6">
         <div class="card-body">
           <h2 class="card-title">Step 3: Review and Save Transactions</h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
