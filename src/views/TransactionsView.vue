@@ -434,12 +434,16 @@ const shareTransactions = async () => {
     const file = new File([dataStr], txtFilename, { type: 'text/plain' });
 
     const formatted = data.map(tx => {
-      const type = tx.type === "expense" ? "Expense" : "Income";
+      const type = tx.type.toUpperCase();
       const amount = tx.amount;
       const date = format(tx.date, 'EEE, dd-MM-yyyy');
       const category = tx.category?.name || "Uncategorized";
       const wallet = tx.wallet?.name || "Unknown Wallet";
+      const walletdestination = tx.destinationWallet?.name || "Unknown Wallet"; 
       const note = tx.note;
+      if (tx.type === 'transfer') {
+        return `${date}: Transfer of ${amount} from ${wallet} to ${walletdestination} (${note || "no note"})`;
+      }
       return `${date}: ${type} of ${amount} for ${category} (${note || "no note"}) on wallet ${wallet}`;
     });
 
