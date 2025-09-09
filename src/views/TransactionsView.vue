@@ -151,7 +151,7 @@
     </div>
 
     <!-- Floating Add Button for Mobile -->
-    <div class="fixed bottom-[70px] left-0 z-[20] sm:hidden w-full flex items-center justify-between px-6">
+    <QuickAction>
       <router-link v-if="configStore.isApiKeyAiExist" to="/transactions/bulk-expense" class="btn bg-red-500/70 text-white rounded-xl p-3 shadow-lg flex items-center justify-center flex-shrink-0">
         <ScanTextIcon class="w-6 h-6" />
         <span class="sr-only">Bulk Expense</span>
@@ -160,7 +160,7 @@
         <Plus class="w-6 h-6" />
         <span class="sr-only">Add Transaction</span>
       </button>
-    </div>
+    </QuickAction>
 
     <!-- Add/Edit Transaction Modal -->
     <TransactionModal
@@ -180,6 +180,7 @@ import AppLayout from '@/components/layouts/AppLayout.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
+import QuickAction from '@/components/shared/QuickAction.vue';
 import type { Transaction } from '@/types/transaction';
 import {
   Plus,
