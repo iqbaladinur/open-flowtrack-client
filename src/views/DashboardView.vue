@@ -37,7 +37,7 @@
             <div class="mt-auto">
               <p class="text-xs text-gray-500 dark:text-gray-400">Income</p>
               <p class="text-xs font-medium text-success-600 dark:text-success-400 font-mono">
-                +{{ configStore.formatCurrency(alltimeIncome) }}
+                +{{ configStore.formatCurrency(alltimeIncomev2) }}
               </p>
             </div>
           </div>
@@ -52,7 +52,7 @@
             <div class="mt-auto">
               <p class="text-xs text-gray-500 dark:text-gray-400">Expenses</p>
               <p class="text-xs font-medium text-error-600 dark:text-error-400 font-mono">
-                -{{ configStore.formatCurrency(allTimeExpense) }}
+                -{{ configStore.formatCurrency(alltimeExpensev2) }}
               </p>
             </div>
           </div>
@@ -69,12 +69,12 @@
               <p 
                 class="text-xs font-medium font-mono"
                 :class="{
-                  'text-success-600 dark:text-success-400': netIncome > 0,
-                  'text-gray-800 dark:text-gray-200': netIncome === 0,
-                  'text-error-600 dark:text-error-400': netIncome < 0,
+                  'text-success-600 dark:text-success-400': netIncomev2 > 0,
+                  'text-gray-800 dark:text-gray-200': netIncomev2 === 0,
+                  'text-error-600 dark:text-error-400': netIncomev2 < 0,
                 }"
               >
-                {{ netIncome >= 0 ? '+' : '' }}{{ configStore.formatCurrency(netIncome) }}
+                {{ netIncomev2 >= 0 ? '+' : '' }}{{ configStore.formatCurrency(netIncomev2) }}
               </p>
             </div>
           </div>
@@ -224,14 +224,16 @@ import {
   Scale,
   LucideArrowUpRightFromSquare
 } from 'lucide-vue-next';
-import { endOfDay, format } from 'date-fns';
+import { endOfDay, format, subDays } from 'date-fns';
 import { reactive } from 'vue';
+import { useReportsStore } from '@/stores/reports';
 
 const authStore = useAuthStore();
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
 const analyticsStore = useAnalyticsStore();
+const reportsStore = useReportsStore();
 const { analyticsSugestion, loading: analyticsLoading } = storeToRefs(analyticsStore);
 
 const showAddTransactionModal = ref(false);
@@ -248,31 +250,9 @@ const periodicAnalytics = reactive({
   end: ''
 });
 
-const alltimeIncome = computed(() => {
-  return transactionsStore.transactions
-    .filter(t => {
-      const type = t.type === 'income';
-      if (!configStore.includeHiddenWalletsInCalculation) {
-        return type && !t.wallet?.hidden
-      }
-      return type;
-    })
-    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
-});
-
-const allTimeExpense = computed(() => {
-  return transactionsStore.transactions
-    .filter(t => {
-      const type = t.type === 'expense';
-      if (!configStore.includeHiddenWalletsInCalculation) {
-        return type && !t.wallet?.hidden
-      }
-      return type;
-    })
-    .reduce((sum, t) => sum + Number(t.amount) || 0, 0);
-});
-
-const netIncome = computed(() => alltimeIncome.value - allTimeExpense.value);
+const alltimeIncomev2 = ref(0);
+const alltimeExpensev2 = ref(0);
+const netIncomev2 = ref(0);
 
 const recentTransactions = computed(() => {
   return transactionsStore.transactions
@@ -285,9 +265,12 @@ const handleTransactionAdded = () => {
   showAddTransactionModal.value = false;
   // Force refresh data
   const today = endOfDay(new Date());
+  const someDaysBefore = subDays(today, 4);
   const todayIso = today.toISOString();
+  const someDaysBeforeIso = someDaysBefore.toISOString();
 
   transactionsStore.fetchTransactions({
+    start_date: someDaysBeforeIso,
     end_date: todayIso
   }, true);
   walletsStore.fetchWallets(true, undefined, todayIso);
@@ -326,12 +309,26 @@ function getAIAnalytics() {
   });
 }
 
+async function setSummary(filter: {
+  startDate?: string;
+  endDate?: string;
+  includeHidden?: boolean;
+}) {
+  const { data } = await reportsStore.getSummary(filter);
+  alltimeIncomev2.value = data?.totalIncome || 0;
+  alltimeExpensev2.value = data?.totalExpense || 0;
+  netIncomev2.value = data?.net || 0;
+}
+
 onMounted(async () => {
   configStore.fetchConfig();
   const today = endOfDay(new Date());
+  const someDaysBefore = subDays(today, 4);
   const todayIso = today.toISOString();
+  const someDaysBeforeIso = someDaysBefore.toISOString();
   walletsStore.fetchWallets(true, undefined, todayIso);
-  transactionsStore.fetchTransactions({ end_date: todayIso });
+  transactionsStore.fetchTransactions({ start_date: someDaysBeforeIso,  end_date: todayIso });
+  setSummary({ endDate: todayIso, includeHidden: configStore.includeHiddenWalletsInCalculation });
   getAIAnalytics();
 });
 </script>

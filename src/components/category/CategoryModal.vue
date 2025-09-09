@@ -164,7 +164,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean];
-  'success': [];
+  'success': [value?: Category];
 }>();
 
 const categoriesStore = useCategoriesStore();
@@ -206,7 +206,7 @@ const handleSubmit = async () => {
     }
 
     if (result.success) {
-      emit('success');
+      emit('success', result.data);
       resetForm();
     } else {
       error.value = result.error || 'Failed to save category. Please try again.';

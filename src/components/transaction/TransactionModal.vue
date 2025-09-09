@@ -84,25 +84,36 @@
         </div>
 
         <!-- Category -->
-        <div>
-          <label for="category" class="label">Category</label>
-          <select
-            id="category"
-            v-model="form.category_id"
-            required
-            class="input"
-            :disabled="loading || categoriesStore.loading"
-            autocomplete="off"
-          >
-            <option value="">Select a category</option>
-            <option
-              v-for="category in availableCategories"
-              :key="category.id"
-              :value="category.id"
+        <label for="category" class="label">Category</label>
+        <div class="flex items-center gap-1">
+          <div class="flex-1 relative">
+            <div v-if="selectedCategorie" class="absolute h-full w-10 flex items-center justify-center">
+              <div class="w-8 h-8 rounded-md flex items-center justify-center" :style="{ backgroundColor: selectedCategorie.color + '20' }">
+                <component :is="getIcon(selectedCategorie.icon)" class="w-5 h-5" :style="{ color: selectedCategorie.color }" ></component>
+              </div>
+            </div>
+            <select
+              id="category"
+              v-model="form.category_id"
+              required
+              class="input"
+              :class="{ 'pl-10': !!form.category_id }"
+              :disabled="loading || categoriesStore.loading"
+              autocomplete="off"
             >
-              {{ category.name }}
-            </option>
-          </select>
+              <option value="">Select a category</option>
+              <option
+                v-for="category in availableCategories"
+                :key="category.id"
+                :value="category.id"
+              >
+                {{ category.name }}
+              </option>
+            </select>  
+          </div>
+          <button class="btn btn-primary" type="button" @click="showCatgeoryModal = true">
+            <Plus class="w-5 h-5" />
+          </button>
         </div>
 
         <!-- Date -->
@@ -196,6 +207,10 @@
       </div>
     </template>
   </Modal>
+  <CategoryModal
+    v-model="showCatgeoryModal"
+    @success="handleCreatedCatgory"
+  />
 </template>
 
 <script setup lang="ts">
@@ -206,9 +221,12 @@ import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
+import CategoryModal from '@/components/category/CategoryModal.vue';
 import type { Transaction } from '@/types/transaction';
-import { TrendingUp, TrendingDown } from 'lucide-vue-next';
+import { TrendingUp, TrendingDown, Plus } from 'lucide-vue-next';
 import { format } from 'date-fns';
+import { Category } from '@/types/category';
+import { getIcon } from '@/utils/icons';
 
 interface Props {
   modelValue: boolean;
@@ -231,6 +249,8 @@ const isModalOpen = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value),
 });
+
+const showCatgeoryModal = ref(false);
 
 const walletsStore = useWalletsStore();
 const categoriesStore = useCategoriesStore();
@@ -267,6 +287,13 @@ const form = reactive({
 const availableCategories = computed(() => {
   return categoriesStore.getCategoriesByType(form.type);
 });
+
+const selectedCategorie = computed(() => {
+  if (form.category_id) {
+    return categoriesStore.getCategoryById(form.category_id) || null;
+  }
+  return null;
+})
 
 const isFormValid = computed(() => {
   return form.amount > 0 && 
@@ -364,6 +391,13 @@ watch(() => props.type, (newType) => {
 function toggleFormType(type: 'income' | 'expense') {
   form.type = type;
   form.category_id = '';
+}
+
+function handleCreatedCatgory(category?: Category) {
+  showCatgeoryModal.value = false;
+  if (category?.id) {
+    form.category_id = category.id
+  }
 }
 
 onMounted(async () => {

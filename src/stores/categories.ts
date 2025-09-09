@@ -36,7 +36,7 @@ export const useCategoriesStore = defineStore('categories', () => {
     if (response.data) {
       // Force a refresh of the categories list
       await fetchCategories(true);
-      return { success: true };
+      return { success: true, data: response.data };
     }
     return { success: false, error: response.error };
   };
@@ -64,7 +64,7 @@ export const useCategoriesStore = defineStore('categories', () => {
     if (response.data) {
       // Force a refresh of the categories list
       await fetchCategories(true);
-      return { success: true };
+      return { success: true, data: response.data };
     }
     return { success: false, error: response.error };
   };

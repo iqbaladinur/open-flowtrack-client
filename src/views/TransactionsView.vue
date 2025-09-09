@@ -29,7 +29,7 @@
             </span>
           </button>
           <router-link v-if="configStore.isApiKeyAiExist" to="/transactions/bulk-expense" class="btn-secondary hidden lg:flex">
-            <UploadCloud class="w-4 h-4 mr-2" />
+            <ScanTextIcon class="w-4 h-4 mr-2" />
             Bulk Expense
           </router-link>
           <button @click="showAddModal = true" class="btn-primary hidden sm:flex">
