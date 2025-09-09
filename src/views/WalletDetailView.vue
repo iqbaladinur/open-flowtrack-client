@@ -232,7 +232,7 @@
     </div>
   </AppLayout>
   <!-- Floating Action Buttons for Mobile -->
-  <div class="fixed bottom-[70px] left-0 z-[20] sm:hidden w-full flex items-center justify-around px-6">
+  <QuickAction>
     <button @click="openTransactionModal('income')"
       class="btn-success bg-opacity-70 rounded-xl p-3 shadow-lg flex items-center justify-center">
       <TrendingUp class="w-6 h-6" />
@@ -248,7 +248,7 @@
       <TrendingDown class="w-6 h-6" />
       <span class="sr-only">Add Expense</span>
     </button>
-  </div>
+  </QuickAction>
   <WalletModal v-model="showModal" :wallet="selectedWallet" @success="handleWalletSaved" />
   <TransactionModal
     v-model="showTransactionModal"
@@ -279,6 +279,7 @@ import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, 
 import WalletModal from '@/components/wallet/WalletModal.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
 import CategoryFilterModal from '@/components/category/CategoryFilterModal.vue';
+import QuickAction from '@/components/shared/QuickAction.vue';
 
 const route = useRoute();
 const router = useRouter();

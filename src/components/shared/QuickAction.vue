@@ -1,7 +1,7 @@
 <template>
   <div class="fixed bottom-[70px] right-6 z-[20] sm:hidden">
     <div
-      class="absolute bottom-0 right-0 p-4 bg-primary-500 rounded-xl flex items-center justify-center shadow-lg cursor-pointer"
+      class="absolute bottom-0 right-0 p-4 bg-primary-500/70 rounded-xl flex items-center justify-center shadow-lg cursor-pointer"
       @click="toggleMenu"
     >
       <Plus class="w-6 h-6 text-white transition-transform duration-300" :class="{ 'rotate-45': isOpen }" />
