@@ -239,8 +239,8 @@
       <span class="sr-only">Add Income</span>
     </button>
     <button @click="openTransactionModal('transfer')"
-      class="btn-primary bg-opacity-70 rounded-xl p-3 shadow-lg flex items-center justify-center">
-      <ArrowRightLeft class="w-6 h-6" />
+      class="btn bg-blue-100 dark:bg-blue-900 bg-opacity-70 rounded-xl p-3 shadow-lg flex items-center justify-center">
+      <ArrowRightLeft class="w-6 h-6 text-blue-600 dark:text-blue-400" />
       <span class="sr-only">Add Transfer</span>
     </button>
     <button @click="openTransactionModal('expense')"
@@ -274,7 +274,7 @@ import WalletCard from '@/components/wallet/WalletCard.vue';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import type { Wallet } from '@/types/wallet';
 import type { Transaction, TransactionType } from '@/types/transaction';
-import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, FilterX, Scale, ArrowUpRight, ArrowDownRight } from 'lucide-vue-next';
+import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, FilterX, Scale, ArrowUpRight, ArrowDownRight, ArrowRightLeft } from 'lucide-vue-next';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay, parseISO } from 'date-fns';
 import WalletModal from '@/components/wallet/WalletModal.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
