@@ -54,6 +54,10 @@
               <TrendingDown class="w-4 h-4 mr-1.5" />
               Expense
             </button>
+            <button @click="filters.type = 'transfer'" :class="['btn flex-shrink-0', filters.type === 'transfer' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
+              <ArrowRightLeft class="w-4 h-4 mr-1.5" />
+              Transfer
+            </button>
           </div>
         </div>
 
@@ -188,6 +192,7 @@ import {
   Download,
   Share2,
   ScanTextIcon,
+  ArrowRightLeft
 } from 'lucide-vue-next';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, endOfDay, format, parseISO } from 'date-fns';
 

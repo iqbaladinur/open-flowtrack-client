@@ -151,8 +151,6 @@ import type { Category } from '@/types/category';
 import { getIcon, iconList } from '@/utils/icons';
 import { TrendingUp, TrendingDown } from 'lucide-vue-next';
 
-
-
 interface Props {
   modelValue: boolean;
   category?: Category | null;
@@ -199,8 +197,7 @@ const handleSubmit = async () => {
 
     let result;
     if (props.category) {
-      // @ts-ignore
-      result = await categoriesStore.updateCategory(props.category.id, categoryData);
+      result = await categoriesStore.updateCategory(props.category.id!, categoryData);
     } else {
       result = await categoriesStore.createCategory(categoryData);
     }
@@ -232,7 +229,6 @@ const resetForm = () => {
   });
 };
 
-// Watch for category changes to populate form
 watch(() => props.category, (newCategory) => {
   if (newCategory) {
     Object.assign(form, {

@@ -12,7 +12,7 @@
       </div>
 
       <!-- Summary Cards -->
-      <div class="flex sm:grid sm:grid-cols-4 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div class="flex sm:grid sm:grid-cols-5 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
         <!-- Total Balance -->
         <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1">
           <div class="flex flex-col h-full">
@@ -37,7 +37,7 @@
             <div class="mt-auto">
               <p class="text-xs text-gray-500 dark:text-gray-400">Income</p>
               <p class="text-xs font-medium text-success-600 dark:text-success-400 font-mono">
-                +{{ configStore.formatCurrency(alltimeIncomev2) }}
+                +{{ configStore.formatCurrency(summary.total_income) }}
               </p>
             </div>
           </div>
@@ -52,7 +52,22 @@
             <div class="mt-auto">
               <p class="text-xs text-gray-500 dark:text-gray-400">Expenses</p>
               <p class="text-xs font-medium text-error-600 dark:text-error-400 font-mono">
-                -{{ configStore.formatCurrency(alltimeExpensev2) }}
+                -{{ configStore.formatCurrency(summary.total_expense) }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Transfers -->
+        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
+          <div class="flex flex-col h-full">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-blue-100 dark:bg-blue-900/50 mb-3">
+              <ArrowRightLeft class="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div class="mt-auto">
+              <p class="text-xs text-gray-500 dark:text-gray-400">Transfers</p>
+              <p class="text-xs font-medium text-blue-600 dark:text-blue-400 font-mono">
+                {{ configStore.formatCurrency(summary.total_transfer) }}
               </p>
             </div>
           </div>
@@ -69,12 +84,12 @@
               <p 
                 class="text-xs font-medium font-mono"
                 :class="{
-                  'text-success-600 dark:text-success-400': netIncomev2 > 0,
-                  'text-gray-800 dark:text-gray-200': netIncomev2 === 0,
-                  'text-error-600 dark:text-error-400': netIncomev2 < 0,
+                  'text-success-600 dark:text-success-400': summary.net_income > 0,
+                  'text-gray-800 dark:text-gray-200': summary.net_income === 0,
+                  'text-error-600 dark:text-error-400': summary.net_income < 0,
                 }"
               >
-                {{ netIncomev2 >= 0 ? '+' : '' }}{{ configStore.formatCurrency(netIncomev2) }}
+                {{ summary.net_income >= 0 ? '+' : '' }}{{ configStore.formatCurrency(summary.net_income) }}
               </p>
             </div>
           </div>
@@ -108,6 +123,17 @@
           </QuickActionButton>
 
           <QuickActionButton
+            @click="toggleAddTransaction('transfer')"
+            icon-bg-class="bg-blue-100 dark:bg-blue-900"
+            class="text-center"
+          >
+            <template #icon>
+              <ArrowRightLeft class="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            </template>
+            Add Transfer
+          </QuickActionButton>
+
+          <QuickActionButton
             to="/wallets"
             icon-bg-class="bg-primary-100 dark:bg-primary-900"
             class="text-center"
@@ -116,17 +142,6 @@
               <Wallet class="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </template>
             Manage Wallets
-          </QuickActionButton>
-
-          <QuickActionButton
-            to="/budgets"
-            icon-bg-class="bg-warning-100 dark:bg-warning-900"
-            class="text-center"
-          >
-            <template #icon>
-              <Target class="w-5 h-5 text-warning-600 dark:text-warning-400" />
-            </template>
-            Set Budgets
           </QuickActionButton>
         </div>
       </div>
@@ -218,15 +233,16 @@ import {
   TrendingDown,
   Plus,
   Minus,
-  Target,
   ArrowUpDown,
   BrainCircuit,
   Scale,
-  LucideArrowUpRightFromSquare
+  LucideArrowUpRightFromSquare,
+  ArrowRightLeft
 } from 'lucide-vue-next';
 import { endOfDay, format, subDays } from 'date-fns';
 import { reactive } from 'vue';
 import { useReportsStore } from '@/stores/reports';
+import type { TransactionType } from '@/types/transaction';
 
 const authStore = useAuthStore();
 const walletsStore = useWalletsStore();
@@ -237,7 +253,7 @@ const reportsStore = useReportsStore();
 const { analyticsSugestion, loading: analyticsLoading } = storeToRefs(analyticsStore);
 
 const showAddTransactionModal = ref(false);
-const transactionType = ref<'income' | 'expense'>('income');
+const transactionType = ref<TransactionType>('income');
 
 const totalBalance = computed(() => {
   return walletsStore.wallets
@@ -250,9 +266,12 @@ const periodicAnalytics = reactive({
   end: ''
 });
 
-const alltimeIncomev2 = ref(0);
-const alltimeExpensev2 = ref(0);
-const netIncomev2 = ref(0);
+const summary = ref({
+  total_income: 0,
+  total_expense: 0,
+  total_transfer: 0,
+  net_income: 0,
+});
 
 const recentTransactions = computed(() => {
   return transactionsStore.transactions
@@ -263,7 +282,6 @@ const recentTransactions = computed(() => {
 
 const handleTransactionAdded = () => {
   showAddTransactionModal.value = false;
-  // Force refresh data
   const today = endOfDay(new Date());
   const someDaysBefore = subDays(today, 4);
   const todayIso = today.toISOString();
@@ -274,9 +292,10 @@ const handleTransactionAdded = () => {
     end_date: todayIso
   }, true);
   walletsStore.fetchWallets(true, undefined, todayIso);
+  setSummary({ endDate: todayIso, includeHidden: configStore.includeHiddenWalletsInCalculation });
 };
 
-const toggleAddTransaction = (type: 'income' | 'expense') => {
+const toggleAddTransaction = (type: TransactionType) => {
   showAddTransactionModal.value = true;
   transactionType.value = type;
 }
@@ -290,8 +309,6 @@ function getAIAnalytics() {
   
   let startDate = new Date(today.getFullYear(), today.getMonth(), firstDay);
 
-  // If today's date is before the first day of this calendar month,
-  // it means we are still in the previous financial month.
   if (today.getDate() < firstDay) {
     startDate.setMonth(startDate.getMonth() - 1);
   }
@@ -315,9 +332,14 @@ async function setSummary(filter: {
   includeHidden?: boolean;
 }) {
   const { data } = await reportsStore.getSummary(filter);
-  alltimeIncomev2.value = data?.totalIncome || 0;
-  alltimeExpensev2.value = data?.totalExpense || 0;
-  netIncomev2.value = data?.net || 0;
+  if (data) {
+    summary.value = {
+      total_income: data.totalIncome || 0,
+      total_expense: data.totalExpense || 0,
+      total_transfer: data.totalTransfer || 0,
+      net_income: data.net || 0,
+    };
+  }
 }
 
 onMounted(async () => {

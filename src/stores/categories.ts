@@ -28,7 +28,7 @@ export const useCategoriesStore = defineStore('categories', () => {
 
   const createCategory = async (categoryData: {
     name: string;
-    type: 'income' | 'expense';
+    type: 'income' | 'expense' | 'transfer';
     icon: string;
     color: string;
   }) => {
@@ -55,7 +55,7 @@ export const useCategoriesStore = defineStore('categories', () => {
     id: string,
     categoryData: Partial<{
       name: string;
-      type: 'income' | 'expense';
+      type: 'income' | 'expense' | 'transfer';
       icon: string;
       color: string;
     }>
@@ -79,7 +79,7 @@ export const useCategoriesStore = defineStore('categories', () => {
     return { success: false, error: response.error };
   };
 
-  const getCategoriesByType = (type: 'income' | 'expense') => {
+  const getCategoriesByType = (type: 'income' | 'expense' | 'transfer') => {
     return categories.value.filter((c) => c.type === type);
   };
 

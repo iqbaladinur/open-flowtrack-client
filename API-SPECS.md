@@ -538,6 +538,7 @@ fetch('/config',
   "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
   "currency": "IDR",
   "fractions": 2,
+  "gemini_api_key": "yourapikey",
   "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
 }
 ```
@@ -573,7 +574,8 @@ curl -X PUT /config \
 ```javascript
 const inputBody = '{
   "currency": "USD",
-  "fractions": 2
+  "fractions": 2,
+  "gemini_api_key": "ysgdjsyhgdjshdgajs"
 }';
 const headers = {
   'Content-Type':'application/json',
@@ -602,7 +604,8 @@ fetch('/config',
 ```json
 {
   "currency": "USD",
-  "fractions": 2
+  "fractions": 2,
+  "gemini_api_key": "ysgdjsyhgdjshdgajs"
 }
 ```
 
@@ -621,6 +624,7 @@ fetch('/config',
   "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
   "currency": "USD",
   "fractions": 2,
+  "gemini_api_key": "yourapikey",
   "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
 }
 ```
@@ -658,7 +662,9 @@ curl -X POST /wallets \
 ```javascript
 const inputBody = '{
   "name": "My Bank Account",
-  "initial_balance": 1000
+  "initial_balance": 1000,
+  "hidden": false,
+  "is_main_wallet": false
 }';
 const headers = {
   'Content-Type':'application/json',
@@ -687,7 +693,9 @@ fetch('/wallets',
 ```json
 {
   "name": "My Bank Account",
-  "initial_balance": 1000
+  "initial_balance": 1000,
+  "hidden": false,
+  "is_main_wallet": false
 }
 ```
 
@@ -842,6 +850,8 @@ fetch('/wallets/{id}',
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
+|start_date|query|string(date-time)|false|none|
+|end_date|query|string(date-time)|false|none|
 
 > Example responses
 
@@ -890,7 +900,9 @@ curl -X PATCH /wallets/{id} \
 ```javascript
 const inputBody = '{
   "name": "My Primary Bank Account",
-  "initial_balance": 1500
+  "initial_balance": 1500,
+  "hidden": true,
+  "is_main_wallet": true
 }';
 const headers = {
   'Content-Type':'application/json',
@@ -919,7 +931,9 @@ fetch('/wallets/{id}',
 ```json
 {
   "name": "My Primary Bank Account",
-  "initial_balance": 1500
+  "initial_balance": 1500,
+  "hidden": true,
+  "is_main_wallet": true
 }
 ```
 
@@ -1152,6 +1166,7 @@ fetch('/categories',
 |---|---|
 |type|income|
 |type|expense|
+|type|transfer|
 
 > Example responses
 
@@ -1179,6 +1194,117 @@ fetch('/categories',
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|A list of categories.|Inline|
 
 <h3 id="get-all-categories-for-the-current-user-(including-defaults)-responseschema">Response Schema</h3>
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
+## Create multiple categories in bulk
+
+<a id="opIdCategoriesController_createBulk"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X POST /categories/bulk \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer {access-token}'
+
+```
+
+```javascript
+const inputBody = '{
+  "categories": [
+    {
+      "name": "Salary",
+      "type": "income",
+      "icon": "briefcase-outline",
+      "color": "#26de81"
+    }
+  ]
+}';
+const headers = {
+  'Content-Type':'application/json',
+  'Accept':'application/json',
+  'Authorization':'Bearer {access-token}'
+};
+
+fetch('/categories/bulk',
+{
+  method: 'POST',
+  body: inputBody,
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+`POST /categories/bulk`
+
+> Body parameter
+
+```json
+{
+  "categories": [
+    {
+      "name": "Salary",
+      "type": "income",
+      "icon": "briefcase-outline",
+      "color": "#26de81"
+    }
+  ]
+}
+```
+
+<h3 id="create-multiple-categories-in-bulk-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[BulkCreateCategoryDto](#schemabulkcreatecategorydto)|true|none|
+
+> Example responses
+
+> 201 Response
+
+```json
+[
+  {
+    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    "name": "Salary",
+    "type": "income",
+    "icon": "briefcase-outline",
+    "color": "#26de81",
+    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    "created_at": "2025-07-28T00:00:00.000Z",
+    "updated_at": "2025-07-28T00:00:00.000Z"
+  },
+  {
+    "id": "b2c3d4e5-f6g7-8901-2345-67890abcdef1",
+    "name": "Groceries",
+    "type": "expense",
+    "icon": "cart-outline",
+    "color": "#ff6b6b",
+    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    "created_at": "2025-07-28T00:00:01.000Z",
+    "updated_at": "2025-07-28T00:00:01.000Z"
+  }
+]
+```
+
+<h3 id="create-multiple-categories-in-bulk-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|The categories have been successfully created.|Inline|
+
+<h3 id="create-multiple-categories-in-bulk-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1404,6 +1530,70 @@ bearer
 
 <h1 id="wallport-api-transactions">Transactions</h1>
 
+## Create a new transaction using text
+
+<a id="opIdTransactionsController_createByText"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X POST /transactions/bulk-expense \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer {access-token}'
+
+```
+
+```javascript
+const inputBody = '{
+  "content": "i just eat burger for 10 dollar"
+}';
+const headers = {
+  'Content-Type':'application/json',
+  'Authorization':'Bearer {access-token}'
+};
+
+fetch('/transactions/bulk-expense',
+{
+  method: 'POST',
+  body: inputBody,
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+`POST /transactions/bulk-expense`
+
+> Body parameter
+
+```json
+{
+  "content": "i just eat burger for 10 dollar"
+}
+```
+
+<h3 id="create-a-new-transaction-using-text-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[CreateTransactionByTextDto](#schemacreatetransactionbytextdto)|true|none|
+
+<h3 id="create-a-new-transaction-using-text-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|The transaction has been successfully created.|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
 ## Create a new transaction
 
 <a id="opIdTransactionsController_create"></a>
@@ -1425,6 +1615,7 @@ const inputBody = '{
   "amount": 50,
   "wallet_id": "string",
   "category_id": "string",
+  "destination_wallet_id": "string",
   "date": "2019-08-24T14:15:22Z",
   "note": "string",
   "is_recurring": false,
@@ -1460,6 +1651,7 @@ fetch('/transactions',
   "amount": 50,
   "wallet_id": "string",
   "category_id": "string",
+  "destination_wallet_id": "string",
   "date": "2019-08-24T14:15:22Z",
   "note": "string",
   "is_recurring": false,
@@ -1561,6 +1753,7 @@ fetch('/transactions',
 |---|---|
 |type|income|
 |type|expense|
+|type|transfer|
 |sortBy|ASC|
 |sortBy|DESC|
 
@@ -1698,6 +1891,7 @@ const inputBody = '{
   "amount": 0,
   "wallet_id": "string",
   "category_id": "string",
+  "destination_wallet_id": "string",
   "date": "2019-08-24T14:15:22Z",
   "note": "string",
   "is_recurring": true,
@@ -1733,6 +1927,7 @@ fetch('/transactions/{id}',
   "amount": 0,
   "wallet_id": "string",
   "category_id": "string",
+  "destination_wallet_id": "string",
   "date": "2019-08-24T14:15:22Z",
   "note": "string",
   "is_recurring": true,
@@ -2261,6 +2456,7 @@ fetch('/reports/summary',
 |---|---|---|---|---|
 |startDate|query|string|false|YYYY-MM-DD|
 |endDate|query|string|false|YYYY-MM-DD|
+|includeHidden|query|boolean|false|Include hidden wallets in the report|
 
 > Example responses
 
@@ -2330,6 +2526,7 @@ fetch('/reports/by-category',
 |---|---|---|---|---|
 |startDate|query|string|false|YYYY-MM-DD|
 |endDate|query|string|false|YYYY-MM-DD|
+|includeHidden|query|boolean|false|Include hidden wallets in the report|
 
 > Example responses
 
@@ -2412,6 +2609,7 @@ fetch('/reports/by-wallet',
 |---|---|---|---|---|
 |startDate|query|string|false|YYYY-MM-DD|
 |endDate|query|string|false|YYYY-MM-DD|
+|includeHidden|query|boolean|false|Include hidden wallets in the report|
 
 > Example responses
 
@@ -2602,6 +2800,74 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
+<h1 id="wallport-api-analytics">Analytics</h1>
+
+## Generate financial analytics using AI
+
+<a id="opIdAnalyticsController_generateAnalytics"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X POST /analytics/generate \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer {access-token}'
+
+```
+
+```javascript
+const inputBody = '{
+  "startDate": "string",
+  "endDate": "string"
+}';
+const headers = {
+  'Content-Type':'application/json',
+  'Authorization':'Bearer {access-token}'
+};
+
+fetch('/analytics/generate',
+{
+  method: 'POST',
+  body: inputBody,
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+`POST /analytics/generate`
+
+> Body parameter
+
+```json
+{
+  "startDate": "string",
+  "endDate": "string"
+}
+```
+
+<h3 id="generate-financial-analytics-using-ai-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[GenerateAnalyticsDto](#schemagenerateanalyticsdto)|true|none|
+
+<h3 id="generate-financial-analytics-using-ai-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The analytics has been successfully generated.|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
 # Schemas
 
 <h2 id="tocS_CreateUserDto">CreateUserDto</h2>
@@ -2700,7 +2966,8 @@ bearer
 ```json
 {
   "currency": "USD",
-  "fractions": 2
+  "fractions": 2,
+  "gemini_api_key": "ysgdjsyhgdjshdgajs"
 }
 
 ```
@@ -2711,6 +2978,7 @@ bearer
 |---|---|---|---|---|
 |currency|string|false|none|none|
 |fractions|number|false|none|none|
+|gemini_api_key|string|false|none|none|
 
 <h2 id="tocS_CreateWalletDto">CreateWalletDto</h2>
 <!-- backwards compatibility -->
@@ -2722,7 +2990,9 @@ bearer
 ```json
 {
   "name": "My Bank Account",
-  "initial_balance": 1000
+  "initial_balance": 1000,
+  "hidden": false,
+  "is_main_wallet": false
 }
 
 ```
@@ -2733,6 +3003,8 @@ bearer
 |---|---|---|---|---|
 |name|string|true|none|none|
 |initial_balance|number|true|none|none|
+|hidden|boolean|false|none|none|
+|is_main_wallet|boolean|false|none|none|
 
 <h2 id="tocS_UpdateWalletDto">UpdateWalletDto</h2>
 <!-- backwards compatibility -->
@@ -2744,7 +3016,9 @@ bearer
 ```json
 {
   "name": "My Primary Bank Account",
-  "initial_balance": 1500
+  "initial_balance": 1500,
+  "hidden": true,
+  "is_main_wallet": true
 }
 
 ```
@@ -2755,6 +3029,8 @@ bearer
 |---|---|---|---|---|
 |name|string|false|none|none|
 |initial_balance|number|false|none|none|
+|hidden|boolean|false|none|none|
+|is_main_wallet|boolean|false|none|none|
 
 <h2 id="tocS_CreateCategoryDto">CreateCategoryDto</h2>
 <!-- backwards compatibility -->
@@ -2788,6 +3064,34 @@ bearer
 |---|---|
 |type|income|
 |type|expense|
+|type|transfer|
+
+<h2 id="tocS_BulkCreateCategoryDto">BulkCreateCategoryDto</h2>
+<!-- backwards compatibility -->
+<a id="schemabulkcreatecategorydto"></a>
+<a id="schema_BulkCreateCategoryDto"></a>
+<a id="tocSbulkcreatecategorydto"></a>
+<a id="tocsbulkcreatecategorydto"></a>
+
+```json
+{
+  "categories": [
+    {
+      "name": "Salary",
+      "type": "income",
+      "icon": "briefcase-outline",
+      "color": "#26de81"
+    }
+  ]
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|categories|[[CreateCategoryDto](#schemacreatecategorydto)]|true|none|none|
 
 <h2 id="tocS_UpdateCategoryDto">UpdateCategoryDto</h2>
 <!-- backwards compatibility -->
@@ -2821,6 +3125,27 @@ bearer
 |---|---|
 |type|income|
 |type|expense|
+|type|transfer|
+
+<h2 id="tocS_CreateTransactionByTextDto">CreateTransactionByTextDto</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatetransactionbytextdto"></a>
+<a id="schema_CreateTransactionByTextDto"></a>
+<a id="tocScreatetransactionbytextdto"></a>
+<a id="tocscreatetransactionbytextdto"></a>
+
+```json
+{
+  "content": "i just eat burger for 10 dollar"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|content|string|true|none|none|
 
 <h2 id="tocS_CreateTransactionDto">CreateTransactionDto</h2>
 <!-- backwards compatibility -->
@@ -2835,6 +3160,7 @@ bearer
   "amount": 50,
   "wallet_id": "string",
   "category_id": "string",
+  "destination_wallet_id": "string",
   "date": "2019-08-24T14:15:22Z",
   "note": "string",
   "is_recurring": false,
@@ -2850,7 +3176,8 @@ bearer
 |type|string|true|none|none|
 |amount|number|true|none|none|
 |wallet_id|string|true|none|none|
-|category_id|string|true|none|none|
+|category_id|string|false|none|none|
+|destination_wallet_id|string|false|none|none|
 |date|string(date-time)|true|none|none|
 |note|string|false|none|none|
 |is_recurring|boolean|false|none|none|
@@ -2862,6 +3189,7 @@ bearer
 |---|---|
 |type|income|
 |type|expense|
+|type|transfer|
 |recurring_pattern|daily|
 |recurring_pattern|weekly|
 |recurring_pattern|monthly|
@@ -2880,6 +3208,7 @@ bearer
   "amount": 0,
   "wallet_id": "string",
   "category_id": "string",
+  "destination_wallet_id": "string",
   "date": "2019-08-24T14:15:22Z",
   "note": "string",
   "is_recurring": true,
@@ -2896,6 +3225,7 @@ bearer
 |amount|number|false|none|none|
 |wallet_id|string|false|none|none|
 |category_id|string|false|none|none|
+|destination_wallet_id|string|false|none|none|
 |date|string(date-time)|false|none|none|
 |note|string|false|none|none|
 |is_recurring|boolean|false|none|none|
@@ -2907,6 +3237,7 @@ bearer
 |---|---|
 |type|income|
 |type|expense|
+|type|transfer|
 |recurring_pattern|daily|
 |recurring_pattern|weekly|
 |recurring_pattern|monthly|
@@ -2957,6 +3288,28 @@ bearer
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |limit_amount|number|false|none|none|
+
+<h2 id="tocS_GenerateAnalyticsDto">GenerateAnalyticsDto</h2>
+<!-- backwards compatibility -->
+<a id="schemagenerateanalyticsdto"></a>
+<a id="schema_GenerateAnalyticsDto"></a>
+<a id="tocSgenerateanalyticsdto"></a>
+<a id="tocsgenerateanalyticsdto"></a>
+
+```json
+{
+  "startDate": "string",
+  "endDate": "string"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|startDate|string|true|none|The start date for the analytics period (YYYY-MM-DD)|
+|endDate|string|true|none|The end date for the analytics period (YYYY-MM-DD)|
 
 <h2 id="tocS_User">User</h2>
 <!-- backwards compatibility -->
@@ -3037,3 +3390,4 @@ bearer
 ### Properties
 
 *None*
+
