@@ -12,6 +12,7 @@ export const useReportsStore = defineStore('reports', () => {
         totalIncome: number;
         totalExpense: number;
         net: number;
+        totalTransfer: number;
     }>(`reports/summary`, {
       params: {
         startDate: query.startDate || undefined,

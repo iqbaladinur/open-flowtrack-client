@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useApi } from '@/composables/useApi';
-import type { Transaction } from '@/types/transaction';
+import type { Transaction, TransactionType } from '@/types/transaction';
 
 export const useTransactionsStore = defineStore('transactions', () => {
   const transactions = ref<Transaction[]>([]);
@@ -14,12 +14,10 @@ export const useTransactionsStore = defineStore('transactions', () => {
       end_date?: string;
       wallet_id?: string;
       category_id?: string;
-      type?: 'income' | 'expense';
+      type?: TransactionType;
     },
     force = false
   ) => {
-    // Simple cache check: if filters are present, always refetch.
-    // If no filters and we have data, don't refetch unless forced.
     const hasFilters = filters && Object.keys(filters).length > 0;
     if (!hasFilters && transactions.value.length > 0 && !force) {
       return;
@@ -32,7 +30,6 @@ export const useTransactionsStore = defineStore('transactions', () => {
         params: filters,
       });
       if (response.data) {
-        // Ensure amount is always a number
         transactions.value = response.data.map(t => ({
           ...t,
           amount: parseFloat(t.amount as any) || 0,
@@ -44,17 +41,18 @@ export const useTransactionsStore = defineStore('transactions', () => {
   };
 
   const createTransaction = async (transactionData: {
-    type: 'income' | 'expense';
+    type: TransactionType;
     amount: number;
     wallet_id: string;
-    category_id: string;
+    category_id: string | null;
+    destination_wallet_id?: string;
     date: string;
     note?: string;
     is_recurring?: boolean;
     recurring_pattern?: 'daily' | 'weekly' | 'monthly' | 'yearly';
   }) => {
     const response = await api.post<Transaction>('/transactions', transactionData);
-    if (response.data) { // Force refresh
+    if (response.data) {
       return { success: true };
     }
     return { success: false, error: response.error };
@@ -63,10 +61,11 @@ export const useTransactionsStore = defineStore('transactions', () => {
   const updateTransaction = async (
     id: string,
     transactionData: Partial<{
-      type: 'income' | 'expense';
+      type: TransactionType;
       amount: number;
       wallet_id: string;
-      category_id: string;
+      category_id: string | null;
+      destination_wallet_id?: string;
       date: string;
       note?: string;
       is_recurring?: boolean;

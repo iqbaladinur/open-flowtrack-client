@@ -52,7 +52,7 @@
             <p class="text-xs text-gray-500 dark:text-gray-400">{{ dateRangeSubtitle }}</p>
           </div>
           <div
-            class="flex sm:grid sm:grid-cols-3 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+            class="flex sm:grid sm:grid-cols-4 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
             <!-- Income -->
             <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 sm:ml-0">
               <div class="flex flex-col h-full">
@@ -80,6 +80,22 @@
                   <p class="text-xs text-gray-500 dark:text-gray-400">Expenses</p>
                   <p class="text-xs font-medium text-error-600 dark:text-error-400 font-mono">
                     {{ configStore.formatCurrency(periodExpense) }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Transfer Out -->
+            <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
+              <div class="flex flex-col h-full">
+                <div
+                  class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-blue-100 dark:bg-blue-900/50 mb-3">
+                  <ArrowRightLeft class="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div class="mt-auto">
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Transfer Out</p>
+                  <p class="text-xs font-medium text-blue-600 dark:text-blue-400 font-mono">
+                    {{ configStore.formatCurrency(periodTransferOut) }}
                   </p>
                 </div>
               </div>
@@ -117,6 +133,10 @@
             <button @click="openTransactionModal('expense')" class="btn btn-secondary !text-error-500">
               <TrendingDown class="w-4 h-4 mr-2" />
               <span>Expense</span>
+            </button>
+            <button @click="openTransactionModal('transfer')" class="btn btn-secondary !text-blue-500">
+              <ArrowRightLeft class="w-4 h-4 mr-2" />
+              <span>Transfer</span>
             </button>
           </div>
           <button @click="showCategoryFilterModal = true" class="btn btn-secondary">
@@ -196,11 +216,16 @@
     </div>
   </AppLayout>
   <!-- Floating Action Buttons for Mobile -->
-  <div class="fixed bottom-[70px] left-0 z-[20] sm:hidden w-full flex items-center justify-between px-6">
+  <div class="fixed bottom-[70px] left-0 z-[20] sm:hidden w-full flex items-center justify-around px-6">
     <button @click="openTransactionModal('income')"
       class="btn-success bg-opacity-70 rounded-xl p-3 shadow-lg flex items-center justify-center">
       <TrendingUp class="w-6 h-6" />
       <span class="sr-only">Add Income</span>
+    </button>
+    <button @click="openTransactionModal('transfer')"
+      class="btn-primary bg-opacity-70 rounded-xl p-3 shadow-lg flex items-center justify-center">
+      <ArrowRightLeft class="w-6 h-6" />
+      <span class="sr-only">Add Transfer</span>
     </button>
     <button @click="openTransactionModal('expense')"
       class="btn-error bg-opacity-70 rounded-xl p-3 shadow-lg flex items-center justify-center">
@@ -232,8 +257,8 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import WalletCard from '@/components/wallet/WalletCard.vue';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import type { Wallet } from '@/types/wallet';
-import type { Transaction } from '@/types/transaction';
-import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, FilterX, Scale } from 'lucide-vue-next';
+import type { Transaction, TransactionType } from '@/types/transaction';
+import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, FilterX, Scale, ArrowRightLeft } from 'lucide-vue-next';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay, parseISO } from 'date-fns';
 import WalletModal from '@/components/wallet/WalletModal.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
@@ -251,7 +276,7 @@ const wallet = ref<Wallet | null>(null);
 const selectedWallet = ref<Wallet | null>(null);
 const showModal = ref<boolean>(false);
 const showTransactionModal = ref<boolean>(false);
-const transactionType = ref<'income' | 'expense'>('expense');
+const transactionType = ref<TransactionType>('expense');
 const loading = ref(true);
 const showFilters = ref(false);
 const showCategoryFilterModal = ref(false);
@@ -284,6 +309,12 @@ const periodIncome = computed(() => {
 const periodExpense = computed(() => {
   return filteredTransactions.value
     .filter(t => t.type === 'expense')
+    .reduce((sum, t) => sum + t.amount, 0);
+});
+
+const periodTransferOut = computed(() => {
+  return filteredTransactions.value
+    .filter(t => t.type === 'transfer')
     .reduce((sum, t) => sum + t.amount, 0);
 });
 
@@ -467,7 +498,7 @@ const deleteTransaction = async (id: string) => {
   }
 };
 
-const openTransactionModal = (type: 'income' | 'expense') => {
+const openTransactionModal = (type: TransactionType) => {
   transactionType.value = type;
   selectedTransaction.value = null;
   showTransactionModal.value = true;

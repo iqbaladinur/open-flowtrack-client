@@ -29,16 +29,12 @@
       <!-- Transaction Type -->
       <div v-if="!type">
         <label class="label text-center">Transaction Type</label>
-        <div class="grid grid-cols-2 gap-2 max-w-sm mx-auto">
+        <div class="grid grid-cols-3 gap-2 max-w-sm mx-auto">
           <button
             type="button"
             @click="toggleFormType('income')"
             class="p-2 rounded-lg border-2 transition-all"
-            :class="
-              form.type === 'income'
-                ? 'border-success-500 bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300'
-                : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
-            "
+            :class="form.type === 'income' ? 'border-success-500 bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300' : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
           >
             <TrendingUp class="w-5 h-5 mx-auto" />
             <span class="text-xs font-medium">Income</span>
@@ -47,14 +43,19 @@
             type="button"
             @click="toggleFormType('expense')"
             class="p-2 rounded-lg border-2 transition-all"
-            :class="
-              form.type === 'expense'
-                ? 'border-error-500 bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300'
-                : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
-            "
+            :class="form.type === 'expense' ? 'border-error-500 bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300' : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
           >
             <TrendingDown class="w-5 h-5 mx-auto" />
             <span class="text-xs font-medium">Expense</span>
+          </button>
+          <button
+            type="button"
+            @click="toggleFormType('transfer')"
+            class="p-2 rounded-lg border-2 transition-all"
+            :class="form.type === 'transfer' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300' : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
+          >
+            <ArrowRightLeft class="w-5 h-5 mx-auto" />
+            <span class="text-xs font-medium">Transfer</span>
           </button>
         </div>
       </div>
@@ -62,58 +63,59 @@
       <div class="space-y-4 border-t border-gray-200 dark:border-gray-700 pt-6">
         <!-- Wallet -->
         <div>
-          <label for="wallet" class="label">Wallet</label>
-          <select
-            id="wallet"
-            v-model="form.wallet_id"
-            required
-            class="input"
-            :disabled="loading || walletsStore.loading"
-            autocomplete="off"
-          >
+          <label for="wallet" class="label">{{ form.type === 'transfer' ? 'Source Wallet' : 'Wallet' }}</label>
+          <select id="wallet" v-model="form.wallet_id" required class="input" :disabled="loading || walletsStore.loading" autocomplete="off">
             <option value="">Select a wallet</option>
-            <option
-              v-for="wallet in walletsStore.wallets"
-              :key="wallet.id"
-              :value="wallet.id"
-              class="font-mono"
-            >
+            <option v-for="wallet in walletsStore.wallets" :key="wallet.id" :value="wallet.id" class="font-mono">
+              {{ wallet.name }} {{ wallet.is_main_wallet ? '(Main)' : '' }} ({{ configStore.formatCurrency(wallet.current_balance || 0) }})
+            </option>
+          </select>
+        </div>
+
+        <!-- Destination Wallet (for transfers) -->
+        <div v-if="form.type === 'transfer'">
+          <label for="destination_wallet" class="label">Destination Wallet</label>
+          <select id="destination_wallet" v-model="form.destination_wallet_id" required class="input" :disabled="loading || walletsStore.loading" autocomplete="off">
+            <option value="">Select destination wallet</option>
+            <option v-for="wallet in availableDestinationWallets" :key="wallet.id" :value="wallet.id" class="font-mono">
               {{ wallet.name }} {{ wallet.is_main_wallet ? '(Main)' : '' }} ({{ configStore.formatCurrency(wallet.current_balance || 0) }})
             </option>
           </select>
         </div>
 
         <!-- Category -->
-        <label for="category" class="label">Category</label>
-        <div class="flex items-center gap-1">
-          <div class="flex-1 relative">
-            <div v-if="selectedCategorie" class="absolute h-full w-10 flex items-center justify-center">
-              <div class="w-8 h-8 rounded-md flex items-center justify-center" :style="{ backgroundColor: selectedCategorie.color + '20' }">
-                <component :is="getIcon(selectedCategorie.icon)" class="w-5 h-5" :style="{ color: selectedCategorie.color }" ></component>
+        <div v-if="form.type !== 'transfer'">
+          <label for="category" class="label">Category</label>
+          <div class="flex items-center gap-1">
+            <div class="flex-1 relative">
+              <div v-if="selectedCategorie" class="absolute h-full w-10 flex items-center justify-center">
+                <div class="w-8 h-8 rounded-md flex items-center justify-center" :style="{ backgroundColor: selectedCategorie.color + '20' }">
+                  <component :is="getIcon(selectedCategorie.icon)" class="w-5 h-5" :style="{ color: selectedCategorie.color }" ></component>
+                </div>
               </div>
-            </div>
-            <select
-              id="category"
-              v-model="form.category_id"
-              required
-              class="input"
-              :class="{ 'pl-10': !!form.category_id }"
-              :disabled="loading || categoriesStore.loading"
-              autocomplete="off"
-            >
-              <option value="">Select a category</option>
-              <option
-                v-for="category in availableCategories"
-                :key="category.id"
-                :value="category.id"
+              <select
+                id="category"
+                v-model="form.category_id"
+                required
+                class="input"
+                :class="{ 'pl-10': !!form.category_id }"
+                :disabled="loading || categoriesStore.loading"
+                autocomplete="off"
               >
-                {{ category.name }}
-              </option>
-            </select>  
+                <option value="">Select a category</option>
+                <option
+                  v-for="category in availableCategories"
+                  :key="category.id"
+                  :value="category.id"
+                >
+                  {{ category.name }}
+                </option>
+              </select>  
+            </div>
+            <button class="btn btn-primary" type="button" @click="showCatgeoryModal = true">
+              <Plus class="w-5 h-5" />
+            </button>
           </div>
-          <button class="btn btn-primary" type="button" @click="showCatgeoryModal = true">
-            <Plus class="w-5 h-5" />
-          </button>
         </div>
 
         <!-- Date -->
@@ -222,8 +224,8 @@ import { useConfigStore } from '@/stores/config';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import CategoryModal from '@/components/category/CategoryModal.vue';
-import type { Transaction } from '@/types/transaction';
-import { TrendingUp, TrendingDown, Plus } from 'lucide-vue-next';
+import type { Transaction, TransactionType } from '@/types/transaction';
+import { TrendingUp, TrendingDown, Plus, ArrowRightLeft } from 'lucide-vue-next';
 import { format } from 'date-fns';
 import { Category } from '@/types/category';
 import { getIcon } from '@/utils/icons';
@@ -231,7 +233,7 @@ import { getIcon } from '@/utils/icons';
 interface Props {
   modelValue: boolean;
   transaction?: Transaction | null;
-  type?: 'income' | 'expense';
+  type?: TransactionType;
   walletId?: string;
 }
 
@@ -258,15 +260,10 @@ const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
 
 const modalTitle = computed(() => {
-  if (props.transaction) {
-    return 'Edit Transaction';
-  }
-  if (props.type === 'income') {
-    return 'Add Income';
-  }
-  if (props.type === 'expense') {
-    return 'Add Expense';
-  }
+  if (props.transaction) return 'Edit Transaction';
+  if (form.type === 'income') return 'Add Income';
+  if (form.type === 'expense') return 'Add Expense';
+  if (form.type === 'transfer') return 'Add Transfer';
   return 'Add Transaction';
 });
 
@@ -274,9 +271,10 @@ const loading = ref(false);
 const error = ref('');
 
 const form = reactive({
-  type: props.type || 'expense' as 'income' | 'expense',
+  type: props.type || ('expense' as TransactionType),
   amount: 0,
   wallet_id: '',
+  destination_wallet_id: '',
   category_id: '',
   date: format(new Date(), 'yyyy-MM-dd'),
   note: '',
@@ -285,7 +283,11 @@ const form = reactive({
 });
 
 const availableCategories = computed(() => {
-  return categoriesStore.getCategoriesByType(form.type);
+  return categoriesStore.categories.filter((c) => c.type === form.type);
+});
+
+const availableDestinationWallets = computed(() => {
+  return walletsStore.wallets.filter(w => w.id !== form.wallet_id);
 });
 
 const selectedCategorie = computed(() => {
@@ -293,13 +295,13 @@ const selectedCategorie = computed(() => {
     return categoriesStore.getCategoryById(form.category_id) || null;
   }
   return null;
-})
+});
 
 const isFormValid = computed(() => {
-  return form.amount > 0 && 
-         form.wallet_id && 
-         form.category_id && 
-         form.date;
+  if (form.type === 'transfer') {
+    return form.amount > 0 && form.wallet_id && form.destination_wallet_id && form.wallet_id !== form.destination_wallet_id && form.date;
+  }
+  return form.amount > 0 && form.wallet_id && form.category_id && form.date;
 });
 
 const handleSubmit = async () => {
@@ -313,7 +315,8 @@ const handleSubmit = async () => {
       type: form.type,
       amount: Number(form.amount),
       wallet_id: form.wallet_id,
-      category_id: form.category_id,
+      category_id: form.type === 'transfer' ? null : form.category_id,
+      destination_wallet_id: form.type === 'transfer' ? form.destination_wallet_id : undefined,
       date: new Date(form.date).toISOString(),
       note: form.note || undefined,
       is_recurring: form.is_recurring,
@@ -345,6 +348,7 @@ const resetForm = () => {
     type: props.type || 'expense',
     amount: 0,
     wallet_id: '',
+    destination_wallet_id: '',
     category_id: '',
     date: format(new Date(), 'yyyy-MM-dd'),
     note: '',
@@ -353,16 +357,15 @@ const resetForm = () => {
   });
 };
 
-// Watch for transaction changes to populate form
 watch(() => props.modelValue, (isOpen) => {
   if (!isOpen) return;
 
   if (props.transaction) {
-    // Editing mode: populate form from transaction prop
     Object.assign(form, {
       type: props.transaction.type,
       amount: props.transaction.amount,
       wallet_id: props.transaction.wallet_id,
+      destination_wallet_id: props.transaction.destination_wallet_id || '',
       category_id: props.transaction.category_id,
       date: format(new Date(props.transaction.date), 'yyyy-MM-dd'),
       note: props.transaction.note || '',
@@ -370,25 +373,17 @@ watch(() => props.modelValue, (isOpen) => {
       recurring_pattern: props.transaction.recurring_pattern || 'monthly',
     });
   } else {
-    // New transaction mode: reset and pre-fill
     resetForm();
-    if (props.walletId) {
-      form.wallet_id = props.walletId;
-    }
-    if (props.type) {
-      form.type = props.type;
-    }
+    if (props.walletId) form.wallet_id = props.walletId;
+    if (props.type) form.type = props.type;
   }
 });
 
 watch(() => props.type, (newType) => {
-  if (newType) {
-    form.type = newType;
-  }
+  if (newType) form.type = newType;
 });
 
-// Watch form type changes to reset category
-function toggleFormType(type: 'income' | 'expense') {
+function toggleFormType(type: TransactionType) {
   form.type = type;
   form.category_id = '';
 }
@@ -396,7 +391,7 @@ function toggleFormType(type: 'income' | 'expense') {
 function handleCreatedCatgory(category?: Category) {
   showCatgeoryModal.value = false;
   if (category?.id) {
-    form.category_id = category.id
+    form.category_id = category.id;
   }
 }
 
