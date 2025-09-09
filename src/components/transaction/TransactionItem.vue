@@ -51,7 +51,7 @@
               :class="{
                 'text-success-600 dark:text-success-400': transaction.type === 'income',
                 'text-error-600 dark:text-error-400': transaction.type === 'expense',
-                'text-gray-700 dark:text-gray-300': transaction.type === 'transfer',
+                'text-blue-600 dark:text-blue-400': transaction.type === 'transfer',
               }"
             >
               <span v-if="transaction.type === 'income'">+</span>

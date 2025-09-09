@@ -52,7 +52,7 @@
             <p class="text-xs text-gray-500 dark:text-gray-400">{{ dateRangeSubtitle }}</p>
           </div>
           <div
-            class="flex sm:grid sm:grid-cols-4 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+            class="flex sm:grid sm:grid-cols-5 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
             <!-- Income -->
             <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 sm:ml-0">
               <div class="flex flex-col h-full">
@@ -90,12 +90,28 @@
               <div class="flex flex-col h-full">
                 <div
                   class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-blue-100 dark:bg-blue-900/50 mb-3">
-                  <ArrowRightLeft class="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <ArrowUpRight class="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div class="mt-auto">
                   <p class="text-xs text-gray-500 dark:text-gray-400">Transfer Out</p>
                   <p class="text-xs font-medium text-blue-600 dark:text-blue-400 font-mono">
                     {{ configStore.formatCurrency(periodTransferOut) }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Transfer In -->
+            <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
+              <div class="flex flex-col h-full">
+                <div
+                  class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-blue-100 dark:bg-blue-900/50 mb-3">
+                  <ArrowDownRight class="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div class="mt-auto">
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Transfer In</p>
+                  <p class="text-xs font-medium text-blue-600 dark:text-blue-400 font-mono">
+                    {{ configStore.formatCurrency(periodTransferIn) }}
                   </p>
                 </div>
               </div>
@@ -258,7 +274,7 @@ import WalletCard from '@/components/wallet/WalletCard.vue';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import type { Wallet } from '@/types/wallet';
 import type { Transaction, TransactionType } from '@/types/transaction';
-import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, FilterX, Scale, ArrowRightLeft } from 'lucide-vue-next';
+import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, FilterX, Scale, ArrowUpRight, ArrowDownRight } from 'lucide-vue-next';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay, parseISO } from 'date-fns';
 import WalletModal from '@/components/wallet/WalletModal.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
@@ -314,7 +330,13 @@ const periodExpense = computed(() => {
 
 const periodTransferOut = computed(() => {
   return filteredTransactions.value
-    .filter(t => t.type === 'transfer')
+    .filter(t => t.type === 'transfer' && t.wallet_id === walletId.value)
+    .reduce((sum, t) => sum + t.amount, 0);
+});
+
+const periodTransferIn = computed(() => {
+  return filteredTransactions.value
+    .filter(t => t.type === 'transfer' && t.destination_wallet_id === walletId.value)
     .reduce((sum, t) => sum + t.amount, 0);
 });
 

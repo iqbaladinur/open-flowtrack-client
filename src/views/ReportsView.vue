@@ -94,7 +94,7 @@
       <div v-else class="space-y-6">
         <!-- Summary Cards -->
         <div
-          class="flex sm:grid sm:grid-cols-4 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+          class="flex sm:grid sm:grid-cols-5 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
           <!-- Income -->
           <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 sm:ml-0">
             <div class="flex flex-col h-full">
@@ -127,6 +127,22 @@
             </div>
           </div>
 
+          <!-- Transfer -->
+          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
+            <div class="flex flex-col h-full">
+              <div
+                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-blue-100 dark:bg-blue-900/50 mb-3">
+                <ArrowRightLeft class="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div class="mt-auto">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Total Transfer</p>
+                <p class="text-xs font-medium text-blue-600 dark:text-blue-400 font-mono">
+                  {{ configStore.formatCurrency(summary.totalTransfer) }}
+                </p>
+              </div>
+            </div>
+          </div>
+
           <!-- Net Income -->
           <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
             <div class="flex flex-col h-full">
@@ -146,7 +162,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- Expense Ratio -->
           <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
             <div class="flex flex-col h-full">
@@ -244,9 +260,11 @@
                     </span>
                   </span>
                 </div>
-                <div class="flex justify-between text-xs font-mono">
-                  <span class="text-success-500">+{{ configStore.formatCurrency(item.income) }}</span>
-                  <span class="text-error-500">-{{ configStore.formatCurrency(item.expense) }}</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs font-mono">
+                  <span class="text-success-500 flex justify-between"><span>Income</span><span>+{{ configStore.formatCurrency(item.income) }}</span></span>
+                  <span class="text-error-500 flex justify-between"><span>Expense</span><span>-{{ configStore.formatCurrency(item.expense) }}</span></span>
+                  <span class="text-blue-500 flex justify-between"><span>Transfer In</span><span>+{{ configStore.formatCurrency(item.transferIn) }}</span></span>
+                  <span class="text-orange-500 flex justify-between"><span>Transfer Out</span><span>-{{ configStore.formatCurrency(item.transferOut) }}</span></span>
                 </div>
               </div>
             </div>
@@ -265,7 +283,7 @@ import AppLayout from '@/components/layouts/AppLayout.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import TimeSeriesChart from '@/components/reports/TimeSeriesChart.vue';
 import CategoryPieChart from '@/components/reports/CategoryPieChart.vue';
-import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, Wallet, TrendingUp, TrendingDown, Scale, PieChartIcon } from 'lucide-vue-next';
+import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, Wallet, TrendingUp, TrendingDown, Scale, PieChartIcon, ArrowRightLeft } from 'lucide-vue-next';
 import type { Transaction } from '@/types/transaction';
 import { format, parseISO } from 'date-fns';
 
@@ -426,11 +444,12 @@ const chartData = computed(() => {
 const summary = computed(() => {
   return transactions.value.reduce((acc, t) => {
     if (t.type === 'income') acc.totalIncome += t.amount;
-    else acc.totalExpense += t.amount;
+    else if(t.type === 'expense') acc.totalExpense += t.amount;
+    else acc.totalTransfer += t.amount;
     acc.net = acc.totalIncome - acc.totalExpense;
-    acc.expenseRatio = acc.totalExpense / acc.totalIncome * 100
+    acc.expenseRatio = acc.totalExpense / acc.totalIncome * 100;
     return acc;
-  }, { totalIncome: 0, totalExpense: 0, net: 0, expenseRatio: 0 });
+  }, { totalIncome: 0, totalExpense: 0, net: 0, expenseRatio: 0, totalTransfer: 0 });
 });
 
 const categoryChartData = computed(() => {
@@ -465,20 +484,30 @@ const categoryChartData = computed(() => {
 });
 
 const walletReportData = computed(() => {
-  const walletTotals = new Map<string, { name: string, income: number, expense: number }>();
+  const walletTotals = new Map<string, { name: string, income: number, expense: number, transferIn: number, transferOut: number }>();
 
   transactions.value.forEach(t => {
-    if (t.wallet) {
-      const current = walletTotals.get(t.wallet.id) || { name: t.wallet.name, income: 0, expense: 0 };
-      if (t.type === 'income') current.income += t.amount;
-      else current.expense += t.amount;
-      walletTotals.set(t.wallet.id, current);
+    // Initialize wallet if not present
+    const ensureWallet = (wallet: { id: string, name: string }) => {
+      if (!walletTotals.has(wallet.id)) {
+        walletTotals.set(wallet.id, { name: wallet.name, income: 0, expense: 0, transferIn: 0, transferOut: 0 });
+      }
+      return walletTotals.get(wallet.id)!;
+    };
+
+    if (t.type === 'income' && t.wallet) {
+      ensureWallet(t.wallet).income += t.amount;
+    } else if (t.type === 'expense' && t.wallet) {
+      ensureWallet(t.wallet).expense += t.amount;
+    } else if (t.type === 'transfer' && t.wallet && t.destinationWallet) {
+      ensureWallet(t.wallet).transferOut += t.amount;
+      ensureWallet(t.destinationWallet).transferIn += t.amount;
     }
   });
 
   return Array.from(walletTotals.values()).map(w => ({
     ...w,
-    net: w.income - w.expense,
+    net: (w.income + w.transferIn) - (w.expense + w.transferOut),
   })).sort((a, b) => b.net - a.net);
 });
 

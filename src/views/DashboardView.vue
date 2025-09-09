@@ -233,7 +233,6 @@ import {
   TrendingDown,
   Plus,
   Minus,
-  Target,
   ArrowUpDown,
   BrainCircuit,
   Scale,
