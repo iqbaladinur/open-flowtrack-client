@@ -1,6 +1,22 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { ref } from 'vue';
 import type { ApiResponse } from '@/types/api';
+import { useAuthStore } from '@/stores/auth';
+
+let isRefreshing = false;
+let failedQueue: { resolve: (value: unknown) => void; reject: (reason?: any) => void; }[] = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 const VERSION = '/v1'
@@ -24,22 +40,57 @@ api.interceptors.request.use((config) => {
 // Response interceptor for error handling
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    const config = error.config;
+  async (error) => {
+    const originalRequest = error.config;
+    const authStore = useAuthStore();
+
+    // Check if the error is due to an expired token
+    if (error.response?.status === 401 && error.response?.data?.error === 'TokenExpiredError') {
+      if (isRefreshing) {
+        return new Promise(function (resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        })
+          .then(token => {
+            originalRequest.headers['Authorization'] = 'Bearer ' + token;
+            return api(originalRequest);
+          })
+          .catch(err => {
+            return Promise.reject(err);
+          });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const newToken = await authStore.refreshAccessToken();
+        if (newToken) {
+          api.defaults.headers.common['Authorization'] = 'Bearer ' + newToken;
+          originalRequest.headers['Authorization'] = 'Bearer ' + newToken;
+          processQueue(null, newToken);
+          return api(originalRequest);
+        }
+      } catch (refreshError) {
+        processQueue(refreshError, null);
+        authStore.logout();
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
 
     // These are the endpoints that we expect to return 401 for failed authentication attempts (e.g., wrong password).
     // We don't want to redirect to /login in these cases, as the component should handle the error message.
     const excludedFromRedirect =
-      config.method.toLowerCase() === 'post' &&
+      originalRequest.method.toLowerCase() === 'post' &&
       [
         '/auth/login',
         '/auth/register',
         '/auth/forgot-password',
-      ].includes(config.url);
+      ].includes(originalRequest.url);
 
     if (error.response?.status === 401 && !excludedFromRedirect) {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('user');
+      authStore.logout();
       window.location.href = '/login';
     }
     return Promise.reject(error);

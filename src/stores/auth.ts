@@ -8,18 +8,23 @@ import type { Config } from '@/types/config';
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);
+  const token = ref<string | null>(null);
+  const refreshToken = ref<string | null>(null);
   const loading = ref(false);
   const api = useApi();
   const configStore = useConfigStore();
 
-  const isAuthenticated = computed(() => !!user.value);
+  const isAuthenticated = computed(() => !!user.value && !!token.value);
 
   const loadUserFromStorage = () => {
-    const token = localStorage.getItem('auth_token');
+    const storedToken = localStorage.getItem('auth_token');
+    const storedRefreshToken = localStorage.getItem('refresh_token');
     const userData = localStorage.getItem('user');
-    
-    if (token && userData) {
+
+    if (storedToken && userData) {
       try {
+        token.value = storedToken;
+        refreshToken.value = storedRefreshToken;
         user.value = JSON.parse(userData);
         configStore.loadConfigFromStorage();
       } catch (error) {
@@ -38,9 +43,12 @@ export const useAuthStore = defineStore('auth', () => {
       });
 
       if (response.data) {
-        const { access_token, user: userData, config } = response.data;
+        const { access_token, refresh_token, user: userData, config } = response.data;
         localStorage.setItem('auth_token', access_token);
+        localStorage.setItem('refresh_token', refresh_token);
         localStorage.setItem('user', JSON.stringify(userData));
+        token.value = access_token;
+        refreshToken.value = refresh_token;
         user.value = userData;
         configStore.setConfig(config);
         return { success: true };
@@ -79,10 +87,13 @@ export const useAuthStore = defineStore('auth', () => {
   };
 
   const logout = () => {
+    token.value = null;
+    refreshToken.value = null;
+    user.value = null;
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');
     localStorage.removeItem('config');
-    user.value = null;
     configStore.setConfig({} as Config); // Reset config store
   };
 
@@ -101,6 +112,35 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (error) {
       console.error('Failed to fetch profile:', error);
       logout(); // Also logout on error
+    }
+  };
+
+  const refreshAccessToken = async () => {
+    const storedRefreshToken = refreshToken.value || localStorage.getItem('refresh_token');
+    if (!storedRefreshToken) {
+      logout();
+      return null;
+    }
+
+    try {
+      const response = await api.post<AuthResponse>('/auth/refresh', {
+        refresh_token: storedRefreshToken,
+      });
+
+      if (response.data) {
+        const { access_token, refresh_token: new_refresh_token } = response.data;
+        localStorage.setItem('auth_token', access_token);
+        localStorage.setItem('refresh_token', new_refresh_token);
+        token.value = access_token;
+        refreshToken.value = new_refresh_token;
+        return access_token;
+      } else {
+        logout();
+        return null;
+      }
+    } catch (error) {
+      logout();
+      return null;
     }
   };
 
@@ -124,8 +164,11 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
-  const handleGoogleLogin = async (token: string) => {
-    localStorage.setItem('auth_token', token);
+  const handleGoogleLogin = async (accessToken: string, newRefreshToken: string) => {
+    localStorage.setItem('auth_token', accessToken);
+    localStorage.setItem('refresh_token', newRefreshToken);
+    token.value = accessToken;
+    refreshToken.value = newRefreshToken;
     // After getting token, we must fetch profile to get user and config data
     await getProfile();
   };
@@ -142,5 +185,6 @@ export const useAuthStore = defineStore('auth', () => {
     forgotPassword,
     resetPassword,
     handleGoogleLogin,
+    refreshAccessToken,
   };
 });
