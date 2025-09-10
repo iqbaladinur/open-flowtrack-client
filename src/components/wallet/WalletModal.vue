@@ -132,7 +132,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed, watch } from 'vue';
 import { useWalletsStore } from '@/stores/wallets';
-import { useConfigStore } from '@/stores/config';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import CurrencyInput from '@/components/ui/CurrencyInput.vue';
@@ -153,7 +152,6 @@ const emit = defineEmits<{
 }>();
 
 const walletsStore = useWalletsStore();
-const configStore = useConfigStore();
 
 const loading = ref(false);
 const error = ref('');
