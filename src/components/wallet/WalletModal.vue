@@ -4,25 +4,13 @@
       <!-- Initial Balance -->
       <div class="text-center">
         <label for="balance" class="label sr-only">Initial Balance</label>
-        <div class="relative inline-block">
-          <span
-            class="absolute left-0 top-1/2 transform -translate-y-1/2 text-xl text-gray-400 dark:text-gray-500 px-1 rounded-md dark:bg-gray-700/90 bg-gray-200/90"
-          >
-            {{ configStore.currency }}
-          </span>
-          <input
-            id="balance"
-            v-model.number="form.initial_balance"
-            type="number"
-            step="0.01"
-            required
-            class="w-full bg-transparent text-right text-4xl font-bold pl-14 pr-4 py-4 focus:ring-0 border-none outline-none"
-            placeholder="0.00"
-            :disabled="loading"
-            autofocus
-            autocomplete="off"
-          />
-        </div>
+        <CurrencyInput
+          v-model="form.initial_balance"
+          el-id="balance"
+          :required="true"
+          :disabled="loading"
+          placeholder="0.00"
+        />
         <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
           Enter the starting balance for this wallet.
         </p>
@@ -144,9 +132,9 @@
 <script setup lang="ts">
 import { ref, reactive, computed, watch } from 'vue';
 import { useWalletsStore } from '@/stores/wallets';
-import { useConfigStore } from '@/stores/config';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
+import CurrencyInput from '@/components/ui/CurrencyInput.vue';
 import type { Wallet } from '@/types/wallet';
 
 interface Props {
@@ -164,7 +152,6 @@ const emit = defineEmits<{
 }>();
 
 const walletsStore = useWalletsStore();
-const configStore = useConfigStore();
 
 const loading = ref(false);
 const error = ref('');

@@ -29,7 +29,7 @@
           </div>
           <div>
             <h3 class="font-bold text-sm text-gray-900 dark:text-white">
-              {{ budget.category.name }}
+              {{ budget.category.name }} Budget
             </h3>
           </div>
         </div>
@@ -99,6 +99,7 @@ import { Trash2, ChevronDown, CalendarDays, NotebookPen } from 'lucide-vue-next'
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import { startOfMonth, endOfMonth } from 'date-fns';
+import { getMonthName } from '@/utils/dateHelper';
 
 const props = defineProps({
   budget: {
@@ -139,11 +140,6 @@ const getBudgetProgress = (budget: Budget) => {
   const limit = budget.limit_amount;
   if (limit === 0) return 100; // If limit is 0, any spending is 100% over
   return (budget.total_spent / limit) * 100;
-};
-
-const getMonthName = (month: number) => {
-  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  return months[month - 1];
 };
 
 const toggleDetails = async () => {
