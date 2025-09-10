@@ -1,6 +1,7 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { ref } from 'vue';
 import type { ApiResponse } from '@/types/api';
+import { useAuthStore } from '@/stores/auth';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 const VERSION = '/v1'
@@ -24,22 +25,38 @@ api.interceptors.request.use((config) => {
 // Response interceptor for error handling
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    const config = error.config;
+  async (error) => {
+    const originalRequest = error.config;
+    const authStore = useAuthStore();
+
+    // Check if the error is due to an expired token
+    if (error.response?.status === 401 && error.response?.data?.error === 'TokenExpiredError' && !originalRequest._retry) {
+      originalRequest._retry = true;
+      
+      try {
+        const newToken = await authStore.refreshAccessToken();
+        if (newToken) {
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          return api(originalRequest);
+        }
+      } catch (refreshError) {
+        authStore.logout();
+        return Promise.reject(refreshError);
+      }
+    }
 
     // These are the endpoints that we expect to return 401 for failed authentication attempts (e.g., wrong password).
     // We don't want to redirect to /login in these cases, as the component should handle the error message.
     const excludedFromRedirect =
-      config.method.toLowerCase() === 'post' &&
+      originalRequest.method.toLowerCase() === 'post' &&
       [
         '/auth/login',
         '/auth/register',
         '/auth/forgot-password',
-      ].includes(config.url);
+      ].includes(originalRequest.url);
 
     if (error.response?.status === 401 && !excludedFromRedirect) {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('user');
+      authStore.logout();
       window.location.href = '/login';
     }
     return Promise.reject(error);

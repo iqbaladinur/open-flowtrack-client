@@ -23,9 +23,10 @@ const categoriesStore = useCategoriesStore();
 
 onMounted(async () => {
   const token = route.query.token as string;
+  const refreshToken = route.query.refresh_token as string; 
 
-  if (token) {
-    await authStore.handleGoogleLogin(token);
+  if (token && refreshToken) {
+    await authStore.handleGoogleLogin(token, refreshToken);
     if (authStore.isAuthenticated) {
       await categoriesStore.fetchCategories(true); // Force refresh
       if (categoriesStore.categories.length === 0) {
