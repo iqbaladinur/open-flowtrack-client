@@ -4,26 +4,13 @@
       <!-- Amount -->
       <div class="text-center">
         <label for="amount" class="label sr-only">Amount</label>
-        <div class="relative inline-block">
-          <span
-            class="absolute left-0 top-1/2 transform -translate-y-1/2 text-xl text-gray-400 dark:text-gray-500 px-1 rounded-md dark:bg-gray-700/90 bg-gray-200/90"
-          >
-            {{ configStore.currency }}
-          </span>
-          <input
-            id="amount"
-            v-model.number="form.amount"
-            type="number"
-            step="0.01"
-            min="0"
-            required
-            class="w-full bg-transparent text-right text-4xl font-bold pl-14 pr-4 py-4 focus:ring-0 border-none outline-none"
-            placeholder="0.00"
-            :disabled="loading"
-            autofocus
-            autocomplete="off"
-          />
-        </div>
+        <CurrencyInput
+          v-model="form.amount"
+          el-id="amount"
+          :required="true"
+          :disabled="loading"
+          placeholder="0.00"
+        />
       </div>
 
       <!-- Transaction Type -->
@@ -34,7 +21,7 @@
             type="button"
             @click="toggleFormType('income')"
             class="p-2 rounded-lg border-2 transition-all"
-            :class="form.type === 'income' ? 'border-success-500 bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300' : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
+            :class="form.type === 'income' ? 'border-success-500 bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300' : 'text-gray-600 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
           >
             <TrendingUp class="w-5 h-5 mx-auto" />
             <span class="text-xs font-medium">Income</span>
@@ -43,7 +30,7 @@
             type="button"
             @click="toggleFormType('expense')"
             class="p-2 rounded-lg border-2 transition-all"
-            :class="form.type === 'expense' ? 'border-error-500 bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300' : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
+            :class="form.type === 'expense' ? 'border-error-500 bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300' : 'text-gray-600 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
           >
             <TrendingDown class="w-5 h-5 mx-auto" />
             <span class="text-xs font-medium">Expense</span>
@@ -52,7 +39,7 @@
             type="button"
             @click="toggleFormType('transfer')"
             class="p-2 rounded-lg border-2 transition-all"
-            :class="form.type === 'transfer' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300' : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
+            :class="form.type === 'transfer' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
           >
             <ArrowRightLeft class="w-5 h-5 mx-auto" />
             <span class="text-xs font-medium">Transfer</span>
@@ -229,6 +216,7 @@ import { TrendingUp, TrendingDown, Plus, ArrowRightLeft } from 'lucide-vue-next'
 import { format } from 'date-fns';
 import { Category } from '@/types/category';
 import { getIcon } from '@/utils/icons';
+import CurrencyInput from '../ui/CurrencyInput.vue';
 
 interface Props {
   modelValue: boolean;

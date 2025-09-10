@@ -82,22 +82,24 @@
             </li>
             
             <li class="-mx-6 mt-auto">
-              <div class="border-t border-gray-200 dark:border-gray-700 py-4" :class="uiStore.isSidebarMinimized ? 'px-4' : 'px-6'">
+              <div class="border-t border-gray-200 dark:border-gray-700 py-4" :class="uiStore.isSidebarMinimized ? 'px-5' : 'px-6'">
                 <p v-show="!uiStore.isSidebarMinimized" class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Theme</p>
                 <div class="flex p-1 rounded-lg bg-gray-100 dark:bg-gray-700/50" :class="uiStore.isSidebarMinimized ? 'flex-col space-y-1' : 'justify-around'">
                   <button @click="themeStore.setTheme('light')" class="p-2 rounded-md flex-1 text-center" :class="{ 'bg-white dark:bg-gray-600 shadow': themeStore.theme === 'light' }">
-                    <Sun class="w-5 h-5 text-gray-700 dark:text-gray-300 mx-auto" />
+                    <Sun class="text-gray-700 dark:text-gray-300 mx-auto" :class="{ 'w-5 h-5': !uiStore.isSidebarMinimized ,'w-4 h-4': uiStore.isSidebarMinimized }" />
                   </button>
                   <button @click="themeStore.setTheme('dark')" class="p-2 rounded-md flex-1 text-center" :class="{ 'bg-white dark:bg-gray-600 shadow': themeStore.theme === 'dark' }">
-                    <Moon class="w-5 h-5 text-gray-700 dark:text-gray-300 mx-auto" />
+                    <Moon class="text-gray-700 dark:text-gray-300 mx-auto" :class="{ 'w-5 h-5': !uiStore.isSidebarMinimized ,'w-4 h-4': uiStore.isSidebarMinimized }" />
                   </button>
                   <button @click="themeStore.setTheme('system')" class="p-2 rounded-md flex-1 text-center" :class="{ 'bg-white dark:bg-gray-600 shadow': themeStore.theme === 'system' }">
-                    <Laptop class="w-5 h-5 text-gray-700 dark:text-gray-300 mx-auto" />
+                    <Laptop class="text-gray-700 dark:text-gray-300 mx-auto" :class="{ 'w-5 h-5': !uiStore.isSidebarMinimized ,'w-4 h-4': uiStore.isSidebarMinimized }" />
                   </button>
                 </div>
               </div>
-              <div class="flex items-center gap-x-4 py-3 text-sm font-semibold leading-6 text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-700" :class="uiStore.isSidebarMinimized ? 'justify-center px-2' : 'px-6'">
-                <div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center shrink-0">
+              <div
+                class="flex items-center gap-x-4 py-3 text-sm font-semibold leading-6 text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-700"
+                :class="uiStore.isSidebarMinimized ? 'justify-center px-2 flex-col items-center' : 'px-6'">
+                <div v-show="!uiStore.isSidebarMinimized" class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center shrink-0">
                   <User class="w-4 h-4 text-gray-600 dark:text-gray-300" />
                 </div>
                 <div v-show="!uiStore.isSidebarMinimized" class="flex-1 min-w-0">
@@ -105,7 +107,7 @@
                     {{ authStore.user?.full_name || authStore.user?.email }}
                   </p>
                 </div>
-                <button v-show="!uiStore.isSidebarMinimized" @click="logout" class="p-2 -mr-2 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                <button @click="logout" :class="{ '-mr-2': !uiStore.isSidebarMinimized }" class="p-2 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                   <LogOut class="w-5 h-5" />
                 </button>
               </div>

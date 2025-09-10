@@ -3,25 +3,13 @@
     <form @submit.prevent="handleSubmit" id="budget-form" class="space-y-4">
       <div class="text-center">
         <label for="limit" class="label sr-only">Budget Limit</label>
-        <div class="relative inline-block">
-          <span
-            class="absolute left-0 top-1/2 transform -translate-y-1/2 text-xl text-gray-400 dark:text-gray-500 px-1 rounded-md dark:bg-gray-700/90 bg-gray-200/90"
-          >
-            {{ configStore.currency }}
-          </span>
-          <input
-            id="limit"
-            v-model.number="form.limit_amount"
-            type="number"
-            step="0.01"
-            required
-            class="w-full bg-transparent text-right text-4xl font-bold pl-14 pr-4 py-4 focus:ring-0 border-none outline-none"
-            placeholder="0.00"
-            :disabled="loading"
-            autofocus
-            autocomplete="off"
-          />
-        </div>
+        <CurrencyInput
+          v-model="form.limit_amount"
+          el-id="limit"
+          :required="true"
+          :disabled="loading"
+          placeholder="0.00"
+        />
         <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
           Enter the limit for this budget.
         </p>
@@ -87,19 +75,30 @@
       </p>
 
       <!-- Budget Preview -->
-      <div v-if="selectedCategory" class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <div class="flex items-center space-x-3 mb-2">
+      <div v-if="selectedCategory" class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg relative">
+        <div class="flex items-center gap-4 mb-4">
           <div
-            class="w-6 h-6 rounded-full"
-            :style="{ backgroundColor: selectedCategory.color }"
-          ></div>
-          <h4 class="font-medium text-gray-900 dark:text-white">
-            {{ selectedCategory.name }} Budget
-          </h4>
+            class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+            :style="{ backgroundColor: selectedCategory.color + '20', color: selectedCategory.color }"
+            >
+            <!-- @vue-ignore -->
+            <component :is="getIcon(selectedCategory.icon)" class="w-4 h-4" />
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-gray-900 dark:text-white">
+              {{ selectedCategory.name }} Budget
+            </h3>
+          </div>
         </div>
-        <p class="text-sm text-gray-600 dark:text-gray-400 font-mono">
-          {{ months[form.month - 1] }} {{ form.year }} • {{ configStore.formatCurrency(form.limit_amount) }} limit
-        </p>
+        <div class="flex items-center justify-between">
+          <p class="text-gray-600 dark:text-gray-200 text-base">
+            Limit: {{ configStore.formatCurrency(form.limit_amount) }}
+          </p>
+        <div class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 dark:bg-gray-700 px-2.5 py-1 text-xs font-bold text-gray-600 dark:text-gray-300">
+          <CalendarDays class="w-4 h-4" />
+          <span>{{ getMonthName(form.month) }} {{ form.year }}</span>
+        </div>
+        </div>
       </div>
 
       <!-- Error Display -->
@@ -138,7 +137,11 @@ import { useCategoriesStore } from '@/stores/categories';
 import { useConfigStore } from '@/stores/config';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
+import CurrencyInput from '@/components/ui/CurrencyInput.vue';
 import type { Budget } from '@/types/budget';
+import { getMonthName } from '@/utils/dateHelper';
+import { CalendarDays } from 'lucide-vue-next';
+import { getIcon } from '@/utils/icons';
 
 interface Props {
   modelValue: boolean;
