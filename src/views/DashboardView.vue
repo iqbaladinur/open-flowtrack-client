@@ -12,88 +12,57 @@
       </div>
 
       <!-- Summary Cards -->
-      <div class="flex sm:grid sm:grid-cols-5 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
-        <!-- Total Balance -->
-        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1">
-          <div class="flex flex-col h-full">
-            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-primary-100 dark:bg-primary-900/50 mb-3">
-              <Wallet class="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            </div>
-            <div class="mt-auto">
-              <p class="text-xs text-gray-500 dark:text-gray-400">Total Balance</p>
-              <p class="text-xs font-medium text-blue-900 dark:text-white font-mono">
-                {{ configStore.formatCurrency(totalBalance) }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Monthly Income -->
-        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
-          <div class="flex flex-col h-full">
-            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-success-100 dark:bg-success-900/50 mb-3">
-              <TrendingUp class="w-4 h-4 text-success-600 dark:text-success-400" />
-            </div>
-            <div class="mt-auto">
-              <p class="text-xs text-gray-500 dark:text-gray-400">Income</p>
-              <p class="text-xs font-medium text-success-600 dark:text-success-400 font-mono">
-                +{{ configStore.formatCurrency(summary.total_income) }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Monthly Expenses -->
-        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
-          <div class="flex flex-col h-full">
-            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-error-100 dark:bg-error-900/50 mb-3">
-              <TrendingDown class="w-4 h-4 text-error-600 dark:text-error-400" />
-            </div>
-            <div class="mt-auto">
-              <p class="text-xs text-gray-500 dark:text-gray-400">Expenses</p>
-              <p class="text-xs font-medium text-error-600 dark:text-error-400 font-mono">
-                -{{ configStore.formatCurrency(summary.total_expense) }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Total Transfers -->
-        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
-          <div class="flex flex-col h-full">
-            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-blue-100 dark:bg-blue-900/50 mb-3">
-              <ArrowRightLeft class="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            </div>
-            <div class="mt-auto">
-              <p class="text-xs text-gray-500 dark:text-gray-400">Transfers</p>
-              <p class="text-xs font-medium text-blue-600 dark:text-blue-400 font-mono">
-                {{ configStore.formatCurrency(summary.total_transfer) }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Net Income -->
-        <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
-          <div class="flex flex-col h-full">
-            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-warning-100 dark:bg-warning-900/50 mb-3">
-              <Scale class="w-4 h-4 text-warning-600 dark:text-warning-400" />
-            </div>
-            <div class="mt-auto">
-              <p class="text-xs text-gray-500 dark:text-gray-400">Net Income</p>
-              <p 
-                class="text-xs font-medium font-mono"
-                :class="{
-                  'text-success-600 dark:text-success-400': summary.net_income > 0,
-                  'text-gray-800 dark:text-gray-200': summary.net_income === 0,
-                  'text-error-600 dark:text-error-400': summary.net_income < 0,
-                }"
-              >
-                {{ summary.net_income >= 0 ? '+' : '' }}{{ configStore.formatCurrency(summary.net_income) }}
-              </p>
-            </div>
-          </div>
-        </div>
+      <div class="flex lg:grid lg:grid-cols-5 lg:gap-4 overflow-x-auto space-x-3 lg:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <SummaryCard3
+          title="Total Balance"
+          :value="totalBalance"
+          :icon="Wallet"
+          icon-bg-class="bg-primary-100/90 dark:bg-primary-700/90"
+          icon-class="text-blue-600 dark:text-blue-400"
+          value-class="text-blue-900 dark:text-white"
+        />
+        <SummaryCard3
+          title="Income"
+          :value="summary.total_income"
+          :icon="TrendingUp"
+          icon-bg-class="bg-success-100 dark:bg-success-900/50"
+          icon-class="text-success-600 dark:text-success-400"
+          value-class="text-success-600 dark:text-success-400"
+          prefix="+"
+          accent="positive"
+        />
+        <SummaryCard3
+          title="Expenses"
+          :value="summary.total_expense"
+          :icon="TrendingDown"
+          icon-bg-class="bg-error-100 dark:bg-error-900/50"
+          icon-class="text-error-600 dark:text-error-400"
+          value-class="text-error-600 dark:text-error-400"
+          prefix="-"
+          accent="negative"
+        />
+        <SummaryCard3
+          title="Transfers"
+          :value="summary.total_transfer"
+          :icon="ArrowRightLeft"
+          icon-bg-class="bg-blue-100 dark:bg-blue-900/50"
+          icon-class="text-blue-600 dark:text-blue-400"
+          value-class="text-blue-600 dark:text-blue-400"
+        />
+        <SummaryCard3
+          title="Net Income"
+          :value="summary.net_income"
+          :icon="Scale"
+          icon-bg-class="bg-warning-100 dark:bg-warning-900/50"
+          icon-class="text-warning-600 dark:text-warning-400"
+          :value-class="{
+            'text-success-600 dark:text-success-400': summary.net_income > 0,
+            'text-gray-800 dark:text-gray-200': summary.net_income === 0,
+            'text-error-600 dark:text-error-400': summary.net_income < 0,
+          }"
+          :prefix="summary.net_income >= 0 ? '+' : ''"
+          :accent="summary.net_income >= 0 ? 'positive' : 'negative'"
+        />
       </div>
 
       <!-- Quick Actions -->
@@ -225,6 +194,9 @@ import { useAnalyticsStore } from '@/stores/analytics';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
 import QuickActionButton from '@/components/shared/QuickActionButton.vue';
+// import SummaryCard from '@/components/dashboard/SummaryCard.vue';
+// import SummaryCard2 from '@/components/dashboard/SummaryCard2.vue';
+import SummaryCard3 from '@/components/dashboard/SummaryCard3.vue';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import {
