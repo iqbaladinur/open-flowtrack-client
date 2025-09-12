@@ -2,10 +2,17 @@
   <AppLayout>
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Welcome Section -->
+      <!-- Welcome Section -->
       <div class="mb-8">
-        <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon mb-2">
-          Welcome back, {{ authStore.user?.full_name || 'User' }}!
-        </h1>
+        <div class="flex items-center justify-between">
+          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon mb-2">
+            Welcome back, {{ authStore.user?.full_name || 'User' }}!
+          </h1>
+          <button @click="configStore.toggleShowAmount" class="p-2 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+            <Eye v-if="configStore.showAmount" class="w-5 h-5" />
+            <EyeOff v-else class="w-5 h-5" />
+          </button>
+        </div>
         <p class="text-gray-600 dark:text-gray-400 text-sm">
           Here's your financial overview until today
         </p>
@@ -209,7 +216,9 @@ import {
   BrainCircuit,
   Scale,
   LucideArrowUpRightFromSquare,
-  ArrowRightLeft
+  ArrowRightLeft,
+  Eye,
+  EyeOff
 } from 'lucide-vue-next';
 import { endOfDay, format, subDays } from 'date-fns';
 import { reactive } from 'vue';

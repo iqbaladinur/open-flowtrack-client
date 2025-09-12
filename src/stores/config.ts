@@ -29,6 +29,7 @@ export const useConfigStore = defineStore('config', () => {
   // --- LocalStorage-based state ---
   const firstDayOfMonth = ref(1)
   const includeHiddenWalletsInCalculation = ref(false)
+  const showAmount = ref(true)
   const isApiKeyAiExist = computed(() => {
     return !!gemini_api_key.value
   })
@@ -56,6 +57,9 @@ export const useConfigStore = defineStore('config', () => {
     includeHiddenWalletsInCalculation.value = savedIncludeHidden
       ? JSON.parse(savedIncludeHidden)
       : false
+
+    const savedShowAmount = localStorage.getItem('showAmount')
+    showAmount.value = savedShowAmount ? JSON.parse(savedShowAmount) : true
   }
 
   const fetchConfig = async () => {
@@ -102,6 +106,11 @@ export const useConfigStore = defineStore('config', () => {
     localStorage.setItem('includeHiddenWalletsInCalculation', JSON.stringify(value))
   }
 
+  const toggleShowAmount = () => {
+    showAmount.value = !showAmount.value
+    localStorage.setItem('showAmount', JSON.stringify(showAmount.value))
+  }
+
   const formatCurrency = (amount: number) => {
     const options: Intl.NumberFormatOptions = {
       style: 'currency',
@@ -142,12 +151,14 @@ export const useConfigStore = defineStore('config', () => {
     firstDayOfMonth,
     includeHiddenWalletsInCalculation,
     isApiKeyAiExist,
+    showAmount,
     setConfig,
     loadConfigFromStorage,
     fetchConfig,
     updateConfig,
     updateFirstDayOfMonth,
     updateIncludeHiddenWalletsInCalculation,
+    toggleShowAmount,
     formatCurrency,
     formatProsentase
   }

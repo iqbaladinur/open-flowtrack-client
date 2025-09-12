@@ -1,6 +1,6 @@
 <template>
   <div class="card p-3 w-72 lg:w-full flex-shrink-0 relative rounded-2xl overflow-hidden
-           bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-800 dark:to-gray-700 shadow-md
+           bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-800 dark:to-gray-700
            dark:shadow-xl border border-white/10 dark:border-black/20">
     <!-- subtle brushed texture -->
     <div class="absolute inset-0 opacity-25 bg-[url('https://www.transparenttextures.com/patterns/brushed-alum.png')]">
@@ -15,7 +15,7 @@
 
       <p class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ title }}</p>
       <p class="mt-auto text-lg font-semibold text-gray-900" :class="valueClass">
-        {{ prefix }}{{ configStore.formatCurrency(value) }}
+        {{  configStore.showAmount ? prefix : '*' }}{{ configStore.showAmount ? configStore.formatCurrency(value) : '********' }}
       </p>
     </div>
   </div>
