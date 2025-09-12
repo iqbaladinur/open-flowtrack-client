@@ -79,7 +79,7 @@
           <QuickActionButton
             @click="toggleAddTransaction('income')"
             icon-bg-class="bg-success-100 dark:bg-success-900"
-            class="text-center"
+            class="text-center border-r border-b lg:border-none border-white/60 dark:border-gray-600/40"
           >
             <template #icon>
               <Plus class="w-5 h-5 text-success-600 dark:text-success-400" />
@@ -90,7 +90,7 @@
           <QuickActionButton
             @click="toggleAddTransaction('expense')"
             icon-bg-class="bg-error-100 dark:bg-error-900"
-            class="text-center"
+            class="text-center border-l border-b lg:border-none border-white/60 dark:border-gray-600/40"
           >
             <template #icon>
               <Minus class="w-5 h-5 text-error-600 dark:text-error-400" />
@@ -101,7 +101,7 @@
           <QuickActionButton
             @click="toggleAddTransaction('transfer')"
             icon-bg-class="bg-blue-100 dark:bg-blue-900"
-            class="text-center"
+            class="text-center border-r border-t lg:border-none border-white/60 dark:border-gray-600/40"
           >
             <template #icon>
               <ArrowRightLeft class="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -112,7 +112,7 @@
           <QuickActionButton
             to="/wallets"
             icon-bg-class="bg-primary-100 dark:bg-primary-900"
-            class="text-center"
+            class="text-center border-l border-t lg:border-none border-white/60 dark:border-gray-600/40"
           >
             <template #icon>
               <Wallet class="w-5 h-5 text-blue-600 dark:text-blue-400" />
