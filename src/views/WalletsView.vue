@@ -6,30 +6,40 @@
         <div>
           <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Wallets</h1>
           <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
-            Manage your accounts and balances
+            Here's your wallets data until <b><i>{{ readableDate }} </i></b>
           </p>
         </div>
-        <div class="flex items-center gap-2 justify-end">
-          <button @click="exportToJson" class="btn btn-secondary gap-2 flex items-center">
-            <Download class="w-5 h-5" />
-            <span>
-              Export
-            </span>
-          </button>
-          <button @click="shareWallets" class="btn-secondary lg:hidden" :disabled="loadingShare">
-            <span v-if="loadingShare" class="flex items-center gap-2">
-              <LoadingSpinner size="sm"/>
-              Preparing...
-            </span>
-            <span v-else class="flex items-center gap-2">
-              <Share2 class="w-5 h-5" />
-              Share
-            </span>
-          </button>
-          <button @click="showAddModal = true" class="btn-primary hidden sm:flex">
-            <Plus class="w-4 h-4 mr-2" />
-            Add Wallet
-          </button>
+        <div class="flex items-center gap-4 lg:gap-2 justify-between">
+          <div class="flex items-center gap-2 justify-start">
+            <button @click="prevDate" class="btn btn-secondary flex items-center">
+              <ArrowLeft class="w-5 h-5" />
+            </button>
+            <button @click="nextDate" class="btn btn-secondary flex items-center">
+              <ArrowRight class="w-5 h-5" />
+            </button>
+          </div>
+          <div class="flex items-center gap-2 justify-end">
+            <button @click="exportToJson" class="btn btn-secondary gap-2 flex items-center">
+              <Download class="w-5 h-5" />
+              <span>
+                Export
+              </span>
+            </button>
+            <button @click="shareWallets" class="btn-secondary lg:hidden" :disabled="loadingShare">
+              <span v-if="loadingShare" class="flex items-center gap-2">
+                <LoadingSpinner size="sm"/>
+                Preparing...
+              </span>
+              <span v-else class="flex items-center gap-2">
+                <Share2 class="w-5 h-5" />
+                Share
+              </span>
+            </button>
+            <button @click="showAddModal = true" class="btn-primary hidden sm:flex">
+              <Plus class="w-4 h-4 mr-2" />
+              Add Wallet
+            </button>
+          </div>
         </div>
       </div>
 
@@ -91,13 +101,16 @@ import WalletModal from '@/components/wallet/WalletModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import WalletCard from '@/components/wallet/WalletCard.vue';
 import type { Wallet } from '@/types/wallet';
-import { endOfDay, format } from 'date-fns';
+import { endOfDay, format, parseISO } from 'date-fns';
 import {
   Plus,
   Wallet as WalletIcon,
   Download,
   Share2,
+  ArrowLeft,
+  ArrowRight
 } from 'lucide-vue-next';
+import { useConfigStore } from '@/stores/config';
 
 const walletsStore = useWalletsStore();
 const router = useRouter();
@@ -105,10 +118,16 @@ const router = useRouter();
 const showAddModal = ref(false);
 const selectedWallet = ref<Wallet | null>(null);
 const loadingShare = ref<boolean>(false);
+const endDate = ref<Date>(new Date());
+const configStore = useConfigStore();
 
 const wallets = computed(() => {
   return walletsStore.wallets
     .slice();
+});
+
+const readableDate = computed(() => {
+  return format(endOfDay(endDate.value), 'E, dd MMM yyyy')
 });
 
 const handleWalletSaved = () => {
@@ -145,7 +164,7 @@ const shareWallets = async () => {
     }
 
     const dataStr = JSON.stringify(data, null, 2);
-    const today = format(new Date(), 'yyyy-MM-dd');
+    const today = format(endDate.value, 'yyyy-MM-dd');
     const jsonFilename = `wallets_${today}.json`;
     const txtFilename = `wallets_${today}.json.txt`;
 
@@ -181,8 +200,36 @@ const goToWalletDetail = (walletId: string) => {
 };
 
 const getWalletsData = () => {
-  const today = endOfDay(new Date()).toISOString();
-  walletsStore.fetchWallets(true, undefined, today);
+  const endPeriod = endOfDay(endDate.value).toISOString();
+  walletsStore.fetchWallets(true, undefined, endPeriod);
+}
+
+const nextDate = () => {
+    const firstDay = configStore.firstDayOfMonth;
+    const endDateNow = endOfDay(endDate.value);
+    const start = parseISO(endDateNow.toISOString());
+
+    const newStart = new Date(start);
+    newStart.setMonth(newStart.getMonth() + 1);
+    newStart.setDate(firstDay);
+
+    endDate.value = newStart;
+
+    getWalletsData();
+}
+
+const prevDate = () => {
+  const firstDay = configStore.firstDayOfMonth;
+    const endDateNow = endOfDay(endDate.value);
+    const start = parseISO(endDateNow.toISOString());
+
+    const newStart = new Date(start);
+    newStart.setMonth(newStart.getMonth() - 1);
+    newStart.setDate(firstDay);
+
+    endDate.value = newStart;
+
+    getWalletsData();
 }
 
 watch(showAddModal, (isShowing) => {
