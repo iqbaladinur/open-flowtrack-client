@@ -173,6 +173,24 @@
         <div v-if="showFilters" class="card p-4">
           <div class="space-y-4">
             <div>
+              <label class="label mb-2 px-2">Type</label>
+              <div class="flex items-center space-x-2 overflow-x-auto py-2 px-2">
+                <button @click="filters.type = 'all'" :class="['btn flex-shrink-0', filters.type === 'all' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">All Types</button>
+                <button @click="filters.type = 'income'" :class="['btn flex-shrink-0', filters.type === 'income' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
+                  <TrendingUp class="w-4 h-4 mr-1.5" />
+                  Income
+                </button>
+                <button @click="filters.type = 'expense'" :class="['btn flex-shrink-0', filters.type === 'expense' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
+                  <TrendingDown class="w-4 h-4 mr-1.5" />
+                  Expense
+                </button>
+                <button @click="filters.type = 'transfer'" :class="['btn flex-shrink-0', filters.type === 'transfer' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
+                  <ArrowRightLeft class="w-4 h-4 mr-1.5" />
+                  Transfer
+                </button>
+              </div>
+            </div>
+            <div>
               <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Quick Select</label>
               <div class="flex flex-wrap items-center gap-2 mt-2">
                 <button @click="setFilter('all')"
@@ -262,7 +280,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, watch, computed, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useWalletsStore } from '@/stores/wallets';
 import { useTransactionsStore } from '@/stores/transactions';
@@ -303,14 +321,26 @@ const selectedTransaction = ref<Transaction | null>(null);
 const selectedFilter = ref('all');
 const startDate = ref('');
 const endDate = ref('');
+const filters = reactive<{
+  type: TransactionType | 'all'
+}>({
+  type: 'all'
+})
 
 const categories = computed(() => categoriesStore.categories);
 
 const filteredTransactions = computed<Transaction[]>(() => {
-  const allTransactions = transactionsStore.transactions;
+  const allTransactions = transactionsStore.transactions.filter(t => {
+    if (filters.type === 'all') {
+      return true;
+    }
+    return t.type === filters.type;
+  });
+
   if (excludedCategoryIds.value.length === 0) {
     return allTransactions;
   }
+
   return allTransactions.filter(t => {
     // Keep transactions without a category or if their category is not in the excluded list
     return !t.category_id || !excludedCategoryIds.value.includes(t.category_id);
