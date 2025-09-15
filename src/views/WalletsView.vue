@@ -211,7 +211,7 @@ const nextDate = () => {
 
     const newStart = new Date(start);
     newStart.setMonth(newStart.getMonth() + 1);
-    newStart.setDate(firstDay);
+    newStart.setDate(firstDay - 1);
 
     endDate.value = newStart;
 
@@ -225,7 +225,7 @@ const prevDate = () => {
 
     const newStart = new Date(start);
     newStart.setMonth(newStart.getMonth() - 1);
-    newStart.setDate(firstDay);
+    newStart.setDate(firstDay - 1);
 
     endDate.value = newStart;
 
