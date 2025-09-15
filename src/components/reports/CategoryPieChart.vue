@@ -1,28 +1,28 @@
 <template>
-  <div class="flex items-center" :class="{ 'flex-col-reverse gap-4 lg:flex-row lg:gap-0': chartData.labels?.length > devideconst }">
-    <div class="w-1/2 pr-4" :class="{ '!w-full': chartData.labels?.length > devideconst }">
-      <ul :class="{ 'grid grid-cols-2': chartData.labels?.length > devideconst }">
-        <li
-          v-for="(label, index) in chartData.labels"
-          :key="index"
-          @click="toggleData(index)"
-          class="flex items-start cursor-pointer p-1 rounded text-xs"
-          :class="{ 'line-through text-slate-600 dark:text-white': !dataVisibility[index] }"
-        >
-          <span
-            class="w-4 h-4 mr-2 rounded-full mt-1"
-            :style="{
+  <div>
+    <h3 class="text-slate-600 dark:text-white text-center font-mono font-medium my-6 lg:mb-10 lg:mt-6">
+      Total: {{ totalNominal }}
+    </h3>
+    <div class="flex items-center"
+      :class="{ 'flex-col-reverse gap-4 lg:flex-row lg:gap-0': chartData.labels?.length > devideconst }">
+      <div class="w-1/2 pr-4" :class="{ '!w-full': chartData.labels?.length > devideconst }">
+        <ul :class="{ 'grid grid-cols-2': chartData.labels?.length > devideconst }">
+          <li v-for="(label, index) in chartData.labels" :key="index" @click="toggleData(index)"
+            class="flex items-start cursor-pointer p-1 rounded text-xs"
+            :class="{ 'line-through text-slate-600 dark:text-white': !dataVisibility[index] }">
+            <span class="w-4 h-4 mr-2 rounded-full mt-1" :style="{
               backgroundColor: chartData.datasets[0].backgroundColor[index],
               borderColor: chartData.datasets[0].backgroundColor[index],
               borderWidth: '2px',
-            }"
-          ></span>
-          <span class="whitespace-pre-wrap text-slate-600 dark:text-white text-xs">{{ Array.isArray(label) ? label.join('\n') : label }}</span>
-        </li>
-      </ul>
-    </div>
-    <div class="w-1/2" :class="{ '!w-full p-6': chartData.labels?.length > devideconst }">
-      <Pie ref="pieChart" :data="chartData" :options="chartOptions" />
+            }"></span>
+            <span class="whitespace-pre-wrap text-slate-600 dark:text-white text-xs">{{ Array.isArray(label) ?
+              label.join('\n') : label }}</span>
+          </li>
+        </ul>
+      </div>
+      <div class="w-1/2" :class="{ '!w-full p-6': chartData.labels?.length > devideconst }">
+        <Pie ref="pieChart" :data="chartData" :options="chartOptions" />
+      </div>
     </div>
   </div>
 </template>
@@ -40,6 +40,7 @@ import {
   type Chart,
 } from 'chart.js';
 import type { PropType } from 'vue';
+import { useConfigStore } from '@/stores/config';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
@@ -72,6 +73,17 @@ const chartOptions = computed(() => ({
   },
 }));
 
+const configStore = useConfigStore();
+
+const totalNominal = computed(() => {
+  if (dataVisibility.value.length) {
+    // @ts-ignore
+    return configStore.formatCurrency(props.chartData.datasets[0].data?.filter((n, i) => dataVisibility.value[i]).reduce((sum, nominal) => sum + (nominal || 0), 0))
+  }
+
+  return configStore.formatCurrency(props.chartData.datasets[0].data?.reduce((sum, nominal) => sum + (nominal || 0), 0))
+})
+
 const initializeVisibility = () => {
   const chart = pieChart.value?.chart as Chart | undefined;
   if (chart && chart.data.labels) {
@@ -101,7 +113,7 @@ const toggleData = (index: number) => {
 
   chart.toggleDataVisibility(index);
   chart.update();
-  
+
   // Update our reactive state to reflect the change
   dataVisibility.value[index] = chart.getDataVisibility(index);
 };
