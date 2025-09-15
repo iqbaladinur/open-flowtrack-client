@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="card px-6 py-4 transition-all relative group"
+      class="card p-3 transition-all relative group"
       :class="{ 'border-2 border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/20': wallet.hidden }"
     >
       <!-- Wallet Info -->

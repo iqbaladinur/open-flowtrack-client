@@ -1,11 +1,11 @@
 <template>
   <Modal v-model="show" title="Filter Categories">
-    <div class="p-4 space-y-4">
+    <div class="p-0 space-y-4">
       <p class="text-sm text-gray-500 dark:text-gray-400">
         Select categories to exclude from the transaction list and calculations.
       </p>
       <div class="max-h-72 overflow-y-auto">
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-3 gap-2">
           <div
             v-for="category in categories"
             :key="category.id"
@@ -39,13 +39,16 @@
       </div>
     </div>
     <template #footer>
-      <div class="flex justify-between items-center gap-2 p-4 bg-gray-50 dark:bg-gray-800/50">
+      <div class="flex justify-between items-center gap-2 p-0 bg-gray-50 dark:bg-gray-800/50">
         <button 
-          @click="clearSelection" 
-          class="btn btn-ghost text-error-600 dark:text-error-400"
-          :disabled="internalExcludedCategories.length === 0"
+          @click="toggleSelectAll" 
+          class="btn btn-ghost"
+          :class="{
+            'text-error-600 dark:text-error-400': allCategoriesSelected,
+            'text-primary-600 dark:text-primary-400': !allCategoriesSelected,
+          }"
         >
-          Clear Selection
+          {{ allCategoriesSelected ? 'Clear Selection' : 'Select All' }}
         </button>
         <div class="flex gap-2">
           <button @click="closeModal" class="btn btn-secondary">Cancel</button>
@@ -57,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, toRefs } from 'vue';
+import { ref, watch, toRefs, computed } from 'vue';
 import Modal from '@/components/ui/Modal.vue';
 import type { Category } from '@/types/category';
 import { getIcon } from '@/utils/icons';
@@ -71,10 +74,14 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:modelValue', 'update:excludedCategories']);
 
-const { modelValue, excludedCategories } = toRefs(props);
+const { modelValue, categories, excludedCategories } = toRefs(props);
 
 const show = ref(modelValue.value);
 const internalExcludedCategories = ref<string[]>([...excludedCategories.value]);
+
+const allCategoriesSelected = computed(() => {
+  return internalExcludedCategories.value.length === categories.value.length;
+});
 
 watch(modelValue, (newValue) => {
   show.value = newValue;
@@ -102,8 +109,12 @@ const toggleCategory = (categoryId?: string) => {
   }
 };
 
-const clearSelection = () => {
-  internalExcludedCategories.value = [];
+const toggleSelectAll = () => {
+  if (allCategoriesSelected.value) {
+    internalExcludedCategories.value = [];
+  } else {
+    internalExcludedCategories.value = categories.value.map((c) => c.id).filter((id): id is string => !!id);
+  }
 };
 
 const closeModal = () => {
