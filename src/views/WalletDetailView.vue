@@ -52,9 +52,9 @@
             <p class="text-xs text-gray-500 dark:text-gray-400">{{ dateRangeSubtitle }}</p>
           </div>
           <div
-            class="flex sm:grid sm:grid-cols-5 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+            class="flex lg:grid lg:grid-cols-5 lg:gap-4 overflow-x-auto space-x-3 lg:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
             <!-- Income -->
-            <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 sm:ml-0">
+            <div class="card p-3 w-72 lg:w-full flex-shrink-0 relative">
               <div class="flex flex-col h-full">
                 <div
                   class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-success-100 dark:bg-success-900/50 mb-3">
@@ -70,7 +70,7 @@
             </div>
 
             <!-- Expense -->
-            <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
+            <div class="card p-3 w-72 lg:w-full flex-shrink-0 relative">
               <div class="flex flex-col h-full">
                 <div
                   class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-error-100 dark:bg-error-900/50 mb-3">
@@ -86,7 +86,7 @@
             </div>
 
             <!-- Transfer Out -->
-            <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
+            <div class="card p-3 w-72 lg:w-full flex-shrink-0 relative">
               <div class="flex flex-col h-full">
                 <div
                   class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-blue-100 dark:bg-blue-900/50 mb-3">
@@ -102,7 +102,7 @@
             </div>
             
             <!-- Transfer In -->
-            <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
+            <div class="card p-3 w-72 lg:w-full flex-shrink-0 relative">
               <div class="flex flex-col h-full">
                 <div
                   class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-blue-100 dark:bg-blue-900/50 mb-3">
@@ -118,7 +118,7 @@
             </div>
 
             <!-- Net Income -->
-            <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
+            <div class="card p-3 w-72 lg:w-full flex-shrink-0 relative">
               <div class="flex flex-col h-full">
                 <div
                   class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-warning-100 dark:bg-warning-900/50 mb-3">

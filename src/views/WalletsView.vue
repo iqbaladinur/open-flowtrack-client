@@ -21,7 +21,7 @@
           <div class="flex items-center gap-2 justify-end">
             <button @click="exportToJson" class="btn btn-secondary gap-2 flex items-center">
               <Download class="w-5 h-5" />
-              <span>
+              <span class="sm:hidden">
                 Export
               </span>
             </button>
@@ -32,10 +32,12 @@
               </span>
               <span v-else class="flex items-center gap-2">
                 <Share2 class="w-5 h-5" />
-                Share
+                <span class="md:hidden">
+                  Share
+                </span>
               </span>
             </button>
-            <button @click="showAddModal = true" class="btn-primary hidden sm:flex">
+            <button @click="showAddModal = true" class="btn-primary hidden sm:flex flex-shrink-0">
               <Plus class="w-4 h-4 mr-2" />
               Add Wallet
             </button>
