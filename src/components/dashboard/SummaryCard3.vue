@@ -7,14 +7,14 @@
     </div>
 
     <div class="relative flex flex-col h-full">
-      <div class="size-12 rounded-xl flex items-center justify-center mb-4 backdrop-blur-sm shadow
+      <div class="size-10 rounded-xl flex items-center justify-center mb-4 backdrop-blur-sm shadow
                bg-gradient-to-br from-white/60 to-gray-200/60 dark:from-gray-600/40 dark:to-gray-800/40"
         :class="iconBgClass">
         <component :is="icon" class="w-5 h-5" :class="iconClass" />
       </div>
 
       <p class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ title }}</p>
-      <p class="mt-auto text-lg font-semibold text-gray-900" :class="valueClass">
+      <p class="mt-auto font-semibold text-gray-900 text-sm" :class="valueClass">
         {{  configStore.showAmount ? prefix : '*' }}{{ configStore.showAmount ? configStore.formatCurrency(value) : '********' }}
       </p>
     </div>

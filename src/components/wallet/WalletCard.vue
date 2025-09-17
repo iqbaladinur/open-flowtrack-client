@@ -1,12 +1,13 @@
 <template>
   <div>
     <div
-      class="card p-3 transition-all relative group"
-      :class="{ 'border-2 border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/20': wallet.hidden }"
+      class="card p-3 transition-all relative group bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-800 dark:to-gray-700 dark:shadow-xl border border-white/10 dark:border-black/20 rounded-2xl"
     >
+      <!-- texture -->
+       <div class="absolute inset-0 opacity-25 bg-[url('https://www.transparenttextures.com/patterns/brushed-alum.png')] rounded-2xl" />
       <!-- Wallet Info -->
-      <div>
-        <div>
+      <div class="p-2" :class="{ 'border-2 border-dashed rounded-xl border-gray-500/50 dark:border-white': wallet.hidden }">
+        <div class="mb-6">
           <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2 flex items-start gap-2">
             <span>{{ wallet.name }}</span>
             <span
@@ -17,7 +18,7 @@
             </span>
             <span
               v-if="wallet.hidden"
-              class="text-[9px] font-normal px-3 py-0 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-full"
+              class="text-[9px] font-normal px-3 py-0 bg-green-500/40 text-white rounded-full"
             >
               Excluded
             </span>
