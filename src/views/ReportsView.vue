@@ -94,94 +94,56 @@
       <div v-else class="space-y-6">
         <!-- Summary Cards -->
         <div
-          class="flex sm:grid sm:grid-cols-5 sm:gap-4 overflow-x-auto space-x-3 sm:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
-          <!-- Income -->
-          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 sm:ml-0">
-            <div class="flex flex-col h-full">
-              <div
-                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-success-100 dark:bg-success-900/50 mb-3">
-                <TrendingUp class="w-4 h-4 text-success-600 dark:text-success-400" />
-              </div>
-              <div class="mt-auto">
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Total Income</p>
-                <p class="text-xs font-medium text-success-600 dark:text-success-400 font-mono">
-                  {{ configStore.formatCurrency(summary.totalIncome) }}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Expense -->
-          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
-            <div class="flex flex-col h-full">
-              <div
-                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-error-100 dark:bg-error-900/50 mb-3">
-                <TrendingDown class="w-4 h-4 text-error-600 dark:text-error-400" />
-              </div>
-              <div class="mt-auto">
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Total Expenses</p>
-                <p class="text-xs font-medium text-error-600 dark:text-error-400 font-mono">
-                  {{ configStore.formatCurrency(summary.totalExpense) }}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Transfer -->
-          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
-            <div class="flex flex-col h-full">
-              <div
-                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-blue-100 dark:bg-blue-900/50 mb-3">
-                <ArrowRightLeft class="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              </div>
-              <div class="mt-auto">
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Total Transfer</p>
-                <p class="text-xs font-medium text-blue-600 dark:text-blue-400 font-mono">
-                  {{ configStore.formatCurrency(summary.totalTransfer) }}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Net Income -->
-          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
-            <div class="flex flex-col h-full">
-              <div
-                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-warning-100 dark:bg-warning-900/50 mb-3">
-                <Scale class="w-4 h-4 text-warning-600 dark:text-warning-400" />
-              </div>
-              <div class="mt-auto">
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Total Net Income</p>
-                <p class="text-xs font-medium font-mono" :class="{
-                  'text-success-600 dark:text-success-400': summary.net > 0,
-                  'text-gray-800 dark:text-gray-200': summary.net === 0,
-                  'text-error-600 dark:text-error-400': summary.net < 0,
-                }">
-                  {{ summary.net >= 0 ? '+' : '' }}{{ configStore.formatCurrency(summary.net) }}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Expense Ratio -->
-          <div class="card p-3 w-56 sm:w-auto flex-shrink-0 sm:flex-shrink-1 -ml-4 sm:ml-0">
-            <div class="flex flex-col h-full">
-              <div
-                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-blue-100 dark:bg-blue-900/50 mb-3">
-                <PieChartIcon class="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              </div>
-              <div class="mt-auto">
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Expense Ratio</p>
-                <p class="text-xs font-medium font-mono" :class="{
-                  'text-gray-800 dark:text-gray-200': summary.expenseRatio < 70,
-                  'text-orange-600 dark:text-orange-400': summary.expenseRatio >= 70 && summary.expenseRatio <= 80,
-                  'text-error-600 dark:text-error-500': summary.expenseRatio > 80,
-                }">
-                  {{ configStore.formatProsentase(summary.expenseRatio) }}%
-                </p>
-              </div>
-            </div>
-          </div>
+          class="flex lg:grid lg:grid-cols-5 lg:gap-4 overflow-x-auto space-x-3 lg:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <SummaryCard3
+            title="Total Income"
+            :value="summary.totalIncome"
+            :icon="TrendingUp"
+            icon-bg-class="!bg-success-100 dark:!bg-success-900/50"
+            icon-class="text-success-600 dark:text-success-400"
+            value-class="text-success-600 dark:text-success-400"
+          />
+          <SummaryCard3
+            title="Total Expenses"
+            :value="summary.totalExpense"
+            :icon="TrendingDown"
+            icon-bg-class="!bg-error-100 dark:!bg-error-900/50"
+            icon-class="text-error-600 dark:text-error-400"
+            value-class="text-error-600 dark:text-error-400"
+          />
+          <SummaryCard3
+            title="Total Transfer"
+            :value="summary.totalTransfer"
+            :icon="ArrowRightLeft"
+            icon-bg-class="!bg-blue-100 dark:!bg-blue-900/50"
+            icon-class="text-blue-600 dark:text-blue-400"
+            value-class="text-blue-600 dark:text-blue-400"
+          />
+          <SummaryCard3
+            title="Total Net Income"
+            :value="summary.net"
+            :prefix="summary.net >= 0 ? '+' : ''"
+            :icon="Scale"
+            icon-bg-class="!bg-warning-100 dark:!bg-warning-900/50"
+            icon-class="text-warning-600 dark:text-warning-400"
+            :value-class="{
+              'text-success-600 dark:text-success-400': summary.net > 0,
+              'text-gray-800 dark:text-gray-200': summary.net === 0,
+              'text-error-600 dark:text-error-400': summary.net < 0,
+            }"
+          />
+          <SummaryCard3
+            title="Expense Ratio"
+            :value="summary.expenseRatio"
+            :icon="PieChartIcon"
+            icon-bg-class="!bg-blue-100 dark:!bg-blue-900/50"
+            icon-class="text-blue-600 dark:text-blue-400"
+            :value-class="{
+              'text-gray-800 dark:text-gray-200': summary.expenseRatio < 70,
+              'text-orange-600 dark:text-orange-400': summary.expenseRatio >= 70 && summary.expenseRatio <= 80,
+              'text-error-600 dark:text-error-500': summary.expenseRatio > 80,
+            }"
+          />
         </div>
 
         <!-- Expense Ratio Description -->
@@ -283,6 +245,7 @@ import AppLayout from '@/components/layouts/AppLayout.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import TimeSeriesChart from '@/components/reports/TimeSeriesChart.vue';
 import CategoryPieChart from '@/components/reports/CategoryPieChart.vue';
+import SummaryCard3 from '@/components/dashboard/SummaryCard3.vue';
 import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, Wallet, TrendingUp, TrendingDown, Scale, PieChartIcon, ArrowRightLeft } from 'lucide-vue-next';
 import type { Transaction } from '@/types/transaction';
 import { format, parseISO } from 'date-fns';

@@ -14,7 +14,7 @@
       </div>
 
       <p class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ title }}</p>
-      <p class="mt-auto font-semibold text-gray-900 text-sm" :class="valueClass">
+      <p class="mt-auto font-semibold text-sm" :class="valueClass">
         {{  configStore.showAmount ? prefix : '*' }}{{ configStore.showAmount ? configStore.formatCurrency(value) : '********' }}
       </p>
     </div>
