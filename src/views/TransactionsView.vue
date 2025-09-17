@@ -10,7 +10,7 @@
           </p>
         </div>
         <div class="flex items-center gap-2 self-end sm:self-auto">
-          <button @click="showFilters = !showFilters" class="btn-secondary">
+          <button @click="showFilters = !showFilters" :class="{ 'btn-secondary': !showFilters, 'btn-primary': showFilters }">
             <Filter class="w-4 h-4 mr-2" />
             {{ showFilters ? 'Hide' : 'Show' }} Filters
           </button>

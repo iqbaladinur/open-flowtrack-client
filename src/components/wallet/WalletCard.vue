@@ -6,7 +6,7 @@
       <!-- texture -->
        <div class="absolute inset-0 opacity-25 bg-[url('https://www.transparenttextures.com/patterns/brushed-alum.png')] rounded-2xl" />
       <!-- Wallet Info -->
-      <div class="p-2" :class="{ 'border-2 border-dashed rounded-xl border-gray-500/50 dark:border-white': wallet.hidden }">
+      <div class="p-2 border-2 border-transparent" :class="{ 'border-2 border-dashed rounded-xl border-gray-500/50 dark:border-white': wallet.hidden }">
         <div class="mb-6">
           <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2 flex items-start gap-2">
             <span>{{ wallet.name }}</span>
