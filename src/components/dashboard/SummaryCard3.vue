@@ -15,7 +15,12 @@
 
       <p class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ title }}</p>
       <p class="mt-auto font-semibold text-sm" :class="valueClass">
-        {{  configStore.showAmount ? prefix : '*' }}{{ configStore.showAmount ? configStore.formatCurrency(value) : '********' }}
+        <span v-if="isCurrency">
+          {{  configStore.showAmount ? prefix : '*' }}{{ configStore.showAmount ? configStore.formatCurrency(value) : '********' }}
+        </span>
+        <span v-else>
+          {{ formatter ? formatter(value) : value }}
+        </span>
       </p>
     </div>
   </div>
@@ -35,8 +40,11 @@ withDefaults(defineProps<{
   valueClass: any;
   prefix?: string;
   accent?: 'positive' | 'negative';
+  isCurrency?: boolean;
+  formatter?: Function;
 }>(), {
   prefix: '',
+  isCurrency: true
 });
 
 const configStore = useConfigStore();

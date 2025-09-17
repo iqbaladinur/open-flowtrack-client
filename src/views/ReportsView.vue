@@ -135,7 +135,9 @@
           <SummaryCard3
             title="Expense Ratio"
             :value="summary.expenseRatio"
+            :formatter="configStore.formatProsentase"
             :icon="PieChartIcon"
+            :is-currency="false"
             icon-bg-class="!bg-blue-100 dark:!bg-blue-900/50"
             icon-class="text-blue-600 dark:text-blue-400"
             :value-class="{

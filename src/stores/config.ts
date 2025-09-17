@@ -136,7 +136,7 @@ export const useConfigStore = defineStore('config', () => {
     // The 'id-ID' locale is better for formatting IDR without decimals by default if fractions is 0
     const locale = currency.value === 'IDR' ? 'id-ID' : 'en-US'
 
-    return new Intl.NumberFormat(locale, options).format(amount)
+    return new Intl.NumberFormat(locale, options).format(amount) + '%'
   }
 
   // Initialize from storage on store creation
