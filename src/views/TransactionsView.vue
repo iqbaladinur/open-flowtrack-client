@@ -9,33 +9,41 @@
             Track all your income and expenses
           </p>
         </div>
-        <div class="flex items-center gap-2 self-end sm:self-auto">
-          <button @click="showFilters = !showFilters" :class="{ 'btn-secondary': !showFilters, 'btn-primary': showFilters }">
-            <Filter class="w-4 h-4 mr-2" />
-            {{ showFilters ? 'Hide' : 'Show' }} Filters
-          </button>
-          <button @click="exportToJson" class="btn btn-secondary gap-2 flex items-center">
-            <Download class="w-5 h-5" />
-            <span class="hidden lg:inline">
-              Export
+        <div class="flex items-center gap-4 lg:gap-2 justify-between">
+          <div class="flex items-center gap-3 justify-start">
+            <button @click="goToPreviousPeriod" class="flex items-center btn-secondary p-2 rounded-full btn-borderless" :disabled="readableDate === 'All'">
+              <ChevronLeft class="size-4" />
+            </button>
+            <span class="text-xs italic text-gray-600 dark:text-gray-300">
+              {{ readableDate }}
             </span>
-          </button>
-          <button @click="shareTransactions" class="btn-secondary lg:hidden" :disabled="loadingShare">
-            <span v-if="loadingShare" class="flex items-center gap-2">
-              <LoadingSpinner size="w-5 h-5"/>
-            </span>
-            <span v-else class="flex items-center gap-2">
-              <Share2 class="w-5 h-5" />
-            </span>
-          </button>
-          <router-link v-if="configStore.isApiKeyAiExist" to="/transactions/bulk-expense" class="btn-secondary hidden lg:flex">
-            <ScanTextIcon class="w-4 h-4 mr-2" />
-            Bulk Expense
-          </router-link>
-          <button @click="showAddModal = true" class="btn-primary hidden sm:flex">
-            <Plus class="w-4 h-4 mr-2" />
-            Add Transaction
-          </button>
+            <button @click="goToNextPeriod" class="flex items-center btn-secondary p-2 rounded-full btn-borderless" :disabled="readableDate === 'All'">
+              <ChevronRight class="size-4" />
+            </button>
+          </div>
+          <div class="flex items-center gap-2 self-end sm:self-auto">
+            <button @click="showFilters = !showFilters" :class="{ 'btn-secondary': !showFilters, 'btn-primary': showFilters }" title="filter" class="p-2">
+              <Filter v-if="showFilters" class="size-4" />
+              <FilterX v-if="!showFilters" class="size-4" />
+            </button>
+            <button @click="exportToJson" class="btn btn-secondary gap-2 flex items-center p-2" title="export">
+              <Download class="size-4" />
+            </button>
+            <button @click="shareTransactions" class="btn-secondary lg:hidden p-2" :disabled="loadingShare" title="share">
+              <span v-if="loadingShare" class="flex items-center gap-2">
+                <LoadingSpinner size="size-4"/>
+              </span>
+              <span v-else class="flex items-center gap-2">
+                <Share2 class="size-4" />
+              </span>
+            </button>
+            <router-link v-if="configStore.isApiKeyAiExist" to="/transactions/bulk-expense" class="btn-error hidden lg:flex p-2" title="bulk expense">
+              <ScanTextIcon class="size-4" />
+            </router-link>
+            <button @click="showAddModal = true" class="btn-primary hidden sm:flex p-2">
+              <Plus class="size-4" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -152,7 +160,7 @@
 
     <!-- Floating Add Button for Mobile -->
     <QuickAction>
-      <router-link v-if="configStore.isApiKeyAiExist" to="/transactions/bulk-expense" class="btn bg-red-500/70 text-white rounded-xl p-3 shadow-lg flex items-center justify-center flex-shrink-0">
+      <router-link v-if="configStore.isApiKeyAiExist" to="/transactions/bulk-expense" class="btn-error text-white rounded-xl p-3 shadow-lg flex items-center justify-center flex-shrink-0">
         <ScanTextIcon class="w-6 h-6" />
         <span class="sr-only">Bulk Expense</span>
       </router-link>
@@ -193,7 +201,10 @@ import {
   Download,
   Share2,
   ScanTextIcon,
-  ArrowRightLeft
+  ArrowRightLeft,
+  FilterX,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-vue-next';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, endOfDay, format, parseISO } from 'date-fns';
 
@@ -220,6 +231,13 @@ const transactions = computed(() => {
   return transactionsStore.transactions
     .slice()
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+});
+
+const readableDate = computed(() => {
+  if (!filters.start_date && !filters.end_date) {
+    return 'All'
+  }
+  return format(endOfDay(filters.start_date), 'dd MMM') + ' - ' + format(endOfDay(filters.end_date), 'dd MMM')
 });
 
 const setDateRange = (preset?: 'today' | 'weekly' | 'monthly' | 'yearly') => {
@@ -363,6 +381,7 @@ const getTransactions = (filters: any) => {
 
 const navigatePeriod = (direction: 'previous' | 'next') => {
   if (!filters.start_date || !filters.end_date) return;
+  dateRangePreset.value = 'custom';
   
   const firstDay = configStore.firstDayOfMonth;
   const start = parseISO(filters.start_date);
