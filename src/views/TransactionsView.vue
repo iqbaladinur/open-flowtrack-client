@@ -22,9 +22,16 @@
             </button>
           </div>
           <div class="flex items-center gap-2 self-end sm:self-auto">
-            <button @click="showFilters = !showFilters" :class="{ 'btn-secondary': !showFilters, 'btn-primary': showFilters }" title="filter" class="p-2">
+            <button @click="showFilters = !showFilters" class="btn-secondary p-2" title="filter">
               <Filter v-if="showFilters" class="size-4" />
               <FilterX v-if="!showFilters" class="size-4" />
+            </button>
+            <button @click="showCategoryFilterModal = true" class="btn-secondary gap-2 flex items-center p-2 relative">
+              <Tag class="size-4"/>
+              <span v-if="excludedCategoryIds.length > 0"
+                class="bg-primary-100 text-primary-800 dark:bg-primary-400 dark:text-primary-900 rounded-full text-[10px] absolute -right-2 -top-2 h-4 min-w-4 flex items-center justify-center">
+                {{ excludedCategoryIds.length }}
+              </span>
             </button>
             <button @click="exportToJson" class="btn btn-secondary gap-2 flex items-center p-2" title="export">
               <Download class="size-4" />
@@ -115,7 +122,7 @@
           </template>
         </div>
 
-        <div class="mt-10 flex justify-start px-2">
+        <div class="mt-10 flex justify-start items-center gap-4 px-2">
           <button @click="resetFilters" class="btn btn-primary flex-1 lg:flex-none">
             <RotateCcw class="w-4 h-4 mr-1.5" />
             Reset Filters
@@ -176,6 +183,12 @@
       :transaction="selectedTransaction"
       @success="handleTransactionSaved"
     />
+    <CategoryFilterModal 
+      v-model="showCategoryFilterModal" 
+      :categories="categories"
+      :excluded-categories="excludedCategoryIds" 
+      @update:excluded-categories="excludedCategoryIds = $event" 
+    />
   </AppLayout>
 </template>
 
@@ -184,11 +197,13 @@ import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { useWalletsStore } from '@/stores/wallets';
 import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
+import { useCategoriesStore } from '@/stores/categories';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import QuickAction from '@/components/shared/QuickAction.vue';
+import CategoryFilterModal from '@/components/category/CategoryFilterModal.vue';
 import type { Transaction } from '@/types/transaction';
 import {
   Plus,
@@ -205,17 +220,21 @@ import {
   FilterX,
   ChevronLeft,
   ChevronRight,
+  Tag
 } from 'lucide-vue-next';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, endOfDay, format, parseISO } from 'date-fns';
 
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
+const categoriesStore = useCategoriesStore();
 
 const showAddModal = ref(false);
 const showFilters = ref(false); // Show by default for better UX
 const selectedTransaction = ref<Transaction | null>(null);
 const loadingShare = ref<boolean>(false);
+const showCategoryFilterModal = ref(false);
+const excludedCategoryIds = ref<string[]>([]);
 
 const filters = reactive({
   type: '',
@@ -227,10 +246,20 @@ const filters = reactive({
 const dateRangePreset = ref<'today' | 'weekly' | 'monthly' | 'yearly' | 'custom' | null>(null);
 const showCustomDateRange = ref(false);
 
+const categories = computed(() => categoriesStore.categories);
+
 const transactions = computed(() => {
-  return transactionsStore.transactions
+  const sortedTransactions = transactionsStore.transactions
     .slice()
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  if (excludedCategoryIds.value.length === 0) {
+    return sortedTransactions;
+  }
+
+  return sortedTransactions.filter(t => {
+    return !t.category_id || !excludedCategoryIds.value.includes(t.category_id);
+  });
 });
 
 const readableDate = computed(() => {
@@ -506,5 +535,6 @@ onMounted(async () => {
     // The initial fetch will now use the default monthly filter
     // transactionsStore.fetchTransactions(), 
   ]);
+  categoriesStore.fetchCategories();
 });
 </script>
