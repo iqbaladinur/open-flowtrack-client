@@ -102,42 +102,51 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex justify-end items-center gap-2">
-          <div class="hidden sm:flex items-center gap-2">
-            <button @click="openTransactionModal('income')" class="btn btn-secondary !text-success-500">
-              <TrendingUp class="w-4 h-4 mr-2" />
-              <span>Income</span>
+        <div class="flex items-center justify-between gap-5">
+          <div class="flex items-center gap-3 justify-start">
+            <button @click="goToPreviousPeriod" class="flex items-center btn-secondary p-2 rounded-full btn-borderless" :disabled="readableDate === 'All'">
+              <ChevronLeft class="size-4" />
             </button>
-            <button @click="openTransactionModal('expense')" class="btn btn-secondary !text-error-500">
-              <TrendingDown class="w-4 h-4 mr-2" />
-              <span>Expense</span>
-            </button>
-            <button @click="openTransactionModal('transfer')" class="btn btn-secondary !text-blue-500">
-              <ArrowRightLeft class="w-4 h-4 mr-2" />
-              <span>Transfer</span>
+            <span class="text-xs italic text-gray-600 dark:text-gray-300">
+              {{ readableDate }}
+            </span>
+            <button @click="goToNextPeriod" class="flex items-center btn-secondary p-2 rounded-full btn-borderless" :disabled="readableDate === 'All'">
+              <ChevronRight class="size-4" />
             </button>
           </div>
-          <button @click="showCategoryFilterModal = true" class="btn btn-secondary">
-            <FilterX class="w-4 h-4 mr-2" />
-            <span>Exclude Categories</span>
-            <span v-if="excludedCategoryIds.length > 0"
-              class="ml-2 px-2 py-0.5 bg-primary-100 text-primary-800 dark:bg-primary-900/50 dark:text-primary-300 text-xs rounded-full">
-              {{ excludedCategoryIds.length }}
-            </span>
-          </button>
-          <button @click="showFilters = !showFilters" class="btn btn-primary">
-            <Filter class="w-4 h-4 mr-2" />
-            <span>{{ showFilters ? 'Hide' : 'Show' }} Filters</span>
-          </button>
+          <div class="flex justify-end items-center gap-2">
+            <div class="hidden sm:flex items-center gap-2">
+              <button @click="openTransactionModal('income')" class="btn btn-secondary !text-success-500 p-2">
+                <TrendingUp class="size-4" />
+                </button>
+              <button @click="openTransactionModal('expense')" class="btn btn-secondary !text-error-500 p-2">
+                <TrendingDown class="size-4" />
+                </button>
+              <button @click="openTransactionModal('transfer')" class="btn btn-secondary !text-blue-500 p-2">
+                <ArrowRightLeft class="size-4" />
+              </button>
+            </div>
+            <button @click="showCategoryFilterModal = true" class="btn btn-secondary p-2">
+              <Tag class="size-4" />
+              <span v-if="excludedCategoryIds.length > 0"
+                class="ml-2 px-2 py-0.5 bg-primary-100 text-primary-800 dark:bg-primary-900/50 dark:text-primary-300 text-xs rounded-full">
+                {{ excludedCategoryIds.length }}
+              </span>
+            </button>
+            <button @click="showFilters = !showFilters" class="btn btn-secondary p-2" :class="{ 'text-blue-600 dark:text-neon': showFilters }">
+              <Filter v-if="showFilters" class="size-4" />
+              <FilterX v-else class="size-4" />
+            </button>
+          </div>
         </div>
 
         <!-- Filters Card -->
         <div v-if="showFilters" class="card p-4">
           <div class="space-y-4">
             <div>
-              <label class="label mb-2 px-2">Type</label>
-              <div class="flex items-center space-x-2 overflow-x-auto py-2 px-2">
-                <button @click="filters.type = 'all'" :class="['btn flex-shrink-0', filters.type === 'all' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">All Types</button>
+              <label class="label mb-2">Type</label>
+              <div class="flex items-center space-x-2 overflow-x-auto lg:overflow-visible py-2">
+                <button @click="filters.type = 'all'" :class="['btn flex-shrink-0 ml-2 lg:ml-0', filters.type === 'all' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">All Types</button>
                 <button @click="filters.type = 'income'" :class="['btn flex-shrink-0', filters.type === 'income' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
                   <TrendingUp class="w-4 h-4 mr-1.5" />
                   Income
@@ -146,7 +155,7 @@
                   <TrendingDown class="w-4 h-4 mr-1.5" />
                   Expense
                 </button>
-                <button @click="filters.type = 'transfer'" :class="['btn flex-shrink-0', filters.type === 'transfer' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
+                <button @click="filters.type = 'transfer'" :class="['btn flex-shrink-0 mr-2', filters.type === 'transfer' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
                   <ArrowRightLeft class="w-4 h-4 mr-1.5" />
                   Transfer
                 </button>
@@ -178,10 +187,6 @@
                 <span class="text-gray-500 hidden sm:block">-</span>
                 <input type="date" v-model="endDate" @change="setCustomFilter" class="input w-full"
                   placeholder="End Date" />
-              </div>
-              <div class="flex justify-evenly lg:justify-end items-center gap-2 mt-4">
-                <button @click="goToPreviousPeriod" class="btn btn-primary flex-1 lg:flex-none">Previous Period</button>
-                <button @click="goToNextPeriod" class="btn btn-primary flex-1 lg:flex-none">Next Period</button>
               </div>
             </div>
           </div>
@@ -254,7 +259,7 @@ import WalletCard from '@/components/wallet/WalletCard.vue';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import type { Wallet } from '@/types/wallet';
 import type { Transaction, TransactionType } from '@/types/transaction';
-import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, FilterX, Scale, ArrowUpRight, ArrowDownRight, ArrowRightLeft } from 'lucide-vue-next';
+import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, FilterX, Scale, ArrowUpRight, ArrowDownRight, ArrowRightLeft, Tag, ChevronLeft, ChevronRight } from 'lucide-vue-next';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay, parseISO } from 'date-fns';
 import WalletModal from '@/components/wallet/WalletModal.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
@@ -336,6 +341,14 @@ const periodTransferIn = computed(() => {
 
 const netIncome = computed(() => {
   return periodIncome.value - periodExpense.value
+});
+
+
+const readableDate = computed(() => {
+  if (!startDate.value && !endDate.value) {
+    return 'All'
+  }
+  return format(endOfDay(startDate.value), 'dd MMM') + ' - ' + format(endOfDay(endDate.value), 'dd MMM')
 });
 
 const dateRangeSubtitle = computed(() => {
