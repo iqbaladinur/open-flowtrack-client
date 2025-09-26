@@ -16,9 +16,9 @@
           Download a backup of all your data. Keep this file in a safe place.
         </p>
         <div class="grid grid-cols-2 gap-4">
-          <button @click="createBackup" class="btn btn-primary lg:w-[200px]" :disabled="loadingDownload">
+          <button @click="createBackup" class="btn btn-primary lg:w-[200px] text-xs" :disabled="loadingDownload">
             <span v-if="loadingDownload" class="flex items-center gap-2">
-              <LoadingSpinner size="sm"/>
+              <LoadingSpinner size="size-5"/>
               Creating...
             </span>
             <span v-else class="flex items-center gap-2">
@@ -26,9 +26,9 @@
               Download
             </span>
           </button>
-          <button @click="shareBackup" class="btn btn-secondary lg:hidden" :disabled="loadingShare">
+          <button @click="shareBackup" class="btn btn-secondary lg:hidden text-xs" :disabled="loadingShare">
             <span v-if="loadingShare" class="flex items-center gap-2">
-              <LoadingSpinner size="sm"/>
+              <LoadingSpinner size="size-5"/>
               Preparing...
             </span>
             <span v-else class="flex items-center gap-2">
@@ -47,13 +47,13 @@
         </p>
         <div class="flex items-center gap-2">
           <input type="file" @change="handleFileChange" ref="fileInput" class="hidden" accept=".json">
-          <button @click="triggerFileInput" class="btn btn-secondary">
+          <button @click="triggerFileInput" class="btn btn-secondary text-xs">
             <Upload class="w-5 h-5 mr-2" />
             Choose File
           </button>
           <span v-if="selectedFile" class="text-gray-600 dark:text-gray-400">{{ selectedFile.name }}</span>
         </div>
-        <button @click="restoreBackup" class="mt-4 btn btn-error w-full lg:w-auto" :disabled="!selectedFile || loading">
+        <button @click="restoreBackup" class="mt-4 btn btn-error w-full lg:w-auto text-xs" :disabled="!selectedFile || loading">
            <span v-if="loading" class="flex items-center gap-2">
             <LoadingSpinner size="sm"/>
             Restoring...

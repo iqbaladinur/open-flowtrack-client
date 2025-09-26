@@ -10,13 +10,12 @@
           </p>
         </div>
         <div class="flex items-center gap-2 self-end sm:self-auto">
-          <button @click="showYearSelector = true" class="btn-secondary">
-            <Calendar class="w-4 h-4 mr-2" />
+          <button @click="showYearSelector = true" class="btn-secondary text-xs">
+            <Calendar class="size-4 mr-2" />
             <span>{{ selectedYear }}</span>
           </button>
-          <button @click="showAddModal = true" class="btn-primary hidden sm:flex">
-            <Plus class="w-4 h-4 mr-2" />
-            Create Budget
+          <button @click="showAddModal = true" class="btn-primary hidden sm:flex p-2">
+            <Plus class="size-4" />
           </button>
         </div>
       </div>

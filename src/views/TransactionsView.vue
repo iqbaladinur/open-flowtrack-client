@@ -22,7 +22,7 @@
             </button>
           </div>
           <div class="flex items-center gap-2 self-end sm:self-auto">
-            <button @click="showFilters = !showFilters" class="btn-secondary p-2" title="filter">
+            <button @click="showFilters = !showFilters" class="btn-secondary p-2" title="filter" :class="{ 'text-blue-700 dark:text-neon': showFilters }">
               <Filter v-if="showFilters" class="size-4" />
               <FilterX v-if="!showFilters" class="size-4" />
             </button>

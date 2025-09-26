@@ -2,74 +2,88 @@
   <AppLayout>
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Welcome Section -->
-      <!-- Welcome Section -->
-      <div class="mb-8">
-        <div class="flex items-center justify-between">
-          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon mb-2">
-            Welcome back, {{ authStore.user?.full_name || 'User' }}!
-          </h1>
-          <button @click="configStore.toggleShowAmount" class="p-2 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-            <Eye v-if="configStore.showAmount" class="w-5 h-5" />
-            <EyeOff v-else class="w-5 h-5" />
-          </button>
-        </div>
+      <div>
+        <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon mb-2">
+          Welcome back, {{ authStore.user?.full_name || 'User' }}!
+        </h1>
         <p class="text-gray-600 dark:text-gray-400 text-sm">
-          Here's your financial overview until today
+          Here's your financial overview
         </p>
       </div>
 
-      <!-- Summary Cards -->
-      <div class="flex lg:grid lg:grid-cols-5 lg:gap-4 overflow-x-auto space-x-3 lg:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
-        <SummaryCard3
-          title="Total Balance"
-          :value="totalBalance"
-          :icon="Wallet"
-          icon-bg-class="bg-primary-100/90 dark:bg-primary-700/90"
-          icon-class="text-blue-600 dark:text-blue-400"
-          value-class="text-blue-900 dark:text-white"
-        />
-        <SummaryCard3
-          title="Income"
-          :value="summary.total_income"
-          :icon="TrendingUp"
-          icon-bg-class="bg-success-100 dark:bg-success-900/50"
-          icon-class="text-success-600 dark:text-success-400"
-          value-class="text-success-600 dark:text-success-400"
-          prefix="+"
-          accent="positive"
-        />
-        <SummaryCard3
-          title="Expenses"
-          :value="summary.total_expense"
-          :icon="TrendingDown"
-          icon-bg-class="bg-error-100 dark:bg-error-900/50"
-          icon-class="text-error-600 dark:text-error-400"
-          value-class="text-error-600 dark:text-error-400"
-          prefix="-"
-          accent="negative"
-        />
-        <SummaryCard3
-          title="Transfers"
-          :value="summary.total_transfer"
-          :icon="ArrowRightLeft"
-          icon-bg-class="bg-blue-100 dark:bg-blue-900/50"
-          icon-class="text-blue-600 dark:text-blue-400"
-          value-class="text-blue-600 dark:text-blue-400"
-        />
-        <SummaryCard3
-          title="Net Income"
-          :value="summary.net_income"
-          :icon="Scale"
-          icon-bg-class="bg-warning-100 dark:bg-warning-900/50"
-          icon-class="text-warning-600 dark:text-warning-400"
-          :value-class="{
-            'text-success-600 dark:text-success-400': summary.net_income > 0,
-            'text-gray-800 dark:text-gray-200': summary.net_income === 0,
-            'text-error-600 dark:text-error-400': summary.net_income < 0,
-          }"
-          :prefix="summary.net_income >= 0 ? '+' : ''"
-          :accent="summary.net_income >= 0 ? 'positive' : 'negative'"
-        />
+      <div>
+        <div class="flex items-center justify-between card p-2 mb-3">  
+          <div class="flex items-center gap-3 justify-start">
+            <button @click="prevDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
+              <ChevronLeft class="size-4" />
+            </button>
+            <span class="text-xs italic text-gray-600 dark:text-gray-300">
+              {{ readableDate }}
+            </span>
+            <button @click="nextDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
+              <ChevronRight class="size-4" />
+            </button>
+          </div>
+
+          <button @click="configStore.toggleShowAmount" class="p-2 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+            <Unlock v-if="configStore.showAmount" class="w-5 h-5" />
+            <lock v-else class="w-5 h-5" />
+          </button>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="flex lg:grid lg:grid-cols-5 lg:gap-4 overflow-x-auto space-x-3 lg:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <SummaryCard3
+            title="Total Balance"
+            :value="totalBalance"
+            :icon="Wallet"
+            icon-bg-class="bg-primary-100/90 dark:bg-primary-700/90"
+            icon-class="text-blue-600 dark:text-blue-400"
+            value-class="text-blue-900 dark:text-white"
+          />
+          <SummaryCard3
+            title="Income"
+            :value="summary.total_income"
+            :icon="TrendingUp"
+            icon-bg-class="bg-success-100 dark:bg-success-900/50"
+            icon-class="text-success-600 dark:text-success-400"
+            value-class="text-success-600 dark:text-success-400"
+            prefix="+"
+            accent="positive"
+          />
+          <SummaryCard3
+            title="Expenses"
+            :value="summary.total_expense"
+            :icon="TrendingDown"
+            icon-bg-class="bg-error-100 dark:bg-error-900/50"
+            icon-class="text-error-600 dark:text-error-400"
+            value-class="text-error-600 dark:text-error-400"
+            prefix="-"
+            accent="negative"
+          />
+          <SummaryCard3
+            title="Transfers"
+            :value="summary.total_transfer"
+            :icon="ArrowRightLeft"
+            icon-bg-class="bg-blue-100 dark:bg-blue-900/50"
+            icon-class="text-blue-600 dark:text-blue-400"
+            value-class="text-blue-600 dark:text-blue-400"
+          />
+          <SummaryCard3
+            title="Net Income"
+            :value="summary.net_income"
+            :icon="Scale"
+            icon-bg-class="bg-warning-100 dark:bg-warning-900/50"
+            icon-class="text-warning-600 dark:text-warning-400"
+            :value-class="{
+              'text-success-600 dark:text-success-400': summary.net_income > 0,
+              'text-gray-800 dark:text-gray-200': summary.net_income === 0,
+              'text-error-600 dark:text-error-400': summary.net_income < 0,
+            }"
+            :prefix="summary.net_income >= 0 ? '+' : ''"
+            :accent="summary.net_income >= 0 ? 'positive' : 'negative'"
+          />
+        </div>
       </div>
 
       <!-- Quick Actions -->
@@ -217,10 +231,12 @@ import {
   Scale,
   LucideArrowUpRightFromSquare,
   ArrowRightLeft,
-  Eye,
-  EyeOff
+  ChevronLeft,
+  ChevronRight,
+  Lock,
+  Unlock
 } from 'lucide-vue-next';
-import { endOfDay, format, subDays } from 'date-fns';
+import { endOfDay, format, parseISO, subDays } from 'date-fns';
 import { reactive } from 'vue';
 import { useReportsStore } from '@/stores/reports';
 import type { TransactionType } from '@/types/transaction';
@@ -235,6 +251,12 @@ const { analyticsSugestion, loading: analyticsLoading } = storeToRefs(analyticsS
 
 const showAddTransactionModal = ref(false);
 const transactionType = ref<TransactionType>('income');
+
+const endDateSummary = ref(endOfDay(new Date()));
+
+const readableDate = computed(() => {
+  return format(endOfDay(endDateSummary.value), 'E, dd MMM')
+});
 
 const totalBalance = computed(() => {
   return walletsStore.wallets
@@ -323,9 +345,38 @@ async function setSummary(filter: {
   }
 }
 
+const nextDate = () => {
+  const firstDay = configStore.firstDayOfMonth;
+  const endDateNow = endOfDay(endDateSummary.value);
+  const start = parseISO(endDateNow.toISOString());
+
+  const newStart = new Date(start);
+  newStart.setMonth(newStart.getMonth() + 1);
+  newStart.setDate(firstDay - 1);
+
+  endDateSummary.value = newStart;
+  const todayIso = endDateSummary.value.toISOString();
+  walletsStore.fetchWallets(true, undefined, todayIso);
+  setSummary({ endDate: todayIso, includeHidden: configStore.includeHiddenWalletsInCalculation });
+}
+
+const prevDate = () => {
+  const firstDay = configStore.firstDayOfMonth;
+  const endDateNow = endOfDay(endDateSummary.value);
+  const start = parseISO(endDateNow.toISOString());
+
+  const newStart = new Date(start);
+  newStart.setMonth(newStart.getMonth() - 1);
+  newStart.setDate(firstDay - 1);
+  endDateSummary.value = newStart;
+  const todayIso = endDateSummary.value.toISOString();
+  walletsStore.fetchWallets(true, undefined, todayIso);
+  setSummary({ endDate: todayIso, includeHidden: configStore.includeHiddenWalletsInCalculation });
+}
+
 onMounted(async () => {
   configStore.fetchConfig();
-  const today = endOfDay(new Date());
+  const today = endDateSummary.value;
   const someDaysBefore = subDays(today, 4);
   const todayIso = today.toISOString();
   const someDaysBeforeIso = someDaysBefore.toISOString();
