@@ -10,26 +10,39 @@
       </div>
 
       <!-- View Switcher -->
-      <div class="card p-4">
-        <div class="flex justify-between items-center">
-          <label class="label">Filters</label>
-          <button @click="showFilters = !showFilters" class="btn btn-sm" :class="{ 'btn-secondary': !showFilters, 'btn-primary': showFilters }">
-            <Filter class="w-4 h-4 mr-2" />
-            <span>{{ showFilters ? 'Hide' : 'Show' }}</span>
+      <div class="flex justify-between items-center">
+        <div v-if="currentView === 'custom'" class="flex items-center gap-3 justify-start">
+          <button @click="goToPreviousPeriod" class="flex items-center btn-secondary p-2 rounded-full btn-borderless" :disabled="currentView !== 'custom'">
+            <ChevronLeft class="size-4" />
+          </button>
+          <span class="text-xs italic text-gray-600 dark:text-gray-300">
+            {{ readableDate }}
+          </span>
+          <button @click="goToNextPeriod" class="flex items-center btn-secondary p-2 rounded-full btn-borderless" :disabled="currentView !== 'custom'">
+            <ChevronRight class="size-4" />
           </button>
         </div>
-        <div v-if="showFilters" class="mt-4">
+
+        <label v-else class="label">Filters</label>
+        
+        <button @click="showFilters = !showFilters" class="btn btn-sm text-xs btn-secondary p-2" :class="{ 'text-blue-700 dark:text-neon': showFilters }">
+          <FilterX v-if="showFilters" class="size-4" />
+          <Filter v-else class="size-4" />
+        </button>
+      </div>
+      <div v-if="showFilters" class="card p-4">
+        <div>
           <div class="flex items-center justify-stretch lg:justify-start gap-1 flex-wrap">
             <button @click="currentView = 'monthly'"
-              :class="['btn flex-1 lg:flex-none', currentView === 'monthly' ? 'btn-primary' : 'btn-secondary']">
+              :class="['btn flex-1 lg:flex-none text-xs', currentView === 'monthly' ? 'btn-primary' : 'btn-secondary']">
               <Calendar class="w-4 h-4 mr-2" /> Monthly
             </button>
             <button @click="currentView = 'yearly'"
-              :class="['btn flex-1 lg:flex-none', currentView === 'yearly' ? 'btn-primary' : 'btn-secondary']">
+              :class="['btn flex-1 lg:flex-none text-xs', currentView === 'yearly' ? 'btn-primary' : 'btn-secondary']">
               <CalendarClock class="w-4 h-4 mr-2" /> Yearly
             </button>
             <button @click="selectCustomView"
-              :class="['btn flex-1 lg:flex-none', currentView === 'custom' ? 'btn-primary' : 'btn-secondary']">
+              :class="['btn flex-1 lg:flex-none text-xs', currentView === 'custom' ? 'btn-primary' : 'btn-secondary']">
               <SlidersHorizontal class="w-4 h-4 mr-2" /> Custom
             </button>
           </div>
@@ -39,13 +52,13 @@
             <div v-if="currentView === 'monthly'" class="grid grid-cols-2 gap-1 lg:w-1/3">
               <div>
                 <label for="monthly-month" class="label">Month</label>
-                <select id="monthly-month" v-model="selectedDate.monthly.month" class="input">
+                <select id="monthly-month" v-model="selectedDate.monthly.month" class="input text-xs">
                   <option v-for="(month, index) in months" :key="index" :value="index + 1">{{ month }}</option>
                 </select>
               </div>
               <div>
                 <label for="monthly-year" class="label">Year</label>
-                <select id="monthly-year" v-model="selectedDate.monthly.year" class="input">
+                <select id="monthly-year" v-model="selectedDate.monthly.year" class="input text-xs">
                   <option v-for="year in yearList" :key="year" :value="year">{{ year }}</option>
                 </select>
               </div>
@@ -53,7 +66,7 @@
             <!-- Yearly Selector -->
             <div v-if="currentView === 'yearly'" class="lg:w-1/5">
               <label for="yearly-year" class="label">Select Year</label>
-              <select id="yearly-year" v-model="selectedDate.yearly.year" class="input">
+              <select id="yearly-year" v-model="selectedDate.yearly.year" class="input text-xs">
                 <option v-for="year in yearList" :key="year" :value="year">{{ year }}</option>
               </select>
             </div>
@@ -62,28 +75,24 @@
               <div class="grid grid-cols-2 gap-1 lg:w-1/3">
                 <div>
                   <label for="custom-start" class="label">Start Date</label>
-                  <input id="custom-start" v-model="selectedDate.custom.start" type="date" class="input" />
+                  <input id="custom-start" v-model="selectedDate.custom.start" type="date" class="input text-xs" />
                 </div>
                 <div>
                   <label for="custom-end" class="label">End Date</label>
-                  <input id="custom-end" v-model="selectedDate.custom.end" type="date" class="input" />
+                  <input id="custom-end" v-model="selectedDate.custom.end" type="date" class="input text-xs" />
                 </div>
-              </div>
-              <div class="flex justify-evenly lg:justify-start items-center gap-1 mt-4">
-                <button @click="goToPreviousPeriod" class="btn btn-primary flex-1 lg:flex-none">Previous Period</button>
-                <button @click="goToNextPeriod" class="btn btn-primary flex-1 lg:flex-none">Next Period</button>
               </div>
               <div>
                 <label class="label">Group By</label>
                 <div class="flex items-center space-x-1 flex-wrap">
                   <button @click="customAggregationLevel = 'daily'"
-                    :class="['btn btn-sm', customAggregationLevel === 'daily' ? 'btn-primary' : 'btn-secondary']">Daily</button>
+                    :class="['btn btn-sm text-xs', customAggregationLevel === 'daily' ? 'btn-primary' : 'btn-secondary']">Daily</button>
                   <button @click="customAggregationLevel = 'weekly'"
-                    :class="['btn btn-sm', customAggregationLevel === 'weekly' ? 'btn-primary' : 'btn-secondary']">Weekly</button>
+                    :class="['btn btn-sm text-xs', customAggregationLevel === 'weekly' ? 'btn-primary' : 'btn-secondary']">Weekly</button>
                   <button @click="customAggregationLevel = 'monthly'"
-                    :class="['btn btn-sm', customAggregationLevel === 'monthly' ? 'btn-primary' : 'btn-secondary']">Monthly</button>
+                    :class="['btn btn-sm text-xs', customAggregationLevel === 'monthly' ? 'btn-primary' : 'btn-secondary']">Monthly</button>
                   <button @click="customAggregationLevel = 'yearly'"
-                    :class="['btn btn-sm', customAggregationLevel === 'yearly' ? 'btn-primary' : 'btn-secondary']">Yearly</button>
+                    :class="['btn btn-sm text-xs', customAggregationLevel === 'yearly' ? 'btn-primary' : 'btn-secondary']">Yearly</button>
                 </div>
               </div>
             </div>
@@ -196,9 +205,9 @@
               </div>
               <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full lg:w-auto">
                 <button @click="categoryReportType = 'expense'"
-                  :class="['btn btn-sm flex-1 lg:flex-auto', categoryReportType === 'expense' ? 'bg-white dark:bg-gray-600 shadow' : '']">Spending</button>
+                  :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', categoryReportType === 'expense' ? 'bg-white dark:bg-gray-600 shadow' : '']">Spending</button>
                 <button @click="categoryReportType = 'income'"
-                  :class="['btn btn-sm flex-1 lg:flex-auto', categoryReportType === 'income' ? 'bg-white dark:bg-gray-600 shadow' : '']">Income</button>
+                  :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', categoryReportType === 'income' ? 'bg-white dark:bg-gray-600 shadow' : '']">Income</button>
               </div>
             </div>
             <div v-if="categoryChartData.labels.length === 0"
@@ -248,7 +257,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue';
+import { ref, reactive, computed, watch, onMounted } from 'vue';
 import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
 import AppLayout from '@/components/layouts/AppLayout.vue';
@@ -256,7 +265,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import TimeSeriesChart from '@/components/reports/TimeSeriesChart.vue';
 import CategoryPieChart from '@/components/reports/CategoryPieChart.vue';
 import SummaryCard3 from '@/components/dashboard/SummaryCard3.vue';
-import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, Wallet, TrendingUp, TrendingDown, Scale, PieChartIcon, ArrowRightLeft, Filter } from 'lucide-vue-next';
+import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, Wallet, TrendingUp, TrendingDown, Scale, PieChartIcon, ArrowRightLeft, Filter, FilterX, ChevronLeft, ChevronRight } from 'lucide-vue-next';
 import type { Transaction } from '@/types/transaction';
 import { format, parseISO } from 'date-fns';
 
@@ -283,6 +292,13 @@ const selectedDate = reactive({
     start: startOfMonth.toISOString().split('T')[0],
     end: now.toISOString().split('T')[0]
   },
+});
+
+const readableDate = computed(() => {
+  if (!selectedDate.custom.start && !selectedDate.custom.end) {
+    return 'None'
+  }
+  return format(selectedDate.custom.start, 'dd MMM') + ' - ' + format(selectedDate.custom.end, 'dd MMM')
 });
 
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -580,6 +596,10 @@ const navigatePeriod = (direction: 'previous' | 'next') => {
 const goToPreviousPeriod = () => navigatePeriod('previous');
 const goToNextPeriod = () => navigatePeriod('next');
 
-watch([currentView, selectedDate, customAggregationLevel], fetchReportData, { immediate: true, deep: true });
+watch([currentView, selectedDate, customAggregationLevel], fetchReportData, { immediate: false, deep: true });
+
+onMounted(() => {
+  selectCustomView();
+})
 
 </script>

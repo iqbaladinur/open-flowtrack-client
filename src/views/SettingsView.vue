@@ -64,11 +64,12 @@
 
           <button
             type="submit"
-            class="btn-primary"
+            class="btn-primary text-xs"
             :disabled="configStore.loading || !hasCurrencyChanges"
           >
             <LoadingSpinner v-if="configStore.loading" size="sm" />
-            <span v-else>Save Currency Settings</span>
+            <span v-if="configStore.loading" class="ml-2">Saving...</span>
+            <span v-else>Save Settings</span>
           </button>
         </form>
       </div>
@@ -100,7 +101,7 @@
 
           <button
             type="submit"
-            class="btn-primary"
+            class="btn-primary text-xs"
             :disabled="!hasDateSettingsChanges"
           >
             <span>Save Date Settings</span>

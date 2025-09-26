@@ -42,7 +42,7 @@
       <div class="flex justify-between items-center gap-2 p-0 bg-gray-50 dark:bg-gray-800/50">
         <button 
           @click="toggleSelectAll" 
-          class="btn btn-ghost"
+          class="btn-ghost btn-borderless"
           :class="{
             'text-error-600 dark:text-error-400': allCategoriesSelected,
             'text-primary-600 dark:text-primary-400': !allCategoriesSelected,

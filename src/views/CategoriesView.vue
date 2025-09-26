@@ -9,30 +9,22 @@
             Organize your transactions by category
           </p>
         </div>
-        <button @click="showAddModal = true" class="btn-primary hidden sm:flex">
-          <Plus class="w-4 h-4 mr-2" />
-          Add Category
-        </button>
-      </div>
 
-      <!-- Filters -->
-      <div class="card p-4">
-        <div>
-          <label class="label mb-2">Filter by Type</label>
-          <div class="flex items-center space-x-2">
-            <button @click="filterType = ''" :class="['btn', filterType === '' ? 'btn-primary' : 'btn-secondary']">
-              <LayoutGrid class="w-4 h-4 mr-1.5" />
-              All
+        <div class="flex items-center gap-2 justify-end">
+          <div class="flex items-center gap-2 justify-end">
+            <button @click="filterType = ''" :class="['btn', filterType === '' ? 'text-blue-700 dark:text-neon' : 'btn-secondary']" class="p-2">
+              <LayoutGrid class="size-4" />
             </button>
-            <button @click="filterType = 'income'" :class="['btn', filterType === 'income' ? 'btn-primary' : 'btn-secondary']">
-              <TrendingUp class="w-4 h-4 mr-1.5" />
-              Income
+            <button @click="filterType = 'income'" :class="['btn', filterType === 'income' ? 'text-blue-700 dark:text-neon' : 'btn-secondary']" class="flex items-center gap-2 text-xs p-2">
+              <TrendingUp class="size-4" />
             </button>
-            <button @click="filterType = 'expense'" :class="['btn', filterType === 'expense' ? 'btn-primary' : 'btn-secondary']">
-              <TrendingDown class="w-4 h-4 mr-1.5" />
-              Expense
+            <button @click="filterType = 'expense'" :class="['btn', filterType === 'expense' ? 'text-blue-700 dark:text-neon' : 'btn-secondary']" class="flex items-center gap-2 text-xs p-2">
+              <TrendingDown class="size-4" />
             </button>
           </div>
+          <button @click="showAddModal = true" class="btn-primary hidden sm:flex p-2">
+            <Plus class="size-4" />
+          </button>
         </div>
       </div>
 
@@ -50,7 +42,7 @@
           Create your first category to start organizing your finances.
         </p>
         <button @click="showAddModal = true" class="btn-primary">
-          <Plus class="w-4 h-4 mr-2" />
+          <Plus class="size-4 mr-2" />
           Add Category
         </button>
       </div>

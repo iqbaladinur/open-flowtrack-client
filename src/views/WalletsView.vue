@@ -6,40 +6,35 @@
         <div>
           <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Wallets</h1>
           <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
-            Here's your wallets data until <b><i>{{ readableDate }} </i></b>
+            Here's your wallets data
           </p>
         </div>
         <div class="flex items-center gap-4 lg:gap-2 justify-between">
-          <div class="flex items-center gap-2 justify-start">
-            <button @click="prevDate" class="btn btn-secondary flex items-center">
-              <ArrowLeft class="w-5 h-5" />
+          <div class="flex items-center gap-3 justify-start">
+            <button @click="prevDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
+              <ChevronLeft class="size-4" />
             </button>
-            <button @click="nextDate" class="btn btn-secondary flex items-center">
-              <ArrowRight class="w-5 h-5" />
+            <span class="text-xs italic text-gray-600 dark:text-gray-300">
+              {{ readableDate }}
+            </span>
+            <button @click="nextDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
+              <ChevronRight class="size-4" />
             </button>
           </div>
           <div class="flex items-center gap-2 justify-end">
-            <button @click="exportToJson" class="btn btn-secondary gap-2 flex items-center">
-              <Download class="w-5 h-5" />
-              <span class="sm:hidden">
-                Export
-              </span>
+            <button @click="exportToJson" class="btn btn-secondary gap-2 flex items-center p-2">
+              <Download class="size-4" />
             </button>
-            <button @click="shareWallets" class="btn-secondary lg:hidden" :disabled="loadingShare">
+            <button @click="shareWallets" class="btn-secondary lg:hidden p-2" :disabled="loadingShare">
               <span v-if="loadingShare" class="flex items-center gap-2">
                 <LoadingSpinner size="sm"/>
-                Preparing...
               </span>
               <span v-else class="flex items-center gap-2">
-                <Share2 class="w-5 h-5" />
-                <span class="md:hidden">
-                  Share
-                </span>
+                <Share2 class="size-4" />
               </span>
             </button>
-            <button @click="showAddModal = true" class="btn-primary hidden sm:flex flex-shrink-0">
-              <Plus class="w-4 h-4 mr-2" />
-              Add Wallet
+            <button @click="showAddModal = true" class="btn-primary hidden sm:flex flex-shrink-0 p-2">
+              <Plus class="size-4" />
             </button>
           </div>
         </div>
@@ -109,8 +104,8 @@ import {
   Wallet as WalletIcon,
   Download,
   Share2,
-  ArrowLeft,
-  ArrowRight
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-vue-next';
 import { useConfigStore } from '@/stores/config';
 
@@ -129,7 +124,7 @@ const wallets = computed(() => {
 });
 
 const readableDate = computed(() => {
-  return format(endOfDay(endDate.value), 'E, dd MMM yyyy')
+  return format(endOfDay(endDate.value), 'E, dd MMM')
 });
 
 const handleWalletSaved = () => {
