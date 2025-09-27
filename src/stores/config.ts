@@ -112,6 +112,10 @@ export const useConfigStore = defineStore('config', () => {
   }
 
   const formatCurrency = (amount: number) => {
+    if (!showAmount.value) {
+      return '**********'
+    }
+
     const options: Intl.NumberFormatOptions = {
       style: 'currency',
       currency: currency.value,

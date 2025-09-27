@@ -16,7 +16,7 @@
       <p class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ title }}</p>
       <p class="mt-auto font-semibold text-sm" :class="valueClass">
         <span v-if="isCurrency">
-          {{  configStore.showAmount ? prefix : '*' }}{{ configStore.showAmount ? configStore.formatCurrency(value) : '********' }}
+          {{  configStore.showAmount ? prefix : '*' }}{{ configStore.formatCurrency(value) }}
         </span>
         <span v-else>
           {{ formatter ? formatter(value) : value }}

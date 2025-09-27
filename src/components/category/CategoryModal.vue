@@ -22,23 +22,23 @@
           <button
             type="button"
             @click="form.type = 'income'"
-            class="py-2 rounded-lg border-2 transition-all"
+            class="py-2 rounded-lg border-2 transition-all text-success-700 dark:text-success-300"
             :class="form.type === 'income' 
               ? 'border-success-500 bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300' 
               : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
           >
-            <TrendingUp class="w-5 h-5 mx-auto mb-1" />
+            <TrendingUp class="size-4 mx-auto" />
             <span class="text-xs font-medium">Income</span>
           </button>
           <button
             type="button"
             @click="form.type = 'expense'"
-            class="py-2 rounded-lg border-2 transition-all"
+            class="py-2 rounded-lg border-2 transition-all text-error-700 dark:text-error-300"
             :class="form.type === 'expense' 
               ? 'border-error-500 bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300' 
               : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
           >
-            <TrendingDown class="w-5 h-5 mx-auto mb-1" />
+            <TrendingDown class="size-4 mx-auto" />
             <span class="text-xs font-medium">Expense</span>
           </button>
         </div>

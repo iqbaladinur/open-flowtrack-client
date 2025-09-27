@@ -52,6 +52,10 @@ import {
   ArrowDownUp,
   Zap,
   Fuel,
+  MoreHorizontal,
+  Apple,
+  Fish,
+  Beef
 } from "lucide-vue-next";
 
 export const iconList = [
@@ -107,6 +111,10 @@ export const iconList = [
   "ArrowDownUp",
   "Zap",
   "Fuel",
+  "MoreHorizontal",
+  "Apple",
+  "Fish",
+  "Beef"
 ];
 
 type IconMap = {
@@ -166,6 +174,10 @@ const icons: IconMap = {
   ArrowDownUp,
   Zap,
   Fuel,
+  MoreHorizontal,
+  Apple,
+  Fish,
+  Beef
 };
 
 export const getIcon = (name: string): FunctionalComponent => {

@@ -39,7 +39,7 @@
 
         <!-- Actions -->
         <div class="mt-10 flex justify-end">
-          <button @click="goToNextStep" class="btn-primary py-3 px-6" :disabled="selectedCategories.size === 0">
+          <button @click="goToNextStep" class="btn-primary" :disabled="selectedCategories.size === 0">
             Continue
           </button>
         </div>
@@ -55,12 +55,14 @@
         <OnboardingSettings :form="settingsForm" />
 
         <!-- Actions -->
-        <div class="mt-10 flex justify-between items-center">
-          <button @click="step = 1" class="btn-secondary py-3 px-6">Back</button>
-          <button @click="finishOnboarding" class="btn-primary py-3 px-6" :disabled="loading">
-            <LoadingSpinner v-if="loading" size="sm" />
-            <span v-else>Finish Setup</span>
-          </button>
+        <div class="max-w-md mx-auto">
+          <div class="mt-10 flex justify-between items-center">
+            <button @click="step = 1" class="btn-secondary">Back</button>
+            <button @click="finishOnboarding" class="btn-primary" :disabled="loading">
+              <LoadingSpinner v-if="loading" size="sm" />
+              <span v-else>Finish Setup</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -98,7 +100,7 @@ const predefinedIncome: Omit<Category, 'id' | 'created_at' | 'user_id' | 'is_def
   { name: 'Freelance', type: 'income', icon: 'Laptop', color: '#06b6d4' },
   { name: 'Investment', type: 'income', icon: 'DollarSign', color: '#f59e0b' },
   { name: 'Gifts', type: 'income', icon: 'Gift', color: '#d946ef' },
-  { name: 'Other', type: 'income', icon: 'Plus', color: '#6b7280' },
+  { name: 'Other', type: 'income', icon: 'MoreHorizontal', color: '#6b7280' },
 ];
 
 const selectedCategories = ref(new Set<Omit<Category, 'id' | 'created_at' | 'user_id' | 'is_default'>>());

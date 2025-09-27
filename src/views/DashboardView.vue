@@ -26,8 +26,8 @@
           </div>
 
           <button @click="configStore.toggleShowAmount" class="p-2 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-            <Unlock v-if="configStore.showAmount" class="w-5 h-5" />
-            <lock v-else class="w-5 h-5" />
+            <Unlock v-if="configStore.showAmount" class="size-4" />
+            <lock v-else class="size-4" />
           </button>
         </div>
 
