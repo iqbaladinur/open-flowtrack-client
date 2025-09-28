@@ -1,10 +1,11 @@
 <template>
   <div>
     <div
-      class="card p-3 transition-all relative rounded-2xl"
+      class="card p-3 transition-all relative rounded-2xl overflow-hidden"
+      :class="{ 'opacity-50': wallet.hidden }"
     >
       <!-- Wallet Info -->
-      <div class="p-2 border-2 border-transparent">
+      <div class="p-2 border-2 border-transparent relative">
         <div class="mb-6">
           <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2 flex items-start gap-2">
             <span>{{ wallet.name }}</span>
@@ -90,7 +91,7 @@
 <script setup lang="ts">
 import type { Wallet } from '@/types/wallet';
 import { useConfigStore } from '@/stores/config';
-import { Edit2, Trash2, TrendingUp, TrendingDown } from 'lucide-vue-next';
+import { Edit2, Trash2, TrendingUp, TrendingDown, Wallet as WalletIcon } from 'lucide-vue-next';
 
 defineProps({
   wallet: {
