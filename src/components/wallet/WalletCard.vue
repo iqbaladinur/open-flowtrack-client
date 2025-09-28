@@ -91,7 +91,7 @@
 <script setup lang="ts">
 import type { Wallet } from '@/types/wallet';
 import { useConfigStore } from '@/stores/config';
-import { Edit2, Trash2, TrendingUp, TrendingDown, Wallet as WalletIcon } from 'lucide-vue-next';
+import { Edit2, Trash2, TrendingUp, TrendingDown } from 'lucide-vue-next';
 
 defineProps({
   wallet: {
