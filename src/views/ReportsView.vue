@@ -186,7 +186,7 @@
 
         <!-- Time Series Chart -->
         <div class="card p-6">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <h2 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">
             {{ reportTitle }} ({{ configStore.currency }})
           </h2>
           <div class="h-96">
@@ -200,8 +200,8 @@
           <div class="card p-6 lg:min-h-[500px] flex flex-col gap-4">
             <div class="flex justify-between items-start mb-4 flex-col md:flex-row gap-4">
               <div>
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Breakdown by Category</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400">({{ configStore.currency }})</p>
+                <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Breakdown by Category ({{ configStore.currency }})</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400"></p>
               </div>
               <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full lg:w-auto">
                 <button @click="categoryReportType = 'expense'"
@@ -222,7 +222,7 @@
 
           <!-- Wallet Report -->
           <div class="card p-6 lg:min-h-[500px]">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <h2 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">
               Flow by Wallet ({{ configStore.currency }})
             </h2>
             <div v-if="walletReportData.length === 0" class="text-center py-8">
