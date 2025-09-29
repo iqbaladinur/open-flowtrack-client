@@ -1,17 +1,24 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useApi } from '@/composables/useApi';
-import type { Budget } from '@/types/budget';
+import type { Budget, CreateBudgetPayload, UpdateBudgetPayload } from '@/types/budget';
 
 export const useBudgetsStore = defineStore('budgets', () => {
   const budgets = ref<Budget[]>([]);
   const loading = ref(false);
   const api = useApi();
 
-  const fetchBudgets = async (year: number) => {
+  const fetchBudgets = async (startDate?: string, endDate?: string) => {
     loading.value = true;
+    let query = '';
+    if (startDate) {
+      query += `&start_date=${startDate}`; 
+    }
+    if (endDate) {
+      query += `&end_date=${endDate}`; 
+    }
     try {
-      const response = await api.get<Budget[]>(`/budgets?year=${year}`);
+      const response = await api.get<Budget[]>(`/budgets?${query}`);
       if (response.data) {
         budgets.value = response.data;
       }
@@ -20,33 +27,23 @@ export const useBudgetsStore = defineStore('budgets', () => {
     }
   };
 
-  const createBudget = async (budgetData: {
-    category_id: string;
-    limit_amount: number;
-    month: number;
-    year: number;
-  }) => {
+  const createBudget = async (budgetData: CreateBudgetPayload) => {
     const response = await api.post<Budget>('/budgets', budgetData);
     if (response.data) {
       budgets.value.push(response.data);
-      return { success: true };
+      return { success: true, data: response.data };
     }
     return { success: false, error: response.error };
   };
 
-  const updateBudget = async (
-    id: string,
-    budgetData: Partial<{
-      limit_amount: number;
-    }>
-  ) => {
+  const updateBudget = async (id: string, budgetData: UpdateBudgetPayload) => {
     const response = await api.patch<Budget>(`/budgets/${id}`, budgetData);
     if (response.data) {
       const index = budgets.value.findIndex((b) => b.id === id);
       if (index !== -1) {
         budgets.value[index] = { ...budgets.value[index], ...response.data };
       }
-      return { success: true };
+      return { success: true, data: response.data };
     }
     return { success: false, error: response.error };
   };
@@ -60,8 +57,14 @@ export const useBudgetsStore = defineStore('budgets', () => {
     return { success: false, error: response.error };
   };
 
-  const getBudgetById = (id: string) => {
-    return budgets.value.find((b) => b.id === id);
+  const getBudgetById = async (id: string) => {
+    const existing = budgets.value.find((b) => b.id === id);
+    if (existing && existing.total_spent !== undefined) {
+      return existing;
+    }
+
+    const response = await api.get<Budget>(`/budgets/${id}`);
+    return response.data;
   };
 
   return {

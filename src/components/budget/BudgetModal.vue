@@ -14,90 +14,74 @@
           Enter the limit for this budget.
         </p>
       </div>
-      <!-- Category -->
+
       <div>
-        <label for="category" class="label">Category</label>
-        <select
-          id="category"
-          v-model="form.category_id"
+        <label for="name" class="label">Budget Name</label>
+        <input
+          type="text"
+          id="name"
+          v-model="form.name"
           required
           class="input"
-          :disabled="loading || categoriesStore.loading || !!budget"
-        >
-          <option value="">Select a category</option>
-          <option
-            v-for="category in expenseCategories"
-            :key="category.id"
-            :value="category.id"
-          >
-            {{ category.name }}
-          </option>
-        </select>
-        <p v-if="budget" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          Category cannot be changed when editing a budget.
-        </p>
+          placeholder="e.g. Monthly Food Budget"
+          :disabled="loading"
+        />
       </div>
 
-      <!-- Month and Year -->
+      <!-- Start and End Date -->
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label for="month" class="label">Month</label>
-          <select
-            id="month"
-            v-model.number="form.month"
+          <label for="start_date" class="label">Start Date</label>
+          <input
+            type="date"
+            id="start_date"
+            v-model="form.start_date"
             required
             class="input"
-            :disabled="loading || !!budget"
-          >
-            <option v-for="(month, index) in months" :key="index" :value="index + 1">
-              {{ month }}
-            </option>
-          </select>
+            :disabled="loading"
+          />
         </div>
         <div>
-          <label for="year" class="label">Year</label>
-          <select
-            id="year"
-            v-model.number="form.year"
+          <label for="end_date" class="label">End Date</label>
+          <input
+            type="date"
+            id="end_date"
+            v-model="form.end_date"
             required
             class="input"
-            :disabled="loading || !!budget"
-          >
-            <option v-for="year in years" :key="year" :value="year">
-              {{ year }}
-            </option>
-          </select>
+            :disabled="loading"
+          />
         </div>
       </div>
 
-      <p v-if="budget" class="text-xs text-gray-500 dark:text-gray-400">
-        Month and year cannot be changed when editing a budget.
-      </p>
-
-      <!-- Budget Preview -->
-      <div v-if="selectedCategory" class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg relative">
-        <div class="flex items-center gap-4 mb-4">
-          <div
-            class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-            :style="{ backgroundColor: selectedCategory.color + '20', color: selectedCategory.color }"
+      <div>
+        <label class="label">Categories</label>
+        <div class="max-h-56 overflow-y-auto rounded-lg border dark:border-gray-700 p-2">
+          <div class="grid grid-cols-3 gap-2">
+            <div
+              v-for="category in expenseCategories"
+              :key="category.id"
+              @click="toggleCategory(category.id)"
+              class="relative card p-3 flex flex-col items-center justify-center text-center h-24 cursor-pointer border-2 transition-all truncate"
+              :class="form.category_ids.includes(category.id || 'nodata') ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-transparent hover:bg-gray-100 dark:hover:bg-gray-700 bg-gray-50 dark:bg-black/30'"
             >
-            <!-- @vue-ignore -->
-            <component :is="getIcon(selectedCategory.icon)" class="w-4 h-4" />
+              <!-- Selected Check Icon -->
+              <div v-if="form.category_ids.includes(category.id || 'nodata')" class="absolute top-2 right-2 w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center text-white">
+                <Check class="w-3 h-3" />
+              </div>
+
+              <!-- Category Icon -->
+              <div
+                class="w-8 h-8 rounded-full flex items-center justify-center mb-2"
+                :style="{ backgroundColor: category.color + '20' }"
+              >
+                <component :is="getIcon(category.icon)" class="w-4 h-4" :style="{ color: category.color }" />
+              </div>
+              <p class="text-xs text-gray-800 dark:text-gray-200 leading-tight truncate max-w-[80%]">
+                {{ category.name }}
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 class="font-bold text-sm text-gray-900 dark:text-white">
-              {{ selectedCategory.name }} Budget
-            </h3>
-          </div>
-        </div>
-        <div class="flex items-center justify-between">
-          <p class="text-gray-600 dark:text-gray-200 text-base">
-            Limit: {{ configStore.formatCurrency(form.limit_amount) }}
-          </p>
-        <div class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 dark:bg-gray-700 px-2.5 py-1 text-xs font-bold text-gray-600 dark:text-gray-300">
-          <CalendarDays class="w-4 h-4" />
-          <span>{{ getMonthName(form.month) }} {{ form.year }}</span>
-        </div>
         </div>
       </div>
 
@@ -138,10 +122,10 @@ import { useConfigStore } from '@/stores/config';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import CurrencyInput from '@/components/ui/CurrencyInput.vue';
-import type { Budget } from '@/types/budget';
-import { getMonthName } from '@/utils/dateHelper';
-import { CalendarDays } from 'lucide-vue-next';
+import type { Budget, CreateBudgetPayload, UpdateBudgetPayload } from '@/types/budget';
+import { Check } from 'lucide-vue-next';
 import { getIcon } from '@/utils/icons';
+import { format } from 'date-fns';
 
 interface Props {
   modelValue: boolean;
@@ -164,40 +148,53 @@ const configStore = useConfigStore();
 const loading = ref(false);
 const error = ref('');
 
-const months = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
-];
-
-const currentYear = new Date().getFullYear();
-const years = Array.from({ length: 5 }, (_, i) => currentYear + i - 2);
-
-const form = reactive({
-  category_id: '',
+const form = reactive<CreateBudgetPayload>({
+  name: '',
+  category_ids: [],
   limit_amount: 0,
-  month: new Date().getMonth() + 1,
-  year: currentYear,
+  start_date: '',
+  end_date: '',
 });
 
 const expenseCategories = computed(() => {
   return categoriesStore.getCategoriesByType('expense');
 });
 
-const selectedCategory = computed(() => {
-  return categoriesStore.getCategoryById(form.category_id);
-});
+const toggleCategory = (categoryId?: string) => {
+  if (!categoryId) {
+    return;
+  }
+
+  const index = form.category_ids.indexOf(categoryId);
+  if (index > -1) {
+    form.category_ids.splice(index, 1);
+  } else {
+    form.category_ids.push(categoryId);
+  }
+};
 
 const isFormValid = computed(() => {
-  return form.category_id && 
-         form.limit_amount > 0 && 
-         form.month >= 1 && form.month <= 12 && 
-         form.year;
+  return form.name &&
+         form.category_ids.length > 0 &&
+         form.limit_amount > 0 &&
+         form.start_date &&
+         form.end_date;
 });
 
 const isModalOpen = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value),
 });
+
+const formatDate = (dateString: string) => {
+  if (!dateString) return '';
+  return format(new Date(dateString), 'yyyy-MM-dd');
+};
+
+const formatDateForAPI = (dateString: string) => {
+  if (!dateString) return '';
+  return new Date(dateString).toISOString();
+};
 
 const handleSubmit = async () => {
   if (!isFormValid.value || loading.value) return;
@@ -206,26 +203,22 @@ const handleSubmit = async () => {
   error.value = '';
 
   try {
-    const budgetData = {
-      category_id: form.category_id,
-      limit_amount: form.limit_amount,
-      month: form.month,
-      year: form.year,
+    const payload = {
+      ...form,
+      start_date: formatDateForAPI(form.start_date),
+      end_date: formatDateForAPI(form.end_date),
     };
 
     let result;
     if (props.budget) {
-      // Only allow updating the limit amount
-      result = await budgetsStore.updateBudget(props.budget.id, {
-        limit_amount: form.limit_amount,
-      });
+      result = await budgetsStore.updateBudget(props.budget.id, payload as UpdateBudgetPayload);
     } else {
-      result = await budgetsStore.createBudget(budgetData);
+      result = await budgetsStore.createBudget(payload);
     }
 
     if (result.success) {
       emit('success');
-      resetForm();
+      isModalOpen.value = false;
     } else {
       error.value = result.error || 'Failed to save budget. Please try again.';
     }
@@ -237,22 +230,47 @@ const handleSubmit = async () => {
 };
 
 const resetForm = () => {
+  const { start, end } = getInitialDate();
+
   Object.assign(form, {
-    category_id: '',
+    name: '',
+    category_ids: [],
     limit_amount: 0,
-    month: new Date().getMonth() + 1,
-    year: currentYear,
+    start_date: start,
+    end_date: end,
   });
 };
+
+function getInitialDate() {
+  const today = new Date();
+  const firstDay = configStore.firstDayOfMonth;
+  
+  let startDate = new Date(today.getFullYear(), today.getMonth(), firstDay);
+
+  // If today's date is before the first day of this calendar month,
+  // it means we are still in the previous financial month.
+  if (today.getDate() < firstDay) {
+    startDate.setMonth(startDate.getMonth() - 1);
+  }
+
+  const endDate = new Date(startDate);
+  endDate.setMonth(startDate.getMonth() + 1);
+  endDate.setDate(firstDay - 1);
+  return {
+    start: format(startDate, 'yyyy-MM-dd'),
+    end:  format(endDate, 'yyyy-MM-dd'), 
+  }
+}
 
 // Watch for budget changes to populate form
 watch(() => props.budget, (newBudget) => {
   if (newBudget) {
     Object.assign(form, {
-      category_id: newBudget.category_id,
+      name: newBudget.name,
+      category_ids: [...newBudget.category_ids],
       limit_amount: Number(newBudget.limit_amount) || 0,
-      month: newBudget.month,
-      year: newBudget.year,
+      start_date: formatDate(newBudget.start_date),
+      end_date: formatDate(newBudget.end_date),
     });
   } else {
     resetForm();
@@ -261,5 +279,8 @@ watch(() => props.budget, (newBudget) => {
 
 onMounted(async () => {
   await categoriesStore.fetchCategories();
+  if (!props.budget) {
+    resetForm();
+  }
 });
 </script>
