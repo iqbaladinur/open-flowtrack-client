@@ -59,7 +59,7 @@ export const useBudgetsStore = defineStore('budgets', () => {
 
   const getBudgetById = async (id: string) => {
     const existing = budgets.value.find((b) => b.id === id);
-    if (existing && existing.spent_amount !== undefined) {
+    if (existing && existing.total_spent !== undefined) {
       return existing;
     }
 
