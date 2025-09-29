@@ -48,7 +48,7 @@
         </button>
       </div>
 
-      <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div v-else class="grid grid-cols-1 gap-6 lg:max-w-[400px] lg:mx-auto">
         <BudgetCard
           v-for="budget in budgets"
           :key="budget.id"

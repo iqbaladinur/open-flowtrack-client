@@ -1,13 +1,13 @@
 <template>
   <div class="card overflow-hidden transition-all duration-300 ease-in-out" :class="{ 'max-h-[1000px]': isDetailsVisible, 'max-h-[300px] sm:max-h-[300px]': !isDetailsVisible }">
-    <div class="p-5">
+    <div class="p-3">
       <!-- Header -->
       <div class="flex items-center justify-between w-full mb-4">
-        <div class="flex items-center gap-1.5 rounded-full bg-gray-100 dark:bg-gray-700 px-2.5 py-1 text-xs font-bold text-gray-600 dark:text-gray-300">
+        <div class="flex items-center gap-1.5 card p-2 text-xs font-bold text-gray-600 dark:text-gray-300">
           <CalendarDays class="w-4 h-4" />
           <span>{{ formatDateRange(budget.start_date, budget.end_date) }}</span>
         </div>
-        <div class="flex flex-col items-end gap-2">
+        <div class="flex flex-col items-end gap-2 card">
           <div class="flex items-center space-x-1">
             <button @click="$emit('edit', budget)" class="p-2 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
               <NotebookPen class="w-4 h-4" />
@@ -18,17 +18,16 @@
           </div>
         </div>
       </div>
-      <div class="flex items-start justify-between">
+      <div class="flex items-start justify-between card p-2">
         <div>
           <h3 class="font-bold text-sm text-gray-900 dark:text-white">
             {{ budget.name }}
           </h3>
-          <div class="flex items-center gap-2 mt-2 flex-wrap">
+          <div class="flex items-center mt-2 flex-wrap">
             <div
-              v-for="(category, i) in budgetCategories"
+              v-for="(category) in budgetCategories"
               :key="category.id"
               class="flex items-center rounded-full size-6 justify-center"
-              :class="{ '-ml-2': i > 0 }"
               :style="{ backgroundColor: category.color + '20', color: category.color }"
             >
               <component :is="getIcon(category.icon)" class="size-3" :title="category.name" />
@@ -49,12 +48,12 @@
           </p>
         </div>
         <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
-          <span>Spent: {{ configStore.formatCurrency(budget.spent_amount || 0) }}</span>
+          <span>Spent: {{ configStore.formatCurrency(budget.total_spent || 0) }}</span>
           <span>Limit: {{ configStore.formatCurrency(budget.limit_amount) }}</span>
         </div>
-        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
+        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
           <div
-            class="h-1 rounded-full transition-all duration-500"
+            class="h-2 rounded-full transition-all duration-500"
             :class="progressBarClass"
             :style="{ width: Math.min(getBudgetProgress(budget), 100) + '%' }"
           ></div>
@@ -123,7 +122,7 @@ const isDetailsVisible = ref(false);
 const isLoadingDetails = ref(false);
 const detailedTransactions = ref<Transaction[]>([]);
 
-const spentAmount = computed(() => props.budget.spent_amount || 0);
+const spentAmount = computed(() => props.budget.total_spent || 0);
 const isOverspent = computed(() => spentAmount.value > props.budget.limit_amount);
 
 const remainingAmount = computed(() => {
@@ -147,7 +146,7 @@ const progressBarClass = computed(() => {
 const getBudgetProgress = (budget: Budget) => {
   const limit = budget.limit_amount;
   if (limit === 0) return 100;
-  return ((budget.spent_amount || 0) / limit) * 100;
+  return ((budget.total_spent || 0) / limit) * 100;
 };
 
 const formatDateRange = (start: string, end: string) => {
@@ -167,16 +166,18 @@ const toggleDetails = async () => {
     
     const filters = {
       type: 'expense',
-      category_ids: props.budget.category_ids,
       start_date: props.budget.start_date,
       end_date: props.budget.end_date,
     };
+
+    const category_ids = props.budget.category_ids;
     
     try {
       // Assuming fetchTransactions can handle an array of category_ids
       // @ts-ignore
-      const result = await transactionsStore.fetchTransactions(filters, true);
-      detailedTransactions.value = result.data || [];
+      const result = await transactionsStore.fetchTransactions(filters, true, true);
+      console.log(result);
+      detailedTransactions.value = <Transaction[]>result?.filter((a: Transaction) => category_ids.includes(a.category_id || 'noid')) || [];
     } catch (error) {
       console.error("Failed to fetch transactions for budget:", error);
     } finally {

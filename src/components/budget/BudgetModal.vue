@@ -1,19 +1,6 @@
 <template>
   <Modal v-model="isModalOpen" :title="budget ? 'Edit Budget' : 'Create Budget'">
     <form @submit.prevent="handleSubmit" id="budget-form" class="space-y-4">
-      <div>
-        <label for="name" class="label">Budget Name</label>
-        <input
-          type="text"
-          id="name"
-          v-model="form.name"
-          required
-          class="input"
-          placeholder="e.g. Monthly Food Budget"
-          :disabled="loading"
-        />
-      </div>
-
       <div class="text-center">
         <label for="limit" class="label sr-only">Budget Limit</label>
         <CurrencyInput
@@ -29,26 +16,16 @@
       </div>
 
       <div>
-        <label for="category" class="label">Categories</label>
-        <select
-          id="category"
-          v-model="form.category_ids"
+        <label for="name" class="label">Budget Name</label>
+        <input
+          type="text"
+          id="name"
+          v-model="form.name"
           required
-          multiple
           class="input"
-          :disabled="loading || categoriesStore.loading"
-        >
-          <option
-            v-for="category in expenseCategories"
-            :key="category.id"
-            :value="category.id"
-          >
-            {{ category.name }}
-          </option>
-        </select>
-         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          Select one or more categories for this budget.
-        </p>
+          placeholder="e.g. Monthly Food Budget"
+          :disabled="loading"
+        />
       </div>
 
       <!-- Start and End Date -->
@@ -77,18 +54,33 @@
         </div>
       </div>
 
-      <!-- Budget Preview -->
-      <div v-if="form.name" class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg relative">
-        <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-2">
-          {{ form.name }}
-        </h3>
-        <div class="flex items-center justify-between">
-          <p class="text-gray-600 dark:text-gray-200 text-base">
-            Limit: {{ configStore.formatCurrency(form.limit_amount) }}
-          </p>
-          <div class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 dark:bg-gray-700 px-2.5 py-1 text-xs font-bold text-gray-600 dark:text-gray-300">
-            <CalendarDays class="w-4 h-4" />
-            <span>{{ formatDateRange(form.start_date, form.end_date) }}</span>
+      <div>
+        <label class="label">Categories</label>
+        <div class="max-h-56 overflow-y-auto rounded-lg border dark:border-gray-700 p-2">
+          <div class="grid grid-cols-3 gap-2">
+            <div
+              v-for="category in expenseCategories"
+              :key="category.id"
+              @click="toggleCategory(category.id)"
+              class="relative card p-3 flex flex-col items-center justify-center text-center h-24 cursor-pointer border-2 transition-all truncate"
+              :class="form.category_ids.includes(category.id || 'nodata') ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-transparent hover:bg-gray-100 dark:hover:bg-gray-700'"
+            >
+              <!-- Selected Check Icon -->
+              <div v-if="form.category_ids.includes(category.id || 'nodata')" class="absolute top-2 right-2 w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center text-white">
+                <Check class="w-3 h-3" />
+              </div>
+
+              <!-- Category Icon -->
+              <div
+                class="w-8 h-8 rounded-full flex items-center justify-center mb-2"
+                :style="{ backgroundColor: category.color + '20' }"
+              >
+                <component :is="getIcon(category.icon)" class="w-4 h-4" :style="{ color: category.color }" />
+              </div>
+              <p class="text-xs text-gray-800 dark:text-gray-200 leading-tight truncate max-w-[80%]">
+                {{ category.name }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -131,7 +123,8 @@ import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import CurrencyInput from '@/components/ui/CurrencyInput.vue';
 import type { Budget, CreateBudgetPayload, UpdateBudgetPayload } from '@/types/budget';
-import { CalendarDays } from 'lucide-vue-next';
+import { Check } from 'lucide-vue-next';
+import { getIcon } from '@/utils/icons';
 import { format } from 'date-fns';
 
 interface Props {
@@ -150,7 +143,6 @@ const emit = defineEmits<{
 
 const budgetsStore = useBudgetsStore();
 const categoriesStore = useCategoriesStore();
-const configStore = useConfigStore();
 
 const loading = ref(false);
 const error = ref('');
@@ -166,6 +158,19 @@ const form = reactive<CreateBudgetPayload>({
 const expenseCategories = computed(() => {
   return categoriesStore.getCategoriesByType('expense');
 });
+
+const toggleCategory = (categoryId?: string) => {
+  if (!categoryId) {
+    return;
+  }
+
+  const index = form.category_ids.indexOf(categoryId);
+  if (index > -1) {
+    form.category_ids.splice(index, 1);
+  } else {
+    form.category_ids.push(categoryId);
+  }
+};
 
 const isFormValid = computed(() => {
   return form.name &&
@@ -235,13 +240,6 @@ const resetForm = () => {
     start_date: firstDay,
     end_date: lastDay,
   });
-};
-
-const formatDateRange = (start: string, end: string) => {
-  if (!start || !end) return 'Select dates';
-  const startDate = format(new Date(start), 'MMM d');
-  const endDate = format(new Date(end), 'MMM d, yyyy');
-  return `${startDate} - ${endDate}`;
 };
 
 // Watch for budget changes to populate form

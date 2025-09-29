@@ -16,7 +16,8 @@ export const useTransactionsStore = defineStore('transactions', () => {
       category_id?: string;
       type?: TransactionType;
     },
-    force = false
+    force = false,
+    getdata = false,
   ) => {
     const hasFilters = filters && Object.keys(filters).length > 0;
     if (!hasFilters && transactions.value.length > 0 && !force) {
@@ -30,10 +31,16 @@ export const useTransactionsStore = defineStore('transactions', () => {
         params: filters,
       });
       if (response.data) {
-        transactions.value = response.data.map(t => ({
+        const mapping = response.data.map(t => ({
           ...t,
           amount: parseFloat(t.amount as any) || 0,
         }));
+
+        if (getdata) {
+          loading.value = false;
+          return mapping;
+        }
+        transactions.value = mapping;
       }
     } finally {
       loading.value = false;

@@ -8,7 +8,7 @@ export interface Budget {
   limit_amount: number;
   start_date: string;
   end_date: string;
-  spent_amount?: number;
+  total_spent?: number;
   created_at?: string;
   updated_at?: string;
 }
