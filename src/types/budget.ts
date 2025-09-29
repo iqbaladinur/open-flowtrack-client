@@ -1,14 +1,24 @@
-import type { Category } from './category';
+import { Category } from "./category";
 
 export interface Budget {
   id: string;
-  category_id: string;
+  name: string;
+  category_ids: string[];
+  categories: Category[];
   limit_amount: number;
-  month: number;
-  year: number;
-  user_id: string;
-  created_at: string;
-  updated_at: string;
-  category: Category;
-  total_spent: number;
+  start_date: string;
+  end_date: string;
+  spent_amount?: number;
+  created_at?: string;
+  updated_at?: string;
 }
+
+export type CreateBudgetPayload = {
+  name: string;
+  category_ids: string[];
+  limit_amount: number;
+  start_date: string;
+  end_date: string;
+};
+
+export type UpdateBudgetPayload = Partial<CreateBudgetPayload>;

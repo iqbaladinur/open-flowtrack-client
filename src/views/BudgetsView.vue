@@ -9,11 +9,20 @@
             Set spending limits and track your progress
           </p>
         </div>
-        <div class="flex items-center gap-2 self-end sm:self-auto">
-          <button @click="showYearSelector = true" class="btn-secondary text-xs">
-            <Calendar class="size-4 mr-2" />
-            <span>{{ selectedYear }}</span>
-          </button>
+        <div class="flex items-center flex-wrap gap-2 justify-between">
+          <div class="flex items-center gap-3 justify-start">
+            <button @click="goToPreviousPeriod" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
+              <ChevronLeft class="size-4" />
+            </button>
+            <button @click="goToNextPeriod" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
+              <ChevronRight class="size-4" />
+            </button>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="date" v-model="dateRange.start" @change="fetchBudgets" class="input text-xs" />
+            <span class="text-gray-500">-</span>
+            <input type="date" v-model="dateRange.end" @change="fetchBudgets" class="input text-xs" />
+          </div>
           <button @click="showAddModal = true" class="btn-primary hidden sm:flex p-2">
             <Plus class="size-4" />
           </button>
@@ -29,9 +38,9 @@
         <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
           <Target class="w-8 h-8 text-gray-400" />
         </div>
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No budgets for {{ selectedYear }}</h3>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No budgets found</h3>
         <p class="text-gray-500 dark:text-gray-400 mb-6">
-          Create your first budget for this year to start tracking your spending.
+          Create your first budget for the selected date range to start tracking your spending.
         </p>
         <button @click="showAddModal = true" class="btn-primary">
           <Target class="w-4 h-4 mr-2" />
@@ -62,62 +71,41 @@
       :budget="selectedBudget"
       @success="handleBudgetSaved"
     />
-
-    <!-- Year Selector Modal -->
-    <Modal v-model="showYearSelector" title="Select Year">
-      <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-[60vh] overflow-y-auto">
-        <button
-          v-for="year in yearList"
-          :key="year"
-          @click="selectYear(year)"
-          class="p-3 rounded-lg text-center font-medium transition-colors"
-          :class="year === selectedYear 
-            ? 'bg-primary-600 text-white shadow' 
-            : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'"
-        >
-          {{ year }}
-        </button>
-      </div>
-    </Modal>
   </AppLayout>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, watch, reactive } from 'vue';
 import { useBudgetsStore } from '@/stores/budgets';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import BudgetModal from '@/components/budget/BudgetModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import BudgetCard from '@/components/budget/BudgetCard.vue';
-import Modal from '@/components/ui/Modal.vue';
 import type { Budget } from '@/types/budget';
-import { Plus, Target, Calendar } from 'lucide-vue-next';
+import { Plus, Target, ChevronRight, ChevronLeft } from 'lucide-vue-next';
+import { format, parseISO } from 'date-fns';
+import { useConfigStore } from '@/stores/config';
 
 const budgetsStore = useBudgetsStore();
-
+const configStore = useConfigStore();
 const showAddModal = ref(false);
 const selectedBudget = ref<Budget | null>(null);
-const showYearSelector = ref(false);
-const selectedYear = ref(new Date().getFullYear());
 
-const yearList = computed(() => {
-  const currentYear = new Date().getFullYear();
-  const years = [];
-  for (let i = currentYear + 25; i >= currentYear - 25; i--) {
-    years.push(i);
-  }
-  return years;
+const dateRange = reactive({
+  start: '',
+  end: '',
 });
 
 const budgets = computed(() => {
   return budgetsStore.budgets
     .slice()
-    .sort((a, b) => b.month - a.month);
+    .sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime());
 });
 
-const selectYear = (year: number) => {
-  selectedYear.value = year;
-  showYearSelector.value = false;
+const fetchBudgets = () => {
+  const startDate = dateRange.start ? new Date(dateRange.start).toISOString() : undefined;
+  const endDate = dateRange.end ? new Date(dateRange.end).toISOString() : undefined;
+  budgetsStore.fetchBudgets(startDate, endDate);
 };
 
 const editBudget = (budget: Budget) => {
@@ -136,8 +124,68 @@ const deleteBudget = async (id: string) => {
 
 const handleBudgetSaved = () => {
   showAddModal.value = false;
-  budgetsStore.fetchBudgets(selectedYear.value);
+  fetchBudgets();
 };
+
+function setInitialDate() {
+  const today = new Date();
+  const firstDay = configStore.firstDayOfMonth;
+  
+  let startDate = new Date(today.getFullYear(), today.getMonth(), firstDay);
+
+  // If today's date is before the first day of this calendar month,
+  // it means we are still in the previous financial month.
+  if (today.getDate() < firstDay) {
+    startDate.setMonth(startDate.getMonth() - 1);
+  }
+
+  const endDate = new Date(startDate);
+  endDate.setMonth(startDate.getMonth() + 1);
+  endDate.setDate(firstDay - 1);
+
+  dateRange.start = format(startDate, 'yyyy-MM-dd');
+  dateRange.end = format(endDate, 'yyyy-MM-dd');
+}
+
+const navigatePeriod = (direction: 'previous' | 'next') => {
+  if (!dateRange.start || !dateRange.end) return;
+  
+  const firstDay = configStore.firstDayOfMonth;
+  const start = parseISO(dateRange.start);
+  
+  if (direction === 'previous') {
+    // Move to previous month's configured date
+    const newStart = new Date(start);
+    newStart.setMonth(newStart.getMonth() - 1);
+    newStart.setDate(firstDay);
+    
+    // Set end date to day before the configured date
+    const newEnd = new Date(newStart);
+    newEnd.setMonth(newEnd.getMonth() + 1);
+    newEnd.setDate(firstDay - 1);
+    
+    dateRange.start = format(newStart, 'yyyy-MM-dd');
+    dateRange.end = format(newEnd, 'yyyy-MM-dd');
+  } else {
+    // Move to next month's configured date
+    const newStart = new Date(start);
+    newStart.setMonth(newStart.getMonth() + 1);
+    newStart.setDate(firstDay);
+    
+    // Set end date to day before the configured date
+    const newEnd = new Date(newStart);
+    newEnd.setMonth(newEnd.getMonth() + 1);
+    newEnd.setDate(firstDay - 1);
+    
+    dateRange.start = format(newStart, 'yyyy-MM-dd');
+    dateRange.end = format(newEnd, 'yyyy-MM-dd');
+  }
+
+  fetchBudgets();
+}
+
+const goToPreviousPeriod = () => navigatePeriod('previous');
+const goToNextPeriod = () => navigatePeriod('next');
 
 watch(showAddModal, (isShowing) => {
   if (!isShowing) {
@@ -145,11 +193,8 @@ watch(showAddModal, (isShowing) => {
   }
 });
 
-watch(selectedYear, (newYear) => {
-  budgetsStore.fetchBudgets(newYear);
-}, { immediate: true });
-
-onMounted(async () => {
-  // The immediate watcher on selectedYear handles the initial fetch
+onMounted(() => {
+  setInitialDate();
+  fetchBudgets();
 });
 </script>

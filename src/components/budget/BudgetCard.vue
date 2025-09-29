@@ -5,7 +5,7 @@
       <div class="flex items-center justify-between w-full mb-4">
         <div class="flex items-center gap-1.5 rounded-full bg-gray-100 dark:bg-gray-700 px-2.5 py-1 text-xs font-bold text-gray-600 dark:text-gray-300">
           <CalendarDays class="w-4 h-4" />
-          <span>{{ getMonthName(budget.month) }} {{ budget.year }}</span>
+          <span>{{ formatDateRange(budget.start_date, budget.end_date) }}</span>
         </div>
         <div class="flex flex-col items-end gap-2">
           <div class="flex items-center space-x-1">
@@ -19,18 +19,20 @@
         </div>
       </div>
       <div class="flex items-start justify-between">
-        <div class="flex items-center gap-4">
-          <div
-            class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-            :style="{ backgroundColor: budget.category.color + '20', color: budget.category.color }"
-          >
-            <!-- @vue-ignore -->
-            <component :is="getIcon(budget.category.icon)" class="w-4 h-4" />
-          </div>
-          <div>
-            <h3 class="font-bold text-sm text-gray-900 dark:text-white">
-              {{ budget.category.name }} Budget
-            </h3>
+        <div>
+          <h3 class="font-bold text-sm text-gray-900 dark:text-white">
+            {{ budget.name }}
+          </h3>
+          <div class="flex items-center gap-2 mt-2 flex-wrap">
+            <div
+              v-for="(category, i) in budgetCategories"
+              :key="category.id"
+              class="flex items-center rounded-full size-6 justify-center"
+              :class="{ '-ml-2': i > 0 }"
+              :style="{ backgroundColor: category.color + '20', color: category.color }"
+            >
+              <component :is="getIcon(category.icon)" class="size-3" :title="category.name" />
+            </div>
           </div>
         </div>
       </div>
@@ -47,7 +49,7 @@
           </p>
         </div>
         <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
-          <span>Spent: {{ configStore.formatCurrency(budget.total_spent) }}</span>
+          <span>Spent: {{ configStore.formatCurrency(budget.spent_amount || 0) }}</span>
           <span>Limit: {{ configStore.formatCurrency(budget.limit_amount) }}</span>
         </div>
         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
@@ -88,18 +90,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import type { PropType } from 'vue';
 import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
+import { useCategoriesStore } from '@/stores/categories';
 import type { Budget } from '@/types/budget';
 import type { Transaction } from '@/types/transaction';
 import { getIcon } from '@/utils/icons';
 import { Trash2, ChevronDown, CalendarDays, NotebookPen } from 'lucide-vue-next';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import { startOfMonth, endOfMonth } from 'date-fns';
-import { getMonthName } from '@/utils/dateHelper';
+import { format } from 'date-fns';
 
 const props = defineProps({
   budget: {
@@ -115,16 +117,22 @@ defineEmits<{
 
 const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
+const categoriesStore = useCategoriesStore();
 
 const isDetailsVisible = ref(false);
 const isLoadingDetails = ref(false);
 const detailedTransactions = ref<Transaction[]>([]);
 
-const isOverspent = computed(() => props.budget.total_spent > props.budget.limit_amount);
+const spentAmount = computed(() => props.budget.spent_amount || 0);
+const isOverspent = computed(() => spentAmount.value > props.budget.limit_amount);
 
 const remainingAmount = computed(() => {
-  const remaining = props.budget.limit_amount - props.budget.total_spent;
+  const remaining = props.budget.limit_amount - spentAmount.value;
   return Math.abs(remaining);
+});
+
+const budgetCategories = computed(() => {
+  return props.budget.categories;
 });
 
 const progressBarClass = computed(() => {
@@ -138,8 +146,18 @@ const progressBarClass = computed(() => {
 
 const getBudgetProgress = (budget: Budget) => {
   const limit = budget.limit_amount;
-  if (limit === 0) return 100; // If limit is 0, any spending is 100% over
-  return (budget.total_spent / limit) * 100;
+  if (limit === 0) return 100;
+  return ((budget.spent_amount || 0) / limit) * 100;
+};
+
+const formatDateRange = (start: string, end: string) => {
+  if (!start || !end) return '';
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  if (startDate.getMonth() === endDate.getMonth() && startDate.getFullYear() === endDate.getFullYear()) {
+    return format(startDate, 'MMMM yyyy');
+  }
+  return `${format(startDate, 'MMM d')} - ${format(endDate, 'MMM d, yyyy')}`;
 };
 
 const toggleDetails = async () => {
@@ -147,30 +165,27 @@ const toggleDetails = async () => {
   if (isDetailsVisible.value && detailedTransactions.value.length === 0) {
     isLoadingDetails.value = true;
     
-    const year = props.budget.year;
-    const month = props.budget.month;
-    
-    const lastDay = new Date(year, month, 0).getDate();
-    
-    const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
-    const endDate = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
-
     const filters = {
       type: 'expense',
-      category_id: props.budget.category_id,
-      start_date: startOfMonth(new Date(startDate)).toISOString(),
-      end_date: endOfMonth(new Date(endDate)).toISOString(),
+      category_ids: props.budget.category_ids,
+      start_date: props.budget.start_date,
+      end_date: props.budget.end_date,
     };
-    // @ts-ignore
-    await transactionsStore.fetchTransactions(filters, true);
     
-    detailedTransactions.value = transactionsStore.transactions.filter(t => 
-      t.category_id === props.budget.category_id &&
-      t.date >= startDate &&
-      t.date <= endDate
-    );
-
-    isLoadingDetails.value = false;
+    try {
+      // Assuming fetchTransactions can handle an array of category_ids
+      // @ts-ignore
+      const result = await transactionsStore.fetchTransactions(filters, true);
+      detailedTransactions.value = result.data || [];
+    } catch (error) {
+      console.error("Failed to fetch transactions for budget:", error);
+    } finally {
+      isLoadingDetails.value = false;
+    }
   }
 };
+
+onMounted(() => {
+  categoriesStore.fetchCategories();
+});
 </script>
