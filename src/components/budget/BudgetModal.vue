@@ -63,7 +63,7 @@
               :key="category.id"
               @click="toggleCategory(category.id)"
               class="relative card p-3 flex flex-col items-center justify-center text-center h-24 cursor-pointer border-2 transition-all truncate"
-              :class="form.category_ids.includes(category.id || 'nodata') ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-transparent hover:bg-gray-100 dark:hover:bg-gray-700'"
+              :class="form.category_ids.includes(category.id || 'nodata') ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-transparent hover:bg-gray-100 dark:hover:bg-gray-700 bg-gray-50 dark:bg-black/30'"
             >
               <!-- Selected Check Icon -->
               <div v-if="form.category_ids.includes(category.id || 'nodata')" class="absolute top-2 right-2 w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center text-white">

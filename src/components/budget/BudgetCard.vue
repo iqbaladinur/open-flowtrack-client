@@ -29,8 +29,9 @@
               :key="category.id"
               class="flex items-center rounded-full size-6 justify-center"
               :style="{ backgroundColor: category.color + '20', color: category.color }"
+              :title="category.name"
             >
-              <component :is="getIcon(category.icon)" class="size-3" :title="category.name" />
+              <component :is="getIcon(category.icon)" class="size-3" />
             </div>
           </div>
         </div>
