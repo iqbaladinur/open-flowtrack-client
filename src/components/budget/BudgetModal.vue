@@ -143,6 +143,7 @@ const emit = defineEmits<{
 
 const budgetsStore = useBudgetsStore();
 const categoriesStore = useCategoriesStore();
+const configStore = useConfigStore();
 
 const loading = ref(false);
 const error = ref('');
@@ -229,18 +230,37 @@ const handleSubmit = async () => {
 };
 
 const resetForm = () => {
-  const today = new Date();
-  const firstDay = format(new Date(today.getFullYear(), today.getMonth(), 1), 'yyyy-MM-dd');
-  const lastDay = format(new Date(today.getFullYear(), today.getMonth() + 1, 0), 'yyyy-MM-dd');
+  const { start, end } = getInitialDate();
 
   Object.assign(form, {
     name: '',
     category_ids: [],
     limit_amount: 0,
-    start_date: firstDay,
-    end_date: lastDay,
+    start_date: start,
+    end_date: end,
   });
 };
+
+function getInitialDate() {
+  const today = new Date();
+  const firstDay = configStore.firstDayOfMonth;
+  
+  let startDate = new Date(today.getFullYear(), today.getMonth(), firstDay);
+
+  // If today's date is before the first day of this calendar month,
+  // it means we are still in the previous financial month.
+  if (today.getDate() < firstDay) {
+    startDate.setMonth(startDate.getMonth() - 1);
+  }
+
+  const endDate = new Date(startDate);
+  endDate.setMonth(startDate.getMonth() + 1);
+  endDate.setDate(firstDay - 1);
+  return {
+    start: format(startDate, 'yyyy-MM-dd'),
+    end:  format(endDate, 'yyyy-MM-dd'), 
+  }
+}
 
 // Watch for budget changes to populate form
 watch(() => props.budget, (newBudget) => {
