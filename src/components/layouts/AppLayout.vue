@@ -86,13 +86,13 @@
                 <p v-show="!uiStore.isSidebarMinimized" class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Theme</p>
                 <div class="flex p-1 rounded-lg bg-gray-100 dark:bg-gray-700/50" :class="uiStore.isSidebarMinimized ? 'flex-col space-y-1' : 'justify-around'">
                   <button @click="themeStore.setTheme('light')" class="p-2 rounded-md flex-1 text-center" :class="{ 'bg-white dark:bg-gray-600 shadow': themeStore.theme === 'light' }">
-                    <Sun class="text-gray-700 dark:text-gray-300 mx-auto" :class="{ 'w-5 h-5': !uiStore.isSidebarMinimized ,'w-4 h-4': uiStore.isSidebarMinimized }" />
+                    <Sun class="text-gray-700 dark:text-gray-300 mx-auto" :class="{ 'size-4': !uiStore.isSidebarMinimized ,'w-4 h-4': uiStore.isSidebarMinimized }" />
                   </button>
                   <button @click="themeStore.setTheme('dark')" class="p-2 rounded-md flex-1 text-center" :class="{ 'bg-white dark:bg-gray-600 shadow': themeStore.theme === 'dark' }">
-                    <Moon class="text-gray-700 dark:text-gray-300 mx-auto" :class="{ 'w-5 h-5': !uiStore.isSidebarMinimized ,'w-4 h-4': uiStore.isSidebarMinimized }" />
+                    <Moon class="text-gray-700 dark:text-gray-300 mx-auto" :class="{ 'size-4': !uiStore.isSidebarMinimized ,'w-4 h-4': uiStore.isSidebarMinimized }" />
                   </button>
                   <button @click="themeStore.setTheme('system')" class="p-2 rounded-md flex-1 text-center" :class="{ 'bg-white dark:bg-gray-600 shadow': themeStore.theme === 'system' }">
-                    <Laptop class="text-gray-700 dark:text-gray-300 mx-auto" :class="{ 'w-5 h-5': !uiStore.isSidebarMinimized ,'w-4 h-4': uiStore.isSidebarMinimized }" />
+                    <Laptop class="text-gray-700 dark:text-gray-300 mx-auto" :class="{ 'size-4': !uiStore.isSidebarMinimized ,'w-4 h-4': uiStore.isSidebarMinimized }" />
                   </button>
                 </div>
               </div>
