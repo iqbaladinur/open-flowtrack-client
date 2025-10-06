@@ -52,7 +52,7 @@
             <p class="text-xs text-gray-500 dark:text-gray-400">{{ dateRangeSubtitle }}</p>
           </div>
           <div
-            class="flex lg:grid lg:grid-cols-5 lg:gap-4 overflow-x-auto space-x-3 lg:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+            class="flex lg:grid lg:grid-cols-6 lg:gap-4 overflow-x-auto space-x-3 lg:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
             <SummaryCard3
               title="Income"
               :value="periodIncome"
@@ -96,6 +96,19 @@
                 'text-success-600 dark:text-success-400': netIncome > 0,
                 'text-gray-800 dark:text-gray-200': netIncome === 0,
                 'text-error-600 dark:text-error-400': netIncome < 0,
+              }"
+            />
+            <SummaryCard3
+              title="Net Cash flow"
+              :value="netCashFlow"
+              :prefix="netCashFlow >= 0 ? '+' : ''"
+              :icon="ArrowLeftRight"
+              icon-bg-class="!bg-purple-100 dark:!bg-purple-100/10"
+              icon-class="text-purple-600 dark:text-purple-400"
+              :value-class="{
+                'text-success-600 dark:text-success-400': netCashFlow > 0,
+                'text-gray-800 dark:text-gray-200': netCashFlow === 0,
+                'text-error-600 dark:text-error-400': netCashFlow < 0,
               }"
             />
           </div>
@@ -259,7 +272,7 @@ import WalletCard from '@/components/wallet/WalletCard.vue';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import type { Wallet } from '@/types/wallet';
 import type { Transaction, TransactionType } from '@/types/transaction';
-import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, FilterX, Scale, ArrowUpRight, ArrowDownRight, ArrowRightLeft, Tag, ChevronLeft, ChevronRight } from 'lucide-vue-next';
+import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, FilterX, Scale, ArrowUpRight, ArrowDownRight, ArrowRightLeft, Tag, ChevronLeft, ChevronRight, ArrowLeftRight } from 'lucide-vue-next';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay, parseISO } from 'date-fns';
 import WalletModal from '@/components/wallet/WalletModal.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
@@ -341,6 +354,10 @@ const periodTransferIn = computed(() => {
 
 const netIncome = computed(() => {
   return periodIncome.value - periodExpense.value
+});
+
+const netCashFlow = computed(() => {
+  return netIncome.value + periodTransferIn.value - periodTransferOut.value;
 });
 
 
