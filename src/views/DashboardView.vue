@@ -501,7 +501,7 @@ function setInitialBudgetActiveDate() {
 }
 
 onMounted(async () => {
-  configStore.fetchConfig();
+  await configStore.fetchConfig();
   const today = endDateSummary.value;
   const someDaysBefore = subDays(today, 4);
   const todayIso = today.toISOString();
