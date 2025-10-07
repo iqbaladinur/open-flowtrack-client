@@ -1,5 +1,5 @@
 <template>
-  <div class="card overflow-hidden transition-all duration-300 ease-in-out" :class="{ 'max-h-[1000px]': isDetailsVisible, 'max-h-[300px] sm:max-h-[300px]': !isDetailsVisible }">
+  <div class="overflow-hidden transition-all duration-300 ease-in-out" :class="{ 'max-h-[1000px]': isDetailsVisible, 'max-h-[300px] sm:max-h-[300px]': !isDetailsVisible, 'card': !simpleView }">
     <div class="p-3">
       <!-- Header -->
       <div v-if="!simpleView" class="flex items-center justify-between w-full mb-4">
@@ -18,7 +18,7 @@
           </div>
         </div>
       </div>
-      <div class="flex items-start justify-between card p-2" :class="{ '!bg-transparent': simpleView }">
+      <div class="flex items-start justify-between" :class="{ 'card p-2': !simpleView }">
         <div :class="{ 'flex items-center gap-3 justify-between w-full': simpleView }">
           <h3 class="font-bold text-sm text-gray-900 dark:text-white" :class="{ 'text-xs font-normal truncate': simpleView }">
             {{ budget.name }}
