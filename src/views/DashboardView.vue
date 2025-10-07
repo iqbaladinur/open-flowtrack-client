@@ -184,14 +184,14 @@
                 to="/budgets"
                 class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
-                <LucideArrowUpRightFromSquare class="w-4 h-4"/>
+                <LucideArrowUpRightFromSquare class="size-4"/>
               </router-link>
             </div>
           </div>
 
           <div v-if="budgets.length === 0 && !budgetsStore.loading" class="text-center py-8 m-auto">
             <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-              <ArrowUpDown class="w-8 h-8 text-gray-400" />
+              <Target class="size-8 text-gray-400" />
             </div>
             <p class="text-gray-500 dark:text-gray-400 mb-4">No Budget Active this Period</p>
           </div>
@@ -283,7 +283,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Lock,
-  Unlock
+  Unlock,
+  Target
 } from 'lucide-vue-next';
 import { endOfDay, format, parseISO, subDays } from 'date-fns';
 import { reactive } from 'vue';
