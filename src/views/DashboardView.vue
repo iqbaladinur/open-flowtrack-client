@@ -184,7 +184,7 @@
             <p class="text-gray-500 dark:text-gray-400 mb-4">No Budget Active this Period</p>
           </div>
 
-          <div v-else class="space-y-3">
+          <div v-else class="space-y-3 my-auto">
             <BudgetCard
               v-for="budget in budgets"
               :key="`budgetlist_` + budget.id"
