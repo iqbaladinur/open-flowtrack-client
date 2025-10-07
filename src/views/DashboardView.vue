@@ -162,35 +162,67 @@
         </div>
       </div>
 
-      <!-- Recent Transactions -->
-      <div class="card p-4">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">Recent Transactions</h2>
-          <router-link
-            to="/transactions"
-            class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
-          >
-            <LucideArrowUpRightFromSquare class="w-4 h-4"/>
-          </router-link>
-        </div>
-
-        <div v-if="recentTransactions.length === 0" class="text-center py-8">
-          <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-            <ArrowUpDown class="w-8 h-8 text-gray-400" />
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="card p-4 flex flex-col">
+          <div class="flex items-center lg:items-start justify-between mb-4">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">Active Budget</h2>
+              <p class="text-xs italic text-slate-700 dark:text-slate-200">{{ activeBudgetPeriod }}</p>
+            </div>
+            <router-link
+              to="/budgets"
+              class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+            >
+              <LucideArrowUpRightFromSquare class="w-4 h-4"/>
+            </router-link>
           </div>
-          <p class="text-gray-500 dark:text-gray-400 mb-4">No transactions yet</p>
-          <button @click="showAddTransactionModal = true" class="btn-primary">
-            Add your first transaction
-          </button>
-        </div>
 
-        <div v-else class="space-y-3">
-          <TransactionItem
-            v-for="transaction in recentTransactions"
-            :key="transaction.id"
-            :transaction="transaction"
-            class="rounded-xl -mx-3"
-          />
+          <div v-if="budgets.length === 0" class="text-center py-8 m-auto">
+            <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+              <ArrowUpDown class="w-8 h-8 text-gray-400" />
+            </div>
+            <p class="text-gray-500 dark:text-gray-400 mb-4">No Budget Active this Period</p>
+          </div>
+
+          <div v-else class="space-y-3">
+            <BudgetCard
+              v-for="budget in budgets"
+              :key="`budgetlist_` + budget.id"
+              :budget="budget"
+              :simple-view="true"
+            />
+          </div>
+        </div>
+        <!-- Recent Transactions -->
+        <div class="card p-4">
+          <div class="flex items-center lg:items-start justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">Recent Transactions</h2>
+            <router-link
+              to="/transactions"
+              class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+            >
+              <LucideArrowUpRightFromSquare class="w-4 h-4"/>
+            </router-link>
+          </div>
+
+          <div v-if="recentTransactions.length === 0" class="text-center py-8">
+            <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+              <ArrowUpDown class="w-8 h-8 text-gray-400" />
+            </div>
+            <p class="text-gray-500 dark:text-gray-400 mb-4">No transactions yet</p>
+            <button @click="showAddTransactionModal = true" class="btn-primary">
+              Add your first transaction
+            </button>
+          </div>
+
+          <div v-else class="space-y-3">
+            <TransactionItem
+              v-for="transaction in recentTransactions"
+              :key="transaction.id"
+              :transaction="transaction"
+              class="rounded-xl -mx-3"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -219,6 +251,7 @@ import QuickActionButton from '@/components/shared/QuickActionButton.vue';
 // import SummaryCard2 from '@/components/dashboard/SummaryCard2.vue';
 import SummaryCard3 from '@/components/dashboard/SummaryCard3.vue';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
+import BudgetCard from '@/components/budget/BudgetCard.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import {
   Wallet,
@@ -240,6 +273,7 @@ import { endOfDay, format, parseISO, subDays } from 'date-fns';
 import { reactive } from 'vue';
 import { useReportsStore } from '@/stores/reports';
 import type { TransactionType } from '@/types/transaction';
+import { useBudgetsStore } from '@/stores/budgets';
 
 const authStore = useAuthStore();
 const walletsStore = useWalletsStore();
@@ -247,16 +281,29 @@ const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
 const analyticsStore = useAnalyticsStore();
 const reportsStore = useReportsStore();
+const budgetsStore = useBudgetsStore();
 const { analyticsSugestion, loading: analyticsLoading } = storeToRefs(analyticsStore);
 
 const showAddTransactionModal = ref(false);
 const transactionType = ref<TransactionType>('income');
 
 const endDateSummary = ref(endOfDay(new Date()));
+const activeBudgetDate = reactive({
+  start: '',
+  end: ''
+});
 
 const readableDate = computed(() => {
   return format(endOfDay(endDateSummary.value), 'E, dd MMM')
 });
+
+const activeBudgetPeriod = computed(() => {
+  if (activeBudgetDate.start && activeBudgetDate.end) {
+    return `${format(endOfDay(activeBudgetDate.start), 'E, dd MMM')} - ${format(endOfDay(activeBudgetDate.end), 'E, dd MMM')}`
+  }
+
+  return 'No Date'
+})
 
 const totalBalance = computed(() => {
   return walletsStore.wallets
@@ -358,6 +405,20 @@ const nextDate = () => {
   const todayIso = endDateSummary.value.toISOString();
   walletsStore.fetchWallets(true, undefined, todayIso);
   setSummary({ endDate: todayIso, includeHidden: configStore.includeHiddenWalletsInCalculation });
+
+  // active budget date
+
+  const newStartBudget = new Date(start);
+  newStartBudget.setMonth(newStartBudget.getMonth() + 1);
+  newStartBudget.setDate(firstDay);
+  // Set end date to day before the configured date
+  const newEndBudget = new Date(newStartBudget);
+  newEndBudget.setMonth(newEndBudget.getMonth() + 1);
+  newEndBudget.setDate(firstDay - 1);
+  activeBudgetDate.start = format(newStartBudget, 'yyyy-MM-dd');
+  activeBudgetDate.end = format(newEndBudget, 'yyyy-MM-dd');
+
+  fetchBudgets(activeBudgetDate.start, activeBudgetDate.end);
 }
 
 const prevDate = () => {
@@ -372,6 +433,51 @@ const prevDate = () => {
   const todayIso = endDateSummary.value.toISOString();
   walletsStore.fetchWallets(true, undefined, todayIso);
   setSummary({ endDate: todayIso, includeHidden: configStore.includeHiddenWalletsInCalculation });
+
+  // active budget
+  const newStartBudget = new Date(start);
+  newStartBudget.setMonth(newStartBudget.getMonth() - 1);
+  newStartBudget.setDate(firstDay);
+  // Set end date to day before the configured date
+  const newEndBudget = new Date(newStartBudget);
+  newEndBudget.setMonth(newEndBudget.getMonth() + 1);
+  newEndBudget.setDate(firstDay - 1);
+  activeBudgetDate.start = format(newStartBudget, 'yyyy-MM-dd');
+  activeBudgetDate.end = format(newEndBudget, 'yyyy-MM-dd');
+
+  fetchBudgets(activeBudgetDate.start, activeBudgetDate.end);
+}
+
+const budgets = computed(() => {
+  return budgetsStore.budgets
+    .slice()
+    .sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime());
+});
+
+const fetchBudgets = (startDate?: string, endDate?: string) => {
+  budgetsStore.fetchBudgets(startDate, endDate);
+};
+
+function setInitialBudgetActiveDate() {
+  const today = new Date();
+    const firstDay = configStore.firstDayOfMonth;
+    
+    let startDate = new Date(today.getFullYear(), today.getMonth(), firstDay);
+
+    // If today's date is before the first day of this calendar month,
+    // it means we are still in the previous financial month.
+    if (today.getDate() < firstDay) {
+      startDate.setMonth(startDate.getMonth() - 1);
+    }
+
+    const endDate = new Date(startDate);
+    endDate.setMonth(startDate.getMonth() + 1);
+    endDate.setDate(firstDay - 1);
+
+    activeBudgetDate.start = format(startDate, 'yyyy-MM-dd');
+    activeBudgetDate.end = format(endDate, 'yyyy-MM-dd');
+
+    fetchBudgets(activeBudgetDate.start, activeBudgetDate.end);
 }
 
 onMounted(async () => {
@@ -384,5 +490,6 @@ onMounted(async () => {
   transactionsStore.fetchTransactions({ start_date: someDaysBeforeIso,  end_date: todayIso });
   setSummary({ endDate: todayIso, includeHidden: configStore.includeHiddenWalletsInCalculation });
   getAIAnalytics();
+  setInitialBudgetActiveDate();
 });
 </script>

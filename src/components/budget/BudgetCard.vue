@@ -2,7 +2,7 @@
   <div class="card overflow-hidden transition-all duration-300 ease-in-out" :class="{ 'max-h-[1000px]': isDetailsVisible, 'max-h-[300px] sm:max-h-[300px]': !isDetailsVisible }">
     <div class="p-3">
       <!-- Header -->
-      <div class="flex items-center justify-between w-full mb-4">
+      <div v-if="!simpleView" class="flex items-center justify-between w-full mb-4">
         <div class="flex items-center gap-1.5 card p-2 text-xs font-bold text-gray-600 dark:text-gray-300">
           <CalendarDays class="w-4 h-4" />
           <span>{{ formatDateRange(budget.start_date, budget.end_date) }}</span>
@@ -18,12 +18,12 @@
           </div>
         </div>
       </div>
-      <div class="flex items-start justify-between card p-2">
-        <div>
-          <h3 class="font-bold text-sm text-gray-900 dark:text-white">
+      <div class="flex items-start justify-between card p-2" :class="{ '!bg-transparent': simpleView }">
+        <div :class="{ 'flex items-center gap-3 justify-between w-full': simpleView }">
+          <h3 class="font-bold text-sm text-gray-900 dark:text-white" :class="{ 'text-xs font-normal truncate': simpleView }">
             {{ budget.name }}
           </h3>
-          <div class="flex items-center mt-2 flex-wrap">
+          <div class="flex items-center mt-2 flex-wrap" :class="{ 'mt-0': simpleView }">
             <div
               v-for="(category) in budgetCategories"
               :key="category.id"
@@ -39,23 +39,28 @@
 
       <!-- Budget Details & Progress -->
       <div class="mt-2">
-        <div class="text-left mb-3">
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ isOverspent ? 'Overspent by' : 'Remaining' }}</p>
+        <div class="text-left mb-3" :class="{ '!mb-1': simpleView }">
+          <p v-if="!simpleView" class="text-xs text-gray-500 dark:text-gray-400">{{ isOverspent ? 'Overspent by' : 'Remaining' }}</p>
           <p 
-            class="text-lg font-bold font-mono"
-            :class="isOverspent ? 'text-error-500' : 'text-success-600 dark:text-success-400'"
+            class="font-mono"
+            :class="[isOverspent ? 'text-error-500' : 'text-success-600 dark:text-success-400', simpleView ? 'text-[10px]' : 'text-lg font-bold']"
           >
-            {{ configStore.formatCurrency(remainingAmount) }}
+            <span>
+              {{ configStore.formatCurrency(simpleView ? (budget.total_spent || 0) : remainingAmount) }}
+            </span>
+            <span v-if="simpleView">
+              / {{ configStore.formatCurrency(budget.limit_amount) }}
+            </span>
           </p>
         </div>
-        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+        <div v-if="!simpleView" class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
           <span>Spent: {{ configStore.formatCurrency(budget.total_spent || 0) }}</span>
           <span>Limit: {{ configStore.formatCurrency(budget.limit_amount) }}</span>
         </div>
-        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2" :class="{ '!h-1': simpleView }">
           <div
-            class="h-2 rounded-full transition-all duration-500"
-            :class="progressBarClass"
+            class="rounded-full transition-all duration-500"
+            :class="[progressBarClass, simpleView ? 'h-1' : 'h-2']"
             :style="{ width: Math.min(getBudgetProgress(budget), 100) + '%' }"
           ></div>
         </div>
@@ -63,7 +68,7 @@
     </div>
 
     <!-- View Details Section -->
-    <div class="border-t border-gray-200 dark:border-gray-700">
+    <div v-if="!simpleView" class="border-t border-gray-200 dark:border-gray-700">
       <button @click="toggleDetails" class="w-full text-sm py-3 px-5 font-medium text-primary-600 dark:text-primary-400 bg-gray-50 dark:bg-gray-700/50 flex items-center justify-center gap-2 transition-colors">
         <span>{{ isDetailsVisible ? 'Hide' : 'View' }} Details</span>
         <ChevronDown class="w-4 h-4 transition-transform" :class="{ 'rotate-180': isDetailsVisible }" />
@@ -108,6 +113,10 @@ const props = defineProps({
     type: Object as PropType<Budget>,
     required: true,
   },
+  simpleView: {
+    type: Boolean as PropType<boolean>,
+    required: false,
+  }
 });
 
 defineEmits<{
