@@ -164,27 +164,43 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="card p-4 flex flex-col">
-          <div class="flex items-center lg:items-start justify-between mb-4">
-            <div>
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">Active Budget</h2>
-              <p class="text-xs italic text-slate-700 dark:text-slate-200">{{ activeBudgetPeriod }}</p>
+          <div class="flex lg:items-start justify-between mb-4 lg:flex-row flex-col-reverse">
+            <!-- here -->
+            <div class="flex items-center gap-3 justify-evenly mt-4 lg:mt-0 lg:justify-start">
+              <button @click="navigateBudgetDate('next')" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
+                <ChevronLeft class="size-4" />
+              </button>
+              <span class="text-xs italic text-gray-600 dark:text-gray-300">
+                {{ activeBudgetPeriod }}
+              </span>
+              <button @click="navigateBudgetDate('previous')" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
+                <ChevronRight class="size-4" />
+              </button>
             </div>
-            <router-link
-              to="/budgets"
-              class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
-            >
-              <LucideArrowUpRightFromSquare class="w-4 h-4"/>
-            </router-link>
+
+            <div class="flex gap-2 justify-between items-center lg:justify-end lg:items-start">
+              <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">Active Budget</h2>
+              <router-link
+                to="/budgets"
+                class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+              >
+                <LucideArrowUpRightFromSquare class="w-4 h-4"/>
+              </router-link>
+            </div>
           </div>
 
-          <div v-if="budgets.length === 0" class="text-center py-8 m-auto">
+          <div v-if="budgets.length === 0 && !budgetsStore.loading" class="text-center py-8 m-auto">
             <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
               <ArrowUpDown class="w-8 h-8 text-gray-400" />
             </div>
             <p class="text-gray-500 dark:text-gray-400 mb-4">No Budget Active this Period</p>
           </div>
 
-          <div v-else class="space-y-3 my-auto">
+          <div v-if="budgetsStore.loading" class="flex justify-center items-center py-8 my-auto">
+            <LoadingSpinner class="w-8 h-8" />
+          </div>
+
+          <div v-else class="space-y-3">
             <BudgetCard
               v-for="budget in budgets"
               :key="`budgetlist_` + budget.id"
@@ -405,20 +421,6 @@ const nextDate = () => {
   const todayIso = endDateSummary.value.toISOString();
   walletsStore.fetchWallets(true, undefined, todayIso);
   setSummary({ endDate: todayIso, includeHidden: configStore.includeHiddenWalletsInCalculation });
-
-  // active budget date
-
-  const newStartBudget = new Date(start);
-  newStartBudget.setMonth(newStartBudget.getMonth() + 1);
-  newStartBudget.setDate(firstDay);
-  // Set end date to day before the configured date
-  const newEndBudget = new Date(newStartBudget);
-  newEndBudget.setMonth(newEndBudget.getMonth() + 1);
-  newEndBudget.setDate(firstDay - 1);
-  activeBudgetDate.start = format(newStartBudget, 'yyyy-MM-dd');
-  activeBudgetDate.end = format(newEndBudget, 'yyyy-MM-dd');
-
-  fetchBudgets(activeBudgetDate.start, activeBudgetDate.end);
 }
 
 const prevDate = () => {
@@ -433,17 +435,35 @@ const prevDate = () => {
   const todayIso = endDateSummary.value.toISOString();
   walletsStore.fetchWallets(true, undefined, todayIso);
   setSummary({ endDate: todayIso, includeHidden: configStore.includeHiddenWalletsInCalculation });
+}
 
-  // active budget
-  const newStartBudget = new Date(start);
-  newStartBudget.setMonth(newStartBudget.getMonth() - 1);
-  newStartBudget.setDate(firstDay);
-  // Set end date to day before the configured date
-  const newEndBudget = new Date(newStartBudget);
-  newEndBudget.setMonth(newEndBudget.getMonth() + 1);
-  newEndBudget.setDate(firstDay - 1);
-  activeBudgetDate.start = format(newStartBudget, 'yyyy-MM-dd');
-  activeBudgetDate.end = format(newEndBudget, 'yyyy-MM-dd');
+const navigateBudgetDate = (flow: 'next' | 'previous') => {
+  const firstDay = configStore.firstDayOfMonth;
+  const start = parseISO(activeBudgetDate.start);
+  
+  if (flow === 'next') {
+    // active budget date
+    const newStartBudget = new Date(start);
+    newStartBudget.setMonth(newStartBudget.getMonth() + 1);
+    newStartBudget.setDate(firstDay);
+    // Set end date to day before the configured date
+    const newEndBudget = new Date(newStartBudget);
+    newEndBudget.setMonth(newEndBudget.getMonth() + 1);
+    newEndBudget.setDate(firstDay - 1);
+    activeBudgetDate.start = format(newStartBudget, 'yyyy-MM-dd');
+    activeBudgetDate.end = format(newEndBudget, 'yyyy-MM-dd');
+  } else {
+    // active budget
+    const newStartBudget = new Date(start);
+    newStartBudget.setMonth(newStartBudget.getMonth() - 1);
+    newStartBudget.setDate(firstDay);
+    // Set end date to day before the configured date
+    const newEndBudget = new Date(newStartBudget);
+    newEndBudget.setMonth(newEndBudget.getMonth() + 1);
+    newEndBudget.setDate(firstDay - 1);
+    activeBudgetDate.start = format(newStartBudget, 'yyyy-MM-dd');
+    activeBudgetDate.end = format(newEndBudget, 'yyyy-MM-dd');
+  }
 
   fetchBudgets(activeBudgetDate.start, activeBudgetDate.end);
 }
