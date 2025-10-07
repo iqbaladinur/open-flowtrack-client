@@ -167,13 +167,13 @@
           <div class="flex lg:items-start justify-between mb-4 lg:flex-row flex-col-reverse">
             <!-- here -->
             <div class="flex items-center gap-3 justify-evenly mt-4 lg:mt-0 lg:justify-start">
-              <button @click="navigateBudgetDate('next')" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
+              <button @click="navigateBudgetDate('previous')" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
                 <ChevronLeft class="size-4" />
               </button>
               <span class="text-xs italic text-gray-600 dark:text-gray-300">
                 {{ activeBudgetPeriod }}
               </span>
-              <button @click="navigateBudgetDate('previous')" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
+              <button @click="navigateBudgetDate('next')" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
                 <ChevronRight class="size-4" />
               </button>
             </div>
