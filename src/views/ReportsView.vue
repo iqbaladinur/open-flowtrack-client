@@ -194,6 +194,13 @@
           </div>
         </div>
 
+        <!-- Expense Hotspots -->
+        <ExpenseAnalysisCard 
+          :transactions="transactions" 
+          :start-date="dateRange.start"
+          :end-date="dateRange.end"
+        />
+
         <!-- Breakdown Reports -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:items-start">
           <!-- Category Report -->
@@ -265,6 +272,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import TimeSeriesChart from '@/components/reports/TimeSeriesChart.vue';
 import CategoryPieChart from '@/components/reports/CategoryPieChart.vue';
 import SummaryCard3 from '@/components/dashboard/SummaryCard3.vue';
+import ExpenseAnalysisCard from '@/components/reports/ExpenseAnalysisCard.vue';
 import { ArrowUp, ArrowDown, Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, Wallet, TrendingUp, TrendingDown, Scale, PieChartIcon, ArrowRightLeft, Filter, FilterX, ChevronLeft, ChevronRight, ArrowUpRight, ArrowDownRight } from 'lucide-vue-next';
 import type { Transaction } from '@/types/transaction';
 import { format, parseISO } from 'date-fns';
@@ -309,6 +317,33 @@ const yearList = computed(() => {
     years.push(i);
   }
   return years;
+});
+
+const dateRange = computed(() => {
+  let startDate: Date, endDate: Date;
+
+  switch (currentView.value) {
+    case 'monthly':
+      startDate = new Date(Date.UTC(selectedDate.monthly.year, selectedDate.monthly.month - 1, 1));
+      endDate = new Date(Date.UTC(selectedDate.monthly.year, selectedDate.monthly.month, 0));
+      break;
+    case 'yearly':
+      startDate = new Date(Date.UTC(selectedDate.yearly.year, 0, 1));
+      endDate = new Date(Date.UTC(selectedDate.yearly.year, 11, 31));
+      break;
+    case 'custom':
+    default:
+      if (!selectedDate.custom.start || !selectedDate.custom.end) {
+        return { start: '', end: '' };
+      }
+      startDate = parseISO(selectedDate.custom.start);
+      endDate = parseISO(selectedDate.custom.end);
+      break;
+  }
+  return {
+    start: format(startDate, 'yyyy-MM-dd'),
+    end: format(endDate, 'yyyy-MM-dd'),
+  }
 });
 
 const reportTitle = computed(() => {
