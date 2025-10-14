@@ -238,7 +238,7 @@
             </div>
             <div v-else class="space-y-2">
               <div v-for="item in walletReportData" :key="item.name"
-                class="rounded-lg shadow p-3">
+                class="rounded-lg shadow p-3 -mx-3">
                 <div class="flex items-center justify-between mb-2">
                   <h3 class="font-medium text-gray-900 dark:text-white truncate">{{ item.name }}</h3>
                   <span :class="item.net >= 0 ? 'text-success-600' : 'text-error-600'" class="flex items-center gap-2">

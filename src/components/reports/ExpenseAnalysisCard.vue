@@ -51,41 +51,41 @@
       </div>
 
       <!-- Details View -->
-      <div v-if="selectedCategory" class="absolute inset-0 bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300">
+      <div v-if="selectedCategoryStats" class="absolute inset-0 bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300">
         <div class="w-full sm:max-w-xs bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col h-full sm:h-auto">
             <div>
               <div class="flex justify-between items-start">
                 <div class="flex items-center gap-3">
                   <div 
                     class="size-10 rounded-xl flex items-center justify-center" 
-                    :style="{ backgroundColor: selectedCategory.color + '20' }"
+                    :style="{ backgroundColor: selectedCategoryStats.color + '20' }"
                   >
-                    <component :is="getIcon(selectedCategory.icon)" class="size-5" :style="{ color: selectedCategory.color }" />
+                    <component :is="getIcon(selectedCategoryStats.icon)" class="size-5" :style="{ color: selectedCategoryStats.color }" />
                   </div>
                   <div>
-                    <h3 class="font-bold text-gray-800 dark:text-gray-200 text-md">{{ selectedCategory.name }}</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ selectedCategory.count }} transactions</p>
+                    <h3 class="font-bold text-gray-800 dark:text-gray-200 text-md">{{ selectedCategoryStats.name }}</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ selectedCategoryStats.count }} transactions</p>
                   </div>
                 </div>
-                <button @click="selectCategory(selectedCategory)" class="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                <button @click="selectCategory(selectedCategoryStats)" class="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
                   <X class="size-4 text-gray-500" />
                 </button>
               </div>
     
               <div class="mt-4 text-center">
                 <p class="text-xs text-gray-500 dark:text-gray-400">Total Spent</p>
-                <p class="font-mono text-xl font-bold text-error-500 dark:text-error-400 break-words">{{ configStore.formatCurrency(selectedCategory.total) }}</p>
+                <p v-fit-text class="font-mono text-xl font-bold text-error-500 dark:text-error-400 break-words">{{ configStore.formatCurrency(selectedCategoryStats.total) }}</p>
               </div>
             </div>
     
             <div class="mt-auto">
                 <div class="grid grid-cols-2 gap-2 text-xs mt-4">
                   <div class="text-center rounded-md py-2 px-2 bg-gray-100 dark:bg-gray-700/50">
-                    <p class="font-mono text-gray-700 dark:text-gray-300 font-semibold">{{ configStore.formatCurrency(selectedCategory.average) }}</p>
+                    <p v-fit-text class="font-mono text-gray-700 dark:text-gray-300 font-semibold">{{ configStore.formatCurrency(selectedCategoryStats.average) }}</p>
                     <p class="text-gray-500 dark:text-gray-400 capitalize text-[10px]">Avg / {{ analysisPeriod === 'period' ? 'Trx' : analysisPeriod }}</p>
                   </div>
                   <div class="text-center rounded-md py-2 px-2 bg-gray-100 dark:bg-gray-700/50">
-                    <p class="font-mono text-gray-700 dark:text-gray-300 font-semibold">{{ configStore.formatCurrency(selectedCategory.median) }}</p>
+                    <p v-fit-text class="font-mono text-gray-700 dark:text-gray-300 font-semibold">{{ configStore.formatCurrency(selectedCategoryStats.median) }}</p>
                     <p class="text-gray-500 dark:text-gray-400 text-[10px]">Median</p>
                   </div>
                 </div>
@@ -103,12 +103,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted, watch } from 'vue';
+import { computed, ref, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import type { Transaction } from '@/types/transaction';
 import { useConfigStore } from '@/stores/config';
 import { differenceInDays, differenceInWeeks, parseISO } from 'date-fns';
 import { Activity, X } from 'lucide-vue-next';
 import { getIcon } from '@/utils/icons';
+import type { Directive } from 'vue';
 
 const props = defineProps<{
   transactions: Transaction[];
@@ -129,6 +130,32 @@ const container = ref<HTMLElement | null>(null);
 const bubbles = ref<any[]>([]);
 let animationFrameId: number;
 
+// Directive to fit text within its container
+const vFitText: Directive<HTMLElement> = {
+  async mounted(el) {
+    await nextTick();
+    adjustFontSize(el);
+  },
+  async updated(el) {
+    await nextTick();
+    adjustFontSize(el);
+  }
+};
+
+function adjustFontSize(el: HTMLElement) {
+  // Reset to default to recalculate
+  el.style.fontSize = ''; 
+  
+  const initialFontSize = parseFloat(getComputedStyle(el).fontSize);
+  let currentSize = initialFontSize;
+
+  // Iteratively reduce font size
+  while (el.scrollWidth > el.clientWidth && currentSize > 8) {
+    currentSize--;
+    el.style.fontSize = `${currentSize}px`;
+  }
+}
+
 const selectCategory = (category: any) => {
   if (selectedCategory.value && selectedCategory.value.name === category.name) {
     selectedCategory.value = null;
@@ -148,6 +175,31 @@ watch(selectedCategory, (newValue) => {
     cancelAnimationFrame(animationFrameId);
     animationFrameId = 0;
   }
+});
+
+const selectedCategoryStats = computed(() => {
+  if (!selectedCategory.value) return null;
+
+  const { total, count, amounts } = selectedCategory.value;
+  
+  amounts.sort((a: number, b: number) => a - b);
+  const mid = Math.floor(amounts.length / 2);
+  const median = amounts.length % 2 !== 0 ? amounts[mid] : (amounts[mid - 1] + amounts[mid]) / 2;
+
+  let average = 0;
+  if (analysisPeriod.value === 'daily') {
+    average = total / numberOfDays.value;
+  } else if (analysisPeriod.value === 'weekly') {
+    average = total / numberOfWeeks.value;
+  } else { // 'period'
+    average = count > 0 ? total / count : 0;
+  }
+
+  return {
+    ...selectedCategory.value,
+    average: average || 0,
+    median: median || 0,
+  };
 });
 
 const numberOfDays = computed(() => {
