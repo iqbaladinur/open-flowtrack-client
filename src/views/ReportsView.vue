@@ -185,7 +185,7 @@
         </div>
 
         <!-- Time Series Chart -->
-        <div class="card p-6">
+        <div class="card p-4">
           <h2 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">
             {{ reportTitle }} ({{ configStore.currency }})
           </h2>
@@ -204,7 +204,7 @@
         <!-- Breakdown Reports -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:items-start">
           <!-- Category Report -->
-          <div class="card p-6 lg:min-h-[500px] flex flex-col gap-4">
+          <div class="card p-4 lg:min-h-[500px] flex flex-col gap-4">
             <div class="flex justify-between items-start mb-4 flex-col md:flex-row gap-4">
               <div>
                 <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Breakdown by Category ({{ configStore.currency }})</h2>
@@ -228,7 +228,7 @@
           </div>
 
           <!-- Wallet Report -->
-          <div class="card p-6 lg:min-h-[500px]">
+          <div class="card p-4 lg:min-h-[500px]">
             <h2 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">
               Flow by Wallet ({{ configStore.currency }})
             </h2>
