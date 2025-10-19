@@ -4,13 +4,13 @@
       Total: {{ totalNominal }}
     </h3>
     <div class="flex items-center"
-      :class="{ 'flex-col-reverse gap-4 lg:flex-row lg:gap-0': chartData.labels?.length > devideconst }">
-      <div class="w-1/2 pr-4" :class="{ '!w-full': chartData.labels?.length > devideconst }">
+      :class="{ 'flex-col-reverse gap-4 md:flex-row lg:gap-0': chartData.labels?.length > devideconst }">
+      <div class="pr-4" :class="{ '!w-full': chartData.labels?.length > devideconst }">
         <ul :class="{ 'grid grid-cols-2': chartData.labels?.length > devideconst }">
           <li v-for="(label, index) in chartData.labels" :key="index" @click="toggleData(index)"
             class="flex items-start cursor-pointer p-1 rounded text-xs"
             :class="{ 'line-through text-slate-600 dark:text-white': !dataVisibility[index] }">
-            <span class="w-4 h-4 mr-2 rounded-full mt-1" :style="{
+            <span class="w-4 h-4 mr-2 rounded-full mt-1 flex-shrink-0" :style="{
               backgroundColor: chartData.datasets[0].backgroundColor[index],
               borderColor: chartData.datasets[0].backgroundColor[index],
               borderWidth: '2px',
@@ -20,7 +20,7 @@
           </li>
         </ul>
       </div>
-      <div class="w-1/2" :class="{ '!w-full p-6': chartData.labels?.length > devideconst }">
+      <div class="flex-1" :class="{ '!w-full p-6': chartData.labels?.length > devideconst }">
         <Pie ref="pieChart" :data="chartData" :options="chartOptions" />
       </div>
     </div>

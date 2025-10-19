@@ -1,12 +1,14 @@
 <template>
   <!-- @vue-ignore -->
-  <Line :data="styledChartData" :options="chartOptions" />
+  <Line v-if="props.chartType === 'line'" :data="styledChartData" :options="chartOptions" />
+  <!-- @vues-ignore -->
+  <Bar v-else :data="styledChartData" :options="chartOptions" />
 </template>
 
 <script setup lang="ts">
 import { useThemeStore } from '@/stores/theme';
 import { computed } from 'vue';
-import { Line } from 'vue-chartjs';
+import { Line, Bar } from 'vue-chartjs';
 import {
   Chart as ChartJS,
   Title,
@@ -45,6 +47,10 @@ const props = defineProps({
     }>,
     required: true,
   },
+  chartType: {
+    type: String as PropType<'line' | 'bar'>,
+    default: 'line',
+  },
 });
 
 const themeStore = useThemeStore();
@@ -55,20 +61,33 @@ const isDarkMode = computed(() => {
   return themeStore.theme === 'dark';
 });
 
-const styledChartData = computed(() => ({
-  labels: props.chartData.labels,
-  datasets: props.chartData.datasets.map(dataset => ({
-    ...dataset,
-    borderColor: dataset.backgroundColor,
-    backgroundColor: dataset.backgroundColor + '33', // Add 20% opacity for fill
-    tension: 0.4, // Smooth, rounded lines
-    fill: true,
-    pointStyle: 'circle',
-    pointRadius: 0.1,
-    pointHoverRadius: 6,
-    borderWidth: 2.5,
-  })),
-}));
+const styledChartData = computed(() => {
+  if (props.chartType === 'bar') {
+    return {
+      labels: props.chartData.labels,
+      datasets: props.chartData.datasets.map(dataset => ({
+        ...dataset,
+        borderColor: dataset.backgroundColor,
+        backgroundColor: dataset.backgroundColor,
+        borderWidth: 2.5,
+      })),
+    }
+  }
+  return {
+    labels: props.chartData.labels,
+    datasets: props.chartData.datasets.map(dataset => ({
+      ...dataset,
+      borderColor: dataset.backgroundColor,
+      backgroundColor: dataset.backgroundColor + '33', // Add 20% opacity for fill
+      tension: 0.4, // Smooth, rounded lines
+      fill: true,
+      pointStyle: 'circle',
+      pointRadius: 0.1,
+      pointHoverRadius: 6,
+      borderWidth: 2.5,
+    })),
+  }
+});
 
 const chartOptions = computed(() => ({
   responsive: true,

@@ -186,11 +186,21 @@
 
         <!-- Time Series Chart -->
         <div class="card p-4">
-          <h2 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">
-            {{ reportTitle }} ({{ configStore.currency }})
-          </h2>
+          <div class="flex justify-between items-start mb-4 flex-col md:flex-row gap-4">
+            <div>
+              <h2 class="text-sm font-semibold text-gray-900 dark:text-white">
+                {{ reportTitle }} ({{ configStore.currency }})
+              </h2>
+            </div>
+            <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full lg:w-auto">
+              <button @click="chartType = 'bar'"
+                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', chartType === 'bar' ? 'bg-white dark:bg-gray-600 shadow' : '']">Bar View</button>
+              <button @click="chartType = 'line'"
+                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', chartType === 'line' ? 'bg-white dark:bg-gray-600 shadow' : '']">Line View</button>
+            </div>
+          </div>
           <div class="h-96">
-            <TimeSeriesChart v-if="!loading" :chart-data="chartData" />
+            <TimeSeriesChart v-if="!loading" :chart-data="chartData" :chart-type="chartType" />
           </div>
         </div>
 
@@ -279,6 +289,7 @@ import { format, parseISO } from 'date-fns';
 
 type ReportView = 'monthly' | 'yearly' | 'custom';
 type AggregationLevel = 'daily' | 'weekly' | 'monthly' | 'yearly';
+type ChartType = 'line' | 'bar';
 
 const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
@@ -287,6 +298,7 @@ const showFilters = ref(false);
 const currentView = ref<ReportView>('monthly');
 const customAggregationLevel = ref<AggregationLevel>('monthly');
 const categoryReportType = ref<'income' | 'expense'>('expense');
+const chartType = ref<ChartType>('bar');
 const loading = ref(false);
 const transactions = ref<Transaction[]>([]);
 
@@ -365,7 +377,7 @@ const getStartOfWeek = (d: Date) => {
 }
 
 const chartData = computed(() => {
-  const data = transactions.value;
+  const data = transactions.value.filter(t => t.type === 'income' || t.type === 'expense');
   let aggregation: AggregationLevel;
   let startDate: Date, endDate: Date;
 
