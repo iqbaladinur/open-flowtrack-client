@@ -115,7 +115,7 @@ const chartOptions = computed(() => ({
         font: {
           family: "'Inter', sans-serif",
         },
-        callback: function(value: number) {
+        callback: function(value: any) {
           return Intl.NumberFormat('en', { notation: 'compact' }).format(value);
         }
       },
@@ -154,7 +154,7 @@ const chartOptions = computed(() => ({
       titleFont: {
         family: "'Inter', sans-serif",
         size: 14,
-        weight: 'bold',
+        weight: 'bold' as const,
       },
       bodyFont: {
         family: "'Inter', sans-serif",
