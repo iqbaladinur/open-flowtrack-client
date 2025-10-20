@@ -5,7 +5,7 @@
     </h3>
     <div class="flex items-center"
       :class="{ 'flex-col-reverse gap-4 md:flex-row lg:gap-0': chartData.labels?.length > devideconst }">
-      <div class="pr-4" :class="{ '!w-full': chartData.labels?.length > devideconst }">
+      <div class="pr-4 flex-1" :class="{ '!w-full': chartData.labels?.length > devideconst }">
         <ul :class="{ 'grid grid-cols-2': chartData.labels?.length > devideconst }">
           <li v-for="(label, index) in chartData.labels" :key="index" @click="toggleData(index)"
             class="flex items-start cursor-pointer p-1 rounded text-xs"
@@ -20,8 +20,8 @@
           </li>
         </ul>
       </div>
-      <div class="flex-1" :class="{ '!w-full p-6': chartData.labels?.length > devideconst }">
-        <Pie ref="pieChart" :data="chartData" :options="chartOptions" />
+      <div class="flex-1 relative min-w-20" :class="{ '!w-full p-6': chartData.labels?.length > devideconst }">
+        <Pie ref="pieChart" class="w-full h-full" :data="chartData" :options="chartOptions" />
       </div>
     </div>
   </div>
