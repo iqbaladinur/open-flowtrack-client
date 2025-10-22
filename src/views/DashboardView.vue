@@ -201,12 +201,43 @@
           </div>
 
           <div v-else class="space-y-3">
-            <BudgetCard
-              v-for="budget in budgets"
-              :key="`budgetlist_` + budget.id"
-              :budget="budget"
-              :simple-view="true"
-            />
+            <div v-if="budgets.length > 0" class="card p-3">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-semibold text-gray-600 dark:text-gray-300">Overall Active Budget Usage</span>
+              </div>
+              <div class="mb-1">
+                <span class="text-xs text-gray-500 dark:text-gray-400">
+                  <span
+                    :class="{
+                      'text-success-500': budgetSummary.usage_percent <= 75,
+                      'text-warning-500': budgetSummary.usage_percent > 75 && budgetSummary.usage_percent <= 100,
+                      'text-red-700': budgetSummary.usage_percent > 100
+                    }"
+                  >
+                    {{ configStore.formatCurrency(budgetSummary.total_usage) }} / {{ configStore.formatCurrency(budgetSummary.total_limit) }}
+                  </span> 
+                </span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-1 dark:bg-gray-700">
+                <div
+                  class="h-1 rounded-full"
+                  :class="{
+                    'bg-success-500': budgetSummary.usage_percent <= 75,
+                    'bg-warning-500': budgetSummary.usage_percent > 75 && budgetSummary.usage_percent <= 100,
+                    'bg-red-700': budgetSummary.usage_percent > 100
+                  }"
+                  :style="{ width: `${budgetSummary.usage_percent > 100 ? 100 : budgetSummary.usage_percent}%` }"
+                />
+              </div>
+            </div>
+            <div class="card">
+              <BudgetCard
+                v-for="budget in budgets"
+                :key="`budgetlist_` + budget.id"
+                :budget="budget"
+                :simple-view="true"
+              />
+            </div>
           </div>
         </div>
         <!-- Recent Transactions -->
@@ -473,6 +504,17 @@ const budgets = computed(() => {
   return budgetsStore.budgets
     .slice()
     .sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime());
+});
+
+const budgetSummary = computed(() => {
+  const total_limit = budgets.value.reduce((sum, budget) => sum + (Number(budget.limit_amount || 0)), 0);
+  const total_usage = budgets.value.reduce((sum, budget) => sum + (budget.total_spent || 0), 0);
+  const usage_percent = total_limit > 0 ? (total_usage / total_limit) * 100 : 0;
+  return {
+    total_limit,
+    total_usage,
+    usage_percent,
+  };
 });
 
 const fetchBudgets = (startDate?: string, endDate?: string) => {
