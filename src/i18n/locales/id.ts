@@ -35,6 +35,8 @@ export default {
     restoring: 'Memulihkan...',
     chooseFile: 'Pilih File',
     user: 'Pengguna',
+    view: 'Lihat',
+    details: 'Detail',
   },
 
   // Navigation & Layout
@@ -48,6 +50,14 @@ export default {
     settings: 'Pengaturan',
     profile: 'Profil',
     backup: 'Cadangan & Pemulihan',
+    more: 'Lainnya',
+  },
+
+  // Layout
+  layout: {
+    profile: 'Profil',
+    logout: 'Keluar',
+    theme: 'Tema',
   },
 
   // Dashboard
@@ -353,7 +363,6 @@ export default {
     subtitle: 'Unggah gambar untuk mengekstrak transaksi',
     step1: 'Langkah 1: Unggah & Potong Gambar',
     step1Desc: 'Unggah gambar struk yang jelas, potong, lalu proses.',
-    dragAndDrop: 'atau seret dan lepas',
     fileTypes: 'PNG, JPG, GIF hingga 10MB',
     cropped: '(dipotong)',
     processImage: 'Proses Gambar',
@@ -368,7 +377,7 @@ export default {
     step3: 'Langkah 3: Tinjau dan Simpan Transaksi',
     step3Desc: 'Edit detail untuk setiap transaksi di bawah ini. Transaksi yang tidak dicentang akan diabaikan.',
     selectAllTransactions: 'Pilih Semua Transaksi',
-    expenseNumber: 'Pengeluaran #',
+    expenseNumber: 'Pengeluaran',
     date: 'Tanggal',
     amount: 'Jumlah',
     wallet: 'Dompet',
@@ -498,6 +507,28 @@ export default {
     transaction: 'Transaksi',
     saveFailed: 'Gagal menyimpan transaksi. Silakan coba lagi.',
     unexpectedError: 'Terjadi kesalahan yang tidak terduga. Silakan coba lagi.',
+  },
+
+  // Budget Card
+  budgetCard: {
+    noTransactions: 'Tidak ada transaksi untuk periode anggaran ini.',
+  },
+
+  // Expense Analysis
+  expenseAnalysis: {
+    title: 'Hotspot Pengeluaran',
+    subtitle: 'Kategori yang sering muncul dalam periode ini.',
+    byAmount: 'Berdasarkan Jumlah',
+    byFrequency: 'Berdasarkan Frekuensi',
+    noData: 'Tidak ada data pengeluaran untuk dianalisis.',
+    transactions: 'transaksi',
+    totalSpent: 'Total Pengeluaran',
+    avg: 'Rata-rata',
+    trx: 'Trx',
+    median: 'Median',
+    daily: 'Harian',
+    weekly: 'Mingguan',
+    period: 'Periode',
   },
 
   // Modal: Wallet

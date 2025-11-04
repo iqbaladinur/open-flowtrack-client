@@ -5,10 +5,10 @@
       <div class="flex justify-between gap-4">
         <div>
           <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">
-            Bulk Expense
+            {{ $t('bulkExpense.title') }}
           </h1>
           <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
-            Upload an image to extract transactions
+            {{ $t('bulkExpense.subtitle') }}
           </p>
         </div>
       </div>
@@ -16,9 +16,9 @@
       <!-- Step 1: Image Upload -->
       <div v-if="currentStep === 1" class="card bg-base-100 shadow p-2 lg:p-6">
         <div class="card-body">
-          <h2 class="card-title">Step 1: Upload & Crop Image</h2>
+          <h2 class="card-title">{{ $t('bulkExpense.step1') }}</h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Upload a clear image of a receipt, crop it, and then process.
+            {{ $t('bulkExpense.step1Desc') }}
           </p>
 
           <div v-if="!selectedImage">
@@ -29,13 +29,13 @@
                 <div class="mt-4 flex text-sm leading-6 text-gray-600 dark:text-gray-400">
                   <label for="file-upload"
                     class="relative cursor-pointer rounded-md font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-500">
-                    <span>Upload a file</span>
+                    <span>{{ $t('common.uploadFile') }}</span>
                     <input id="file-upload" name="file-upload" type="file" class="sr-only" @change="handleImageUpload"/>
                   </label>
-                  <p class="pl-1">or drag and drop</p>
+                  <p class="pl-1">{{ $t('common.dragAndDrop') }}</p>
                 </div>
                 <p class="text-xs leading-5 text-gray-500 dark:text-gray-500">
-                  PNG, JPG, GIF up to 10MB
+                  {{ $t('bulkExpense.fileTypes') }}
                 </p>
               </div>
             </div>
@@ -46,7 +46,7 @@
               <div class="flex items-center gap-3 truncate">
                 <img :src="imagePreviewUrl" alt="Preview" class="h-12 w-12 rounded-md object-cover flex-shrink-0" />
                 <div class="text-sm font-medium truncate">
-                  <p class="truncate">{{ selectedImage.name }} (cropped)</p>
+                  <p class="truncate">{{ selectedImage.name }} {{ $t('bulkExpense.cropped') }}</p>
                   <p class="text-xs text-gray-500">
                     {{ (selectedImage.size / 1024).toFixed(2) }} KB
                   </p>
@@ -62,14 +62,14 @@
             <button @click="processImage" class="btn btn-primary flex items-center gap-2"
               :disabled="!selectedImage || ocrLoading">
               <LoadingSpinner v-if="ocrLoading" size="sm" />
-              Process Image
+              {{ $t('bulkExpense.processImage') }}
             </button>
           </div>
         </div>
       </div>
 
       <!-- Cropper Modal -->
-      <Modal v-model="isCropModalOpen" title="Crop Image">
+      <Modal v-model="isCropModalOpen" :title="$t('bulkExpense.cropImage')">
         <div class="w-full h-[50vh]">
           <VueCropper
             v-if="rawImageForCropper"
@@ -85,8 +85,8 @@
         </div>
         <template #footer>
           <div class="flex justify-end gap-2">
-            <button @click="cancelCrop" class="btn btn-ghost">Cancel</button>
-            <button @click="cropImage" class="btn btn-primary">Crop & Use</button>
+            <button @click="cancelCrop" class="btn btn-ghost">{{ $t('common.cancel') }}</button>
+            <button @click="cropImage" class="btn btn-primary">{{ $t('bulkExpense.cropAndUse') }}</button>
           </div>
         </template>
       </Modal>
@@ -94,17 +94,16 @@
       <!-- Step 2: Review and Edit (Side-by-Side) -->
       <div v-if="currentStep === 2" class="card bg-base-100 shadow p-2 lg:p-6">
         <div class="card-body">
-          <h2 class="card-title">Step 2: Review and Edit Extracted Text</h2>
+          <h2 class="card-title">{{ $t('bulkExpense.step2') }}</h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Correct any errors in the extracted text. This text will be sent to
-            the server for processing.
+            {{ $t('bulkExpense.step2Desc') }}
           </p>
 
           <div class="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Image Preview Column -->
             <div class="space-y-2">
               <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Image Preview
+                {{ $t('bulkExpense.imagePreview') }}
               </h3>
               <div
                 class="p-2 border rounded-md bg-gray-50 dark:bg-gray-800/50 flex items-center justify-center">
@@ -116,22 +115,22 @@
             <!-- OCR Text Column -->
             <div class="space-y-2">
               <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Extracted Text (Editable)
+                {{ $t('bulkExpense.extractedText') }}
               </h3>
               <div class="p-2 border rounded-md bg-gray-50 dark:bg-gray-800/50 h-[50vh]">
                 <textarea v-model="ocrResultText"
                   class="textarea textarea-bordered w-full h-full min-h-[300px] font-mono dark:bg-white dark:text-black p-4"
-                  placeholder="Extracted text will appear here..."></textarea>
+                  :placeholder="$t('bulkExpense.extractedTextPlaceholder')"></textarea>
               </div>
             </div>
           </div>
 
           <div class="card-actions justify-end mt-6 flex items-center gap-2">
-            <button @click="currentStep = 1" class="btn btn-ghost">Back</button>
+            <button @click="currentStep = 1" class="btn btn-ghost">{{ $t('common.back') }}</button>
             <button @click="previewTransactions" class="btn btn-primary flex items-center gap-2"
               :disabled="!ocrResultText.trim() || previewLoading">
               <LoadingSpinner v-if="previewLoading" size="sm" />
-              Preview Transactions
+              {{ $t('bulkExpense.previewTransactions') }}
             </button>
           </div>
         </div>
@@ -140,10 +139,9 @@
       <!-- Step 3: Review and Save Transactions -->
       <div v-if="currentStep === 3" class="card bg-base-100 shadow p-2 lg:p-6">
         <div class="card-body">
-          <h2 class="card-title">Step 3: Review and Save Transactions</h2>
+          <h2 class="card-title">{{ $t('bulkExpense.step3') }}</h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            Edit the details for each transaction below. Unchecked transactions
-            will be ignored.
+            {{ $t('bulkExpense.step3Desc') }}
           </p>
 
           <!-- Mobile View: List of Cards -->
@@ -155,7 +153,7 @@
                 <button class="w-6 h-6 border-2 flex items-center justify-center rounded-md dark:border-neon border-primary-500" @click="($refs.selectAllTrx as HTMLInputElement)?.click()">
                   <Check v-if="isAllSelected" class="w-4 h-4 text-primary-500 dark:text-neon"></Check>
                 </button>
-                <span class="ml-3 text-sm font-medium">Select All Transactions</span>
+                <span class="ml-3 text-sm font-medium">{{ $t('bulkExpense.selectAllTransactions') }}</span>
               </label>
             </div>
             <div v-for="(item, index) in previewedTransactions" :key="`mobile-${index}`"
@@ -164,7 +162,7 @@
               <!-- Main content row -->
               <div class="flex items-center justify-between">
                 <h1 class="text-md">
-                  Expense #{{ index + 1 }}
+                  {{ $t('bulkExpense.expenseNumber') }} #{{ index + 1 }}
                 </h1>
                 <button class="w-6 h-6 border-2 flex items-center justify-center rounded-md dark:border-neon border-primary-500" @click="item.selected = !item.selected">
                   <Check v-if="item.selected" class="w-4 h-4 text-primary-500 dark:text-neon"></Check>
@@ -173,36 +171,36 @@
               <input type="checkbox" v-model="item.selected" class="hidden checkbox checkbox-sm checkbox-primary" />
               <!-- Details row -->
               <div class="w-full">
-                <label class="text-xs font-medium text-gray-500">Date</label>
+                <label class="text-xs font-medium text-gray-500">{{ $t('bulkExpense.date') }}</label>
                 <input type="date" v-model="item.date" class="input input-sm input-bordered w-full" />
               </div>
               <div class="w-full">
-                <label class="text-xs font-medium text-gray-500">Amount</label>
+                <label class="text-xs font-medium text-gray-500">{{ $t('bulkExpense.amount') }}</label>
                 <input type="number" v-model="item.amount" class="input input-sm input-bordered w-full text-right"
                   placeholder="0.00" />
               </div>
               <div>
-                <label class="text-xs font-medium text-gray-500">Wallet</label>
+                <label class="text-xs font-medium text-gray-500">{{ $t('bulkExpense.wallet') }}</label>
                 <select v-model="item.wallet_id" class="select select-sm select-bordered w-full input">
-                  <option disabled value="">Select Wallet</option>
+                  <option disabled value="">{{ $t('bulkExpense.selectWallet') }}</option>
                   <option v-for="wallet in wallets" :key="wallet.id" :value="wallet.id">
                     {{ wallet.name }}
                   </option>
                 </select>
               </div>
               <div class="sm:col-span-2">
-                <label class="text-xs font-medium text-gray-500">Category</label>
+                <label class="text-xs font-medium text-gray-500">{{ $t('bulkExpense.category') }}</label>
                 <select v-model="item.category_id" class="select select-sm select-bordered w-full input">
-                  <option disabled value="">Select Category</option>
+                  <option disabled value="">{{ $t('bulkExpense.selectCategory') }}</option>
                   <option v-for="category in expenseCategories" :key="category.id" :value="category.id">
                     {{ category.name }}
                   </option>
                 </select>
               </div>
               <div class="sm:col-span-2">
-                <label class="text-xs font-medium text-gray-500">Note</label>
+                <label class="text-xs font-medium text-gray-500">{{ $t('bulkExpense.note') }}</label>
                 <textarea type="text" v-model="item.note" class="input input-sm input-bordered w-full"
-                  placeholder="Transaction note..."></textarea>
+                  :placeholder="$t('bulkExpense.transactionNote')"></textarea>
               </div>
             </div>
           </div>
@@ -218,23 +216,23 @@
                   </th>
                   <th
                     class="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider w-40">
-                    Date
+                    {{ $t('bulkExpense.date') }}
                   </th>
                   <th
                     class="p-4 text-right text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider w-40">
-                    Amount
+                    {{ $t('bulkExpense.amount') }}
                   </th>
                   <th
                     class="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider w-48">
-                    Wallet
+                    {{ $t('bulkExpense.wallet') }}
                   </th>
                   <th
                     class="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider w-48">
-                    Category
+                    {{ $t('bulkExpense.category') }}
                   </th>
                   <th
                     class="p-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
-                    Note
+                    {{ $t('bulkExpense.note') }}
                   </th>
                 </tr>
               </thead>
@@ -253,7 +251,7 @@
                   </td>
                   <td class="p-2 align-middle">
                     <select v-model="item.wallet_id" class="select select-sm select-bordered w-full input">
-                      <option disabled value="">Select Wallet</option>
+                      <option disabled value="">{{ $t('bulkExpense.selectWallet') }}</option>
                       <option v-for="wallet in wallets" :key="wallet.id" :value="wallet.id">
                         {{ wallet.name }}
                       </option>
@@ -261,7 +259,7 @@
                   </td>
                   <td class="p-2 align-middle">
                     <select v-model="item.category_id" class="select select-sm select-bordered w-full input">
-                      <option disabled value="">Select Category</option>
+                      <option disabled value="">{{ $t('bulkExpense.selectCategory') }}</option>
                       <option v-for="category in expenseCategories" :key="category.id" :value="category.id">
                         {{ category.name }}
                       </option>
@@ -269,17 +267,17 @@
                   </td>
                   <td class="p-2 align-middle">
                     <input type="text" v-model="item.note" class="input input-sm input-bordered w-full"
-                      placeholder="Transaction note..." />
+                      :placeholder="$t('bulkExpense.transactionNote')" />
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="card-actions justify-end mt-4 flex items-center gap-2">
-            <button @click="currentStep = 2" class="btn btn-ghost">Back</button>
+            <button @click="currentStep = 2" class="btn btn-ghost">{{ $t('common.back') }}</button>
             <button @click="saveTransactions" class="btn btn-primary flex items-center gap-2" :disabled="savingLoading">
               <LoadingSpinner v-if="savingLoading" size="sm" />
-              Save Selected Transactions
+              {{ $t('bulkExpense.saveSelectedTransactions') }}
             </button>
           </div>
         </div>
@@ -290,6 +288,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed, nextTick } from "vue";
+import { useI18n } from "vue-i18n";
 import { createWorker } from "tesseract.js";
 import { useWalletsStore } from "@/stores/wallets";
 import { useCategoriesStore } from "@/stores/categories";
@@ -314,6 +313,7 @@ interface PreviewTransaction {
   selected: boolean;
 }
 
+const { t } = useI18n();
 const router = useRouter();
 const walletsStore = useWalletsStore();
 const categoriesStore = useCategoriesStore();
@@ -357,12 +357,12 @@ const triggerFileInput = () => {
 
 const processFile = async (file: File) => {
   if (!file.type.startsWith("image/")) {
-    alert("Please upload an image file.");
+    alert(t('bulkExpense.uploadImageError'));
     return;
   }
   originalFile.value = file;
   rawImageForCropper.value = URL.createObjectURL(file);
-  
+
   await nextTick();
   isCropModalOpen.value = true;
 };
@@ -439,7 +439,7 @@ const processImage = async () => {
     currentStep.value = 2;
   } catch (error) {
     console.error("OCR Error:", error);
-    alert("An error occurred during OCR processing. Please check the console.");
+    alert(t('bulkExpense.ocrError'));
   } finally {
     await worker.terminate();
     ocrLoading.value = false;
@@ -473,11 +473,11 @@ const previewTransactions = async () => {
       currentStep.value = 3;
     } else {
       console.error("Failed to parse transactions:", response.error);
-      alert("Failed to get transaction preview. Please check the console.");
+      alert(t('bulkExpense.previewError'));
     }
   } catch (error) {
     console.error("API Error:", error);
-    alert("An API error occurred. Please check the console.");
+    alert(t('bulkExpense.apiError'));
   } finally {
     previewLoading.value = false;
   }
@@ -509,9 +509,9 @@ const saveTransactions = async () => {
   try {
     const results = await Promise.all(promises);
     const successfulCreations = results.filter(r => r.success).length;
-    
-    alert(`${successfulCreations} of ${transactionsToSave.length} transactions saved successfully!`);
-    
+
+    alert(`${successfulCreations} ${t('bulkExpense.saveSuccess')}`);
+
     currentStep.value = 1;
     removeImage();
     ocrResultText.value = '';
@@ -521,9 +521,7 @@ const saveTransactions = async () => {
     });
   } catch (error) {
     console.error("Error saving transactions:", error);
-    alert(
-      "An error occurred while saving transactions. Please check the console for details."
-    );
+    alert(t('bulkExpense.saveError'));
   } finally {
     savingLoading.value = false;
   }

@@ -35,6 +35,8 @@ export default {
     restoring: 'Restoring...',
     chooseFile: 'Choose File',
     user: 'User',
+    view: 'View',
+    details: 'Details',
   },
 
   // Navigation & Layout
@@ -48,6 +50,14 @@ export default {
     settings: 'Settings',
     profile: 'Profile',
     backup: 'Backup & Restore',
+    more: 'More',
+  },
+
+  // Layout
+  layout: {
+    profile: 'Profile',
+    logout: 'Logout',
+    theme: 'Theme',
   },
 
   // Dashboard
@@ -353,7 +363,6 @@ export default {
     subtitle: 'Upload an image to extract transactions',
     step1: 'Step 1: Upload & Crop Image',
     step1Desc: 'Upload a clear image of a receipt, crop it, and then process.',
-    dragAndDrop: 'or drag and drop',
     fileTypes: 'PNG, JPG, GIF up to 10MB',
     cropped: '(cropped)',
     processImage: 'Process Image',
@@ -368,7 +377,7 @@ export default {
     step3: 'Step 3: Review and Save Transactions',
     step3Desc: 'Edit the details for each transaction below. Unchecked transactions will be ignored.',
     selectAllTransactions: 'Select All Transactions',
-    expenseNumber: 'Expense #',
+    expenseNumber: 'Expense',
     date: 'Date',
     amount: 'Amount',
     wallet: 'Wallet',
@@ -498,6 +507,28 @@ export default {
     transaction: 'Transaction',
     saveFailed: 'Failed to save transaction. Please try again.',
     unexpectedError: 'An unexpected error occurred. Please try again.',
+  },
+
+  // Budget Card
+  budgetCard: {
+    noTransactions: 'No transactions found for this budget period.',
+  },
+
+  // Expense Analysis
+  expenseAnalysis: {
+    title: 'Expense Hotspots',
+    subtitle: 'Frequent categories in this period.',
+    byAmount: 'By Amount',
+    byFrequency: 'By Frequency',
+    noData: 'No expense data to analyze.',
+    transactions: 'transactions',
+    totalSpent: 'Total Spent',
+    avg: 'Avg',
+    trx: 'Trx',
+    median: 'Median',
+    daily: 'Daily',
+    weekly: 'Weekly',
+    period: 'Period',
   },
 
   // Modal: Wallet

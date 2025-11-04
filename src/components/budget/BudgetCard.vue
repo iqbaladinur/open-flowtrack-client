@@ -52,14 +52,14 @@
           <!-- Spent & Remaining Row -->
           <div class="flex items-center justify-between gap-2">
             <div class="flex-1">
-              <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-0.5">Spent</p>
+              <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-0.5">{{ $t('dashboard.spent') }}</p>
               <p class="text-[11px] font-semibold font-mono text-gray-900 dark:text-white">
                 {{ configStore.formatCurrency(budget.total_spent || 0) }}
               </p>
             </div>
             <div class="flex-1 text-right">
               <p class="text-[9px] dark:text-gray-400 mb-0.5" :class="isOverspent ? 'text-error-500' : 'text-success-600'">
-                {{ isOverspent ? 'Over' : 'Left' }}
+                {{ isOverspent ? $t('dashboard.over') : $t('dashboard.left') }}
               </p>
               <p
                 class="text-[11px] font-semibold font-mono"
@@ -82,7 +82,7 @@
           <!-- Limit -->
           <div class="text-right">
             <p class="text-[9px] text-gray-400 dark:text-gray-500">
-              Limit: <span class="font-mono font-medium">{{ configStore.formatCurrency(budget.limit_amount) }}</span>
+              {{ $t('dashboard.limit') }}: <span class="font-mono font-medium">{{ configStore.formatCurrency(budget.limit_amount) }}</span>
             </p>
           </div>
         </div>
@@ -90,7 +90,7 @@
         <!-- Normal View Layout -->
         <div v-else>
           <div class="text-left mb-3">
-            <p class="text-xs text-gray-500 dark:text-gray-400">{{ isOverspent ? 'Overspent by' : 'Remaining' }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ isOverspent ? $t('dashboard.over') : $t('dashboard.left') }}</p>
             <p
               class="font-mono text-lg font-bold"
               :class="isOverspent ? 'text-error-500' : 'text-success-600 dark:text-success-400'"
@@ -99,8 +99,8 @@
             </p>
           </div>
           <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
-            <span>Spent: {{ configStore.formatCurrency(budget.total_spent || 0) }}</span>
-            <span>Limit: {{ configStore.formatCurrency(budget.limit_amount) }}</span>
+            <span>{{ $t('dashboard.spent') }}: {{ configStore.formatCurrency(budget.total_spent || 0) }}</span>
+            <span>{{ $t('dashboard.limit') }}: {{ configStore.formatCurrency(budget.limit_amount) }}</span>
           </div>
           <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
             <div
@@ -116,10 +116,10 @@
     <!-- View Details Section -->
     <div v-if="!simpleView" class="border-t border-gray-200 dark:border-gray-700">
       <button @click="toggleDetails" class="w-full text-sm py-3 px-5 font-medium text-primary-600 dark:text-primary-400 bg-gray-50 dark:bg-gray-700/50 flex items-center justify-center gap-2 transition-colors">
-        <span>{{ isDetailsVisible ? 'Hide' : 'View' }} Details</span>
+        <span>{{ isDetailsVisible ? $t('common.close') : $t('common.view') }} {{ $t('common.details') }}</span>
         <ChevronDown class="w-4 h-4 transition-transform" :class="{ 'rotate-180': isDetailsVisible }" />
       </button>
-      
+
       <div v-if="isDetailsVisible" class="bg-gray-50 dark:bg-gray-900/50">
         <div v-if="isLoadingDetails" class="flex justify-center items-center p-6">
           <LoadingSpinner />
@@ -133,7 +133,7 @@
           />
         </div>
         <div v-else class="text-center text-gray-500 dark:text-gray-400 py-8 px-5">
-          <p>No transactions found for this budget period.</p>
+          <p>{{ $t('budgetCard.noTransactions') }}</p>
         </div>
       </div>
     </div>
