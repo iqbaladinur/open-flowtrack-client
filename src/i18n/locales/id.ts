@@ -49,7 +49,7 @@ export default {
     reports: 'Laporan',
     settings: 'Pengaturan',
     profile: 'Profil',
-    backup: 'Cadangan & Pemulihan',
+    backup: 'Cadangkan',
     more: 'Lainnya',
   },
 
