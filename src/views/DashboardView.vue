@@ -393,7 +393,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
 import { useWalletsStore } from '@/stores/wallets';
 import { useTransactionsStore } from '@/stores/transactions';
@@ -431,7 +430,6 @@ import { useReportsStore } from '@/stores/reports';
 import type { TransactionType } from '@/types/transaction';
 import { useBudgetsStore } from '@/stores/budgets';
 
-const { t } = useI18n();
 const authStore = useAuthStore();
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();

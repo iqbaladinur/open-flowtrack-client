@@ -320,6 +320,8 @@ export default {
     signIn: 'Sign in',
     noAccount: "Don't have an account?",
     signUp: 'Sign up',
+    failedLogin: 'Login failed. Please try again.',
+    unexpectedError: 'An unexpected error occurred. Please try again.',
   },
 
   // Register

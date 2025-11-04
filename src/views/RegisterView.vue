@@ -5,16 +5,16 @@
         <div class="mx-auto w-16 h-16 bg-green-600/30 rounded-2xl flex items-center justify-center mb-6">
           <TrendingUpDown class="w-8 h-8 text-white" />
         </div>
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-neon">Create account</h2>
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('register.title') }}</h2>
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          Start managing your finances today
+          {{ $t('register.subtitle') }}
         </p>
       </div>
 
       <div class="mt-8 space-y-6">
         <a :href="googleAuthUrl" class="w-full btn-secondary py-3 text-base flex items-center justify-center">
           <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5 mr-2">
-          Sign up with Google
+          {{ $t('register.signUpWithGoogle') }}
         </a>
 
         <div class="relative">
@@ -23,7 +23,7 @@
           </div>
           <div class="relative flex justify-center text-sm">
             <button @click="showEmailForm = true" class="btn-link px-2 bg-gray-50 dark:bg-gray-900">
-              Or sign up with email
+              {{ $t('register.orSignUpWithEmail') }}
             </button>
           </div>
         </div>
@@ -39,52 +39,52 @@
           <form v-if="showEmailForm" @submit.prevent="handleRegister" class="space-y-6">
             <div class="space-y-4">
               <div>
-                <label for="fullName" class="label">Full name</label>
+                <label for="fullName" class="label">{{ $t('register.fullName') }}</label>
                 <input
                   id="fullName"
                   v-model="form.fullName"
                   type="text"
                   class="input"
-                  placeholder="Enter your full name"
+                  :placeholder="$t('register.enterFullName')"
                   :disabled="loading"
                 />
               </div>
 
               <div>
-                <label for="email" class="label">Email address</label>
+                <label for="email" class="label">{{ $t('register.emailAddress') }}</label>
                 <input
                   id="email"
                   v-model="form.email"
                   type="email"
                   required
                   class="input"
-                  placeholder="Enter your email"
+                  :placeholder="$t('register.enterEmail')"
                   :disabled="loading"
                 />
               </div>
               
               <div>
-                <label for="password" class="label">Password</label>
+                <label for="password" class="label">{{ $t('register.password') }}</label>
                 <input
                   id="password"
                   v-model="form.password"
                   type="password"
                   required
                   class="input"
-                  placeholder="Enter your password"
+                  :placeholder="$t('register.enterPassword')"
                   :disabled="loading"
                 />
               </div>
 
               <div>
-                <label for="confirmPassword" class="label">Confirm password</label>
+                <label for="confirmPassword" class="label">{{ $t('register.confirmPassword') }}</label>
                 <input
                   id="confirmPassword"
                   v-model="form.confirmPassword"
                   type="password"
                   required
                   class="input"
-                  placeholder="Confirm your password"
+                  :placeholder="$t('register.confirmYourPassword')"
                   :disabled="loading"
                 />
               </div>
@@ -100,17 +100,17 @@
               :disabled="loading || !isFormValid"
             >
               <LoadingSpinner v-if="loading" size="sm" />
-              <span v-else>Create account</span>
+              <span v-else>{{ $t('register.createAccount') }}</span>
             </button>
 
             <div class="text-center">
               <p class="text-sm text-gray-600 dark:text-gray-400">
-                Already have an account?
+                {{ $t('register.alreadyHaveAccount') }}
                 <router-link
                   to="/login"
                   class="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400"
                 >
-                  Sign in
+                  {{ $t('register.signIn') }}
                 </router-link>
               </p>
             </div>
@@ -126,10 +126,12 @@ import { reactive, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { TrendingUpDown } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const { t } = useI18n();
 
 const form = reactive({
   fullName: '',
@@ -159,12 +161,12 @@ const handleRegister = async () => {
   if (loading.value || !isFormValid.value) return;
   
   if (form.password !== form.confirmPassword) {
-    error.value = 'Passwords do not match';
+    error.value = t('register.passwordsDoNotMatch');
     return;
   }
-
+  
   if (form.password.length < 6) {
-    error.value = 'Password must be at least 6 characters long';
+    error.value = t('register.passwordTooShort');
     return;
   }
   
@@ -181,10 +183,10 @@ const handleRegister = async () => {
     if (result.success) {
       router.push('/login');
     } else {
-      error.value = result.error || 'Registration failed. Please try again.';
+      error.value = result.error || t('register.registrationFailed');
     }
   } catch (err) {
-    error.value = 'An unexpected error occurred. Please try again.';
+    error.value = t('register.unexpectedError');
   } finally {
     loading.value = false;
   }

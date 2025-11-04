@@ -99,16 +99,16 @@
 <script setup lang="ts">
 import { reactive, ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
 import { useCategoriesStore } from '@/stores/categories';
 import { TrendingUpDown } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 
-const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
+const { t } = useI18n();
 const categoriesStore = useCategoriesStore();
 
 const form = reactive({
@@ -145,10 +145,10 @@ const handleLogin = async () => {
     if (result.success) {
       await checkOnboardingAndRedirect();
     } else {
-      error.value = result.error || 'Login failed. Please try again.';
+      error.value = result.error || t('login.failedLogin');
     }
   } catch (err) {
-    error.value = 'An unexpected error occurred. Please try again.';
+    error.value = t('login.unexpectedError');
   } finally {
     loading.value = false;
   }
