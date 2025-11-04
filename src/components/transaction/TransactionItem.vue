@@ -24,7 +24,7 @@
           <div class="flex-1 min-w-0">
             <div class="flex items-center">
               <p class="font-medium text-gray-900 dark:text-white truncate">
-                {{ transaction.type === 'transfer' ? 'Transfer' : transaction.category?.name || 'Uncategorized' }}
+                {{ transaction.type === 'transfer' ? $t('transactions.transfer') : transaction.category?.name || $t('transactions.uncategorized') }}
               </p>
               <component
                 v-if="showType"
@@ -93,6 +93,7 @@
 <script setup lang="ts">
 import type { Transaction } from '@/types/transaction';
 import { useConfigStore } from '@/stores/config';
+import { useI18n } from 'vue-i18n';
 import { getIcon } from '@/utils/icons';
 import { NotebookPen, Trash2, TrendingUp, TrendingDown, ArrowRightLeft } from 'lucide-vue-next';
 
@@ -113,10 +114,11 @@ defineProps({
 
 defineEmits(['edit', 'delete']);
 
+const { locale } = useI18n();
 const configStore = useConfigStore();
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
+  return new Date(dateString).toLocaleDateString(locale.value === 'id' ? 'id-ID' : 'en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric'

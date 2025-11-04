@@ -4,9 +4,9 @@
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Categories</h1>
+          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('categories.title') }}</h1>
           <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
-            Organize your transactions by category
+            {{ $t('categories.subtitle') }}
           </p>
         </div>
 
@@ -37,13 +37,13 @@
         <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
           <Tag class="w-8 h-8 text-gray-400" />
         </div>
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No categories found</h3>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{{ $t('categories.noCategoriesFound') }}</h3>
         <p class="text-gray-500 dark:text-gray-400 mb-6">
-          Create your first category to start organizing your finances.
+          {{ $t('categories.createFirstCategory') }}
         </p>
         <button @click="showAddModal = true" class="btn-primary">
           <Plus class="size-4 mr-2" />
-          Add Category
+          {{ $t('categories.addCategory') }}
         </button>
       </div>
 
@@ -61,7 +61,7 @@
     <!-- Floating Add Button for Mobile -->
     <button @click="showAddModal = true" class="sm:hidden fixed bottom-[70px] right-6 z-[20] btn-primary rounded-xl p-3 shadow-lg flex items-center justify-center">
       <Plus class="w-6 h-6" />
-      <span class="sr-only">Add Category</span>
+      <span class="sr-only">{{ $t('categories.addCategory') }}</span>
     </button>
 
     <!-- Add/Edit Category Modal -->
@@ -75,6 +75,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useCategoriesStore } from '@/stores/categories';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import CategoryModal from '@/components/category/CategoryModal.vue';
@@ -83,6 +84,7 @@ import CategoryCard from '@/components/category/CategoryCard.vue';
 import type { Category } from '@/types/category';
 import { Plus, Tag, TrendingUp, TrendingDown, LayoutGrid } from 'lucide-vue-next';
 
+const { t } = useI18n();
 const categoriesStore = useCategoriesStore();
 
 const showAddModal = ref(false);
@@ -106,7 +108,7 @@ const editCategory = (category: Category) => {
 };
 
 const deleteCategory = async (id: string) => {
-  if (confirm('Are you sure you want to delete this category? This action cannot be undone.')) {
+  if (confirm(t('categories.deleteConfirm'))) {
     const result = await categoriesStore.deleteCategory(id);
     if (!result.success && result.error) {
       alert(result.error);

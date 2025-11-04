@@ -4,9 +4,9 @@
       <!-- Header -->
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Transactions</h1>
+          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('transactions.title') }}</h1>
           <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
-            Track all your income and expenses
+            {{ $t('transactions.subtitle') }}
           </p>
         </div>
         <div class="flex items-center gap-4 lg:gap-2 justify-between">
@@ -58,29 +58,29 @@
       <div v-if="showFilters" class="card p-4 space-y-4">
         <!-- Type Filter -->
         <div>
-          <label class="label mb-2 px-2">Type</label>
+          <label class="label mb-2 px-2">{{ $t('transactions.type') }}</label>
           <div class="flex items-center space-x-2 overflow-x-auto py-2 px-2">
-            <button @click="filters.type = ''" :class="['btn flex-shrink-0', filters.type === '' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">All Types</button>
+            <button @click="filters.type = ''" :class="['btn flex-shrink-0', filters.type === '' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">{{ $t('transactions.allTypes') }}</button>
             <button @click="filters.type = 'income'" :class="['btn flex-shrink-0', filters.type === 'income' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
               <TrendingUp class="w-4 h-4 mr-1.5" />
-              Income
+              {{ $t('transactions.income') }}
             </button>
             <button @click="filters.type = 'expense'" :class="['btn flex-shrink-0', filters.type === 'expense' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
               <TrendingDown class="w-4 h-4 mr-1.5" />
-              Expense
+              {{ $t('transactions.expense') }}
             </button>
             <button @click="filters.type = 'transfer'" :class="['btn flex-shrink-0', filters.type === 'transfer' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
               <ArrowRightLeft class="w-4 h-4 mr-1.5" />
-              Transfer
+              {{ $t('transactions.transfer') }}
             </button>
           </div>
         </div>
 
         <!-- Wallet Filter -->
         <div>
-          <label class="label mb-2 px-2">Wallet</label>
+          <label class="label mb-2 px-2">{{ $t('transactions.wallet') }}</label>
           <div class="flex items-center space-x-2 overflow-x-auto py-2 px-2">
-            <button @click="filters.wallet_id = ''" :class="['btn flex-shrink-0', filters.wallet_id === '' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">All Wallets</button>
+            <button @click="filters.wallet_id = ''" :class="['btn flex-shrink-0', filters.wallet_id === '' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">{{ $t('transactions.allWallets') }}</button>
             <button
               v-for="wallet in walletsStore.wallets"
               :key="wallet.id"
@@ -95,29 +95,29 @@
 
         <!-- Date Range Filter -->
         <div>
-          <label class="label mb-2 px-2">Date Range</label>
+          <label class="label mb-2 px-2">{{ $t('transactions.dateRange') }}</label>
           <div class="flex items-center space-x-2 overflow-x-auto py-2 px-2">
-            <button @click="setDateRange()" :class="['btn flex-shrink-0', !dateRangePreset ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">All</button>
-            <button @click="toggleCustomDateRange" :class="['btn flex-shrink-0', showCustomDateRange ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">Custom Period</button>
-            <button @click="setDateRange('today')" :class="['btn flex-shrink-0', dateRangePreset === 'today' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">Today</button>
-            <button @click="setDateRange('weekly')" :class="['btn flex-shrink-0', dateRangePreset === 'weekly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Week</button>
-            <button @click="setDateRange('monthly')" :class="['btn flex-shrink-0', dateRangePreset === 'monthly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Month</button>
-            <button @click="setDateRange('yearly')" :class="['btn flex-shrink-0', dateRangePreset === 'yearly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">This Year</button>
+            <button @click="setDateRange()" :class="['btn flex-shrink-0', !dateRangePreset ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">{{ $t('transactions.all') }}</button>
+            <button @click="toggleCustomDateRange" :class="['btn flex-shrink-0', showCustomDateRange ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">{{ $t('transactions.customPeriod') }}</button>
+            <button @click="setDateRange('today')" :class="['btn flex-shrink-0', dateRangePreset === 'today' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">{{ $t('transactions.today') }}</button>
+            <button @click="setDateRange('weekly')" :class="['btn flex-shrink-0', dateRangePreset === 'weekly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">{{ $t('transactions.thisWeek') }}</button>
+            <button @click="setDateRange('monthly')" :class="['btn flex-shrink-0', dateRangePreset === 'monthly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">{{ $t('transactions.thisMonth') }}</button>
+            <button @click="setDateRange('yearly')" :class="['btn flex-shrink-0', dateRangePreset === 'yearly' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">{{ $t('transactions.thisYear') }}</button>
           </div>
           <template v-if="showCustomDateRange">
             <div v-if="showCustomDateRange" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 p-2">
               <div>
-                <label for="start_date" class="label">Start Date</label>
+                <label for="start_date" class="label">{{ $t('transactions.startDate') }}</label>
                 <input id="start_date" v-model="filters.start_date" type="date" class="input" @change="onCustomDateChange" />
               </div>
               <div>
-                <label for="end_date" class="label">End Date</label>
+                <label for="end_date" class="label">{{ $t('transactions.endDate') }}</label>
                 <input id="end_date" v-model="filters.end_date" type="date" class="input" @change="onCustomDateChange" />
               </div>
             </div>
             <div class="flex justify-evenly lg:justify-start items-center gap-2 mt-4 p-2">
-              <button @click="goToPreviousPeriod" class="btn btn-primary flex-1 lg:flex-none">Previous Period</button>
-              <button @click="goToNextPeriod" class="btn btn-primary flex-1 lg:flex-none">Next Period</button>
+              <button @click="goToPreviousPeriod" class="btn btn-primary flex-1 lg:flex-none">{{ $t('transactions.previousPeriod') }}</button>
+              <button @click="goToNextPeriod" class="btn btn-primary flex-1 lg:flex-none">{{ $t('transactions.nextPeriod') }}</button>
             </div>
           </template>
         </div>
@@ -125,7 +125,7 @@
         <div class="mt-10 flex justify-start items-center gap-4 px-2">
           <button @click="resetFilters" class="btn btn-primary flex-1 lg:flex-none">
             <RotateCcw class="w-4 h-4 mr-1.5" />
-            Reset Filters
+            {{ $t('transactions.resetFilters') }}
           </button>
         </div>
       </div>
@@ -140,13 +140,13 @@
           <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
             <ArrowUpDown class="w-8 h-8 text-gray-400" />
           </div>
-          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No transactions found</h3>
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{{ $t('transactions.noTransactionsFound') }}</h3>
           <p class="text-gray-500 dark:text-gray-400 mb-6">
-            Try adjusting your filters or add a new transaction.
+            {{ $t('transactions.tryAdjustingFilters') }}
           </p>
           <button @click="showAddModal = true" class="btn-primary">
             <Plus class="w-4 h-4 mr-2" />
-            Add Transaction
+            {{ $t('transactions.addTransaction') }}
           </button>
         </div>
 
@@ -169,11 +169,11 @@
     <QuickAction>
       <router-link v-if="configStore.isApiKeyAiExist" to="/transactions/bulk-expense" class="btn-error text-white rounded-xl p-3 shadow-lg flex items-center justify-center flex-shrink-0">
         <ScanTextIcon class="w-6 h-6" />
-        <span class="sr-only">Bulk Expense</span>
+        <span class="sr-only">{{ $t('transactions.bulkExpense') }}</span>
       </router-link>
       <button @click="showAddModal = true" class="btn-primary rounded-xl p-3 shadow-lg flex items-center justify-center flex-shrink-0">
         <Plus class="w-6 h-6" />
-        <span class="sr-only">Add Transaction</span>
+        <span class="sr-only">{{ $t('transactions.addTransaction') }}</span>
       </button>
     </QuickAction>
 
@@ -194,6 +194,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useWalletsStore } from '@/stores/wallets';
 import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
@@ -224,6 +225,7 @@ import {
 } from 'lucide-vue-next';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, endOfDay, format, parseISO } from 'date-fns';
 
+const { t } = useI18n();
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
@@ -264,7 +266,7 @@ const transactions = computed(() => {
 
 const readableDate = computed(() => {
   if (!filters.start_date && !filters.end_date) {
-    return 'All'
+    return t('transactions.all')
   }
   return format(endOfDay(filters.start_date), 'dd MMM') + ' - ' + format(endOfDay(filters.end_date), 'dd MMM')
 });
@@ -336,7 +338,7 @@ const onCustomDateChange = () => {
 const exportToJson = () => {
   const data = transactions.value.filter(t => configStore.includeHiddenWalletsInCalculation ? true : !t.wallet?.hidden);
   if (data.length === 0) {
-    alert('No transactions to export.');
+    alert(t('transactions.noTransactionsToExport'));
     return;
   }
 
@@ -393,7 +395,7 @@ watch(showAddModal, (isShowing) => {
 });
 
 const deleteTransaction = async (id: string) => {
-  if (confirm('Are you sure you want to delete this transaction?')) {
+  if (confirm(t('transactions.deleteConfirm'))) {
     const result = await transactionsStore.deleteTransaction(id);
     if (result.success) {
       walletsStore.fetchWallets(true);
@@ -452,7 +454,7 @@ const shareTransactions = async () => {
   try {
     const data = transactions.value.filter(t => configStore.includeHiddenWalletsInCalculation ? true : !t.wallet?.hidden);
     if (data.length === 0) {
-      alert('No transactions to share.');
+      alert(t('transactions.noTransactionsToShare'));
       return;
     }
 
@@ -486,18 +488,18 @@ const shareTransactions = async () => {
       const type = tx.type.toUpperCase();
       const amount = tx.amount;
       const date = format(tx.date, 'EEE, dd-MM-yyyy');
-      const category = tx.category?.name || "Uncategorized";
-      const wallet = tx.wallet?.name || "Unknown Wallet";
-      const walletdestination = tx.destinationWallet?.name || "Unknown Wallet"; 
+      const category = tx.category?.name || t('transactions.uncategorized');
+      const wallet = tx.wallet?.name || t('transactions.unknownWallet');
+      const walletdestination = tx.destinationWallet?.name || t('transactions.unknownWallet');
       const note = tx.note;
       if (tx.type === 'transfer') {
-        return `${date}: Transfer of ${amount} from ${wallet} to ${walletdestination} (${note || "no note"})`;
+        return `${date}: ${t('transactions.transferOf')} ${amount} ${t('transactions.from')} ${wallet} ${t('transactions.to')} ${walletdestination} (${note || t('transactions.noNote')})`;
       }
-      return `${date}: ${type} of ${amount} for ${category} (${note || "no note"}) on wallet ${wallet}`;
+      return `${date}: ${type} ${t('transactions.of')} ${amount} ${t('transactions.for')} ${category} (${note || t('transactions.noNote')}) ${t('transactions.onWallet')} ${wallet}`;
     });
 
     // Concatenate into one big prompt-friendly string
-    const llmFriendlyData = `Here is my transactions data for the selected period (${period}): \n\n\`\`\`\n${formatted.join("\n")}\n\`\`\`\n\n`;
+    const llmFriendlyData = `${t('transactions.shareTransactionData')} (${period}): \n\n\`\`\`\n${formatted.join("\n")}\n\`\`\`\n\n`;
 
     const shareData = {
       title: jsonFilename,
@@ -508,10 +510,10 @@ const shareTransactions = async () => {
     if (navigator.share && navigator.canShare(shareData)) {
       await navigator.share(shareData);
     } else {
-      throw new Error("Sharing not supported on this device.");
+      throw new Error(t('transactions.sharingNotSupported'));
     }
   } catch (error: any) {
-    alert('Failed to share: ' + error?.message);
+    alert(t('transactions.failedToShare') + ' ' + error?.message);
   } finally {
     loadingShare.value = false;
   }

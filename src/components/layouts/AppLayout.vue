@@ -27,15 +27,15 @@
         <div class="py-2">
           <router-link to="/profile" @click="showProfileMenu = false" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
             <User class="w-4 h-4 mr-3" />
-            Profile
+            {{ $t('layout.profile') }}
           </router-link>
           <button @click="logout" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
             <LogOut class="w-4 h-4 mr-3" />
-            Logout
+            {{ $t('layout.logout') }}
           </button>
         </div>
         <div class="border-t border-gray-200 dark:border-gray-700 pt-2">
-          <p class="px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Theme</p>
+          <p class="px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ $t('layout.theme') }}</p>
           <div class="flex justify-around p-2">
             <button @click="themeStore.setTheme('light')" class="p-2 rounded-md" :class="{ 'bg-primary-100 dark:bg-primary-900': themeStore.theme === 'light' }">
               <Sun class="w-5 h-5 text-gray-700 dark:text-gray-300" />
@@ -71,7 +71,7 @@
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="item in navigation" :key="item.name" :title="item.name">
                   <router-link :to="item.to" class="group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold" :class="[
-                    $route.name?.toString()?.toLocaleLowerCase() === item.name?.toLocaleLowerCase() ? 'bg-gray-100 dark:bg-gray-700 text-blue-700 dark:text-neon' : 'text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700',
+                    $route.name?.toString()?.toLocaleLowerCase() === item.routeName?.toLocaleLowerCase() ? 'bg-gray-100 dark:bg-gray-700 text-blue-700 dark:text-neon' : 'text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700',
                     uiStore.isSidebarMinimized && 'justify-center'
                   ]">
                     <component :is="item.icon" class="h-5 w-5 shrink-0" />
@@ -83,7 +83,7 @@
             
             <li class="-mx-6 mt-auto">
               <div class="border-t border-gray-200 dark:border-gray-700 py-4" :class="uiStore.isSidebarMinimized ? 'px-5' : 'px-6'">
-                <p v-show="!uiStore.isSidebarMinimized" class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Theme</p>
+                <p v-show="!uiStore.isSidebarMinimized" class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{{ $t('layout.theme') }}</p>
                 <div class="flex p-1 rounded-lg bg-gray-100 dark:bg-gray-700/50" :class="uiStore.isSidebarMinimized ? 'flex-col space-y-1' : 'justify-around'">
                   <button @click="themeStore.setTheme('light')" class="p-2 rounded-md flex-1 text-center" :class="{ 'bg-white dark:bg-gray-600 shadow': themeStore.theme === 'light' }">
                     <Sun class="text-gray-700 dark:text-gray-300 mx-auto" :class="{ 'size-4': !uiStore.isSidebarMinimized ,'w-4 h-4': uiStore.isSidebarMinimized }" />
@@ -127,27 +127,27 @@
     <!-- Mobile Bottom Navigation -->
     <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 safe-area-bottom">
       <div class="grid grid-cols-5">
-        <router-link 
-          v-for="item in mainBottomNav" 
+        <router-link
+          v-for="item in mainBottomNav"
           :key="item.name"
           :to="item.to"
           class="flex flex-col items-center justify-center text-center py-2 transition-colors"
-          :class="$route.name?.toString()?.toLowerCase() === item.name?.toLowerCase() 
-            ? 'text-blue-700 dark:text-neon' 
+          :class="$route.name?.toString()?.toLowerCase() === item.routeName?.toLowerCase()
+            ? 'text-blue-700 dark:text-neon'
             : 'text-gray-500 dark:text-gray-400'"
         >
           <component :is="item.icon" class="w-5 h-5 mb-1" />
           <span class="text-[10px] font-medium">{{ item.name }}</span>
         </router-link>
-        <button 
+        <button
           @click="showMoreMenu = true"
           class="flex flex-col items-center justify-center text-center py-2 transition-colors"
           :class="isMoreMenuActive
-            ? 'text-blue-700 dark:text-neon' 
+            ? 'text-blue-700 dark:text-neon'
             : 'text-gray-500 dark:text-gray-400'"
         >
           <Ellipsis class="w-5 h-5 mb-1" />
-          <span class="text-[10px] font-medium">More</span>
+          <span class="text-[10px] font-medium">{{ $t('nav.more') }}</span>
         </button>
       </div>
     </nav>
@@ -178,7 +178,7 @@
                   :to="item.to"
                   @click="showMoreMenu = false"
                   class="flex flex-col items-center justify-center text-center py-2 transition-colors"
-                  :class="$route.name?.toString()?.toLowerCase() === item.name?.toLowerCase() ? 'text-blue-700 dark:text-neon' : 'text-gray-500 dark:text-gray-400'"
+                  :class="$route.name?.toString()?.toLowerCase() === item.routeName?.toLowerCase() ? 'text-blue-700 dark:text-neon' : 'text-gray-500 dark:text-gray-400'"
                 >
                   <div class="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-2">
                     <component :is="item.icon" class="w-6 h-6" />
@@ -199,12 +199,13 @@ import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { useThemeStore } from '@/stores/theme';
 import { useUIStore } from '@/stores/ui';
-import { 
-  User, 
-  LogOut, 
-  Home, 
-  Wallet, 
-  Target, 
+import { useI18n } from 'vue-i18n';
+import {
+  User,
+  LogOut,
+  Home,
+  Wallet,
+  Target,
   Tag,
   BarChart3,
   Ellipsis,
@@ -223,25 +224,26 @@ const route = useRoute();
 const authStore = useAuthStore();
 const themeStore = useThemeStore();
 const uiStore = useUIStore();
+const { t } = useI18n();
 const showProfileMenu = ref(false);
 const showMoreMenu = ref(false);
 
-const navigation = [
-  { name: 'Dashboard', to: '/dashboard', icon: Home },
-  { name: 'Wallets', to: '/wallets', icon: Wallet },
-  { name: 'Transactions', to: '/transactions', icon: TrendingUpDown },
-  { name: 'Categories', to: '/categories', icon: Tag },
-  { name: 'Budgets', to: '/budgets', icon: Target },
-  { name: 'Reports', to: '/reports', icon: BarChart3 },
-  { name: 'Backup', to: '/backup', icon: Database },
-  { name: 'Settings', to: '/settings', icon: Settings },
-];
+const navigation = computed(() => [
+  { name: t('nav.dashboard'), to: '/dashboard', icon: Home, routeName: 'Dashboard' },
+  { name: t('nav.wallets'), to: '/wallets', icon: Wallet, routeName: 'Wallets' },
+  { name: t('nav.transactions'), to: '/transactions', icon: TrendingUpDown, routeName: 'Transactions' },
+  { name: t('nav.categories'), to: '/categories', icon: Tag, routeName: 'Categories' },
+  { name: t('nav.budgets'), to: '/budgets', icon: Target, routeName: 'Budgets' },
+  { name: t('nav.reports'), to: '/reports', icon: BarChart3, routeName: 'Reports' },
+  { name: t('nav.backup'), to: '/backup', icon: Database, routeName: 'Backup' },
+  { name: t('nav.settings'), to: '/settings', icon: Settings, routeName: 'Settings' },
+]);
 
-const mainBottomNav = navigation.slice(0, 4);
-const moreMenuNav = navigation.slice(4);
+const mainBottomNav = computed(() => navigation.value.slice(0, 4));
+const moreMenuNav = computed(() => navigation.value.slice(4));
 
 const isMoreMenuActive = computed(() => {
-  return moreMenuNav.some(item => item.name?.toLowerCase() === route.name?.toString()?.toLowerCase());
+  return moreMenuNav.value.some(item => item.routeName?.toLowerCase() === route.name?.toString()?.toLowerCase());
 });
 
 const logout = () => {

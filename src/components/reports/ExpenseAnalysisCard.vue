@@ -3,21 +3,21 @@
     <div class="flex justify-between items-start sm:items-center mb-3 flex-col sm:flex-row gap-3 sm:gap-0">
       <div>
         <h2 class="text-sm font-semibold text-gray-900 dark:text-white">
-          Expense Hotspots
+          {{ $t('expenseAnalysis.title') }}
         </h2>
         <p class="text-xs text-gray-500 dark:text-gray-400">
-          Frequent categories in this period.
+          {{ $t('expenseAnalysis.subtitle') }}
         </p>
       </div>
       <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full sm:w-auto">
-        <button @click="sizeBy = 'total'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', sizeBy === 'total' ? 'bg-white dark:bg-gray-600 shadow' : '']">By Amount</button>
-        <button @click="sizeBy = 'frequency'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', sizeBy === 'frequency' ? 'bg-white dark:bg-gray-600 shadow' : '']">By Frequency</button>
+        <button @click="sizeBy = 'total'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', sizeBy === 'total' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('expenseAnalysis.byAmount') }}</button>
+        <button @click="sizeBy = 'frequency'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', sizeBy === 'frequency' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('expenseAnalysis.byFrequency') }}</button>
       </div>
     </div>
 
     <div v-if="analysisData.length === 0" class="text-center py-8 flex flex-col items-center justify-center min-h-[300px]">
       <Activity class="w-10 h-10 text-gray-400 mx-auto mb-2" />
-      <p class="text-gray-500 dark:text-gray-400 text-sm">No expense data to analyze.</p>
+      <p class="text-gray-500 dark:text-gray-400 text-sm">{{ $t('expenseAnalysis.noData') }}</p>
     </div>
 
     <div v-else class="relative min-h-[300px]" ref="container">
@@ -64,36 +64,36 @@
                   </div>
                   <div>
                     <h3 class="font-bold text-gray-800 dark:text-gray-200 text-md">{{ selectedCategoryStats.name }}</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ selectedCategoryStats.count }} transactions</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ selectedCategoryStats.count }} {{ $t('expenseAnalysis.transactions') }}</p>
                   </div>
                 </div>
                 <button @click="selectCategory(selectedCategoryStats)" class="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
                   <X class="size-4 text-gray-500" />
                 </button>
               </div>
-    
+
               <div class="mt-4 text-center">
-                <p class="text-xs text-gray-500 dark:text-gray-400">Total Spent</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('expenseAnalysis.totalSpent') }}</p>
                 <p v-fit-text class="font-mono text-xl font-bold text-error-500 dark:text-error-400 break-words">{{ configStore.formatCurrency(selectedCategoryStats.total) }}</p>
               </div>
             </div>
-    
+
             <div class="mt-auto">
                 <div class="grid grid-cols-2 gap-2 text-xs mt-4">
                   <div class="text-center rounded-md py-2 px-2 bg-gray-100 dark:bg-gray-700/50">
                     <p v-fit-text class="font-mono text-gray-700 dark:text-gray-300 font-semibold">{{ configStore.formatCurrency(selectedCategoryStats.average) }}</p>
-                    <p class="text-gray-500 dark:text-gray-400 capitalize text-[10px]">Avg / {{ analysisPeriod === 'period' ? 'Trx' : analysisPeriod }}</p>
+                    <p class="text-gray-500 dark:text-gray-400 capitalize text-[10px]">{{ $t('expenseAnalysis.avg') }} / {{ analysisPeriod === 'period' ? $t('expenseAnalysis.trx') : analysisPeriod }}</p>
                   </div>
                   <div class="text-center rounded-md py-2 px-2 bg-gray-100 dark:bg-gray-700/50">
                     <p v-fit-text class="font-mono text-gray-700 dark:text-gray-300 font-semibold">{{ configStore.formatCurrency(selectedCategoryStats.median) }}</p>
-                    <p class="text-gray-500 dark:text-gray-400 text-[10px]">Median</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-[10px]">{{ $t('expenseAnalysis.median') }}</p>
                   </div>
                 </div>
-                
+
                 <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full mt-3">
-                  <button @click="analysisPeriod = 'daily'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', analysisPeriod === 'daily' ? 'bg-white dark:bg-gray-600 shadow' : '']">Daily</button>
-                  <button @click="analysisPeriod = 'weekly'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', analysisPeriod === 'weekly' ? 'bg-white dark:bg-gray-600 shadow' : '']">Weekly</button>
-                  <button @click="analysisPeriod = 'period'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', analysisPeriod === 'period' ? 'bg-white dark:bg-gray-600 shadow' : '']">Period</button>
+                  <button @click="analysisPeriod = 'daily'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', analysisPeriod === 'daily' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('expenseAnalysis.daily') }}</button>
+                  <button @click="analysisPeriod = 'weekly'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', analysisPeriod === 'weekly' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('expenseAnalysis.weekly') }}</button>
+                  <button @click="analysisPeriod = 'period'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', analysisPeriod === 'period' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('expenseAnalysis.period') }}</button>
                 </div>
             </div>
         </div>
