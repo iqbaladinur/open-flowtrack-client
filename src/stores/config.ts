@@ -30,6 +30,7 @@ export const useConfigStore = defineStore('config', () => {
   const firstDayOfMonth = ref(1)
   const includeHiddenWalletsInCalculation = ref(false)
   const showAmount = ref(true)
+  const language = ref('en')
   const isApiKeyAiExist = computed(() => {
     return !!gemini_api_key.value
   })
@@ -60,6 +61,9 @@ export const useConfigStore = defineStore('config', () => {
 
     const savedShowAmount = localStorage.getItem('showAmount')
     showAmount.value = savedShowAmount ? JSON.parse(savedShowAmount) : true
+
+    const savedLanguage = localStorage.getItem('language')
+    language.value = savedLanguage || 'en'
   }
 
   const fetchConfig = async () => {
@@ -111,6 +115,11 @@ export const useConfigStore = defineStore('config', () => {
     localStorage.setItem('showAmount', JSON.stringify(showAmount.value))
   }
 
+  const updateLanguage = (newLanguage: string) => {
+    language.value = newLanguage
+    localStorage.setItem('language', newLanguage)
+  }
+
   const formatCurrency = (amount: number) => {
     if (!showAmount.value) {
       return '**********'
@@ -156,6 +165,7 @@ export const useConfigStore = defineStore('config', () => {
     includeHiddenWalletsInCalculation,
     isApiKeyAiExist,
     showAmount,
+    language,
     setConfig,
     loadConfigFromStorage,
     fetchConfig,
@@ -163,6 +173,7 @@ export const useConfigStore = defineStore('config', () => {
     updateFirstDayOfMonth,
     updateIncludeHiddenWalletsInCalculation,
     toggleShowAmount,
+    updateLanguage,
     formatCurrency,
     formatProsentase
   }
