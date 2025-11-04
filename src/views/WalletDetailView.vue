@@ -6,7 +6,7 @@
         <router-link to="/wallets" class="btn-icon flex gap-4 items-center">
           <ArrowLeft class="w-5 h-5" />
           <div>
-            <h1 class="text-sm font-medium text-gray-800 dark:text-neon">Back</h1>
+            <h1 class="text-sm font-medium text-gray-800 dark:text-neon">{{ $t('walletDetail.back') }}</h1>
           </div>
         </router-link>
         <div class="flex items-center space-x-2 justify-center my-2">
@@ -26,12 +26,12 @@
 
       <!-- Error State -->
       <div v-else-if="!wallet" class="card p-12 text-center">
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Wallet not found</h3>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{{ $t('walletDetail.walletNotFound') }}</h3>
         <p class="text-gray-500 dark:text-gray-400 mb-6">
-          The wallet you are looking for does not exist.
+          {{ $t('walletDetail.walletNotFoundDesc') }}
         </p>
         <router-link to="/wallets" class="btn-primary">
-          Go back to Wallets
+          {{ $t('walletDetail.goBackToWallets') }}
         </router-link>
       </div>
 
@@ -48,13 +48,13 @@
         <!-- Period Summary -->
         <div>
           <div class="border-gray-200 dark:border-gray-700 mb-2">
-            <h3 class="text-gray-800 dark:text-white text-xs">This Period Recap</h3>
+            <h3 class="text-gray-800 dark:text-white text-xs">{{ $t('walletDetail.thisPeriodRecap') }}</h3>
             <p class="text-xs text-gray-500 dark:text-gray-400">{{ dateRangeSubtitle }}</p>
           </div>
           <div
             class="flex lg:grid lg:grid-cols-6 lg:gap-4 overflow-x-auto space-x-3 lg:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
             <SummaryCard3
-              title="Income"
+              :title="$t('walletDetail.income')"
               :value="periodIncome"
               :icon="TrendingUp"
               icon-bg-class="!bg-success-100 dark:!bg-success-900/50"
@@ -62,7 +62,7 @@
               value-class="text-success-600 dark:text-success-400"
             />
             <SummaryCard3
-              title="Expenses"
+              :title="$t('walletDetail.expenses')"
               :value="periodExpense"
               :icon="TrendingDown"
               icon-bg-class="!bg-error-100 dark:!bg-error-900/50"
@@ -70,7 +70,7 @@
               value-class="text-error-600 dark:text-error-400"
             />
             <SummaryCard3
-              title="Transfer Out"
+              :title="$t('walletDetail.transferOut')"
               :value="periodTransferOut"
               :icon="ArrowUpRight"
               icon-bg-class="!bg-blue-100 dark:!bg-blue-900/50"
@@ -78,7 +78,7 @@
               value-class="text-blue-600 dark:text-blue-400"
             />
             <SummaryCard3
-              title="Transfer In"
+              :title="$t('walletDetail.transferIn')"
               :value="periodTransferIn"
               :icon="ArrowDownRight"
               icon-bg-class="!bg-blue-100 dark:!bg-blue-900/50"
@@ -86,7 +86,7 @@
               value-class="text-blue-600 dark:text-blue-400"
             />
             <SummaryCard3
-              title="Net Income"
+              :title="$t('walletDetail.netIncome')"
               :value="netIncome"
               :prefix="netIncome >= 0 ? '+' : ''"
               :icon="Scale"
@@ -99,7 +99,7 @@
               }"
             />
             <SummaryCard3
-              title="Net Cash flow"
+              :title="$t('walletDetail.netCashflow')"
               :value="netCashFlow"
               :prefix="netCashFlow >= 0 ? '+' : ''"
               :icon="ArrowLeftRight"
@@ -157,49 +157,48 @@
         <div v-if="showFilters" class="card p-4">
           <div class="space-y-4">
             <div>
-              <label class="label mb-2">Type</label>
+              <label class="label mb-2">{{ $t('walletDetail.type') }}</label>
               <div class="flex items-center space-x-2 overflow-x-auto lg:overflow-visible py-2">
-                <button @click="filters.type = 'all'" :class="['btn flex-shrink-0 ml-2 lg:ml-0', filters.type === 'all' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">All Types</button>
+                <button @click="filters.type = 'all'" :class="['btn flex-shrink-0 ml-2 lg:ml-0', filters.type === 'all' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">{{ $t('walletDetail.allTypes') }}</button>
                 <button @click="filters.type = 'income'" :class="['btn flex-shrink-0', filters.type === 'income' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
                   <TrendingUp class="w-4 h-4 mr-1.5" />
-                  Income
+                  {{ $t('walletDetail.income') }}
                 </button>
                 <button @click="filters.type = 'expense'" :class="['btn flex-shrink-0', filters.type === 'expense' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
                   <TrendingDown class="w-4 h-4 mr-1.5" />
-                  Expense
+                  {{ $t('walletDetail.expenses') }}
                 </button>
                 <button @click="filters.type = 'transfer'" :class="['btn flex-shrink-0 mr-2', filters.type === 'transfer' ? 'btn-primary outline-2 outline-offset-2 outline-blue-500 outline-double' : 'btn-secondary']">
                   <ArrowRightLeft class="w-4 h-4 mr-1.5" />
-                  Transfer
+                  {{ $t('transactions.transfer') }}
                 </button>
               </div>
             </div>
             <div>
-              <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Quick Select</label>
+              <label class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ $t('walletDetail.quickSelect') }}</label>
               <div class="flex flex-wrap items-center gap-2 mt-2">
                 <button @click="setFilter('all')"
-                  :class="['btn-sm', selectedFilter === 'all' ? 'btn-primary' : 'btn-secondary']">All Time</button>
+                  :class="['btn-sm', selectedFilter === 'all' ? 'btn-primary' : 'btn-secondary']">{{ $t('walletDetail.allTime') }}</button>
                 <button @click="setFilter('today')"
-                  :class="['btn-sm', selectedFilter === 'today' ? 'btn-primary' : 'btn-secondary']">Today</button>
+                  :class="['btn-sm', selectedFilter === 'today' ? 'btn-primary' : 'btn-secondary']">{{ $t('walletDetail.today') }}</button>
                 <button @click="setFilter('week')"
-                  :class="['btn-sm', selectedFilter === 'week' ? 'btn-primary' : 'btn-secondary']">This Week</button>
+                  :class="['btn-sm', selectedFilter === 'week' ? 'btn-primary' : 'btn-secondary']">{{ $t('walletDetail.thisWeek') }}</button>
                 <button @click="setFilter('month')"
-                  :class="['btn-sm', selectedFilter === 'month' ? 'btn-primary' : 'btn-secondary']">This Month</button>
+                  :class="['btn-sm', selectedFilter === 'month' ? 'btn-primary' : 'btn-secondary']">{{ $t('walletDetail.thisMonth') }}</button>
                 <button @click="setFilter('year')"
-                  :class="['btn-sm', selectedFilter === 'year' ? 'btn-primary' : 'btn-secondary']">This Year</button>
+                  :class="['btn-sm', selectedFilter === 'year' ? 'btn-primary' : 'btn-secondary']">{{ $t('walletDetail.thisYear') }}</button>
                 <button @click="setFilter('custom')"
-                  :class="['btn-sm', selectedFilter === 'custom' ? 'btn-primary' : 'btn-secondary']">Custom
-                  Period</button>
+                  :class="['btn-sm', selectedFilter === 'custom' ? 'btn-primary' : 'btn-secondary']">{{ $t('walletDetail.customPeriod') }}</button>
               </div>
             </div>
             <div v-show="selectedFilter === 'custom'">
-              <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Custom Range</label>
+              <label class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ $t('walletDetail.customRange') }}</label>
               <div class="flex flex-col sm:flex-row items-center gap-2 mt-2">
                 <input type="date" v-model="startDate" @change="setCustomFilter" class="input w-full"
-                  placeholder="Start Date" />
+                  :placeholder="$t('walletDetail.startDate')" />
                 <span class="text-gray-500 hidden sm:block">-</span>
                 <input type="date" v-model="endDate" @change="setCustomFilter" class="input w-full"
-                  placeholder="End Date" />
+                  :placeholder="$t('walletDetail.endDate')" />
               </div>
             </div>
           </div>
@@ -208,14 +207,14 @@
         <!-- Transactions List -->
         <div class="card">
           <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="font-semibold text-gray-800 dark:text-white">Transaction History</h3>
+            <h3 class="font-semibold text-gray-800 dark:text-white">{{ $t('walletDetail.transactionHistory') }}</h3>
             <p class="text-xs text-gray-500 dark:text-gray-400">{{ dateRangeSubtitle }}</p>
           </div>
           <div v-if="transactionsStore.loading" class="p-8">
             <LoadingSpinner />
           </div>
           <div v-else-if="filteredTransactions.length === 0" class="p-8 text-center">
-            <p class="text-gray-500 dark:text-gray-400">No transactions found for the selected period.</p>
+            <p class="text-gray-500 dark:text-gray-400">{{ $t('walletDetail.noTransactionsFound') }}</p>
           </div>
           <div v-else>
             <ul>
@@ -234,17 +233,17 @@
     <button @click="openTransactionModal('income')"
       class="btn-success bg-opacity-70 rounded-xl p-3 shadow-lg flex items-center justify-center">
       <TrendingUp class="w-6 h-6" />
-      <span class="sr-only">Add Income</span>
+      <span class="sr-only">{{ $t('dashboard.addIncome') }}</span>
     </button>
     <button @click="openTransactionModal('transfer')"
       class="btn bg-blue-100 dark:bg-blue-900 bg-opacity-70 rounded-xl p-3 shadow-lg flex items-center justify-center">
       <ArrowRightLeft class="w-6 h-6 text-blue-600 dark:text-blue-400" />
-      <span class="sr-only">Add Transfer</span>
+      <span class="sr-only">{{ $t('dashboard.addTransfer') }}</span>
     </button>
     <button @click="openTransactionModal('expense')"
       class="btn-error bg-opacity-70 rounded-xl p-3 shadow-lg flex items-center justify-center">
       <TrendingDown class="w-6 h-6" />
-      <span class="sr-only">Add Expense</span>
+      <span class="sr-only">{{ $t('dashboard.addExpense') }}</span>
     </button>
   </QuickAction>
   <WalletModal v-model="showModal" :wallet="selectedWallet" @success="handleWalletSaved" />
@@ -262,6 +261,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useWalletsStore } from '@/stores/wallets';
 import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
@@ -280,6 +280,7 @@ import CategoryFilterModal from '@/components/category/CategoryFilterModal.vue';
 import QuickAction from '@/components/shared/QuickAction.vue';
 import SummaryCard3 from '@/components/dashboard/SummaryCard3.vue';
 
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const walletsStore = useWalletsStore();
@@ -398,10 +399,10 @@ const dateRangeSubtitle = computed(() => {
 
 const walletEndDate = computed(() => {
   if (endDate.value) {
-    return 'Until ' + format(parseISO(endDate.value), 'dd MMM yyyy');
+    return t('walletDetail.until') + ' ' + format(parseISO(endDate.value), 'dd MMM yyyy');
   }
 
-  return 'All Time';
+  return t('walletDetail.allTime');
 })
 
 const fetchWalletData = async () => {
@@ -536,7 +537,7 @@ const editTransactions = (trx: Transaction) => {
 }
 
 const deleteTransaction = async (id: string) => {
-  if (confirm('Are you sure you want to delete this transaction?')) {
+  if (confirm(t('walletDetail.deleteTransactionConfirm'))) {
     const result = await transactionsStore.deleteTransaction(id);
     if (result.success) {
       await fetchWalletData();
@@ -556,7 +557,7 @@ const editWallet = () => {
 };
 
 const deleteWallet = async () => {
-  if (confirm('Are you sure you want to delete this wallet? This action cannot be undone.')) {
+  if (confirm(t('walletDetail.deleteWalletConfirm'))) {
     const result = await walletsStore.deleteWallet(walletId.value);
     if (!result.success && result.error) {
       alert(result.error);

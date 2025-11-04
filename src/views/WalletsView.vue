@@ -4,9 +4,9 @@
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Wallets</h1>
+          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('wallets.title') }}</h1>
           <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
-            Here's your wallets data
+            {{ $t('wallets.subtitle') }}
           </p>
         </div>
         <div class="flex items-center gap-4 lg:gap-2 justify-between">
@@ -49,13 +49,13 @@
         <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
           <WalletIcon class="w-8 h-8 text-gray-400" />
         </div>
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No wallets yet</h3>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{{ $t('wallets.noWalletsYet') }}</h3>
         <p class="text-gray-500 dark:text-gray-400 mb-6">
-          Create your first wallet to start tracking your finances
+          {{ $t('wallets.createFirstWallet') }}
         </p>
         <button @click="showAddModal = true" class="btn-primary">
           <Plus class="w-4 h-4 mr-2" />
-          Add Wallet
+          {{ $t('wallets.addWallet') }}
         </button>
       </div>
 
@@ -77,7 +77,7 @@
     <!-- Floating Add Button for Mobile -->
     <button @click="showAddModal = true" class="sm:hidden fixed bottom-[70px] right-6 z-[20] btn-primary rounded-xl p-3 shadow-lg flex items-center justify-center">
       <Plus class="w-6 h-6" />
-      <span class="sr-only">Add Wallet</span>
+      <span class="sr-only">{{ $t('wallets.addWallet') }}</span>
     </button>
 
     <!-- Add/Edit Wallet Modal -->
@@ -92,6 +92,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useWalletsStore } from '@/stores/wallets';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import WalletModal from '@/components/wallet/WalletModal.vue';
@@ -109,6 +110,7 @@ import {
 } from 'lucide-vue-next';
 import { useConfigStore } from '@/stores/config';
 
+const { t } = useI18n();
 const walletsStore = useWalletsStore();
 const router = useRouter();
 
@@ -135,7 +137,7 @@ const handleWalletSaved = () => {
 const exportToJson = () => {
   const data = wallets.value;
   if (data.length === 0) {
-    alert('No wallets to export.');
+    alert(t('wallets.noWalletsToExport'));
     return;
   }
 
@@ -156,7 +158,7 @@ const shareWallets = async () => {
   try {
     const data = wallets.value;
     if (data.length === 0) {
-      alert('No wallets to share.');
+      alert(t('wallets.noWalletsToShare'));
       return;
     }
 
@@ -168,11 +170,11 @@ const shareWallets = async () => {
     const file = new File([dataStr], txtFilename, { type: 'text/plain' });
 
     const formatted = data.map(w => {
-      const status = w.hidden ? "Hidden" : "Visible";
+      const status = w.hidden ? t('wallets.hidden') : t('wallets.visible');
       return `${w.name}: Current balance ${w.current_balance}, Initial balance ${w.initial_balance} (${status})`;
     });
 
-    const llmInput = `Here is my wallet state: \n \`\`\`\n${formatted.join("\n")}\n\`\`\`\n\n`;
+    const llmInput = `${t('wallets.shareWalletData')} \n \`\`\`\n${formatted.join("\n")}\n\`\`\`\n\n`;
 
     const shareData = {
       title: jsonFilename,
@@ -183,10 +185,10 @@ const shareWallets = async () => {
     if (navigator.share && navigator.canShare(shareData)) {
       await navigator.share(shareData);
     } else {
-      throw new Error("Sharing not supported on this device.");
+      throw new Error(t('wallets.sharingNotSupported'));
     }
   } catch (error: any) {
-    alert('Failed to share: ' + error?.message);
+    alert(t('wallets.failedToShare') + ' ' + error?.message);
   } finally {
     loadingShare.value = false;
   }

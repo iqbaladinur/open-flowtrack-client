@@ -4,9 +4,9 @@
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Budgets</h1>
+          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('budgets.title') }}</h1>
           <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            Set spending limits and track your progress
+            {{ $t('budgets.subtitle') }}
           </p>
         </div>
         <div class="flex items-center flex-wrap gap-2 justify-between">
@@ -38,13 +38,13 @@
         <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
           <Target class="w-8 h-8 text-gray-400" />
         </div>
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No budgets found</h3>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{{ $t('budgets.noBudgetsFound') }}</h3>
         <p class="text-gray-500 dark:text-gray-400 mb-6">
-          Create your first budget for the selected date range to start tracking your spending.
+          {{ $t('budgets.createFirstBudget') }}
         </p>
         <button @click="showAddModal = true" class="btn-primary">
           <Target class="w-4 h-4 mr-2" />
-          Create Budget
+          {{ $t('budgets.createBudget') }}
         </button>
       </div>
 
@@ -62,7 +62,7 @@
     <!-- Floating Add Button for Mobile -->
     <button @click="showAddModal = true" class="sm:hidden fixed bottom-[70px] right-6 z-[20] btn-primary rounded-full p-4 shadow-lg flex items-center justify-center">
       <Plus class="w-6 h-6" />
-      <span class="sr-only">Create Budget</span>
+      <span class="sr-only">{{ $t('budgets.createBudget') }}</span>
     </button>
 
     <!-- Add/Edit Budget Modal -->
@@ -76,6 +76,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, reactive } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useBudgetsStore } from '@/stores/budgets';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import BudgetModal from '@/components/budget/BudgetModal.vue';
@@ -86,6 +87,7 @@ import { Plus, Target, ChevronRight, ChevronLeft } from 'lucide-vue-next';
 import { format, parseISO } from 'date-fns';
 import { useConfigStore } from '@/stores/config';
 
+const { t } = useI18n();
 const budgetsStore = useBudgetsStore();
 const configStore = useConfigStore();
 const showAddModal = ref(false);
@@ -114,7 +116,7 @@ const editBudget = (budget: Budget) => {
 };
 
 const deleteBudget = async (id: string) => {
-  if (confirm('Are you sure you want to delete this budget?')) {
+  if (confirm(t('budgets.deleteConfirm'))) {
     const result = await budgetsStore.deleteBudget(id);
     if (!result.success && result.error) {
       alert(result.error);

@@ -3,9 +3,9 @@
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Header -->
       <div>
-        <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">Reports</h1>
+        <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('reports.title') }}</h1>
         <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-          Analyze your financial trends over time
+          {{ $t('reports.subtitle') }}
         </p>
       </div>
 
@@ -23,8 +23,8 @@
           </button>
         </div>
 
-        <label v-else class="label">Filters</label>
-        
+        <label v-else class="label">{{ $t('reports.filters') }}</label>
+
         <button @click="showFilters = !showFilters" class="btn btn-sm text-xs btn-secondary p-2" :class="{ 'text-blue-700 dark:text-neon': showFilters }">
           <FilterX v-if="showFilters" class="size-4" />
           <Filter v-else class="size-4" />
@@ -35,15 +35,15 @@
           <div class="flex items-center justify-stretch lg:justify-start gap-1 flex-wrap">
             <button @click="currentView = 'monthly'"
               :class="['btn flex-1 lg:flex-none text-xs', currentView === 'monthly' ? 'btn-primary' : 'btn-secondary']">
-              <Calendar class="w-4 h-4 mr-2" /> Monthly
+              <Calendar class="w-4 h-4 mr-2" /> {{ $t('reports.monthly') }}
             </button>
             <button @click="currentView = 'yearly'"
               :class="['btn flex-1 lg:flex-none text-xs', currentView === 'yearly' ? 'btn-primary' : 'btn-secondary']">
-              <CalendarClock class="w-4 h-4 mr-2" /> Yearly
+              <CalendarClock class="w-4 h-4 mr-2" /> {{ $t('reports.yearly') }}
             </button>
             <button @click="selectCustomView"
               :class="['btn flex-1 lg:flex-none text-xs', currentView === 'custom' ? 'btn-primary' : 'btn-secondary']">
-              <SlidersHorizontal class="w-4 h-4 mr-2" /> Custom
+              <SlidersHorizontal class="w-4 h-4 mr-2" /> {{ $t('reports.custom') }}
             </button>
           </div>
 
@@ -51,13 +51,13 @@
             <!-- Monthly Selector -->
             <div v-if="currentView === 'monthly'" class="grid grid-cols-2 gap-1 lg:w-1/3">
               <div>
-                <label for="monthly-month" class="label">Month</label>
+                <label for="monthly-month" class="label">{{ $t('reports.month') }}</label>
                 <select id="monthly-month" v-model="selectedDate.monthly.month" class="input text-xs">
                   <option v-for="(month, index) in months" :key="index" :value="index + 1">{{ month }}</option>
                 </select>
               </div>
               <div>
-                <label for="monthly-year" class="label">Year</label>
+                <label for="monthly-year" class="label">{{ $t('reports.year') }}</label>
                 <select id="monthly-year" v-model="selectedDate.monthly.year" class="input text-xs">
                   <option v-for="year in yearList" :key="year" :value="year">{{ year }}</option>
                 </select>
@@ -65,7 +65,7 @@
             </div>
             <!-- Yearly Selector -->
             <div v-if="currentView === 'yearly'" class="lg:w-1/5">
-              <label for="yearly-year" class="label">Select Year</label>
+              <label for="yearly-year" class="label">{{ $t('reports.selectYear') }}</label>
               <select id="yearly-year" v-model="selectedDate.yearly.year" class="input text-xs">
                 <option v-for="year in yearList" :key="year" :value="year">{{ year }}</option>
               </select>
@@ -74,25 +74,25 @@
             <div v-if="currentView === 'custom'" class="space-y-4">
               <div class="grid grid-cols-2 gap-1 lg:w-1/3">
                 <div>
-                  <label for="custom-start" class="label">Start Date</label>
+                  <label for="custom-start" class="label">{{ $t('reports.startDate') }}</label>
                   <input id="custom-start" v-model="selectedDate.custom.start" type="date" class="input text-xs" />
                 </div>
                 <div>
-                  <label for="custom-end" class="label">End Date</label>
+                  <label for="custom-end" class="label">{{ $t('reports.endDate') }}</label>
                   <input id="custom-end" v-model="selectedDate.custom.end" type="date" class="input text-xs" />
                 </div>
               </div>
               <div>
-                <label class="label">Group By</label>
+                <label class="label">{{ $t('reports.groupBy') }}</label>
                 <div class="flex items-center space-x-1 flex-wrap">
                   <button @click="customAggregationLevel = 'daily'"
-                    :class="['btn btn-sm text-xs', customAggregationLevel === 'daily' ? 'btn-primary' : 'btn-secondary']">Daily</button>
+                    :class="['btn btn-sm text-xs', customAggregationLevel === 'daily' ? 'btn-primary' : 'btn-secondary']">{{ $t('reports.daily') }}</button>
                   <button @click="customAggregationLevel = 'weekly'"
-                    :class="['btn btn-sm text-xs', customAggregationLevel === 'weekly' ? 'btn-primary' : 'btn-secondary']">Weekly</button>
+                    :class="['btn btn-sm text-xs', customAggregationLevel === 'weekly' ? 'btn-primary' : 'btn-secondary']">{{ $t('reports.weekly') }}</button>
                   <button @click="customAggregationLevel = 'monthly'"
-                    :class="['btn btn-sm text-xs', customAggregationLevel === 'monthly' ? 'btn-primary' : 'btn-secondary']">Monthly</button>
+                    :class="['btn btn-sm text-xs', customAggregationLevel === 'monthly' ? 'btn-primary' : 'btn-secondary']">{{ $t('reports.monthly') }}</button>
                   <button @click="customAggregationLevel = 'yearly'"
-                    :class="['btn btn-sm text-xs', customAggregationLevel === 'yearly' ? 'btn-primary' : 'btn-secondary']">Yearly</button>
+                    :class="['btn btn-sm text-xs', customAggregationLevel === 'yearly' ? 'btn-primary' : 'btn-secondary']">{{ $t('reports.yearly') }}</button>
                 </div>
               </div>
             </div>
@@ -106,14 +106,14 @@
       </div>
       <div v-else-if="transactions.length === 0" class="card text-center py-12">
         <BarChart3 class="w-12 h-12 text-gray-400 mx-auto mb-2" />
-        <p class="text-gray-500 dark:text-gray-400 px-2">No transaction data available for the selected period.</p>
+        <p class="text-gray-500 dark:text-gray-400 px-2">{{ $t('reports.noDataAvailable') }}</p>
       </div>
       <div v-else class="space-y-6">
         <!-- Summary Cards -->
         <div
           class="flex lg:grid lg:grid-cols-5 lg:gap-4 overflow-x-auto space-x-3 lg:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
           <SummaryCard3
-            title="Total Income"
+            :title="$t('reports.totalIncome')"
             :value="summary.totalIncome"
             :icon="TrendingUp"
             icon-bg-class="!bg-success-100 dark:!bg-success-900/50"
@@ -121,7 +121,7 @@
             value-class="text-success-600 dark:text-success-400"
           />
           <SummaryCard3
-            title="Total Expenses"
+            :title="$t('reports.totalExpenses')"
             :value="summary.totalExpense"
             :icon="TrendingDown"
             icon-bg-class="!bg-error-100 dark:!bg-error-900/50"
@@ -129,7 +129,7 @@
             value-class="text-error-600 dark:text-error-400"
           />
           <SummaryCard3
-            title="Total Transfer"
+            :title="$t('reports.totalTransfer')"
             :value="summary.totalTransfer"
             :icon="ArrowRightLeft"
             icon-bg-class="!bg-blue-100 dark:!bg-blue-900/50"
@@ -137,7 +137,7 @@
             value-class="text-blue-600 dark:text-blue-400"
           />
           <SummaryCard3
-            title="Total Net Income"
+            :title="$t('reports.totalNetIncome')"
             :value="summary.net"
             :prefix="summary.net >= 0 ? '+' : ''"
             :icon="Scale"
@@ -150,7 +150,7 @@
             }"
           />
           <SummaryCard3
-            title="Expense Ratio"
+            :title="$t('reports.expenseRatio')"
             :value="summary.expenseRatio"
             :formatter="configStore.formatProsentase"
             :icon="PieChartIcon"
@@ -167,20 +167,20 @@
 
         <!-- Expense Ratio Description -->
         <div class="card p-4 text-sm text-gray-600 dark:text-gray-400 space-y-2">
-          <h3 class="font-bold text-gray-800 dark:text-gray-200">Understanding Your Expense Ratio</h3>
+          <h3 class="font-bold text-gray-800 dark:text-gray-200">{{ $t('reports.understandingExpenseRatio') }}</h3>
           <div v-if="summary.totalIncome > 0">
             <div v-if="summary.expenseRatio < 70">
-              <p><span class="font-semibold text-success-600 dark:text-success-400">Healthy Zone:</span> Your expense ratio is great! This suggests you have a strong handle on your finances, with income significantly higher than expenses. Keep it up!</p>
+              <p><span class="font-semibold text-success-600 dark:text-success-400">{{ $t('reports.healthyZone') }}</span> {{ $t('reports.healthyZoneDesc') }}</p>
             </div>
             <div v-else-if="summary.expenseRatio >= 70 && summary.expenseRatio <= 80">
-              <p><span class="font-semibold text-orange-600 dark:text-orange-400">Caution Zone:</span> You're spending a significant portion of your income. It's a good time to review your budget and see if there are opportunities to save more.</p>
+              <p><span class="font-semibold text-orange-600 dark:text-orange-400">{{ $t('reports.cautionZone') }}</span> {{ $t('reports.cautionZoneDesc') }}</p>
             </div>
             <div v-else-if="summary.expenseRatio > 80">
-              <p><span class="font-semibold text-error-600 dark:text-error-500">Danger Zone:</span> Your expenses are very close to your income. This is a high-risk situation. We strongly recommend creating a budget and cutting back on non-essential spending.</p>
+              <p><span class="font-semibold text-error-600 dark:text-error-500">{{ $t('reports.dangerZone') }}</span> {{ $t('reports.dangerZoneDesc') }}</p>
             </div>
           </div>
           <div v-else>
-            <p>Your expense ratio couldn't be calculated because there was no income in this period. The ratio shows what percentage of your income is spent.</p>
+            <p>{{ $t('reports.noIncomeRatio') }}</p>
           </div>
         </div>
 
@@ -194,9 +194,9 @@
             </div>
             <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full lg:w-auto">
               <button @click="chartType = 'bar'"
-                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', chartType === 'bar' ? 'bg-white dark:bg-gray-600 shadow' : '']">Bar View</button>
+                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', chartType === 'bar' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('reports.barView') }}</button>
               <button @click="chartType = 'line'"
-                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', chartType === 'line' ? 'bg-white dark:bg-gray-600 shadow' : '']">Line View</button>
+                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', chartType === 'line' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('reports.lineView') }}</button>
             </div>
           </div>
           <div class="h-96">
@@ -217,20 +217,20 @@
           <div class="card p-4 lg:min-h-[500px] flex flex-col gap-4">
             <div class="flex justify-between items-start mb-4 flex-col md:flex-row gap-4">
               <div>
-                <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Breakdown by Category ({{ configStore.currency }})</h2>
+                <h2 class="text-sm font-semibold text-gray-900 dark:text-white">{{ $t('reports.breakdownByCategory') }} ({{ configStore.currency }})</h2>
                 <p class="text-sm text-gray-500 dark:text-gray-400"></p>
               </div>
               <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full lg:w-auto">
                 <button @click="categoryReportType = 'expense'"
-                  :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', categoryReportType === 'expense' ? 'bg-white dark:bg-gray-600 shadow' : '']">Spending</button>
+                  :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', categoryReportType === 'expense' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('reports.spending') }}</button>
                 <button @click="categoryReportType = 'income'"
-                  :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', categoryReportType === 'income' ? 'bg-white dark:bg-gray-600 shadow' : '']">Income</button>
+                  :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', categoryReportType === 'income' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('reports.income') }}</button>
               </div>
             </div>
             <div v-if="categoryChartData.labels.length === 0"
               class="text-center py-8 flex-1 flex items-center justify-center flex-col">
               <PieChart class="w-12 h-12 text-gray-400 mx-auto mb-2" />
-              <p class="text-gray-500 dark:text-gray-400">No {{ categoryReportType }} data</p>
+              <p class="text-gray-500 dark:text-gray-400">{{ $t('reports.noData') }} {{ categoryReportType === 'expense' ? $t('reports.spending').toLowerCase() : $t('reports.income').toLowerCase() }}</p>
             </div>
             <div v-else class="flex-1">
               <CategoryPieChart :chart-data="categoryChartData" />
@@ -240,11 +240,11 @@
           <!-- Wallet Report -->
           <div class="card p-4 lg:min-h-[500px]">
             <h2 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">
-              Flow by Wallet ({{ configStore.currency }})
+              {{ $t('reports.flowByWallet') }} ({{ configStore.currency }})
             </h2>
             <div v-if="walletReportData.length === 0" class="text-center py-8">
               <Wallet class="w-12 h-12 text-gray-400 mx-auto mb-2" />
-              <p class="text-gray-500 dark:text-gray-400 px-2">No wallet data available</p>
+              <p class="text-gray-500 dark:text-gray-400 px-2">{{ $t('reports.noWalletData') }}</p>
             </div>
             <div v-else class="space-y-2">
               <div v-for="item in walletReportData" :key="item.name"
@@ -275,6 +275,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
 import AppLayout from '@/components/layouts/AppLayout.vue';
@@ -291,6 +292,7 @@ type ReportView = 'monthly' | 'yearly' | 'custom';
 type AggregationLevel = 'daily' | 'weekly' | 'monthly' | 'yearly';
 type ChartType = 'line' | 'bar';
 
+const { t } = useI18n();
 const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
 
@@ -316,12 +318,25 @@ const selectedDate = reactive({
 
 const readableDate = computed(() => {
   if (!selectedDate.custom.start && !selectedDate.custom.end) {
-    return 'None'
+    return t('reports.none')
   }
   return format(selectedDate.custom.start, 'dd MMM') + ' - ' + format(selectedDate.custom.end, 'dd MMM')
 });
 
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const months = computed(() => [
+  t('reports.january'),
+  t('reports.february'),
+  t('reports.march'),
+  t('reports.april'),
+  t('reports.may'),
+  t('reports.june'),
+  t('reports.july'),
+  t('reports.august'),
+  t('reports.september'),
+  t('reports.october'),
+  t('reports.november'),
+  t('reports.december')
+]);
 const yearList = computed(() => {
   const currentYear = new Date().getFullYear();
   const years = [];
@@ -360,10 +375,10 @@ const dateRange = computed(() => {
 
 const reportTitle = computed(() => {
   switch (currentView.value) {
-    case 'monthly': return `Monthly Report for ${months[selectedDate.monthly.month - 1]} ${selectedDate.monthly.year}`;
-    case 'yearly': return `Yearly Report for ${selectedDate.yearly.year}`;
-    case 'custom': return `Custom Report (${selectedDate.custom.start} to ${selectedDate.custom.end})`;
-    default: return 'Report';
+    case 'monthly': return `${t('reports.monthlyReportFor')} ${months.value[selectedDate.monthly.month - 1]} ${selectedDate.monthly.year}`;
+    case 'yearly': return `${t('reports.yearlyReportFor')} ${selectedDate.yearly.year}`;
+    case 'custom': return `${t('reports.customReport')} (${selectedDate.custom.start} ${t('reports.to')} ${selectedDate.custom.end})`;
+    default: return t('reports.report');
   }
 });
 
@@ -472,8 +487,8 @@ const chartData = computed(() => {
   return {
     labels,
     datasets: [
-      { label: 'Income', backgroundColor: '#10b981', data: incomeData },
-      { label: 'Expense', backgroundColor: '#ef4444', data: expenseData },
+      { label: t('reports.income'), backgroundColor: '#10b981', data: incomeData },
+      { label: t('reports.expense'), backgroundColor: '#ef4444', data: expenseData },
     ],
   };
 });

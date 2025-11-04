@@ -5,16 +5,16 @@
         <div class="mx-auto w-16 h-16 bg-green-600/30 rounded-2xl flex items-center justify-center mb-6">
           <TrendingUpDown class="w-8 h-8 text-white" />
         </div>
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-neon">Welcome back</h2>
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('login.title') }}</h2>
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          Sign in to your account to continue
+          {{ $t('login.subtitle') }}
         </p>
       </div>
 
       <div class="mt-8 space-y-6">
         <a :href="googleAuthUrl" class="w-full btn-secondary py-3 text-base flex items-center justify-center">
           <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5 mr-2">
-          Sign in with Google
+          {{ $t('login.signInWithGoogle') }}
         </a>
 
         <div class="relative">
@@ -23,7 +23,7 @@
           </div>
           <div class="relative flex justify-center text-sm">
             <button @click="showEmailForm = true" class="btn-link px-2 bg-gray-50 dark:bg-gray-900">
-              Or sign in with email
+              {{ $t('login.orSignInWithEmail') }}
             </button>
           </div>
         </div>
@@ -39,27 +39,27 @@
           <form v-if="showEmailForm" @submit.prevent="handleLogin" class="space-y-6">
             <div class="space-y-4">
               <div>
-                <label for="email" class="label">Email address</label>
+                <label for="email" class="label">{{ $t('login.emailAddress') }}</label>
                 <input
                   id="email"
                   v-model="form.email"
                   type="email"
                   required
                   class="input"
-                  placeholder="Enter your email"
+                  :placeholder="$t('login.enterEmail')"
                   :disabled="loading"
                 />
               </div>
-              
+
               <div>
-                <label for="password" class="label">Password</label>
+                <label for="password" class="label">{{ $t('login.password') }}</label>
                 <input
                   id="password"
                   v-model="form.password"
                   type="password"
                   required
                   class="input"
-                  placeholder="Enter your password"
+                  :placeholder="$t('login.enterPassword')"
                   :disabled="loading"
                 />
               </div>
@@ -75,17 +75,17 @@
               :disabled="loading"
             >
               <LoadingSpinner v-if="loading" size="sm" />
-              <span v-else>Sign in</span>
+              <span v-else>{{ $t('login.signIn') }}</span>
             </button>
 
             <div class="text-center">
               <p class="text-sm text-gray-600 dark:text-gray-400">
-                Don't have an account?
+                {{ $t('login.noAccount') }}
                 <router-link
                   to="/register"
                   class="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400"
                 >
-                  Sign up
+                  {{ $t('login.signUp') }}
                 </router-link>
               </p>
             </div>
@@ -99,11 +99,13 @@
 <script setup lang="ts">
 import { reactive, ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
 import { useCategoriesStore } from '@/stores/categories';
 import { TrendingUpDown } from 'lucide-vue-next';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 
+const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();

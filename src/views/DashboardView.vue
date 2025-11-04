@@ -4,10 +4,10 @@
       <!-- Welcome Section -->
       <div>
         <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon mb-2">
-          Welcome back, {{ authStore.user?.full_name || 'User' }}!
+          {{ $t('dashboard.title') }}, {{ authStore.user?.full_name || $t('common.user') }}!
         </h1>
         <p class="text-gray-600 dark:text-gray-400 text-sm">
-          Here's your financial overview
+          {{ $t('dashboard.subtitle') }}
         </p>
       </div>
 
@@ -34,7 +34,7 @@
         <!-- Summary Cards -->
         <div class="flex lg:grid lg:grid-cols-5 lg:gap-4 overflow-x-auto space-x-3 lg:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
           <SummaryCard3
-            title="Total Balance"
+            :title="$t('dashboard.totalBalance')"
             :value="totalBalance"
             :icon="Wallet"
             icon-bg-class="bg-primary-100/90 dark:bg-primary-700/90"
@@ -42,7 +42,7 @@
             value-class="text-blue-900 dark:text-white"
           />
           <SummaryCard3
-            title="Income"
+            :title="$t('dashboard.income')"
             :value="summary.total_income"
             :icon="TrendingUp"
             icon-bg-class="bg-success-100 dark:bg-success-900/50"
@@ -52,7 +52,7 @@
             accent="positive"
           />
           <SummaryCard3
-            title="Expenses"
+            :title="$t('dashboard.expenses')"
             :value="summary.total_expense"
             :icon="TrendingDown"
             icon-bg-class="bg-error-100 dark:bg-error-900/50"
@@ -62,7 +62,7 @@
             accent="negative"
           />
           <SummaryCard3
-            title="Transfers"
+            :title="$t('dashboard.transfers')"
             :value="summary.total_transfer"
             :icon="ArrowRightLeft"
             icon-bg-class="bg-blue-100 dark:bg-blue-900/50"
@@ -70,7 +70,7 @@
             value-class="text-blue-600 dark:text-blue-400"
           />
           <SummaryCard3
-            title="Net Income"
+            :title="$t('dashboard.netIncome')"
             :value="summary.net_income"
             :icon="Scale"
             icon-bg-class="bg-warning-100 dark:bg-warning-900/50"
@@ -88,7 +88,7 @@
 
       <!-- Quick Actions -->
       <div class="card p-4">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-neon mb-4">Quick Actions</h2>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-neon mb-4">{{ $t('dashboard.quickActions') }}</h2>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <QuickActionButton
             @click="toggleAddTransaction('income')"
@@ -98,7 +98,7 @@
             <template #icon>
               <Plus class="w-5 h-5 text-success-600 dark:text-success-400" />
             </template>
-            Add Income
+            {{ $t('dashboard.addIncome') }}
           </QuickActionButton>
 
           <QuickActionButton
@@ -109,7 +109,7 @@
             <template #icon>
               <Minus class="w-5 h-5 text-error-600 dark:text-error-400" />
             </template>
-            Add Expense
+            {{ $t('dashboard.addExpense') }}
           </QuickActionButton>
 
           <QuickActionButton
@@ -120,7 +120,7 @@
             <template #icon>
               <ArrowRightLeft class="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </template>
-            Add Transfer
+            {{ $t('dashboard.addTransfer') }}
           </QuickActionButton>
 
           <QuickActionButton
@@ -131,7 +131,7 @@
             <template #icon>
               <Wallet class="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </template>
-            Manage Wallets
+            {{ $t('dashboard.manageWallets') }}
           </QuickActionButton>
         </div>
       </div>
@@ -143,7 +143,7 @@
             <BrainCircuit class="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
           </div>
           <div>
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">What happened this period?</h2>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">{{ $t('dashboard.aiSuggestions') }}</h2>
             <p v-if="configStore.isApiKeyAiExist" class="text-xs text-gray-500 dark:text-gray-400 italic">({{ periodicAnalytics.start }} - {{ periodicAnalytics.end }})</p>
           </div>
         </div>
@@ -157,7 +157,7 @@
         </div>
         <div v-else class="text-center py-8">
           <p class="text-gray-500 dark:text-gray-400">
-            {{ configStore.isApiKeyAiExist ? 'No suggestions available at the moment.' : 'Add gemini apikey on settings to enable this feature.' }}
+            {{ configStore.isApiKeyAiExist ? $t('dashboard.noSuggestionsAvailable') : $t('dashboard.addApiKeyForAi') }}
           </p>
         </div>
       </div>
@@ -179,7 +179,7 @@
             </div>
 
             <div class="flex gap-2 justify-between items-center lg:justify-end lg:items-start">
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">Active Budget</h2>
+              <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">{{ $t('dashboard.activeBudget') }}</h2>
               <router-link
                 to="/budgets"
                 class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
@@ -193,7 +193,7 @@
             <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
               <Target class="size-8 text-gray-400" />
             </div>
-            <p class="text-gray-500 dark:text-gray-400 mb-4">No Budget Active this Period</p>
+            <p class="text-gray-500 dark:text-gray-400 mb-4">{{ $t('dashboard.noBudgetActive') }}</p>
           </div>
 
           <div v-if="budgetsStore.loading" class="flex justify-center items-center py-8 my-auto">
@@ -203,8 +203,8 @@
           <div v-else class="space-y-3">
             <div v-if="budgets.length > 0" class="card p-4">
               <div class="mb-3">
-                <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Overall Active Budget</h3>
-                <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">Combined usage across all budgets</p>
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-white">{{ $t('dashboard.overallActiveBudget') }}</h3>
+                <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">{{ $t('dashboard.combinedUsage') }}</p>
               </div>
 
               <!-- Metrics Grid -->
@@ -213,7 +213,7 @@
                 <div class="flex flex-col space-y-2.5 md:hidden">
                   <!-- Total Spent -->
                   <div class="flex items-baseline justify-between gap-3">
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400 flex-shrink-0">Spent</p>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400 flex-shrink-0">{{ $t('dashboard.spent') }}</p>
                     <p
                       class="text-sm font-semibold font-mono text-right break-all"
                       :class="{
@@ -233,7 +233,7 @@
                     <p
                       class="text-[10px] flex-shrink-0 text-gray-500 dark:text-gray-400"
                     >
-                      {{ budgetSummary.usage_percent > 100 ? 'Over' : 'Left' }}
+                      {{ budgetSummary.usage_percent > 100 ? $t('dashboard.over') : $t('dashboard.left') }}
                     </p>
                     <p
                       class="text-sm font-semibold font-mono text-right break-all"
@@ -248,7 +248,7 @@
 
                   <!-- Budget Limit -->
                   <div class="flex items-baseline justify-between gap-3">
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400 flex-shrink-0">Limit</p>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400 flex-shrink-0">{{ $t('dashboard.limit') }}</p>
                     <p class="text-sm font-semibold font-mono text-gray-900 dark:text-white text-right break-all">
                       {{ configStore.formatCurrency(budgetSummary.total_limit) }}
                     </p>
@@ -259,7 +259,7 @@
                 <div class="hidden md:grid md:grid-cols-3 gap-3">
                   <!-- Total Limit -->
                   <div class="text-center">
-                    <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">Limit</p>
+                    <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">{{ $t('dashboard.limit') }}</p>
                     <p class="text-xs font-semibold font-mono text-gray-900 dark:text-white">
                       {{ configStore.formatCurrency(budgetSummary.total_limit) }}
                     </p>
@@ -267,7 +267,7 @@
 
                   <!-- Total Spent -->
                   <div class="text-center">
-                    <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">Spent</p>
+                    <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">{{ $t('dashboard.spent') }}</p>
                     <p
                       class="text-xs font-semibold font-mono"
                       :class="{
@@ -291,7 +291,7 @@
                         'text-error-500': budgetSummary.usage_percent > 100
                       }"
                     >
-                      {{ budgetSummary.usage_percent > 100 ? 'Over' : 'Left' }}
+                      {{ budgetSummary.usage_percent > 100 ? $t('dashboard.over') : $t('dashboard.left') }}
                     </p>
                     <p
                       class="text-xs font-semibold font-mono"
@@ -332,7 +332,7 @@
                       'text-red-700 dark:text-red-500': budgetSummary.usage_percent > 100
                     }"
                   >
-                    {{ budgetSummary.usage_percent.toFixed(1) }}% used
+                    {{ budgetSummary.usage_percent.toFixed(1) }}% {{ $t('dashboard.used') }}
                   </span>
                 </div>
               </div>
@@ -350,7 +350,7 @@
         <!-- Recent Transactions -->
         <div class="card p-4">
           <div class="flex items-center lg:items-start justify-between mb-4">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">Recent Transactions</h2>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">{{ $t('dashboard.recentTransactions') }}</h2>
             <router-link
               to="/transactions"
               class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
@@ -363,9 +363,9 @@
             <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
               <ArrowUpDown class="w-8 h-8 text-gray-400" />
             </div>
-            <p class="text-gray-500 dark:text-gray-400 mb-4">No transactions yet</p>
+            <p class="text-gray-500 dark:text-gray-400 mb-4">{{ $t('dashboard.noTransactionsYet') }}</p>
             <button @click="showAddTransactionModal = true" class="btn-primary">
-              Add your first transaction
+              {{ $t('dashboard.addFirstTransaction') }}
             </button>
           </div>
 
@@ -393,6 +393,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
+import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
 import { useWalletsStore } from '@/stores/wallets';
 import { useTransactionsStore } from '@/stores/transactions';
@@ -430,6 +431,7 @@ import { useReportsStore } from '@/stores/reports';
 import type { TransactionType } from '@/types/transaction';
 import { useBudgetsStore } from '@/stores/budgets';
 
+const { t } = useI18n();
 const authStore = useAuthStore();
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
