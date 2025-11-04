@@ -3,19 +3,19 @@
     <form @submit.prevent="handleSubmit" id="transaction-form" class="space-y-6 pt-4">
       <!-- Amount -->
       <div class="text-center">
-        <label for="amount" class="label sr-only">Amount</label>
+        <label for="amount" class="label sr-only">{{ $t('transactionModal.amount') }}</label>
         <CurrencyInput
           v-model="form.amount"
           el-id="amount"
           :required="true"
           :disabled="loading"
-          placeholder="0.00"
+          :placeholder="$t('transactionModal.amountPlaceholder')"
         />
       </div>
 
       <!-- Transaction Type -->
       <div v-if="!type">
-        <label class="label text-center">Transaction Type</label>
+        <label class="label text-center">{{ $t('transactionModal.transactionType') }}</label>
         <div class="grid grid-cols-3 gap-2 max-w-sm mx-auto">
           <button
             type="button"
@@ -24,7 +24,7 @@
             :class="form.type === 'income' ? 'border-success-500 bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300' : 'text-gray-600 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
           >
             <TrendingUp class="w-5 h-5 mx-auto" />
-            <span class="text-xs font-medium">Income</span>
+            <span class="text-xs font-medium">{{ $t('transactionModal.income') }}</span>
           </button>
           <button
             type="button"
@@ -33,7 +33,7 @@
             :class="form.type === 'expense' ? 'border-error-500 bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300' : 'text-gray-600 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
           >
             <TrendingDown class="w-5 h-5 mx-auto" />
-            <span class="text-xs font-medium">Expense</span>
+            <span class="text-xs font-medium">{{ $t('transactionModal.expense') }}</span>
           </button>
           <button
             type="button"
@@ -42,7 +42,7 @@
             :class="form.type === 'transfer' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
           >
             <ArrowRightLeft class="w-5 h-5 mx-auto" />
-            <span class="text-xs font-medium">Transfer</span>
+            <span class="text-xs font-medium">{{ $t('transactionModal.transfer') }}</span>
           </button>
         </div>
       </div>
@@ -50,29 +50,29 @@
       <div class="space-y-4 border-t border-gray-200 dark:border-gray-700 pt-6">
         <!-- Wallet -->
         <div>
-          <label for="wallet" class="label">{{ form.type === 'transfer' ? 'Source Wallet' : 'Wallet' }}</label>
+          <label for="wallet" class="label">{{ form.type === 'transfer' ? $t('transactionModal.sourceWallet') : $t('transactionModal.wallet') }}</label>
           <select id="wallet" v-model="form.wallet_id" required class="input" :disabled="loading || walletsStore.loading" autocomplete="off">
-            <option value="">Select a wallet</option>
+            <option value="">{{ $t('transactionModal.selectWallet') }}</option>
             <option v-for="wallet in walletsStore.wallets" :key="wallet.id" :value="wallet.id" class="font-mono">
-              {{ wallet.name }} {{ wallet.is_main_wallet ? '(Main)' : '' }} ({{ configStore.formatCurrency(wallet.current_balance || 0) }})
+              {{ wallet.name }} {{ wallet.is_main_wallet ? $t('transactionModal.main') : '' }} ({{ configStore.formatCurrency(wallet.current_balance || 0) }})
             </option>
           </select>
         </div>
 
         <!-- Destination Wallet (for transfers) -->
         <div v-if="form.type === 'transfer'">
-          <label for="destination_wallet" class="label">Destination Wallet</label>
+          <label for="destination_wallet" class="label">{{ $t('transactionModal.destinationWallet') }}</label>
           <select id="destination_wallet" v-model="form.destination_wallet_id" required class="input" :disabled="loading || walletsStore.loading" autocomplete="off">
-            <option value="">Select destination wallet</option>
+            <option value="">{{ $t('transactionModal.selectDestination') }}</option>
             <option v-for="wallet in availableDestinationWallets" :key="wallet.id" :value="wallet.id" class="font-mono">
-              {{ wallet.name }} {{ wallet.is_main_wallet ? '(Main)' : '' }} ({{ configStore.formatCurrency(wallet.current_balance || 0) }})
+              {{ wallet.name }} {{ wallet.is_main_wallet ? $t('transactionModal.main') : '' }} ({{ configStore.formatCurrency(wallet.current_balance || 0) }})
             </option>
           </select>
         </div>
 
         <!-- Category -->
         <div v-if="form.type !== 'transfer'">
-          <label for="category" class="label">Category</label>
+          <label for="category" class="label">{{ $t('transactionModal.category') }}</label>
           <div class="flex items-center gap-1">
             <div class="flex-1 relative">
               <div v-if="selectedCategorie" class="absolute h-full w-10 flex items-center justify-center">
@@ -89,7 +89,7 @@
                 :disabled="loading || categoriesStore.loading"
                 autocomplete="off"
               >
-                <option value="">Select a category</option>
+                <option value="">{{ $t('transactionModal.selectCategory') }}</option>
                 <option
                   v-for="category in availableCategories"
                   :key="category.id"
@@ -97,7 +97,7 @@
                 >
                   {{ category.name }}
                 </option>
-              </select>  
+              </select>
             </div>
             <button class="btn btn-primary" type="button" @click="showCatgeoryModal = true">
               <Plus class="w-5 h-5" />
@@ -107,7 +107,7 @@
 
         <!-- Date -->
         <div>
-          <label for="date" class="label">Date</label>
+          <label for="date" class="label">{{ $t('transactionModal.date') }}</label>
           <input
             id="date"
             v-model="form.date"
@@ -121,13 +121,13 @@
 
         <!-- Note -->
         <div>
-          <label for="note" class="label">Note (Optional)</label>
+          <label for="note" class="label">{{ $t('transactionModal.noteOptional') }}</label>
           <textarea
             id="note"
             v-model="form.note"
             class="input"
             rows="3"
-            placeholder="Add a note for this transaction..."
+            :placeholder="$t('transactionModal.notePlaceholder')"
             :disabled="loading"
             autocomplete="off"
           ></textarea>
@@ -144,12 +144,12 @@
               :disabled="loading"
             />
             <label for="recurring" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
-              Make this a recurring transaction
+              {{ $t('transactionModal.makeRecurring') }}
             </label>
           </div>
 
           <div v-if="form.is_recurring">
-            <label for="pattern" class="label">Recurring Pattern</label>
+            <label for="pattern" class="label">{{ $t('transactionModal.recurringPattern') }}</label>
             <select
               id="pattern"
               v-model="form.recurring_pattern"
@@ -157,10 +157,10 @@
               :disabled="loading"
               autocomplete="off"
             >
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="yearly">Yearly</option>
+              <option value="daily">{{ $t('transactionModal.daily') }}</option>
+              <option value="weekly">{{ $t('transactionModal.weekly') }}</option>
+              <option value="monthly">{{ $t('transactionModal.monthly') }}</option>
+              <option value="yearly">{{ $t('transactionModal.yearly') }}</option>
             </select>
           </div>
         </div>
@@ -182,7 +182,7 @@
           class="flex-1 btn-secondary"
           :disabled="loading"
         >
-          Cancel
+          {{ $t('transactionModal.cancel') }}
         </button>
         <button
           type="submit"
@@ -191,7 +191,7 @@
           :disabled="loading || !isFormValid"
         >
           <LoadingSpinner v-if="loading" size="sm" />
-          <span v-else>{{ transaction ? 'Update' : 'Add' }} Transaction</span>
+          <span v-else>{{ transaction ? $t('transactionModal.update') : $t('transactionModal.add') }} {{ $t('transactionModal.transaction') }}</span>
         </button>
       </div>
     </template>
@@ -204,6 +204,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useWalletsStore } from '@/stores/wallets';
 import { useCategoriesStore } from '@/stores/categories';
 import { useTransactionsStore } from '@/stores/transactions';
@@ -242,17 +243,18 @@ const isModalOpen = computed({
 
 const showCatgeoryModal = ref(false);
 
+const { t } = useI18n();
 const walletsStore = useWalletsStore();
 const categoriesStore = useCategoriesStore();
 const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
 
 const modalTitle = computed(() => {
-  if (props.transaction) return 'Edit Transaction';
-  if (form.type === 'income') return 'Add Income';
-  if (form.type === 'expense') return 'Add Expense';
-  if (form.type === 'transfer') return 'Add Transfer';
-  return 'Add Transaction';
+  if (props.transaction) return t('transactionModal.editTransaction');
+  if (form.type === 'income') return t('transactionModal.addIncome');
+  if (form.type === 'expense') return t('transactionModal.addExpense');
+  if (form.type === 'transfer') return t('transactionModal.addTransfer');
+  return t('transactionModal.addTransaction');
 });
 
 const loading = ref(false);
@@ -322,10 +324,10 @@ const handleSubmit = async () => {
       emit('success');
       resetForm();
     } else {
-      error.value = result.error || 'Failed to save transaction. Please try again.';
+      error.value = result.error || t('transactionModal.saveFailed');
     }
   } catch (err) {
-    error.value = 'An unexpected error occurred. Please try again.';
+    error.value = t('transactionModal.unexpectedError');
   } finally {
     loading.value = false;
   }

@@ -1,8 +1,8 @@
 <template>
-  <Modal v-model="show" title="Filter Categories">
+  <Modal v-model="show" :title="$t('categoryFilterModal.title')">
     <div class="p-0 space-y-4">
       <p class="text-sm text-gray-500 dark:text-gray-400">
-        Select categories to exclude from the transaction list and calculations.
+        {{ $t('categoryFilterModal.description') }}
       </p>
       <div class="max-h-72 overflow-y-auto">
         <div class="grid grid-cols-3 gap-2">
@@ -40,19 +40,19 @@
     </div>
     <template #footer>
       <div class="flex justify-between items-center gap-2 p-0 bg-gray-50 dark:bg-gray-800/50">
-        <button 
-          @click="toggleSelectAll" 
+        <button
+          @click="toggleSelectAll"
           class="btn-ghost btn-borderless"
           :class="{
             'text-error-600 dark:text-error-400': allCategoriesSelected,
             'text-primary-600 dark:text-primary-400': !allCategoriesSelected,
           }"
         >
-          {{ allCategoriesSelected ? 'Clear Selection' : 'Select All' }}
+          {{ allCategoriesSelected ? $t('categoryFilterModal.clearSelection') : $t('categoryFilterModal.selectAll') }}
         </button>
         <div class="flex gap-2">
-          <button @click="closeModal" class="btn btn-secondary">Cancel</button>
-          <button @click="applyFilter" class="btn btn-primary">Apply</button>
+          <button @click="closeModal" class="btn btn-secondary">{{ $t('categoryFilterModal.cancel') }}</button>
+          <button @click="applyFilter" class="btn btn-primary">{{ $t('categoryFilterModal.apply') }}</button>
         </div>
       </div>
     </template>

@@ -1,31 +1,31 @@
 <template>
-  <Modal v-model="isModalOpen" :title="wallet ? 'Edit Wallet' : 'Add Wallet'">
+  <Modal v-model="isModalOpen" :title="wallet ? $t('walletModal.editWallet') : $t('walletModal.addWallet')">
     <form @submit.prevent="handleSubmit" id="wallet-form" class="space-y-6 pt-4">
       <!-- Initial Balance -->
       <div class="text-center">
-        <label for="balance" class="label sr-only">Initial Balance</label>
+        <label for="balance" class="label sr-only">{{ $t('walletModal.initialBalance') }}</label>
         <CurrencyInput
           v-model="form.initial_balance"
           el-id="balance"
           :required="true"
           :disabled="loading"
-          placeholder="0.00"
+          :placeholder="$t('walletModal.initialBalancePlaceholder')"
         />
         <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-          Enter the starting balance for this wallet.
+          {{ $t('walletModal.initialBalanceHint') }}
         </p>
       </div>
 
       <!-- Wallet Name -->
       <div>
-        <label for="name" class="label">Wallet Name</label>
+        <label for="name" class="label">{{ $t('walletModal.walletName') }}</label>
         <input
           id="name"
           v-model="form.name"
           type="text"
           required
           class="input"
-          placeholder="e.g., Main Bank Account"
+          :placeholder="$t('walletModal.walletNamePlaceholder')"
           :disabled="loading"
           autocomplete="off"
         />
@@ -35,10 +35,10 @@
       <div class="flex items-center justify-between rounded-lg p-3 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
         <div>
           <label for="hidden-toggle" class="font-medium text-gray-900 dark:text-gray-100">
-            Hide this wallet
+            {{ $t('walletModal.hideWallet') }}
           </label>
           <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Excluded from total calculations.
+            {{ $t('walletModal.hideWalletHint') }}
           </p>
         </div>
         <button
@@ -53,7 +53,7 @@
           id="hidden-toggle"
           :disabled="loading"
         >
-          <span class="sr-only">Use setting</span>
+          <span class="sr-only">{{ $t('walletModal.useSetting') }}</span>
           <span
             aria-hidden="true"
             :class="[
@@ -68,10 +68,10 @@
       <div class="flex items-center justify-between rounded-lg p-3 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
         <div>
           <label for="main-wallet-toggle" class="font-medium text-gray-900 dark:text-gray-100">
-            Set as main wallet
+            {{ $t('walletModal.setAsMain') }}
           </label>
           <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            This wallet will be shown first.
+            {{ $t('walletModal.setAsMainHint') }}
           </p>
         </div>
         <button
@@ -86,7 +86,7 @@
           id="main-wallet-toggle"
           :disabled="loading"
         >
-          <span class="sr-only">Use setting</span>
+          <span class="sr-only">{{ $t('walletModal.useSetting') }}</span>
           <span
             aria-hidden="true"
             :class="[
@@ -113,7 +113,7 @@
           class="flex-1 btn-secondary"
           :disabled="loading"
         >
-          Cancel
+          {{ $t('walletModal.cancel') }}
         </button>
         <button
           type="submit"
@@ -122,7 +122,7 @@
           :disabled="loading || !isFormValid"
         >
           <LoadingSpinner v-if="loading" size="sm" />
-          <span v-else>{{ wallet ? 'Update' : 'Create' }} Wallet</span>
+          <span v-else>{{ wallet ? $t('walletModal.update') : $t('walletModal.create') }} {{ $t('walletModal.wallet') }}</span>
         </button>
       </div>
     </template>
@@ -131,6 +131,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useWalletsStore } from '@/stores/wallets';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
@@ -151,6 +152,7 @@ const emit = defineEmits<{
   'success': [];
 }>();
 
+const { t } = useI18n();
 const walletsStore = useWalletsStore();
 
 const loading = ref(false);
@@ -192,10 +194,10 @@ const handleSubmit = async () => {
       emit('success');
       resetForm();
     } else {
-      error.value = result.error || 'Failed to save wallet. Please try again.';
+      error.value = result.error || t('walletModal.saveFailed');
     }
   } catch (err) {
-    error.value = 'An unexpected error occurred. Please try again.';
+    error.value = t('walletModal.unexpectedError');
   } finally {
     loading.value = false;
   }

@@ -1,45 +1,45 @@
 <template>
-  <Modal v-model="isModalOpen" :title="category ? 'Edit Category' : 'Add Category'">
+  <Modal v-model="isModalOpen" :title="category ? $t('categoryModal.editCategory') : $t('categoryModal.addCategory')">
     <form @submit.prevent="handleSubmit" id="category-form" class="space-y-4">
       <!-- Category Name -->
       <div>
-        <label for="name" class="label">Category Name</label>
+        <label for="name" class="label">{{ $t('categoryModal.categoryName') }}</label>
         <input
           id="name"
           v-model="form.name"
           type="text"
           required
           class="input"
-          placeholder="e.g., Groceries, Salary"
+          :placeholder="$t('categoryModal.categoryNamePlaceholder')"
           :disabled="loading"
         />
       </div>
 
       <!-- Type -->
       <div>
-        <label class="label">Type</label>
+        <label class="label">{{ $t('categoryModal.type') }}</label>
         <div class="grid grid-cols-2 gap-2">
           <button
             type="button"
             @click="form.type = 'income'"
             class="py-2 rounded-lg border-2 transition-all text-success-700 dark:text-success-300"
-            :class="form.type === 'income' 
-              ? 'border-success-500 bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300' 
+            :class="form.type === 'income'
+              ? 'border-success-500 bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300'
               : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
           >
             <TrendingUp class="size-4 mx-auto" />
-            <span class="text-xs font-medium">Income</span>
+            <span class="text-xs font-medium">{{ $t('categoryModal.income') }}</span>
           </button>
           <button
             type="button"
             @click="form.type = 'expense'"
             class="py-2 rounded-lg border-2 transition-all text-error-700 dark:text-error-300"
-            :class="form.type === 'expense' 
-              ? 'border-error-500 bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300' 
+            :class="form.type === 'expense'
+              ? 'border-error-500 bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300'
               : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
           >
             <TrendingDown class="size-4 mx-auto" />
-            <span class="text-xs font-medium">Expense</span>
+            <span class="text-xs font-medium">{{ $t('categoryModal.expense') }}</span>
           </button>
         </div>
       </div>
@@ -47,7 +47,7 @@
       <!-- Preview -->
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="label">Preview</label>
+          <label class="label">{{ $t('categoryModal.preview') }}</label>
           <div class="flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
             <div class="w-24">
               <div class="card p-3 aspect-square flex flex-col items-center justify-center text-center relative">
@@ -61,8 +61,8 @@
                 </div>
 
                 <!-- Category Icon -->
-                <div 
-                  class="w-10 h-10 rounded-xl flex items-center justify-center mb-2" 
+                <div
+                  class="w-10 h-10 rounded-xl flex items-center justify-center mb-2"
                   :style="{ backgroundColor: form.color + '20' }"
                 >
                   <!-- @vue-ignore -->
@@ -71,7 +71,7 @@
 
                 <!-- Category Info -->
                 <h3 class="text-xs font-medium text-gray-700 dark:text-gray-300 truncate w-full">
-                  {{ form.name || 'Category' }}
+                  {{ form.name || $t('categoryModal.category') }}
                 </h3>
               </div>
             </div>
@@ -80,10 +80,10 @@
 
         <!-- Color -->
         <div class="flex flex-col">
-          <label for="color" class="label flex-shrink-0">Color</label>
+          <label for="color" class="label flex-shrink-0">{{ $t('categoryModal.color') }}</label>
           <div class="relative flex-1 flex flex-col">
             <input id="color" v-model="form.color" type="color" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-            <div 
+            <div
               class="w-full rounded-lg border-2 border-gray-200 dark:border-gray-700 flex items-center justify-center px-3 flex-1"
               :style="{ backgroundColor: form.color + '33' }"
             >
@@ -95,7 +95,7 @@
 
       <!-- Icon -->
       <div>
-        <label class="label">Icon</label>
+        <label class="label">{{ $t('categoryModal.icon') }}</label>
         <div class="grid grid-cols-6 sm:grid-cols-8 gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
           <button
             v-for="icon in iconList"
@@ -126,7 +126,7 @@
           class="flex-1 btn-secondary"
           :disabled="loading"
         >
-          Cancel
+          {{ $t('categoryModal.cancel') }}
         </button>
         <button
           type="submit"
@@ -135,7 +135,7 @@
           :disabled="loading || !isFormValid"
         >
           <LoadingSpinner v-if="loading" size="sm" />
-          <span v-else>{{ category ? 'Update' : 'Create' }} Category</span>
+          <span v-else>{{ category ? $t('categoryModal.update') : $t('categoryModal.create') }} {{ $t('categoryModal.category') }}</span>
         </button>
       </div>
     </template>
@@ -144,6 +144,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useCategoriesStore } from '@/stores/categories';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
@@ -165,6 +166,7 @@ const emit = defineEmits<{
   'success': [value?: Category];
 }>();
 
+const { t } = useI18n();
 const categoriesStore = useCategoriesStore();
 
 const loading = ref(false);
@@ -206,10 +208,10 @@ const handleSubmit = async () => {
       emit('success', result.data);
       resetForm();
     } else {
-      error.value = result.error || 'Failed to save category. Please try again.';
+      error.value = result.error || t('categoryModal.saveFailed');
     }
   } catch (err) {
-    error.value = 'An unexpected error occurred. Please try again.';
+    error.value = t('categoryModal.unexpectedError');
   } finally {
     loading.value = false;
   }

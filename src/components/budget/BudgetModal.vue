@@ -1,29 +1,29 @@
 <template>
-  <Modal v-model="isModalOpen" :title="budget ? 'Edit Budget' : 'Create Budget'">
+  <Modal v-model="isModalOpen" :title="budget ? $t('budgetModal.editBudget') : $t('budgetModal.createBudget')">
     <form @submit.prevent="handleSubmit" id="budget-form" class="space-y-4">
       <div class="text-center">
-        <label for="limit" class="label sr-only">Budget Limit</label>
+        <label for="limit" class="label sr-only">{{ $t('budgetModal.budgetLimit') }}</label>
         <CurrencyInput
           v-model="form.limit_amount"
           el-id="limit"
           :required="true"
           :disabled="loading"
-          placeholder="0.00"
+          :placeholder="$t('budgetModal.budgetLimitPlaceholder')"
         />
         <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-          Enter the limit for this budget.
+          {{ $t('budgetModal.budgetLimitHint') }}
         </p>
       </div>
 
       <div>
-        <label for="name" class="label">Budget Name</label>
+        <label for="name" class="label">{{ $t('budgetModal.budgetName') }}</label>
         <input
           type="text"
           id="name"
           v-model="form.name"
           required
           class="input"
-          placeholder="e.g. Monthly Food Budget"
+          :placeholder="$t('budgetModal.budgetNamePlaceholder')"
           :disabled="loading"
         />
       </div>
@@ -31,7 +31,7 @@
       <!-- Start and End Date -->
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label for="start_date" class="label">Start Date</label>
+          <label for="start_date" class="label">{{ $t('budgetModal.startDate') }}</label>
           <input
             type="date"
             id="start_date"
@@ -42,7 +42,7 @@
           />
         </div>
         <div>
-          <label for="end_date" class="label">End Date</label>
+          <label for="end_date" class="label">{{ $t('budgetModal.endDate') }}</label>
           <input
             type="date"
             id="end_date"
@@ -55,7 +55,7 @@
       </div>
 
       <div>
-        <label class="label">Categories</label>
+        <label class="label">{{ $t('budgetModal.categories') }}</label>
         <div class="max-h-56 overflow-y-auto rounded-lg border dark:border-gray-700 p-2">
           <div class="grid grid-cols-3 gap-2">
             <div
@@ -98,7 +98,7 @@
           class="flex-1 btn-secondary"
           :disabled="loading"
         >
-          Cancel
+          {{ $t('budgetModal.cancel') }}
         </button>
         <button
           type="submit"
@@ -107,7 +107,7 @@
           :disabled="loading || !isFormValid"
         >
           <LoadingSpinner v-if="loading" size="sm" />
-          <span v-else>{{ budget ? 'Update' : 'Create' }} Budget</span>
+          <span v-else>{{ budget ? $t('budgetModal.update') : $t('budgetModal.create') }} {{ $t('budgetModal.budget') }}</span>
         </button>
       </div>
     </template>
@@ -116,6 +116,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useBudgetsStore } from '@/stores/budgets';
 import { useCategoriesStore } from '@/stores/categories';
 import { useConfigStore } from '@/stores/config';
@@ -141,6 +142,7 @@ const emit = defineEmits<{
   'success': [];
 }>();
 
+const { t } = useI18n();
 const budgetsStore = useBudgetsStore();
 const categoriesStore = useCategoriesStore();
 const configStore = useConfigStore();
@@ -220,10 +222,10 @@ const handleSubmit = async () => {
       emit('success');
       isModalOpen.value = false;
     } else {
-      error.value = result.error || 'Failed to save budget. Please try again.';
+      error.value = result.error || t('budgetModal.saveFailed');
     }
   } catch (err) {
-    error.value = 'An unexpected error occurred. Please try again.';
+    error.value = t('budgetModal.unexpectedError');
   } finally {
     loading.value = false;
   }
