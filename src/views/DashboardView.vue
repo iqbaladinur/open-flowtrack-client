@@ -208,43 +208,101 @@
               </div>
 
               <!-- Metrics Grid -->
-              <div class="grid grid-cols-3 gap-3 mb-3">
-                <!-- Total Limit -->
-                <div class="text-center">
-                  <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">Limit</p>
-                  <p class="text-xs font-semibold font-mono text-gray-900 dark:text-white">
-                    {{ configStore.formatCurrency(budgetSummary.total_limit) }}
-                  </p>
+              <div class="mb-4">
+                <!-- Mobile: Vertical Stack -->
+                <div class="flex flex-col space-y-2.5 md:hidden">
+                  <!-- Total Spent -->
+                  <div class="flex items-baseline justify-between gap-3">
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400 flex-shrink-0">Spent</p>
+                    <p
+                      class="text-sm font-semibold font-mono text-right break-all"
+                      :class="{
+                        'text-blue-600 dark:text-blue-400': budgetSummary.usage_percent <= 50,
+                        'text-success-600 dark:text-success-400': budgetSummary.usage_percent > 50 && budgetSummary.usage_percent <= 75,
+                        'text-warning-600 dark:text-warning-400': budgetSummary.usage_percent > 75 && budgetSummary.usage_percent <= 90,
+                        'text-error-600 dark:text-error-400': budgetSummary.usage_percent > 90 && budgetSummary.usage_percent <= 100,
+                        'text-red-700 dark:text-red-500': budgetSummary.usage_percent > 100
+                      }"
+                    >
+                      {{ configStore.formatCurrency(budgetSummary.total_usage) }}
+                    </p>
+                  </div>
+
+                  <!-- Remaining -->
+                  <div class="flex items-baseline justify-between gap-3">
+                    <p
+                      class="text-[10px] flex-shrink-0 text-gray-500 dark:text-gray-400"
+                    >
+                      {{ budgetSummary.usage_percent > 100 ? 'Over' : 'Left' }}
+                    </p>
+                    <p
+                      class="text-sm font-semibold font-mono text-right break-all"
+                      :class="{
+                        'text-success-600 dark:text-success-400': budgetSummary.usage_percent <= 100,
+                        'text-error-500': budgetSummary.usage_percent > 100
+                      }"
+                    >
+                      {{ configStore.formatCurrency(budgetSummary.remaining) }}
+                    </p>
+                  </div>
+
+                  <!-- Budget Limit -->
+                  <div class="flex items-baseline justify-between gap-3">
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400 flex-shrink-0">Limit</p>
+                    <p class="text-sm font-semibold font-mono text-gray-900 dark:text-white text-right break-all">
+                      {{ configStore.formatCurrency(budgetSummary.total_limit) }}
+                    </p>
+                  </div>
                 </div>
 
-                <!-- Total Spent -->
-                <div class="text-center">
-                  <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">Spent</p>
-                  <p class="text-xs font-semibold font-mono text-gray-900 dark:text-white">
-                    {{ configStore.formatCurrency(budgetSummary.total_usage) }}
-                  </p>
-                </div>
+                <!-- Desktop: 3 Columns -->
+                <div class="hidden md:grid md:grid-cols-3 gap-3">
+                  <!-- Total Limit -->
+                  <div class="text-center">
+                    <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">Limit</p>
+                    <p class="text-xs font-semibold font-mono text-gray-900 dark:text-white">
+                      {{ configStore.formatCurrency(budgetSummary.total_limit) }}
+                    </p>
+                  </div>
 
-                <!-- Remaining -->
-                <div class="text-center">
-                  <p
-                    class="text-[9px] mb-1"
-                    :class="{
-                      'text-success-600': budgetSummary.usage_percent <= 100,
-                      'text-error-500': budgetSummary.usage_percent > 100
-                    }"
-                  >
-                    {{ budgetSummary.usage_percent > 100 ? 'Over' : 'Left' }}
-                  </p>
-                  <p
-                    class="text-xs font-semibold font-mono"
-                    :class="{
-                      'text-success-600 dark:text-success-400': budgetSummary.usage_percent <= 100,
-                      'text-error-500': budgetSummary.usage_percent > 100
-                    }"
-                  >
-                    {{ configStore.formatCurrency(budgetSummary.remaining) }}
-                  </p>
+                  <!-- Total Spent -->
+                  <div class="text-center">
+                    <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">Spent</p>
+                    <p
+                      class="text-xs font-semibold font-mono"
+                      :class="{
+                        'text-blue-600 dark:text-blue-400': budgetSummary.usage_percent <= 50,
+                        'text-success-600 dark:text-success-400': budgetSummary.usage_percent > 50 && budgetSummary.usage_percent <= 75,
+                        'text-warning-600 dark:text-warning-400': budgetSummary.usage_percent > 75 && budgetSummary.usage_percent <= 90,
+                        'text-error-600 dark:text-error-400': budgetSummary.usage_percent > 90 && budgetSummary.usage_percent <= 100,
+                        'text-red-700 dark:text-red-500': budgetSummary.usage_percent > 100
+                      }"
+                    >
+                      {{ configStore.formatCurrency(budgetSummary.total_usage) }}
+                    </p>
+                  </div>
+
+                  <!-- Remaining -->
+                  <div class="text-center">
+                    <p
+                      class="text-[9px] mb-1"
+                      :class="{
+                        'text-success-600': budgetSummary.usage_percent <= 100,
+                        'text-error-500': budgetSummary.usage_percent > 100
+                      }"
+                    >
+                      {{ budgetSummary.usage_percent > 100 ? 'Over' : 'Left' }}
+                    </p>
+                    <p
+                      class="text-xs font-semibold font-mono"
+                      :class="{
+                        'text-success-600 dark:text-success-400': budgetSummary.usage_percent <= 100,
+                        'text-error-500': budgetSummary.usage_percent > 100
+                      }"
+                    >
+                      {{ configStore.formatCurrency(budgetSummary.remaining) }}
+                    </p>
+                  </div>
                 </div>
               </div>
 
