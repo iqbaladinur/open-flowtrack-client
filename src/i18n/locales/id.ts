@@ -320,6 +320,8 @@ export default {
     signIn: 'Masuk',
     noAccount: 'Belum punya akun?',
     signUp: 'Daftar',
+    failedLogin: 'Masuk gagal. Silahkan coba lagi.',
+    unexpectedError: 'Terjadi kesalahan yang tidak terduga. Silakan coba lagi.',
   },
 
   // Register
