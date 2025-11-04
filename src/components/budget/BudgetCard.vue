@@ -1,6 +1,14 @@
 <template>
-  <div class="overflow-hidden transition-all duration-300 ease-in-out" :class="{ 'max-h-[1000px]': isDetailsVisible, 'max-h-[300px] sm:max-h-[300px]': !isDetailsVisible, 'card': !simpleView }">
-    <div class="p-3">
+  <div
+    class="overflow-hidden transition-all duration-300 ease-in-out"
+    :class="{
+      'max-h-[1000px]': isDetailsVisible,
+      'max-h-[300px] sm:max-h-[300px]': !isDetailsVisible,
+      'card': !simpleView,
+      'border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-800/30': simpleView
+    }"
+  >
+    <div :class="simpleView ? 'p-3 py-4' : 'p-3'">
       <!-- Header -->
       <div v-if="!simpleView" class="flex items-center justify-between w-full mb-4">
         <div class="flex items-center gap-1.5 card p-2 text-xs font-bold text-gray-600 dark:text-gray-300">
@@ -19,11 +27,11 @@
         </div>
       </div>
       <div class="flex items-start justify-between" :class="{ 'card p-2': !simpleView }">
-        <div :class="{ 'flex items-center gap-3 justify-between w-full': simpleView }">
-          <h3 class="font-bold text-sm text-gray-900 dark:text-white" :class="{ 'text-xs font-normal truncate': simpleView }">
+        <div :class="{ 'flex items-center gap-3 justify-between w-full mb-3': simpleView }">
+          <h3 class="font-bold text-sm text-gray-900 dark:text-white" :class="{ 'text-sm font-semibold truncate max-w-[60%]': simpleView }">
             {{ budget.name }}
           </h3>
-          <div class="flex items-center mt-2 flex-wrap" :class="{ 'mt-0': simpleView }">
+          <div class="flex items-center flex-wrap gap-1" :class="{ 'mt-2': !simpleView }">
             <div
               v-for="(category) in budgetCategories"
               :key="category.id"
@@ -39,30 +47,68 @@
 
       <!-- Budget Details & Progress -->
       <div class="mt-2">
-        <div class="text-left mb-3" :class="{ '!mb-1': simpleView }">
-          <p v-if="!simpleView" class="text-xs text-gray-500 dark:text-gray-400">{{ isOverspent ? 'Overspent by' : 'Remaining' }}</p>
-          <p 
-            class="font-mono"
-            :class="[isOverspent ? 'text-error-500' : 'text-success-600 dark:text-success-400', simpleView ? 'text-[10px]' : 'text-lg font-bold']"
-          >
-            <span>
-              {{ configStore.formatCurrency(simpleView ? (budget.total_spent || 0) : remainingAmount) }}
-            </span>
-            <span v-if="simpleView">
-              / {{ configStore.formatCurrency(budget.limit_amount) }}
-            </span>
-          </p>
+        <!-- Simple View Layout -->
+        <div v-if="simpleView" class="space-y-1.5">
+          <!-- Spent & Remaining Row -->
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex-1">
+              <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-0.5">Spent</p>
+              <p class="text-[11px] font-semibold font-mono text-gray-900 dark:text-white">
+                {{ configStore.formatCurrency(budget.total_spent || 0) }}
+              </p>
+            </div>
+            <div class="flex-1 text-right">
+              <p class="text-[9px] dark:text-gray-400 mb-0.5" :class="isOverspent ? 'text-error-500' : 'text-success-600'">
+                {{ isOverspent ? 'Over' : 'Left' }}
+              </p>
+              <p
+                class="text-[11px] font-semibold font-mono"
+                :class="isOverspent ? 'text-error-500' : 'text-success-600 dark:text-success-400'"
+              >
+                {{ configStore.formatCurrency(remainingAmount) }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
+            <div
+              class="h-1 rounded-full transition-all duration-500"
+              :class="progressBarClass"
+              :style="{ width: Math.min(getBudgetProgress(budget), 100) + '%' }"
+            ></div>
+          </div>
+
+          <!-- Limit -->
+          <div class="text-right">
+            <p class="text-[9px] text-gray-400 dark:text-gray-500">
+              Limit: <span class="font-mono font-medium">{{ configStore.formatCurrency(budget.limit_amount) }}</span>
+            </p>
+          </div>
         </div>
-        <div v-if="!simpleView" class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
-          <span>Spent: {{ configStore.formatCurrency(budget.total_spent || 0) }}</span>
-          <span>Limit: {{ configStore.formatCurrency(budget.limit_amount) }}</span>
-        </div>
-        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2" :class="{ '!h-1': simpleView }">
-          <div
-            class="rounded-full transition-all duration-500"
-            :class="[progressBarClass, simpleView ? 'h-1' : 'h-2']"
-            :style="{ width: Math.min(getBudgetProgress(budget), 100) + '%' }"
-          ></div>
+
+        <!-- Normal View Layout -->
+        <div v-else>
+          <div class="text-left mb-3">
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ isOverspent ? 'Overspent by' : 'Remaining' }}</p>
+            <p
+              class="font-mono text-lg font-bold"
+              :class="isOverspent ? 'text-error-500' : 'text-success-600 dark:text-success-400'"
+            >
+              {{ configStore.formatCurrency(remainingAmount) }}
+            </p>
+          </div>
+          <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+            <span>Spent: {{ configStore.formatCurrency(budget.total_spent || 0) }}</span>
+            <span>Limit: {{ configStore.formatCurrency(budget.limit_amount) }}</span>
+          </div>
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div
+              class="h-2 rounded-full transition-all duration-500"
+              :class="progressBarClass"
+              :style="{ width: Math.min(getBudgetProgress(budget), 100) + '%' }"
+            ></div>
+          </div>
         </div>
       </div>
     </div>

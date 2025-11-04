@@ -201,33 +201,82 @@
           </div>
 
           <div v-else class="space-y-3">
-            <div v-if="budgets.length > 0" class="card p-3">
-              <div class="flex justify-between items-center mb-1">
-                <span class="text-xs font-semibold text-gray-600 dark:text-gray-300">Overall Active Budget Usage</span>
+            <div v-if="budgets.length > 0" class="card p-4">
+              <div class="mb-3">
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Overall Active Budget</h3>
+                <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">Combined usage across all budgets</p>
               </div>
-              <div class="mb-1">
-                <span class="text-xs text-gray-500 dark:text-gray-400">
-                  <span
+
+              <!-- Metrics Grid -->
+              <div class="grid grid-cols-3 gap-3 mb-3">
+                <!-- Total Limit -->
+                <div class="text-center">
+                  <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">Limit</p>
+                  <p class="text-xs font-semibold font-mono text-gray-900 dark:text-white">
+                    {{ configStore.formatCurrency(budgetSummary.total_limit) }}
+                  </p>
+                </div>
+
+                <!-- Total Spent -->
+                <div class="text-center">
+                  <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">Spent</p>
+                  <p class="text-xs font-semibold font-mono text-gray-900 dark:text-white">
+                    {{ configStore.formatCurrency(budgetSummary.total_usage) }}
+                  </p>
+                </div>
+
+                <!-- Remaining -->
+                <div class="text-center">
+                  <p
+                    class="text-[9px] mb-1"
                     :class="{
-                      'text-success-500': budgetSummary.usage_percent <= 75,
-                      'text-warning-500': budgetSummary.usage_percent > 75 && budgetSummary.usage_percent <= 100,
-                      'text-red-700': budgetSummary.usage_percent > 100
+                      'text-success-600': budgetSummary.usage_percent <= 100,
+                      'text-error-500': budgetSummary.usage_percent > 100
                     }"
                   >
-                    {{ configStore.formatCurrency(budgetSummary.total_usage) }} / {{ configStore.formatCurrency(budgetSummary.total_limit) }}
-                  </span> 
-                </span>
+                    {{ budgetSummary.usage_percent > 100 ? 'Over' : 'Left' }}
+                  </p>
+                  <p
+                    class="text-xs font-semibold font-mono"
+                    :class="{
+                      'text-success-600 dark:text-success-400': budgetSummary.usage_percent <= 100,
+                      'text-error-500': budgetSummary.usage_percent > 100
+                    }"
+                  >
+                    {{ configStore.formatCurrency(budgetSummary.remaining) }}
+                  </p>
+                </div>
               </div>
-              <div class="w-full bg-gray-200 rounded-full h-1 dark:bg-gray-700">
-                <div
-                  class="h-1 rounded-full"
-                  :class="{
-                    'bg-success-500': budgetSummary.usage_percent <= 75,
-                    'bg-warning-500': budgetSummary.usage_percent > 75 && budgetSummary.usage_percent <= 100,
-                    'bg-red-700': budgetSummary.usage_percent > 100
-                  }"
-                  :style="{ width: `${budgetSummary.usage_percent > 100 ? 100 : budgetSummary.usage_percent}%` }"
-                />
+
+              <!-- Progress Bar -->
+              <div class="space-y-1.5">
+                <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
+                  <div
+                    class="h-2 rounded-full transition-all duration-500"
+                    :class="{
+                      'bg-blue-500': budgetSummary.usage_percent <= 50,
+                      'bg-success-500': budgetSummary.usage_percent > 50 && budgetSummary.usage_percent <= 75,
+                      'bg-warning-500': budgetSummary.usage_percent > 75 && budgetSummary.usage_percent <= 90,
+                      'bg-error-500': budgetSummary.usage_percent > 90 && budgetSummary.usage_percent <= 100,
+                      'bg-red-700': budgetSummary.usage_percent > 100
+                    }"
+                    :style="{ width: `${budgetSummary.usage_percent > 100 ? 100 : budgetSummary.usage_percent}%` }"
+                  />
+                </div>
+                <div class="text-right">
+                  <span
+                    class="text-[10px] font-medium"
+                    :class="{
+                      'text-blue-600 dark:text-blue-400': budgetSummary.usage_percent <= 50,
+                      'text-success-600 dark:text-success-400': budgetSummary.usage_percent > 50 && budgetSummary.usage_percent <= 75,
+                      'text-warning-600 dark:text-warning-400': budgetSummary.usage_percent > 75 && budgetSummary.usage_percent <= 90,
+                      'text-error-600 dark:text-error-400': budgetSummary.usage_percent > 90 && budgetSummary.usage_percent <= 100,
+                      'text-red-700 dark:text-red-500': budgetSummary.usage_percent > 100
+                    }"
+                  >
+                    {{ budgetSummary.usage_percent.toFixed(1) }}% used
+                  </span>
+                </div>
               </div>
             </div>
             <div class="card">
@@ -510,10 +559,12 @@ const budgetSummary = computed(() => {
   const total_limit = budgets.value.reduce((sum, budget) => sum + (Number(budget.limit_amount || 0)), 0);
   const total_usage = budgets.value.reduce((sum, budget) => sum + (budget.total_spent || 0), 0);
   const usage_percent = total_limit > 0 ? (total_usage / total_limit) * 100 : 0;
+  const remaining = Math.abs(total_limit - total_usage);
   return {
     total_limit,
     total_usage,
     usage_percent,
+    remaining,
   };
 });
 
