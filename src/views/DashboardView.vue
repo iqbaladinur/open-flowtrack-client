@@ -421,10 +421,12 @@ const summary = ref({
 });
 
 const recentTransactions = computed(() => {
+  // Match the number of active budgets, with a minimum of 5
+  const transactionCount = Math.max(budgets.value.length, 5);
   return transactionsStore.transactions
     .slice()
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 5);
+    .slice(0, transactionCount);
 });
 
 const handleTransactionAdded = () => {
