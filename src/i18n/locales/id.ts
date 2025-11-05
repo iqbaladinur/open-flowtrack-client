@@ -105,6 +105,11 @@ export default {
     failedToShare: 'Gagal berbagi:',
     hidden: 'Tersembunyi',
     visible: 'Terlihat',
+    distribution: 'Distribusi Dompet',
+    totalBalance: 'Total Saldo',
+    noVisibleWallets: 'Tidak ada dompet yang terlihat dengan saldo',
+    hideHidden: 'Sembunyikan dompet tersembunyi',
+    showHidden: 'Tampilkan dompet tersembunyi',
   },
 
   // Wallet Detail
