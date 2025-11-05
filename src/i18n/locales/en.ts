@@ -105,6 +105,11 @@ export default {
     failedToShare: 'Failed to share:',
     hidden: 'Hidden',
     visible: 'Visible',
+    distribution: 'Wallet Distribution',
+    totalBalance: 'Total Balance',
+    noVisibleWallets: 'No visible wallets with balance',
+    hideHidden: 'Hide hidden wallets',
+    showHidden: 'Show hidden wallets',
   },
 
   // Wallet Detail

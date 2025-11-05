@@ -59,17 +59,45 @@
         </button>
       </div>
 
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div
-          v-for="wallet in wallets"
-          :key="wallet.id"
-          class="cursor-pointer"
-          @click="goToWalletDetail(wallet.id)"
-        >
-          <WalletCard
-            :wallet="wallet"
-            :enable-actions="false"
-          />
+      <div v-else class="space-y-6">
+        <!-- Wallet Distribution Chart -->
+        <div class="card p-4 lg:p-6">
+          <div class="flex items-center justify-between mb-6 pb-3 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-2">
+              <PieChartIcon class="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <h2 class="text-base lg:text-lg font-bold text-gray-900 dark:text-white">
+                {{ $t('wallets.distribution') }} ({{ configStore.currency }})
+              </h2>
+            </div>
+            <button
+              @click="toggleHiddenWallets"
+              class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              :title="showHiddenWallets ? $t('wallets.hideHidden') : $t('wallets.showHidden')"
+            >
+              <EyeOff v-if="showHiddenWallets" class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              <Eye v-else class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            </button>
+          </div>
+          <div v-if="visibleWallets.length === 0" class="text-center py-8">
+            <WalletIcon class="w-12 h-12 text-gray-400 mx-auto mb-2" />
+            <p class="text-gray-500 dark:text-gray-400">{{ $t('wallets.noVisibleWallets') }}</p>
+          </div>
+          <WalletBalancePieChart v-else ref="chartRef" :chart-data="walletChartData" />
+        </div>
+
+        <!-- Wallets Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            v-for="wallet in wallets"
+            :key="wallet.id"
+            class="cursor-pointer"
+            @click="goToWalletDetail(wallet.id)"
+          >
+            <WalletCard
+              :wallet="wallet"
+              :enable-actions="false"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -98,6 +126,7 @@ import AppLayout from '@/components/layouts/AppLayout.vue';
 import WalletModal from '@/components/wallet/WalletModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import WalletCard from '@/components/wallet/WalletCard.vue';
+import WalletBalancePieChart from '@/components/wallet/WalletBalancePieChart.vue';
 import type { Wallet } from '@/types/wallet';
 import { endOfDay, format, parseISO } from 'date-fns';
 import {
@@ -107,6 +136,9 @@ import {
   Share2,
   ChevronLeft,
   ChevronRight,
+  PieChart as PieChartIcon,
+  Eye,
+  EyeOff,
 } from 'lucide-vue-next';
 import { useConfigStore } from '@/stores/config';
 
@@ -124,6 +156,55 @@ const wallets = computed(() => {
   return walletsStore.wallets
     .slice();
 });
+
+const chartRef = ref<InstanceType<typeof WalletBalancePieChart> | null>(null);
+const showHiddenWallets = ref(true);
+
+const visibleWallets = computed(() => {
+  return wallets.value.filter(w => {
+    // Only include wallets with balance > 0
+    return w.current_balance && w.current_balance > 0;
+  });
+});
+
+const walletChartData = computed(() => {
+  const walletsData = visibleWallets.value;
+  const totalBalance = walletsData.reduce((sum, w) => sum + (w.current_balance || 0), 0);
+
+  // Generate colors for wallets (you can customize this)
+  const colors = [
+    '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
+    '#ec4899', '#14b8a6', '#f97316', '#06b6d4', '#84cc16'
+  ];
+
+  return {
+    labels: walletsData.map(w => {
+      const balance = w.current_balance || 0;
+      const percentage = totalBalance > 0 ? ((balance / totalBalance) * 100).toFixed(1) : '0.0';
+      return [`${w.name} (${percentage}%)`, `${configStore.formatCurrency(balance)}`];
+    }),
+    datasets: [{
+      data: walletsData.map(w => w.current_balance || 0),
+      backgroundColor: walletsData.map((_, idx) => `${colors[idx % colors.length]}4d`),
+      borderColor: walletsData.map((_, idx) => colors[idx % colors.length]),
+    }],
+  };
+});
+
+const toggleHiddenWallets = () => {
+  if (!chartRef.value) return;
+
+  // Get indices of hidden wallets
+  const hiddenIndices = visibleWallets.value
+    .map((w, idx) => w.hidden ? idx : -1)
+    .filter(idx => idx !== -1);
+
+  // Toggle visibility for all hidden wallets
+  chartRef.value.toggleMultipleData(hiddenIndices);
+
+  // Toggle state for icon
+  showHiddenWallets.value = !showHiddenWallets.value;
+};
 
 const readableDate = computed(() => {
   return format(endOfDay(endDate.value), 'E, dd MMM')
