@@ -208,7 +208,6 @@ import CategoryFilterModal from '@/components/category/CategoryFilterModal.vue';
 import type { Transaction } from '@/types/transaction';
 import {
   Plus,
-  ArrowUpDown,
   TrendingUp,
   TrendingDown,
   Filter,

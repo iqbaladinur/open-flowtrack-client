@@ -413,7 +413,6 @@ import {
   TrendingDown,
   Plus,
   Minus,
-  ArrowUpDown,
   BrainCircuit,
   Scale,
   LucideArrowUpRightFromSquare,
