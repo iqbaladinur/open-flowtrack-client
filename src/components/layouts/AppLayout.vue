@@ -34,18 +34,35 @@
             {{ $t('layout.logout') }}
           </button>
         </div>
-        <div class="border-t border-gray-200 dark:border-gray-700 pt-2">
-          <p class="px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ $t('layout.theme') }}</p>
-          <div class="flex justify-around p-2">
-            <button @click="themeStore.setTheme('light')" class="p-2 rounded-md" :class="{ 'bg-primary-100 dark:bg-primary-900': themeStore.theme === 'light' }">
-              <Sun class="w-5 h-5 text-gray-700 dark:text-gray-300" />
-            </button>
-            <button @click="themeStore.setTheme('dark')" class="p-2 rounded-md" :class="{ 'bg-primary-100 dark:bg-primary-900': themeStore.theme === 'dark' }">
-              <Moon class="w-5 h-5 text-gray-700 dark:text-gray-300" />
-            </button>
-            <button @click="themeStore.setTheme('system')" class="p-2 rounded-md" :class="{ 'bg-primary-100 dark:bg-primary-900': themeStore.theme === 'system' }">
-              <Laptop class="w-5 h-5 text-gray-700 dark:text-gray-300" />
-            </button>
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-2 pb-1">
+          <div class="flex items-center justify-between px-4 py-1">
+            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ $t('layout.theme') }}</p>
+            <div class="flex items-center gap-0.5 bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5">
+              <button
+                @click="themeStore.setTheme('light')"
+                class="p-1.5 rounded transition-all"
+                :class="themeStore.theme === 'light' ? 'bg-white dark:bg-gray-600 shadow-sm' : 'hover:bg-gray-200 dark:hover:bg-gray-600'"
+                :title="'Light'"
+              >
+                <Sun class="w-3.5 h-3.5 text-gray-700 dark:text-gray-300" />
+              </button>
+              <button
+                @click="themeStore.setTheme('dark')"
+                class="p-1.5 rounded transition-all"
+                :class="themeStore.theme === 'dark' ? 'bg-white dark:bg-gray-600 shadow-sm' : 'hover:bg-gray-200 dark:hover:bg-gray-600'"
+                :title="'Dark'"
+              >
+                <Moon class="w-3.5 h-3.5 text-gray-700 dark:text-gray-300" />
+              </button>
+              <button
+                @click="themeStore.setTheme('system')"
+                class="p-1.5 rounded transition-all"
+                :class="themeStore.theme === 'system' ? 'bg-white dark:bg-gray-600 shadow-sm' : 'hover:bg-gray-200 dark:hover:bg-gray-600'"
+                :title="'System'"
+              >
+                <Laptop class="w-3.5 h-3.5 text-gray-700 dark:text-gray-300" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -82,18 +99,35 @@
             </li>
             
             <li class="-mx-6 mt-auto">
-              <div class="border-t border-gray-200 dark:border-gray-700 py-4" :class="uiStore.isSidebarMinimized ? 'px-5' : 'px-6'">
-                <p v-show="!uiStore.isSidebarMinimized" class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{{ $t('layout.theme') }}</p>
-                <div class="flex p-1 rounded-lg bg-gray-100 dark:bg-gray-700/50" :class="uiStore.isSidebarMinimized ? 'flex-col space-y-1' : 'justify-around'">
-                  <button @click="themeStore.setTheme('light')" class="p-2 rounded-md flex-1 text-center" :class="{ 'bg-white dark:bg-gray-600 shadow': themeStore.theme === 'light' }">
-                    <Sun class="text-gray-700 dark:text-gray-300 mx-auto" :class="{ 'size-4': !uiStore.isSidebarMinimized ,'w-4 h-4': uiStore.isSidebarMinimized }" />
-                  </button>
-                  <button @click="themeStore.setTheme('dark')" class="p-2 rounded-md flex-1 text-center" :class="{ 'bg-white dark:bg-gray-600 shadow': themeStore.theme === 'dark' }">
-                    <Moon class="text-gray-700 dark:text-gray-300 mx-auto" :class="{ 'size-4': !uiStore.isSidebarMinimized ,'w-4 h-4': uiStore.isSidebarMinimized }" />
-                  </button>
-                  <button @click="themeStore.setTheme('system')" class="p-2 rounded-md flex-1 text-center" :class="{ 'bg-white dark:bg-gray-600 shadow': themeStore.theme === 'system' }">
-                    <Laptop class="text-gray-700 dark:text-gray-300 mx-auto" :class="{ 'size-4': !uiStore.isSidebarMinimized ,'w-4 h-4': uiStore.isSidebarMinimized }" />
-                  </button>
+              <div class="border-t border-gray-200 dark:border-gray-700 py-3" :class="uiStore.isSidebarMinimized ? 'px-3' : 'px-6'">
+                <div class="flex items-center gap-2" :class="uiStore.isSidebarMinimized ? 'flex-col' : 'justify-between'">
+                  <p v-show="!uiStore.isSidebarMinimized" class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ $t('layout.theme') }}</p>
+                  <div class="flex items-center gap-0.5 bg-gray-100 dark:bg-gray-700/50 rounded-lg p-0.5" :class="uiStore.isSidebarMinimized && 'flex-col'">
+                    <button
+                      @click="themeStore.setTheme('light')"
+                      class="p-1.5 rounded transition-all"
+                      :class="themeStore.theme === 'light' ? 'bg-white dark:bg-gray-600 shadow' : 'hover:bg-gray-200 dark:hover:bg-gray-600'"
+                      :title="'Light'"
+                    >
+                      <Sun class="w-3.5 h-3.5 text-gray-700 dark:text-gray-300" />
+                    </button>
+                    <button
+                      @click="themeStore.setTheme('dark')"
+                      class="p-1.5 rounded transition-all"
+                      :class="themeStore.theme === 'dark' ? 'bg-white dark:bg-gray-600 shadow' : 'hover:bg-gray-200 dark:hover:bg-gray-600'"
+                      :title="'Dark'"
+                    >
+                      <Moon class="w-3.5 h-3.5 text-gray-700 dark:text-gray-300" />
+                    </button>
+                    <button
+                      @click="themeStore.setTheme('system')"
+                      class="p-1.5 rounded transition-all"
+                      :class="themeStore.theme === 'system' ? 'bg-white dark:bg-gray-600 shadow' : 'hover:bg-gray-200 dark:hover:bg-gray-600'"
+                      :title="'System'"
+                    >
+                      <Laptop class="w-3.5 h-3.5 text-gray-700 dark:text-gray-300" />
+                    </button>
+                  </div>
                 </div>
               </div>
               <div
