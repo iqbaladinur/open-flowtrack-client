@@ -361,7 +361,7 @@
 
           <div v-if="recentTransactions.length === 0" class="text-center py-8">
             <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-              <ArrowUpDown class="w-8 h-8 text-gray-400" />
+              <TrendingUpDown class="w-8 h-8 text-gray-400" />
             </div>
             <p class="text-gray-500 dark:text-gray-400 mb-4">{{ $t('dashboard.noTransactionsYet') }}</p>
             <button @click="showAddTransactionModal = true" class="btn-primary">
@@ -422,7 +422,8 @@ import {
   ChevronRight,
   Lock,
   Unlock,
-  Target
+  Target,
+  TrendingUpDown
 } from 'lucide-vue-next';
 import { endOfDay, format, parseISO, subDays } from 'date-fns';
 import { reactive } from 'vue';

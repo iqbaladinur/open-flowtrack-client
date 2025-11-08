@@ -138,7 +138,7 @@
 
         <div v-else-if="transactions.length === 0" class="text-center py-12 px-2">
           <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-            <ArrowUpDown class="w-8 h-8 text-gray-400" />
+            <TrendingUpDown class="w-8 h-8 text-gray-400" />
           </div>
           <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{{ $t('transactions.noTransactionsFound') }}</h3>
           <p class="text-gray-500 dark:text-gray-400 mb-6">
@@ -221,7 +221,8 @@ import {
   FilterX,
   ChevronLeft,
   ChevronRight,
-  Tag
+  Tag,
+  TrendingUpDown
 } from 'lucide-vue-next';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, endOfDay, format, parseISO } from 'date-fns';
 
