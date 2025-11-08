@@ -200,8 +200,8 @@
             <LoadingSpinner class="w-8 h-8" />
           </div>
 
-          <div v-else class="space-y-3">
-            <div v-if="budgets.length > 0" class="card p-4">
+          <div v-else-if="budgets.length > 0" class="space-y-3">
+            <div class="card p-4">
               <div class="mb-3">
                 <h3 class="text-sm font-semibold text-gray-900 dark:text-white">{{ $t('dashboard.overallActiveBudget') }}</h3>
                 <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">{{ $t('dashboard.combinedUsage') }}</p>
