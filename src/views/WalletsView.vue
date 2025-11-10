@@ -290,8 +290,18 @@ const nextDate = () => {
     const start = parseISO(endDateNow.toISOString());
 
     const newStart = new Date(start);
+    // Set to day 1 first to avoid month overflow issues
+    newStart.setDate(1);
+    // Move to next month
     newStart.setMonth(newStart.getMonth() + 1);
-    newStart.setDate(firstDay - 1);
+    // Set the correct end date
+    if (firstDay === 1) {
+      // Get last day of this month by going to next month day 0
+      newStart.setMonth(newStart.getMonth() + 1);
+      newStart.setDate(0);
+    } else {
+      newStart.setDate(firstDay - 1);
+    }
 
     endDate.value = newStart;
 
@@ -304,8 +314,18 @@ const prevDate = () => {
     const start = parseISO(endDateNow.toISOString());
 
     const newStart = new Date(start);
+    // Set to day 1 first to avoid month overflow issues
+    newStart.setDate(1);
+    // Move to previous month
     newStart.setMonth(newStart.getMonth() - 1);
-    newStart.setDate(firstDay - 1);
+    // Set the correct end date
+    if (firstDay === 1) {
+      // Get last day of this month by going to next month day 0
+      newStart.setMonth(newStart.getMonth() + 1);
+      newStart.setDate(0);
+    } else {
+      newStart.setDate(firstDay - 1);
+    }
 
     endDate.value = newStart;
 
