@@ -12,7 +12,7 @@ export default {
         mono: ['"IBM Plex Mono"', 'monospace'],
       },
       colors: {
-        neon: '#16a34a',
+        neon: '#99E627',
         primary: {
           50:  '#f8fafc',
           100: '#f1f5f9',
