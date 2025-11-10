@@ -2,8 +2,8 @@
   <div class="min-h-[100dvh] flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
       <div class="text-center">
-        <div class="mx-auto w-16 h-16 bg-green-600/30 rounded-2xl flex items-center justify-center mb-6">
-          <TrendingUpDown class="w-8 h-8 text-white" />
+        <div class="mx-auto w-8 h-8 bg-[#16a34a] rounded-lg flex items-center justify-center mb-6">
+          <TrendingUp class="w-5 h-5 text-white" />
         </div>
         <h2 class="text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('register.title') }}</h2>
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
@@ -125,7 +125,7 @@
 import { reactive, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import { TrendingUpDown } from 'lucide-vue-next';
+import { TrendingUp } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 
