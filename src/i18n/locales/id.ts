@@ -296,6 +296,17 @@ export default {
     shareText: 'Berikut cadangan data FlowTrack Anda.',
     fileNotSupported: 'File tidak didukung!',
     failedToShare: 'Gagal berbagi:',
+    confirmRestoreTitle: 'Konfirmasi Pemulihan Data',
+    confirmRestoreMessage: 'Apakah Anda yakin ingin memulihkan dari cadangan ini? Tindakan ini akan menimpa semua data Anda saat ini secara permanen dan tidak dapat dibatalkan.',
+    confirmRestoreWarning: 'Pastikan Anda memiliki cadangan terbaru sebelum melanjutkan!',
+    cancel: 'Batal',
+    confirm: 'Ya, Pulihkan',
+    restoreSuccess: 'Data berhasil dipulihkan! Halaman akan dimuat ulang untuk menerapkan perubahan.',
+    restoreError: 'Gagal memulihkan cadangan. Silakan periksa file dan coba lagi.',
+    createBackupSuccess: 'Cadangan berhasil dibuat!',
+    createBackupError: 'Gagal membuat cadangan. Silakan coba lagi.',
+    noFileSelected: 'Silakan pilih file cadangan terlebih dahulu.',
+    selectBackupFile: 'Pilih file cadangan untuk memulihkan data Anda',
   },
 
   // Onboarding

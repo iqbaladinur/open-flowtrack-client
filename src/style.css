@@ -49,7 +49,7 @@
   }
 
   .card {
-    @apply rounded-xl border border-gray-200 dark:border-white/10;
+    @apply rounded-xl border-[1.5px] border-gray-200 dark:border-white/10 bg-white dark:bg-slate-800/10;
   }
   
   .input {

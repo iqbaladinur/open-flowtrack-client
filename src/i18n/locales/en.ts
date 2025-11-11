@@ -296,6 +296,17 @@ export default {
     shareText: 'Here is your FlowTrack data backup.',
     fileNotSupported: 'File not supported!',
     failedToShare: 'Failed to share:',
+    confirmRestoreTitle: 'Confirm Data Restore',
+    confirmRestoreMessage: 'Are you sure you want to restore from this backup? This action will permanently overwrite all your current data and cannot be undone.',
+    confirmRestoreWarning: 'Make sure you have a recent backup before proceeding!',
+    cancel: 'Cancel',
+    confirm: 'Yes, Restore',
+    restoreSuccess: 'Data restored successfully! The page will reload to apply changes.',
+    restoreError: 'Failed to restore backup. Please check the file and try again.',
+    createBackupSuccess: 'Backup created successfully!',
+    createBackupError: 'Failed to create backup. Please try again.',
+    noFileSelected: 'Please select a backup file first.',
+    selectBackupFile: 'Select a backup file to restore your data',
   },
 
   // Onboarding
