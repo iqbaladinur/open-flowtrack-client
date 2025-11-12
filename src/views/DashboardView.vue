@@ -87,53 +87,82 @@
       </div>
 
       <!-- Quick Actions -->
-      <div class="card p-4">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-neon mb-4">{{ $t('dashboard.quickActions') }}</h2>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <QuickActionButton
-            @click="toggleAddTransaction('income')"
-            icon-bg-class="bg-success-100 dark:bg-success-900"
-            class="text-center card !rounded-2xl"
-          >
-            <template #icon>
-              <Plus class="w-5 h-5 text-success-600 dark:text-success-400" />
-            </template>
+      <div class="flex gap-2 lg:flex-wrap">
+        <!-- Add Income -->
+        <button
+          @click="toggleAddTransaction('income')"
+          :title="$t('dashboard.addIncome')"
+          :aria-label="$t('dashboard.addIncome')"
+          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-white dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-success-100 lg:to-success-200 dark:lg:from-success-900/40 dark:lg:to-success-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-success-200 lg:hover:to-success-300 dark:lg:hover:from-success-900/50 dark:lg:hover:to-success-800/40"
+        >
+          <div class="relative flex h-10 w-10 lg:h-5 lg:w-5 flex-shrink-0 items-center justify-center rounded-xl lg:rounded-md bg-success-500 dark:bg-success-600">
+            <Plus class="absolute h-7 w-7 lg:h-3.5 lg:w-3.5 text-white" strokeWidth="2.5" />
+          </div>
+          <span class="hidden lg:inline text-xs font-semibold text-success-700 dark:text-success-300 whitespace-nowrap">
             {{ $t('dashboard.addIncome') }}
-          </QuickActionButton>
+          </span>
+          <!-- Mobile Label Tooltip -->
+          <span class="lg:hidden absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-medium text-success-700 dark:text-success-400 whitespace-nowrap opacity-0 group-active:opacity-100 transition-opacity pointer-events-none">
+            {{ $t('dashboard.addIncome') }}
+          </span>
+        </button>
 
-          <QuickActionButton
-            @click="toggleAddTransaction('expense')"
-            icon-bg-class="bg-error-100 dark:bg-error-900"
-            class="text-center card !rounded-2xl"
-          >
-            <template #icon>
-              <Minus class="w-5 h-5 text-error-600 dark:text-error-400" />
-            </template>
+        <!-- Add Expense -->
+        <button
+          @click="toggleAddTransaction('expense')"
+          :title="$t('dashboard.addExpense')"
+          :aria-label="$t('dashboard.addExpense')"
+          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-white dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-error-100 lg:to-error-200 dark:lg:from-error-900/40 dark:lg:to-error-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-error-200 lg:hover:to-error-300 dark:lg:hover:from-error-900/50 dark:lg:hover:to-error-800/40"
+        >
+          <div class="relative flex h-10 w-10 lg:h-5 lg:w-5 flex-shrink-0 items-center justify-center rounded-xl lg:rounded-md bg-error-500 dark:bg-error-600">
+            <Minus class="absolute h-7 w-7 lg:h-3.5 lg:w-3.5 text-white" strokeWidth="2.5" />
+          </div>
+          <span class="hidden lg:inline text-xs font-semibold text-error-700 dark:text-error-300 whitespace-nowrap">
             {{ $t('dashboard.addExpense') }}
-          </QuickActionButton>
+          </span>
+          <!-- Mobile Label Tooltip -->
+          <span class="lg:hidden absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-medium text-error-700 dark:text-error-400 whitespace-nowrap opacity-0 group-active:opacity-100 transition-opacity pointer-events-none">
+            {{ $t('dashboard.addExpense') }}
+          </span>
+        </button>
 
-          <QuickActionButton
-            @click="toggleAddTransaction('transfer')"
-            icon-bg-class="bg-blue-100 dark:bg-blue-900"
-            class="text-center card !rounded-2xl"
-          >
-            <template #icon>
-              <ArrowRightLeft class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            </template>
+        <!-- Add Transfer -->
+        <button
+          @click="toggleAddTransaction('transfer')"
+          :title="$t('dashboard.addTransfer')"
+          :aria-label="$t('dashboard.addTransfer')"
+          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-white dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-blue-100 lg:to-blue-200 dark:lg:from-blue-900/40 dark:lg:to-blue-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-blue-200 lg:hover:to-blue-300 dark:lg:hover:from-blue-900/50 dark:lg:hover:to-blue-800/40"
+        >
+          <div class="relative flex h-10 w-10 lg:h-5 lg:w-5 flex-shrink-0 items-center justify-center rounded-xl lg:rounded-md bg-blue-500 dark:bg-blue-600">
+            <ArrowRightLeft class="absolute h-7 w-7 lg:h-3.5 lg:w-3.5 text-white" />
+          </div>
+          <span class="hidden lg:inline text-xs font-semibold text-blue-700 dark:text-blue-300 whitespace-nowrap">
             {{ $t('dashboard.addTransfer') }}
-          </QuickActionButton>
+          </span>
+          <!-- Mobile Label Tooltip -->
+          <span class="lg:hidden absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-medium text-blue-700 dark:text-blue-400 whitespace-nowrap opacity-0 group-active:opacity-100 transition-opacity pointer-events-none">
+            {{ $t('dashboard.addTransfer') }}
+          </span>
+        </button>
 
-          <QuickActionButton
-            to="/wallets"
-            icon-bg-class="bg-primary-100 dark:bg-primary-900"
-            class="text-center card !rounded-2xl"
-          >
-            <template #icon>
-              <Wallet class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            </template>
+        <!-- Manage Wallets -->
+        <router-link
+          to="/wallets"
+          :title="$t('dashboard.manageWallets')"
+          :aria-label="$t('dashboard.manageWallets')"
+          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-white dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-purple-100 lg:to-purple-200 dark:lg:from-purple-900/40 dark:lg:to-purple-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-purple-200 lg:hover:to-purple-300 dark:lg:hover:from-purple-900/50 dark:lg:hover:to-purple-800/40"
+        >
+          <div class="relative flex h-10 w-10 lg:h-5 lg:w-5 flex-shrink-0 items-center justify-center rounded-xl lg:rounded-md bg-purple-500 dark:bg-purple-600">
+            <Wallet class="absolute h-7 w-7 lg:h-3.5 lg:w-3.5 text-white" />
+          </div>
+          <span class="hidden lg:inline text-xs font-semibold text-purple-700 dark:text-purple-300 whitespace-nowrap">
             {{ $t('dashboard.manageWallets') }}
-          </QuickActionButton>
-        </div>
+          </span>
+          <!-- Mobile Label Tooltip -->
+          <span class="lg:hidden absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-medium text-purple-700 dark:text-purple-400 whitespace-nowrap opacity-0 group-active:opacity-100 transition-opacity pointer-events-none">
+            {{ $t('dashboard.manageWallets') }}
+          </span>
+        </router-link>
       </div>
 
       <!-- AI Suggestions -->
@@ -400,7 +429,7 @@ import { useConfigStore } from '@/stores/config';
 import { useAnalyticsStore } from '@/stores/analytics';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
-import QuickActionButton from '@/components/shared/QuickActionButton.vue';
+// import QuickActionButton from '@/components/shared/QuickActionButton.vue';
 // import SummaryCard from '@/components/dashboard/SummaryCard.vue';
 // import SummaryCard2 from '@/components/dashboard/SummaryCard2.vue';
 import SummaryCard3 from '@/components/dashboard/SummaryCard3.vue';
