@@ -1,39 +1,55 @@
 <template>
-  <button 
+  <button
     @click="$emit('edit', category)"
-    class="card p-3 aspect-square flex flex-col items-center justify-center text-center transition-all group relative"
+    class="group relative flex aspect-square flex-col items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white p-4 text-center transition-colors hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
   >
-    <!-- Type Indicator -->
-    <div class="absolute top-1.5 left-1.5">
-      <component
-        :is="category.type === 'income' ? TrendingUp : TrendingDown"
-        class="w-3.5 h-3.5"
-        :class="category.type === 'income' ? 'text-success-500' : 'text-error-500'"
-      />
+    <!-- Type Indicator Badge -->
+    <div class="absolute left-2 top-2">
+      <div
+        class="flex items-center justify-center rounded-md p-1"
+        :class="
+          category.type === 'income'
+            ? 'bg-success-100 dark:bg-success-900/30'
+            : 'bg-error-100 dark:bg-error-900/30'
+        "
+      >
+        <component
+          :is="category.type === 'income' ? TrendingUp : TrendingDown"
+          class="h-3 w-3"
+          :class="
+            category.type === 'income'
+              ? 'text-success-600 dark:text-success-400'
+              : 'text-error-600 dark:text-error-400'
+          "
+        />
+      </div>
     </div>
 
-    <!-- Delete Button (visible on hover on desktop) -->
-    <div v-if="category.id" class="absolute top-1 right-1 transition-opacity">
+    <!-- Delete Button -->
+    <div
+      v-if="category.id"
+      class="absolute right-2 top-2 transition-opacity md:opacity-0 md:group-hover:opacity-100"
+    >
       <button
         @click.stop="$emit('delete', category.id)"
-        class="p-1.5 rounded-full text-gray-400 bg-white/50 dark:bg-gray-800/50 hover:bg-red-100 dark:hover:bg-red-900/50 hover:text-error-600 dark:hover:text-error-400"
+        class="rounded-md p-1 text-gray-400 transition-colors hover:bg-error-100 hover:text-error-600 dark:hover:bg-error-900/30 dark:hover:text-error-400"
         :disabled="category.is_default"
       >
-        <Trash2 class="w-3.5 h-3.5" />
+        <Trash2 class="h-3.5 w-3.5" />
       </button>
     </div>
 
     <!-- Category Icon -->
-    <div 
-      class="w-10 h-10 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110" 
-      :style="{ backgroundColor: category.color + '20' }"
+    <div
+      class="flex h-12 w-12 items-center justify-center rounded-lg transition-transform group-hover:scale-105"
+      :style="{ backgroundColor: category.color + '15' }"
     >
       <!-- @vue-ignore -->
-      <component :is="getIcon(category.icon)" class="w-5 h-5" :style="{ color: category.color }" />
+      <component :is="getIcon(category.icon)" class="h-5 w-5" :style="{ color: category.color }" />
     </div>
 
-    <!-- Category Info -->
-    <h3 class="text-xs font-medium text-gray-700 dark:text-gray-300 truncate w-full">
+    <!-- Category Name -->
+    <h3 class="w-full truncate text-sm font-medium text-gray-900 dark:text-gray-100">
       {{ category.name }}
     </h3>
   </button>

@@ -481,6 +481,9 @@ export default {
   categoryFilterModal: {
     title: 'Filter Categories',
     description: 'Select categories to exclude from the transaction list and calculations.',
+    searchPlaceholder: 'Search categories...',
+    noResults: 'No categories found',
+    tryDifferentSearch: 'Try a different search term',
     clearSelection: 'Clear Selection',
     selectAll: 'Select All',
     cancel: 'Cancel',

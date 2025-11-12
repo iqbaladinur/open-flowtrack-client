@@ -4,37 +4,84 @@
       <p class="text-sm text-gray-500 dark:text-gray-400">
         {{ $t('categoryFilterModal.description') }}
       </p>
+
+      <!-- Search Input -->
+      <div class="relative">
+        <Search class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+        <input
+          v-model="searchQuery"
+          type="text"
+          :placeholder="$t('categoryFilterModal.searchPlaceholder')"
+          class="w-full rounded-lg border border-gray-200 bg-white pl-9 pr-3 py-2 text-sm transition-colors placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-primary-400"
+        />
+      </div>
+
       <div class="max-h-72 overflow-y-auto">
-        <div class="grid grid-cols-3 gap-2">
-          <div
-            v-for="category in categories"
+        <!-- Empty State -->
+        <div v-if="sortedCategories.length === 0" class="flex flex-col items-center justify-center py-8 text-center">
+          <Search class="h-12 w-12 text-gray-300 dark:text-gray-600 mb-3" />
+          <p class="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
+            {{ $t('categoryFilterModal.noResults') }}
+          </p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            {{ $t('categoryFilterModal.tryDifferentSearch') }}
+          </p>
+        </div>
+
+        <!-- Categories Grid -->
+        <div v-else class="grid grid-cols-3 gap-2">
+          <button
+            v-for="category in sortedCategories"
             :key="category.id"
             @click="toggleCategory(category.id)"
-            class="relative card p-3 flex flex-col items-center justify-center text-center h-28 cursor-pointer border-2 transition-all"
-            :class="category.id && internalExcludedCategories.includes(category.id) ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-transparent hover:bg-gray-100 dark:hover:bg-gray-700'"
+            class="relative flex flex-col items-center justify-center gap-2 rounded-lg border bg-white p-3 text-center transition-all h-28 cursor-pointer"
+            :class="category.id && internalExcludedCategories.includes(category.id)
+              ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 dark:border-primary-400'
+              : 'border-gray-200 hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800'"
           >
-            <!-- Income/Expense Icon -->
-            <div class="absolute top-2 left-2 w-5 h-5 rounded-full flex items-center justify-center bg-gray-100 dark:bg-gray-600/20">
-              <TrendingUp v-if="category.type === 'income'" class="w-3 h-3 text-success-600 dark:text-success-400" />
-              <TrendingDown v-else-if="category.type === 'expense'" class="w-3 h-3 text-error-600 dark:text-error-400" />
+            <!-- Type Indicator Badge -->
+            <div class="absolute left-2 top-2">
+              <div
+                class="flex items-center justify-center rounded-md p-1"
+                :class="
+                  category.type === 'income'
+                    ? 'bg-success-100 dark:bg-success-900/30'
+                    : 'bg-error-100 dark:bg-error-900/30'
+                "
+              >
+                <component
+                  :is="category.type === 'income' ? TrendingUp : TrendingDown"
+                  class="h-3 w-3"
+                  :class="
+                    category.type === 'income'
+                      ? 'text-success-600 dark:text-success-400'
+                      : 'text-error-600 dark:text-error-400'
+                  "
+                />
+              </div>
             </div>
 
             <!-- Selected Check Icon -->
-            <div v-if="category.id && internalExcludedCategories.includes(category.id)" class="absolute top-2 right-2 w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center text-white">
-              <Check class="w-3 h-3" />
+            <div
+              v-if="category.id && internalExcludedCategories.includes(category.id)"
+              class="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary-500 text-white"
+            >
+              <Check class="h-3 w-3" />
             </div>
 
             <!-- Category Icon -->
             <div
-              class="w-8 h-8 rounded-full flex items-center justify-center mb-2"
-              :style="{ backgroundColor: category.color + '20' }"
+              class="flex h-10 w-10 items-center justify-center rounded-lg"
+              :style="{ backgroundColor: category.color + '15' }"
             >
-              <component :is="getIcon(category.icon)" class="w-4 h-4" :style="{ color: category.color }" />
+              <component :is="getIcon(category.icon)" class="h-5 w-5" :style="{ color: category.color }" />
             </div>
-            <p class="text-xs text-gray-800 dark:text-gray-200 leading-tight">
+
+            <!-- Category Name -->
+            <p class="w-full truncate text-xs font-medium text-gray-900 dark:text-gray-100">
               {{ category.name }}
             </p>
-          </div>
+          </button>
         </div>
       </div>
     </div>
@@ -64,7 +111,7 @@ import { ref, watch, toRefs, computed } from 'vue';
 import Modal from '@/components/ui/Modal.vue';
 import type { Category } from '@/types/category';
 import { getIcon } from '@/utils/icons';
-import { Check, TrendingUp, TrendingDown } from 'lucide-vue-next';
+import { Check, TrendingUp, TrendingDown, Search } from 'lucide-vue-next';
 
 const props = defineProps<{
   modelValue: boolean;
@@ -78,6 +125,24 @@ const { modelValue, categories, excludedCategories } = toRefs(props);
 
 const show = ref(modelValue.value);
 const internalExcludedCategories = ref<string[]>([...excludedCategories.value]);
+const searchQuery = ref('');
+
+const sortedCategories = computed(() => {
+  return [...categories.value]
+    .filter(category => {
+      // Filter by search query
+      if (!searchQuery.value.trim()) return true;
+      return category.name.toLowerCase().includes(searchQuery.value.toLowerCase().trim());
+    })
+    .sort((a, b) => {
+      // First sort by type: income first, then expense
+      if (a.type !== b.type) {
+        return a.type === 'income' ? -1 : 1;
+      }
+      // Then sort alphabetically by name
+      return a.name.localeCompare(b.name);
+    });
+});
 
 const allCategoriesSelected = computed(() => {
   return internalExcludedCategories.value.length === categories.value.length;
@@ -88,6 +153,7 @@ watch(modelValue, (newValue) => {
   if (newValue) {
     // Reset internal state when modal is opened
     internalExcludedCategories.value = [...excludedCategories.value];
+    searchQuery.value = '';
   }
 });
 

@@ -98,8 +98,14 @@ const categories = computed(() => {
       return category.type === filterType.value;
     })
     .slice()
-    // @ts-ignore
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    .sort((a, b) => {
+      // First sort by type: income first, then expense
+      if (a.type !== b.type) {
+        return a.type === 'income' ? -1 : 1;
+      }
+      // Then sort alphabetically by name
+      return a.name.localeCompare(b.name);
+    });
 });
 
 const editCategory = (category: Category) => {

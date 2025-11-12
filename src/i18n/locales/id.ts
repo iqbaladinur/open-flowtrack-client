@@ -481,6 +481,9 @@ export default {
   categoryFilterModal: {
     title: 'Filter Kategori',
     description: 'Pilih kategori untuk dikecualikan dari daftar transaksi dan perhitungan.',
+    searchPlaceholder: 'Cari kategori...',
+    noResults: 'Kategori tidak ditemukan',
+    tryDifferentSearch: 'Coba kata kunci pencarian lain',
     clearSelection: 'Hapus Pilihan',
     selectAll: 'Pilih Semua',
     cancel: 'Batal',
