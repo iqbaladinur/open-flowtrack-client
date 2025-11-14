@@ -205,19 +205,25 @@
       >
         <div v-if="showMoreMenu" class="fixed bottom-0 left-0 right-0 z-50 lg:hidden safe-area-bottom">
           <div class="bg-white dark:bg-gray-800 rounded-t-2xl p-4">
-            <div class="grid grid-cols-4 gap-4">
+            <div class="flex flex-col space-y-1">
                 <router-link
                   v-for="item in moreMenuNav"
                   :key="item.name"
                   :to="item.to"
                   @click="showMoreMenu = false"
-                  class="flex flex-col items-center justify-center text-center py-2 transition-colors"
-                  :class="$route.name?.toString()?.toLowerCase() === item.routeName?.toLowerCase() ? 'text-blue-700 dark:text-neon' : 'text-gray-500 dark:text-gray-400'"
+                  class="flex items-center gap-x-3 px-4 py-3 rounded-lg transition-colors"
+                  :class="$route.name?.toString()?.toLowerCase() === item.routeName?.toLowerCase()
+                    ? 'bg-blue-50 dark:bg-gray-700 text-blue-700 dark:text-neon'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'"
                 >
-                  <div class="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-2">
-                    <component :is="item.icon" class="w-6 h-6" />
+                  <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                    :class="$route.name?.toString()?.toLowerCase() === item.routeName?.toLowerCase()
+                      ? 'bg-blue-100 dark:bg-gray-600'
+                      : 'bg-gray-100 dark:bg-gray-700'"
+                  >
+                    <component :is="item.icon" class="w-5 h-5" />
                   </div>
-                  <span class="text-[10px] font-medium">{{ item.name }}</span>
+                  <span class="text-sm font-medium">{{ item.name }}</span>
                 </router-link>
             </div>
           </div>
