@@ -51,6 +51,7 @@ export default {
     profile: 'Profile',
     backup: 'Backup & Restore',
     more: 'More',
+    milestones: 'Milestones',
   },
 
   // Layout

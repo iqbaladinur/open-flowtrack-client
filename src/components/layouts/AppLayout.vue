@@ -257,7 +257,7 @@ import {
   Database,
   Settings,
   ChevronsLeft,
-  Trophy,
+  Flame
 } from 'lucide-vue-next';
 
 const router = useRouter();
@@ -275,7 +275,7 @@ const navigation = computed(() => [
   { name: t('nav.transactions'), to: '/transactions', icon: TrendingUpDown, routeName: 'Transactions' },
   { name: t('nav.categories'), to: '/categories', icon: Tag, routeName: 'Categories' },
   { name: t('nav.budgets'), to: '/budgets', icon: Target, routeName: 'Budgets' },
-  { name: 'Milestones', to: '/milestones', icon: Trophy, routeName: 'Milestones' },
+  { name: t('nav.milestones'), to: '/milestones', icon: Flame, routeName: 'Milestones' },
   { name: t('nav.reports'), to: '/reports', icon: BarChart3, routeName: 'Reports' },
   { name: t('nav.backup'), to: '/backup', icon: Database, routeName: 'Backup' },
   { name: t('nav.settings'), to: '/settings', icon: Settings, routeName: 'Settings' },

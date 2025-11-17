@@ -51,6 +51,7 @@ export default {
     profile: 'Profil',
     backup: 'Cadangkan',
     more: 'Lainnya',
+    milestones: 'Pencapaian',
   },
 
   // Layout
