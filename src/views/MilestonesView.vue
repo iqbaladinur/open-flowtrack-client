@@ -73,7 +73,7 @@
         <div
           class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4"
         >
-          <Target class="w-8 h-8 text-gray-400" />
+          <Flame class="w-8 h-8 text-gray-400" />
         </div>
         <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
           {{ $t('milestones.noMilestonesYet') }}
@@ -148,7 +148,7 @@ import { useMilestonesStore } from '@/stores/milestones';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import MilestoneTimelineCard from '@/components/milestone/MilestoneTimelineCard.vue';
-import { Plus, RefreshCw, Target } from 'lucide-vue-next';
+import { Plus, RefreshCw, Flame } from 'lucide-vue-next';
 
 const router = useRouter();
 const milestonesStore = useMilestonesStore();
