@@ -6,7 +6,7 @@
         <router-link to="/milestones" class="btn-icon flex gap-4 items-center">
           <ArrowLeft class="w-5 h-5" />
           <div>
-            <h1 class="text-sm font-medium text-gray-800 dark:text-neon">Back</h1>
+            <h1 class="text-sm font-medium text-gray-800 dark:text-neon">{{ $t('milestones.back') }}</h1>
           </div>
         </router-link>
       </div>
@@ -15,7 +15,7 @@
       <MilestoneForm
         :loading="formLoading"
         :error="formError"
-        submit-label="Create Milestone"
+        :submit-label="$t('milestones.createMilestone')"
         @submit="handleSubmit"
         @cancel="handleCancel"
       />
@@ -26,6 +26,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useMilestonesStore } from '@/stores/milestones';
 import type { CreateMilestoneDto } from '@/types/milestone';
 import AppLayout from '@/components/layouts/AppLayout.vue';
@@ -34,6 +35,7 @@ import { ArrowLeft } from 'lucide-vue-next';
 
 const router = useRouter();
 const milestonesStore = useMilestonesStore();
+const { t } = useI18n();
 
 // State
 const formLoading = ref(false);
@@ -51,10 +53,10 @@ const handleSubmit = async (data: CreateMilestoneDto) => {
       // Redirect to milestones list
       router.push('/milestones');
     } else {
-      formError.value = result.error || 'Failed to create milestone';
+      formError.value = result.error || t('milestones.failedToCreate');
     }
   } catch (error: any) {
-    formError.value = error.message || 'An error occurred';
+    formError.value = error.message || t('milestones.errorOccurred');
   } finally {
     formLoading.value = false;
   }

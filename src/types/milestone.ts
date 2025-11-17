@@ -136,7 +136,8 @@ export type ConditionConfig =
   | TransactionAmountConfig
   | PeriodTotalConfig
   | NetWorthConfig
-  | CategorySpendingConfig;
+  | CategorySpendingConfig
+  | {};
 
 // ============================================================================
 // Condition Interfaces

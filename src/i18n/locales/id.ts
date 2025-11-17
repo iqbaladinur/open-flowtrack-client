@@ -591,6 +591,7 @@ export default {
     add: 'Tambah',
     refreshProgress: 'Refresh Progress',
     markAsAchieved: 'Tandai Tercapai',
+    cancelMilestone: 'Batalkan Milestone',
     newMilestone: 'Milestone Baru',
 
     // Stats
@@ -636,9 +637,19 @@ export default {
     milestoneNotFoundDescription: 'Milestone yang Anda cari tidak ada atau telah dihapus.',
     milestoneNotFoundEdit: 'Milestone yang ingin Anda ubah tidak ada atau telah dihapus.',
 
+    // Cancelled milestone
+    cancelledMilestoneTitle: 'Milestone Dibatalkan',
+    cancelledMilestoneMessage: 'Milestone ini telah dibatalkan dan tidak dapat diubah.',
+    achievedMilestoneTitle: 'Milestone Tercapai',
+    achievedMilestoneMessage: 'Milestone ini telah tercapai dan tidak dapat diubah.',
+    deleteThisMilestone: 'Hapus Milestone Ini',
+    deleteDescription: 'Hapus permanen milestone yang dibatalkan ini dari catatan Anda.',
+
     // Confirm dialogs
     deleteMilestone: 'Hapus Milestone',
     deleteConfirmation: 'Apakah Anda yakin ingin menghapus milestone ini? Tindakan ini tidak dapat dibatalkan.',
+    cancelMilestoneTitle: 'Batalkan Milestone',
+    cancelMilestoneConfirmation: 'Apakah Anda yakin ingin membatalkan milestone ini? Ini akan menandainya sebagai dibatalkan dan menghentikan pelacakan progress.',
 
     // Error messages
     failedToCreate: 'Gagal membuat milestone',

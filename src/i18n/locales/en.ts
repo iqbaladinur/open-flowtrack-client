@@ -591,6 +591,7 @@ export default {
     add: 'Add',
     refreshProgress: 'Refresh Progress',
     markAsAchieved: 'Mark as Achieved',
+    cancelMilestone: 'Cancel Milestone',
     newMilestone: 'New Milestone',
 
     // Stats
@@ -636,9 +637,19 @@ export default {
     milestoneNotFoundDescription: 'The milestone you\'re looking for doesn\'t exist or has been deleted.',
     milestoneNotFoundEdit: 'The milestone you\'re trying to edit doesn\'t exist or has been deleted.',
 
+    // Cancelled milestone
+    cancelledMilestoneTitle: 'Cancelled Milestone',
+    cancelledMilestoneMessage: 'This milestone has been cancelled and cannot be edited.',
+    achievedMilestoneTitle: 'Achieved Milestone',
+    achievedMilestoneMessage: 'This milestone has been achieved and cannot be edited.',
+    deleteThisMilestone: 'Delete This Milestone',
+    deleteDescription: 'Permanently remove this cancelled milestone from your records.',
+
     // Confirm dialogs
     deleteMilestone: 'Delete Milestone',
     deleteConfirmation: 'Are you sure you want to delete this milestone? This action cannot be undone.',
+    cancelMilestoneTitle: 'Cancel Milestone',
+    cancelMilestoneConfirmation: 'Are you sure you want to cancel this milestone? This will mark it as cancelled and stop tracking progress.',
 
     // Error messages
     failedToCreate: 'Failed to create milestone',

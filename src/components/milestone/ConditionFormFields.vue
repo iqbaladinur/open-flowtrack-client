@@ -4,21 +4,21 @@
     <template v-if="conditionType === 'wallet_balance'">
       <div>
         <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-          Wallet
+          {{ $t('milestones.conditionFields.wallet') }}
         </label>
         <select
           v-model="localConfig.wallet_id"
           class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
-          <option :value="null">All Wallets</option>
+          <option :value="null">{{ $t('milestones.conditionFields.allWallets') }}</option>
           <option v-for="wallet in walletOptions" :key="wallet.id" :value="wallet.id">
-            {{ wallet.name }} {{ wallet.hidden ? '(Hidden)' : '' }}
+            {{ wallet.name }} {{ wallet.hidden ? $t('milestones.conditionFields.hidden') : '' }}
           </option>
         </select>
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Operator</label>
+          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.operator') }}</label>
           <select
             v-model="localConfig.operator"
             required
@@ -32,7 +32,7 @@
           </select>
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Target Amount</label>
+          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.targetAmount') }}</label>
           <input
             v-model.number="localConfig.target_amount"
             type="number"
@@ -48,31 +48,31 @@
     <!-- Budget Control Fields -->
     <template v-if="conditionType === 'budget_control'">
       <div>
-        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Budget</label>
+        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.budget') }}</label>
         <select
           v-model="localConfig.budget_id"
           required
           class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
-          <option value="">Select Budget...</option>
+          <option value="">{{ $t('milestones.conditionFields.selectBudget') }}</option>
           <option v-for="budget in budgetOptions" :key="budget.id" :value="budget.id">
             {{ budget.name }}
           </option>
         </select>
       </div>
       <div>
-        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Condition</label>
+        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.condition') }}</label>
         <select
           v-model="localConfig.condition"
           required
           class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
-          <option value="no_overspend">No Overspend</option>
-          <option value="under_percentage">Under Percentage</option>
+          <option value="no_overspend">{{ $t('milestones.conditionFields.noOverspend') }}</option>
+          <option value="under_percentage">{{ $t('milestones.conditionFields.underPercentage') }}</option>
         </select>
       </div>
       <div v-if="localConfig.condition === 'under_percentage'">
-        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Percentage</label>
+        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.percentage') }}</label>
         <input
           v-model.number="localConfig.percentage"
           type="number"
@@ -84,7 +84,7 @@
         />
       </div>
       <div>
-        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Consecutive Months</label>
+        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.consecutiveMonths') }}</label>
         <input
           v-model.number="localConfig.consecutive_months"
           type="number"
@@ -100,18 +100,18 @@
     <template v-if="conditionType === 'transaction_amount'">
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Transaction Type</label>
+          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.transactionType') }}</label>
           <select
             v-model="localConfig.transaction_type"
             required
             class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
           >
-            <option value="income">Income</option>
-            <option value="expense">Expense</option>
+            <option value="income">{{ $t('milestones.conditionFields.income') }}</option>
+            <option value="expense">{{ $t('milestones.conditionFields.expense') }}</option>
           </select>
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Operator</label>
+          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.operator') }}</label>
           <select
             v-model="localConfig.operator"
             required
@@ -126,7 +126,7 @@
         </div>
       </div>
       <div>
-        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Amount</label>
+        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.amount') }}</label>
         <input
           v-model.number="localConfig.amount"
           type="number"
@@ -137,12 +137,12 @@
         />
       </div>
       <div>
-        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Category (optional)</label>
+        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.categoryOptional') }}</label>
         <select
           v-model="localConfig.category_id"
           class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
-          <option value="">Any Category</option>
+          <option value="">{{ $t('milestones.conditionFields.anyCategory') }}</option>
           <option
             v-for="category in localConfig.transaction_type === 'income' ? incomeCategoryOptions : expenseCategoryOptions"
             :key="category.id"
@@ -158,18 +158,18 @@
     <template v-if="conditionType === 'period_total'">
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Transaction Type</label>
+          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.transactionType') }}</label>
           <select
             v-model="localConfig.transaction_type"
             required
             class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
           >
-            <option value="income">Income</option>
-            <option value="expense">Expense</option>
+            <option value="income">{{ $t('milestones.conditionFields.income') }}</option>
+            <option value="expense">{{ $t('milestones.conditionFields.expense') }}</option>
           </select>
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Operator</label>
+          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.operator') }}</label>
           <select
             v-model="localConfig.operator"
             required
@@ -184,7 +184,7 @@
         </div>
       </div>
       <div>
-        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Amount</label>
+        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.amount') }}</label>
         <input
           v-model.number="localConfig.amount"
           type="number"
@@ -195,21 +195,21 @@
         />
       </div>
       <div>
-        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Period</label>
+        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.period') }}</label>
         <select
           v-model="localConfig.period"
           required
           class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
-          <option value="month">This Month</option>
-          <option value="quarter">This Quarter</option>
-          <option value="year">This Year</option>
-          <option value="custom">Custom Period</option>
+          <option value="month">{{ $t('milestones.periods.thisMonth') }}</option>
+          <option value="quarter">{{ $t('milestones.periods.thisQuarter') }}</option>
+          <option value="year">{{ $t('milestones.periods.thisYear') }}</option>
+          <option value="custom">{{ $t('milestones.periods.custom') }}</option>
         </select>
       </div>
       <div v-if="localConfig.period === 'custom'" class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Start Date</label>
+          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.startDate') }}</label>
           <input
             v-model="localConfig.start_date"
             type="date"
@@ -218,7 +218,7 @@
           />
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">End Date</label>
+          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.endDate') }}</label>
           <input
             v-model="localConfig.end_date"
             type="date"
@@ -228,12 +228,12 @@
         </div>
       </div>
       <div>
-        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Category (optional)</label>
+        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.categoryOptional') }}</label>
         <select
           v-model="localConfig.category_id"
           class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
-          <option value="">Any Category</option>
+          <option value="">{{ $t('milestones.conditionFields.anyCategory') }}</option>
           <option
             v-for="category in localConfig.transaction_type === 'income' ? incomeCategoryOptions : expenseCategoryOptions"
             :key="category.id"
@@ -249,7 +249,7 @@
     <template v-if="conditionType === 'net_worth'">
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Operator</label>
+          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.operator') }}</label>
           <select
             v-model="localConfig.operator"
             required
@@ -263,7 +263,7 @@
           </select>
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Target Amount</label>
+          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.targetAmount') }}</label>
           <input
             v-model.number="localConfig.target_amount"
             type="number"
@@ -282,7 +282,7 @@
             class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
           />
           <span class="text-xs font-medium text-gray-600 dark:text-gray-400">
-            Include hidden wallets
+            {{ $t('milestones.conditionFields.includeHiddenWallets') }}
           </span>
         </label>
       </div>
@@ -291,13 +291,13 @@
     <!-- Category Spending Fields -->
     <template v-if="conditionType === 'category_spending'">
       <div>
-        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Category</label>
+        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.category') }}</label>
         <select
           v-model="localConfig.category_id"
           required
           class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
-          <option value="">Select Category...</option>
+          <option value="">{{ $t('milestones.conditionFields.selectCategory') }}</option>
           <option v-for="category in expenseCategoryOptions" :key="category.id" :value="category.id">
             {{ category.name }}
           </option>
@@ -305,7 +305,7 @@
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Operator</label>
+          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.operator') }}</label>
           <select
             v-model="localConfig.operator"
             required
@@ -319,7 +319,7 @@
           </select>
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Amount</label>
+          <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.amount') }}</label>
           <input
             v-model.number="localConfig.amount"
             type="number"
@@ -331,15 +331,15 @@
         </div>
       </div>
       <div>
-        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Period</label>
+        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ $t('milestones.conditionFields.period') }}</label>
         <select
           v-model="localConfig.period"
           required
           class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
-          <option value="month">This Month</option>
-          <option value="quarter">This Quarter</option>
-          <option value="year">This Year</option>
+          <option value="month">{{ $t('milestones.periods.thisMonth') }}</option>
+          <option value="quarter">{{ $t('milestones.periods.thisQuarter') }}</option>
+          <option value="year">{{ $t('milestones.periods.thisYear') }}</option>
         </select>
       </div>
     </template>

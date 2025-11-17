@@ -5,14 +5,14 @@
       <!-- Card 1: Milestone Information -->
       <div class="card p-6">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Milestone Information
+          {{ $t('milestones.milestoneInformation') }}
         </h3>
 
         <div class="space-y-4">
           <!-- Name -->
           <div>
             <label for="name" class="label">
-              Name <span class="text-red-500">*</span>
+              {{ $t('milestones.name') }} <span class="text-red-500">*</span>
             </label>
             <input
               id="name"
@@ -20,7 +20,8 @@
               type="text"
               required
               maxlength="200"
-              placeholder="e.g., Emergency Fund - 30 Juta"
+              :placeholder="$t('milestones.namePlaceholder')"
+              autocomplete="off"
               class="input"
             />
           </div>
@@ -28,14 +29,14 @@
           <!-- Description -->
           <div>
             <label for="description" class="label">
-              Description
+              {{ $t('milestones.description') }}
             </label>
             <textarea
               id="description"
               v-model="formData.description"
               rows="2"
               maxlength="1000"
-              placeholder="Describe your milestone..."
+              :placeholder="$t('milestones.descriptionPlaceholder')"
               class="input"
             />
           </div>
@@ -43,7 +44,7 @@
           <!-- Target Date -->
           <div>
             <label for="target_date" class="label">
-              Target Date <span class="text-red-500">*</span>
+              {{ $t('milestones.targetDate') }} <span class="text-red-500">*</span>
             </label>
             <input
               id="target_date"
@@ -56,12 +57,12 @@
 
           <!-- Appearance -->
           <div>
-            <label class="label mb-2">Appearance</label>
+            <label class="label mb-2">{{ $t('milestones.appearance') }}</label>
 
             <div class="flex gap-3">
               <!-- Icon Picker Button (Square) -->
               <div>
-                <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">Icon</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">{{ $t('milestones.icon') }}</p>
                 <button
                   type="button"
                   @click="showIconPicker = true"
@@ -73,7 +74,7 @@
 
               <!-- Color Picker (Flex-1) -->
               <div class="flex-1">
-                <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">Color</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">{{ $t('milestones.color') }}</p>
                 <div class="relative h-14">
                   <input
                     v-model="formData.color"
@@ -116,7 +117,7 @@
       <div class="card p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Conditions <span class="text-red-500">*</span>
+            {{ $t('milestones.conditions') }} <span class="text-red-500">*</span>
           </h3>
           <button
             v-if="formData.conditions.length < 10"
@@ -125,17 +126,17 @@
             class="btn btn-sm btn-primary"
           >
             <Plus class="w-4 h-4 mr-1" />
-            Add
+            {{ $t('milestones.add') }}
           </button>
         </div>
 
         <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
-          Add 1-10 conditions to track your milestone progress
+          {{ $t('milestones.conditionsHelper') }}
         </p>
 
         <!-- Conditions List -->
         <div v-if="formData.conditions.length === 0" class="text-center py-8 text-gray-500 dark:text-gray-400">
-          No conditions yet. Click "Add" to get started.
+          {{ $t('milestones.noConditionsYet') }}
         </div>
 
         <div v-else class="space-y-3">
@@ -146,7 +147,7 @@
           >
             <div class="flex items-start justify-between mb-3">
               <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Condition {{ index + 1 }}
+                {{ $t('milestones.conditionNumber', { number: index + 1 }) }}
               </span>
               <button
                 type="button"
@@ -160,7 +161,7 @@
             <!-- Condition Type Selection -->
             <div class="mb-3">
               <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                Type
+                {{ $t('milestones.type') }}
               </label>
               <select
                 v-model="condition.type"
@@ -168,7 +169,7 @@
                 required
                 class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               >
-                <option value="">Select condition type...</option>
+                <option value="">{{ $t('milestones.selectConditionType') }}</option>
                 <option v-for="template in conditionTemplates" :key="template.value" :value="template.value">
                   {{ $t(template.label) }}
                 </option>
@@ -198,7 +199,7 @@
           @click="$emit('cancel')"
           class="btn btn-secondary"
         >
-          Cancel
+          {{ $t('milestones.cancel') }}
         </button>
         <button
           type="submit"
@@ -213,7 +214,7 @@
     </div>
 
     <!-- Icon Picker Modal -->
-    <Modal v-model="showIconPicker" title="Select Icon">
+    <Modal v-model="showIconPicker" :title="$t('milestones.selectIcon')">
       <div class="grid grid-cols-6 sm:grid-cols-8 gap-2 p-2">
         <button
           v-for="iconName in iconList"
@@ -234,7 +235,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import type { CreateMilestoneDto, ConditionDto, MilestoneFormState } from '@/types/milestone';
+import type { CreateMilestoneDto, MilestoneFormState } from '@/types/milestone';
 import { conditionTemplates } from '@/utils/milestoneHelpers';
 import { getIcon, iconList } from '@/utils/icons';
 import ConditionFormFields from './ConditionFormFields.vue';
@@ -257,7 +258,7 @@ const colorPalette = [
 interface Props {
   initialData?: Partial<MilestoneFormState>;
   loading?: boolean;
-  error?: string;
+  error?: string | null;
   submitLabel?: string;
 }
 

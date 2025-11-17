@@ -13,6 +13,7 @@ This directory contains implementation logs for the Milestone feature.
 7. **06_condition_form_stores_integration.md** - Condition form stores integration
 8. **07_overall_progress_undefined_fix.md** - Overall progress undefined fix
 9. **08_refactor_create_milestone_to_page.md** - Refactor create milestone to full page
+10. **09_milestone_i18n_translation.md** - Complete i18n translation implementation (EN & ID)
 
 ## ✅ Implementation Status
 
@@ -106,7 +107,7 @@ src/
    - [ ] Deploy to production
 
 3. **Optional Enhancements**
-   - [ ] Add i18n translations
+   - [x] Add i18n translations ✅ **COMPLETED** (2025-11-18)
    - [ ] Add unit tests
    - [ ] Add notification system
    - [ ] Add analytics
@@ -115,7 +116,7 @@ src/
 
 - None currently (fresh implementation)
 - Needs backend API to be fully tested
-- i18n translations needed (currently hardcoded English for Milestone)
+- ~~i18n translations needed~~ ✅ **COMPLETED** (2025-11-18)
 
 ## 📞 Developer Contact
 

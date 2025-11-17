@@ -1,7 +1,7 @@
 <template>
   <div
     class="card p-4 transition-all relative rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg"
-    :class="{ 'opacity-70': milestone.status === 'cancelled' }"
+    :class="{ 'opacity-30': milestone.status === 'cancelled' }"
     @click="$emit('click', milestone)"
   >
     <!-- Background color overlay -->

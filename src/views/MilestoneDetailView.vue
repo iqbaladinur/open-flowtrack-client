@@ -13,13 +13,13 @@
         >
           <AlertCircle class="w-8 h-8 text-red-500" />
         </div>
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Milestone Not Found</h3>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{{ $t('milestones.milestoneNotFound') }}</h3>
         <p class="text-gray-500 dark:text-gray-400 mb-6">
-          The milestone you're looking for doesn't exist or has been deleted.
+          {{ $t('milestones.milestoneNotFoundDescription') }}
         </p>
         <button @click="router.push('/milestones')" class="btn-primary">
           <ArrowLeft class="w-4 h-4 mr-2" />
-          Back to Milestones
+          {{ $t('milestones.backToMilestones') }}
         </button>
       </div>
 
@@ -30,36 +30,44 @@
           <router-link to="/milestones" class="btn-icon flex gap-4 items-center">
             <ArrowLeft class="w-5 h-5" />
             <div>
-              <h1 class="text-sm font-medium text-gray-800 dark:text-neon">Back</h1>
+              <h1 class="text-sm font-medium text-gray-800 dark:text-neon">{{ $t('milestones.back') }}</h1>
             </div>
           </router-link>
           <div class="flex items-center space-x-2 justify-center my-2">
-            <button
-              v-if="milestone.status !== 'achieved'"
-              @click="markAsAchieved"
-              class="p-2 text-gray-600 dark:text-white rounded-full"
-              :title="'Mark as Achieved'"
-            >
-              <CheckCircle class="w-4 h-4" />
-            </button>
+            <!-- Refresh Progress - always visible -->
             <button
               @click="refreshProgress"
               class="p-2 text-gray-600 dark:text-white rounded-full"
-              :title="'Refresh Progress'"
+              :title="$t('milestones.refreshProgress')"
             >
               <RefreshCw class="w-4 h-4" />
             </button>
+
+            <!-- Cancel - only for pending/in_progress/failed -->
             <button
+              v-if="milestone.status !== 'cancelled' && milestone.status !== 'achieved'"
+              @click="confirmCancelMilestone"
+              class="p-2 text-gray-600 dark:text-white rounded-full"
+              :title="$t('milestones.cancelMilestone')"
+            >
+              <Ban class="w-4 h-4" />
+            </button>
+
+            <!-- Edit - only for pending/in_progress/failed -->
+            <button
+              v-if="milestone.status !== 'cancelled' && milestone.status !== 'achieved'"
               @click="goToEdit"
               class="p-2 text-gray-600 dark:text-white rounded-full"
-              :title="'Edit'"
+              :title="$t('milestones.edit')"
             >
               <Edit class="w-4 h-4" />
             </button>
+
+            <!-- Delete - always visible -->
             <button
               @click="confirmDelete"
               class="p-2 text-gray-600 dark:text-white rounded-full"
-              :title="'Delete'"
+              :title="$t('milestones.delete')"
             >
               <Trash2 class="w-4 h-4" />
             </button>
@@ -107,7 +115,7 @@
           <!-- Progress Section -->
           <div class="mb-3">
             <div class="flex items-center justify-between mb-1.5">
-              <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Progress</span>
+              <span class="text-xs font-medium text-gray-600 dark:text-gray-400">{{ $t('milestones.progress') }}</span>
               <span
                 class="text-sm font-bold"
                 :style="{ color: getProgressColor(milestone.overall_progress || 0) }"
@@ -146,10 +154,10 @@
         <div class="card p-4">
           <div class="flex items-center justify-between mb-3">
             <h2 class="text-sm font-semibold text-gray-900 dark:text-white">
-              Conditions
+              {{ $t('milestones.conditions') }}
             </h2>
             <span class="text-xs text-gray-500 dark:text-gray-400">
-              {{ metConditionsCount }}/{{ milestone.conditions.length }} met
+              {{ $t('milestones.conditionsMet', { count: metConditionsCount, total: milestone.conditions.length }) }}
             </span>
           </div>
 
@@ -163,15 +171,28 @@
         </div>
       </template>
 
-      <!-- Delete Confirmation Modal -->
-      <Modal v-model="showDeleteConfirm" title="Delete Milestone">
+      <!-- Cancel Milestone Confirmation Modal -->
+      <Modal v-model="showCancelConfirm" :title="$t('milestones.cancelMilestoneTitle')">
         <p class="text-gray-600 dark:text-gray-400 mb-4">
-          Are you sure you want to delete this milestone? This action cannot be undone.
+          {{ $t('milestones.cancelMilestoneConfirmation') }}
         </p>
         <div class="flex items-center justify-end gap-3">
-          <button @click="showDeleteConfirm = false" class="btn btn-secondary">Cancel</button>
+          <button @click="showCancelConfirm = false" class="btn btn-secondary">{{ $t('milestones.cancel') }}</button>
+          <button @click="handleCancelMilestone" class="btn bg-orange-600 hover:bg-orange-700 text-white">
+            {{ $t('milestones.cancelMilestone') }}
+          </button>
+        </div>
+      </Modal>
+
+      <!-- Delete Confirmation Modal -->
+      <Modal v-model="showDeleteConfirm" :title="$t('milestones.deleteMilestone')">
+        <p class="text-gray-600 dark:text-gray-400 mb-4">
+          {{ $t('milestones.deleteConfirmation') }}
+        </p>
+        <div class="flex items-center justify-end gap-3">
+          <button @click="showDeleteConfirm = false" class="btn btn-secondary">{{ $t('milestones.cancel') }}</button>
           <button @click="handleDelete" class="btn bg-red-600 hover:bg-red-700 text-white">
-            Delete
+            {{ $t('milestones.delete') }}
           </button>
         </div>
       </Modal>
@@ -222,6 +243,7 @@ const milestonesStore = useMilestonesStore();
 const { t } = useI18n();
 
 // State
+const showCancelConfirm = ref(false);
 const showDeleteConfirm = ref(false);
 
 // Computed
@@ -275,15 +297,21 @@ const refreshProgress = async () => {
   await milestonesStore.refreshMilestoneProgress(milestone.value.id);
 };
 
-const markAsAchieved = async () => {
+const confirmCancelMilestone = () => {
+  showCancelConfirm.value = true;
+};
+
+const handleCancelMilestone = async () => {
   if (!milestone.value) return;
 
+  showCancelConfirm.value = false;
+
   const result = await milestonesStore.updateMilestoneStatus(milestone.value.id, {
-    status: 'achieved',
+    status: 'cancelled',
   });
 
   if (!result.success) {
-    alert(result.error || 'Failed to update status');
+    alert(result.error || t('milestones.failedToUpdateStatus'));
   }
 };
 
