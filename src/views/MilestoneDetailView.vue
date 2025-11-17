@@ -1,6 +1,6 @@
 <template>
   <AppLayout>
-    <div class="pt-0 pb-2 px-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
+    <div class="pt-3.5 pb-2 px-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Loading State -->
       <div v-if="milestonesStore.loading" class="card p-8">
         <LoadingSpinner fullHeight />
@@ -33,7 +33,7 @@
               <h1 class="text-sm font-medium text-gray-800 dark:text-neon">{{ $t('milestones.back') }}</h1>
             </div>
           </router-link>
-          <div class="flex items-center space-x-2 justify-center my-2">
+          <div class="flex items-center space-x-2 justify-center">
             <!-- Refresh Progress - always visible -->
             <button
               @click="refreshProgress"

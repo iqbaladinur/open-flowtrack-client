@@ -20,7 +20,7 @@
       <!-- Content -->
       <template v-else>
         <!-- Header -->
-        <div class="flex items-center gap-4 justify-between mb-6">
+        <div class="flex items-center gap-4 justify-between mb-6 mt-1.5">
           <router-link :to="`/milestones/${milestoneId}`" class="btn-icon flex gap-4 items-center">
             <ArrowLeft class="w-5 h-5" />
             <div>
