@@ -96,6 +96,18 @@ const router = createRouter({
       name: 'onboarding',
       component: () => import('@/views/OnboardingView.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/milestones',
+      name: 'milestones',
+      component: () => import('@/views/MilestonesView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/milestones/:id',
+      name: 'milestone-detail',
+      component: () => import('@/views/MilestoneDetailView.vue'),
+      meta: { requiresAuth: true }
     }
   ],
   scrollBehavior() {
