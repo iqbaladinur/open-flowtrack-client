@@ -26,7 +26,7 @@
           >
             <RefreshCw class="size-4" :class="{ 'animate-spin': milestonesStore.loading }" />
           </button>
-          <button @click="showCreateModal = true" class="btn-primary hidden sm:flex items-center p-2">
+          <button @click="goToCreate" class="btn-primary hidden sm:flex items-center p-2">
             <Plus class="size-4" />
           </button>
         </div>
@@ -112,7 +112,7 @@
         <p class="text-gray-500 dark:text-gray-400 mb-6">
           Create your first milestone to start tracking your financial journey
         </p>
-        <button @click="showCreateModal = true" class="btn-primary">
+        <button @click="goToCreate" class="btn-primary">
           <Plus class="w-4 h-4 mr-2" />
           Create Milestone
         </button>
@@ -235,20 +235,10 @@
         </div>
       </div>
 
-      <!-- Create/Edit Modal -->
-      <Modal v-model="showCreateModal" title="Create New Milestone">
-        <MilestoneForm
-          :loading="formLoading"
-          :error="formError"
-          submit-label="Create Milestone"
-          @submit="handleSubmit"
-          @cancel="closeModal"
-        />
-      </Modal>
     </div>
 
     <!-- Floating Add Button for Mobile -->
-    <button @click="showCreateModal = true" class="sm:hidden fixed bottom-[70px] right-6 z-[20] btn-primary rounded-xl p-3 shadow-lg flex items-center justify-center">
+    <button @click="goToCreate" class="sm:hidden fixed bottom-[70px] right-6 z-[20] btn-primary rounded-xl p-3 shadow-lg flex items-center justify-center">
       <Plus class="w-6 h-6" />
       <span class="sr-only">New Milestone</span>
     </button>
@@ -259,7 +249,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMilestonesStore } from '@/stores/milestones';
-import type { CreateMilestoneDto, Milestone } from '@/types/milestone';
+import type { Milestone } from '@/types/milestone';
 import {
   getStatusBadgeClass,
   getStatusLabel,
@@ -269,9 +259,7 @@ import {
   isMilestoneOverdue,
 } from '@/utils/milestoneHelpers';
 import AppLayout from '@/components/layouts/AppLayout.vue';
-import MilestoneForm from '@/components/milestone/MilestoneForm.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
-import Modal from '@/components/ui/Modal.vue';
 import {
   Plus,
   RefreshCw,
@@ -291,11 +279,6 @@ import {
 
 const router = useRouter();
 const milestonesStore = useMilestonesStore();
-
-// State
-const showCreateModal = ref(false);
-const formLoading = ref(false);
-const formError = ref<string | null>(null);
 
 // Sort milestones by target date (descending - furthest first)
 const sortedMilestones = computed(() => {
@@ -355,29 +338,8 @@ const refreshMilestones = async () => {
   await fetchMilestones();
 };
 
-const handleSubmit = async (data: CreateMilestoneDto) => {
-  formLoading.value = true;
-  formError.value = null;
-
-  try {
-    const result = await milestonesStore.createMilestone(data);
-
-    if (result.success) {
-      closeModal();
-      await fetchMilestones();
-    } else {
-      formError.value = result.error || 'Failed to create milestone';
-    }
-  } catch (error: any) {
-    formError.value = error.message || 'An error occurred';
-  } finally {
-    formLoading.value = false;
-  }
-};
-
-const closeModal = () => {
-  showCreateModal.value = false;
-  formError.value = null;
+const goToCreate = () => {
+  router.push('/milestones/create');
 };
 
 const goToDetail = (id: string) => {

@@ -7,6 +7,12 @@ This directory contains implementation logs for the Milestone feature.
 1. **00_milestone_implementation_plan.md** - Initial planning and analysis
 2. **01_types_store_helpers_completed.md** - Phase 1 completion (Types, Store, Helpers)
 3. **02_final_implementation_summary.md** - Complete implementation summary
+4. **03_timeline_redesign_fixes.md** - Timeline redesign fixes
+5. **04_modal_props_fix.md** - Modal props fix
+6. **05_infinite_loop_fix.md** - Infinite loop fix
+7. **06_condition_form_stores_integration.md** - Condition form stores integration
+8. **07_overall_progress_undefined_fix.md** - Overall progress undefined fix
+9. **08_refactor_create_milestone_to_page.md** - Refactor create milestone to full page
 
 ## ✅ Implementation Status
 
