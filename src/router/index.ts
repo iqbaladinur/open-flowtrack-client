@@ -110,6 +110,12 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/milestones/:id/edit',
+      name: 'milestone-edit',
+      component: () => import('@/views/EditMilestoneView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/milestones/:id',
       name: 'milestone-detail',
       component: () => import('@/views/MilestoneDetailView.vue'),

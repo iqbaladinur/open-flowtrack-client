@@ -37,14 +37,13 @@
         </div>
       </div>
 
-      <!-- Status Badge -->
-      <div>
-        <span
-          class="px-3 py-1 text-xs font-medium rounded-full border"
-          :class="getStatusBadgeClass(milestone.status)"
-        >
-          {{ getStatusLabel(milestone.status) }}
-        </span>
+      <!-- Status Icon -->
+      <div :title="getStatusLabel(milestone.status)">
+        <component
+          :is="getStatusIcon(milestone.status)"
+          class="w-5 h-5"
+          :class="getStatusIconClass(milestone.status)"
+        />
       </div>
     </div>
 
@@ -90,7 +89,7 @@
           class="text-xs px-2 py-0.5 rounded-full"
           :class="isOverdue ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'"
         >
-          {{ getTimeRemaining(milestone.target_date) }}
+          {{ $t(timeRemainingData.key, timeRemainingData.params) }}
         </span>
       </div>
 
@@ -111,6 +110,7 @@ import type { Milestone } from '@/types/milestone';
 import {
   getStatusBadgeClass,
   getStatusLabel,
+  getStatusIconClass,
   getProgressColor,
   formatDateShort,
   getTimeRemaining,
@@ -125,6 +125,11 @@ import {
   Tag,
   CheckCircle2,
   Trophy,
+  Circle,
+  Loader,
+  CheckCircle,
+  XCircle,
+  Ban,
 } from 'lucide-vue-next';
 
 interface Props {
@@ -142,6 +147,10 @@ const isOverdue = computed(() => {
   return isMilestoneOverdue(props.milestone.target_date, props.milestone.status);
 });
 
+const timeRemainingData = computed(() => {
+  return getTimeRemaining(props.milestone.target_date);
+});
+
 // Icon mapping
 const iconMap: Record<string, any> = {
   wallet: Wallet,
@@ -154,5 +163,18 @@ const iconMap: Record<string, any> = {
 
 const getIcon = (iconName: string) => {
   return iconMap[iconName] || Wallet;
+};
+
+// Status icon mapping
+const statusIconMap: Record<string, any> = {
+  pending: Circle,
+  in_progress: Loader,
+  achieved: CheckCircle,
+  failed: XCircle,
+  cancelled: Ban,
+};
+
+const getStatusIcon = (status: string) => {
+  return statusIconMap[status] || Circle;
 };
 </script>

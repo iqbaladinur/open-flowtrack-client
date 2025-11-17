@@ -32,65 +32,34 @@
         </div>
       </div>
 
-      <!-- Stats Summary -->
-      <div class="card p-3 sm:p-4">
-        <!-- Mobile: 2x2 Grid -->
-        <div class="grid grid-cols-2 gap-3 sm:hidden">
-          <div class="text-center">
-            <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">Total</p>
-            <p class="text-lg font-bold text-gray-900 dark:text-white">
-              {{ milestonesStore.totalMilestones }}
-            </p>
-          </div>
-          <div class="text-center">
-            <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">Achieved</p>
-            <p class="text-lg font-bold text-green-600 dark:text-green-400">
-              {{ milestonesStore.achievedMilestones.length }}
-            </p>
-          </div>
-          <div class="text-center">
-            <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">In Progress</p>
-            <p class="text-lg font-bold text-blue-600 dark:text-blue-400">
-              {{ milestonesStore.inProgressMilestones.length }}
-            </p>
-          </div>
-          <div class="text-center">
-            <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">Completion</p>
-            <p class="text-lg font-bold text-gray-900 dark:text-white">
-              {{ milestonesStore.completionRate.toFixed(0) }}%
-            </p>
-          </div>
+      <!-- Stats Badges -->
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center gap-2">
+          <span class="text-xs text-gray-600 dark:text-gray-400">Total</span>
+          <span class="text-sm font-semibold text-gray-900 dark:text-white">
+            {{ milestonesStore.totalMilestones }}
+          </span>
         </div>
 
-        <!-- Desktop: Horizontal with dividers -->
-        <div class="hidden sm:flex items-center justify-between gap-6">
-          <div class="text-center flex-1">
-            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Total</p>
-            <p class="text-xl font-bold text-gray-900 dark:text-white">
-              {{ milestonesStore.totalMilestones }}
-            </p>
-          </div>
-          <div class="h-8 w-px bg-gray-200 dark:bg-gray-700"></div>
-          <div class="text-center flex-1">
-            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Achieved</p>
-            <p class="text-xl font-bold text-green-600 dark:text-green-400">
-              {{ milestonesStore.achievedMilestones.length }}
-            </p>
-          </div>
-          <div class="h-8 w-px bg-gray-200 dark:bg-gray-700"></div>
-          <div class="text-center flex-1">
-            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">In Progress</p>
-            <p class="text-xl font-bold text-blue-600 dark:text-blue-400">
-              {{ milestonesStore.inProgressMilestones.length }}
-            </p>
-          </div>
-          <div class="h-8 w-px bg-gray-200 dark:bg-gray-700"></div>
-          <div class="text-center flex-1">
-            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Completion</p>
-            <p class="text-xl font-bold text-gray-900 dark:text-white">
-              {{ milestonesStore.completionRate.toFixed(0) }}%
-            </p>
-          </div>
+        <div class="px-3 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800 flex items-center gap-2">
+          <span class="text-xs text-green-700 dark:text-green-400">Achieved</span>
+          <span class="text-sm font-semibold text-green-900 dark:text-green-300">
+            {{ milestonesStore.achievedMilestones.length }}
+          </span>
+        </div>
+
+        <div class="px-3 py-1.5 rounded-full bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 flex items-center gap-2">
+          <span class="text-xs text-blue-700 dark:text-blue-400">In Progress</span>
+          <span class="text-sm font-semibold text-blue-900 dark:text-blue-300">
+            {{ milestonesStore.inProgressMilestones.length }}
+          </span>
+        </div>
+
+        <div class="px-3 py-1.5 rounded-full bg-purple-100 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800 flex items-center gap-2">
+          <span class="text-xs text-purple-700 dark:text-purple-400">Completion</span>
+          <span class="text-sm font-semibold text-purple-900 dark:text-purple-300">
+            {{ milestonesStore.completionRate.toFixed(0) }}%
+          </span>
         </div>
       </div>
 
@@ -122,6 +91,16 @@
       <div v-else class="relative max-w-6xl mx-auto">
         <!-- Timeline Line (Centered) -->
         <div class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700 -translate-x-1/2" />
+
+        <!-- Timeline Start Circle -->
+        <div class="absolute left-1/2 top-0 -translate-x-1/2 z-10">
+          <div class="w-4 h-4 rounded-full bg-gray-300 dark:bg-gray-600 border-4 border-white dark:border-gray-900" />
+        </div>
+
+        <!-- Timeline End Circle -->
+        <div class="absolute left-1/2 bottom-0 -translate-x-1/2 z-10">
+          <div class="w-4 h-4 rounded-full bg-gray-300 dark:bg-gray-600 border-4 border-white dark:border-gray-900" />
+        </div>
 
         <!-- Timeline Items -->
         <div class="space-y-6 sm:space-y-8 md:space-y-12">
@@ -168,12 +147,13 @@
                       <h3 class="text-xs sm:text-sm md:text-base font-semibold text-gray-900 dark:text-white line-clamp-1">
                         {{ milestone.name }}
                       </h3>
-                      <span
-                        class="px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-medium rounded-full border whitespace-nowrap flex-shrink-0"
-                        :class="getStatusBadgeClass(milestone.status)"
-                      >
-                        {{ getStatusLabel(milestone.status) }}
-                      </span>
+                      <div :title="getStatusLabel(milestone.status)" class="flex-shrink-0">
+                        <component
+                          :is="getStatusIcon(milestone.status)"
+                          class="w-3.5 h-3.5 sm:w-4 sm:h-4"
+                          :class="getStatusIconClass(milestone.status)"
+                        />
+                      </div>
                     </div>
 
                     <!-- Date Info -->
@@ -188,11 +168,11 @@
                       </div>
                       <div v-else-if="!isMilestoneOverdue(milestone.target_date, milestone.status)" class="flex items-center gap-0.5 sm:gap-1">
                         <Clock class="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                        <span>{{ getTimeRemaining(milestone.target_date) }}</span>
+                        <span>{{ getTranslatedTimeRemaining(milestone.target_date) }}</span>
                       </div>
                       <div v-else class="flex items-center gap-0.5 sm:gap-1 text-red-600 dark:text-red-400">
                         <AlertCircle class="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                        <span>Overdue</span>
+                        <span>{{ $t('milestones.timeRemaining.overdue') }}</span>
                       </div>
                     </div>
                   </div>
@@ -248,11 +228,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useMilestonesStore } from '@/stores/milestones';
 import type { Milestone } from '@/types/milestone';
 import {
   getStatusBadgeClass,
   getStatusLabel,
+  getStatusIconClass,
   getProgressColor,
   formatDateShort,
   getTimeRemaining,
@@ -275,10 +257,16 @@ import {
   ShieldCheck,
   Banknote,
   Tag,
+  Circle,
+  Loader,
+  CheckCircle,
+  XCircle,
+  Ban,
 } from 'lucide-vue-next';
 
 const router = useRouter();
 const milestonesStore = useMilestonesStore();
+const { t } = useI18n();
 
 // Sort milestones by target date (descending - furthest first)
 const sortedMilestones = computed(() => {
@@ -329,6 +317,19 @@ const getIcon = (iconName: string) => {
   return iconMap[iconName] || Wallet;
 };
 
+// Status icon mapping
+const statusIconMap: Record<string, any> = {
+  pending: Circle,
+  in_progress: Loader,
+  achieved: CheckCircle,
+  failed: XCircle,
+  cancelled: Ban,
+};
+
+const getStatusIcon = (status: string) => {
+  return statusIconMap[status] || Circle;
+};
+
 // Methods
 const fetchMilestones = async () => {
   await milestonesStore.fetchMilestones({ sort_by: 'target_date', order: 'ASC' });
@@ -336,6 +337,11 @@ const fetchMilestones = async () => {
 
 const refreshMilestones = async () => {
   await fetchMilestones();
+};
+
+const getTranslatedTimeRemaining = (targetDate: string): string => {
+  const timeData = getTimeRemaining(targetDate);
+  return t(timeData.key, timeData.params || {});
 };
 
 const goToCreate = () => {

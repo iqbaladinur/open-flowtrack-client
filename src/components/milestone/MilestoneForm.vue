@@ -138,7 +138,7 @@
           No conditions yet. Click "Add" to get started.
         </div>
 
-        <div v-else class="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+        <div v-else class="space-y-3">
           <div
             v-for="(condition, index) in formData.conditions"
             :key="index"
@@ -170,7 +170,7 @@
               >
                 <option value="">Select condition type...</option>
                 <option v-for="template in conditionTemplates" :key="template.value" :value="template.value">
-                  {{ template.label }}
+                  {{ $t(template.label) }}
                 </option>
               </select>
             </div>

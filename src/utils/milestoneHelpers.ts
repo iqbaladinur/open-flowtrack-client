@@ -14,39 +14,39 @@ import type {
 export const conditionTemplates: ConditionTemplate[] = [
   {
     value: 'wallet_balance' as ConditionType,
-    label: 'Saldo Wallet Mencapai Target',
+    label: 'milestones.conditionTypes.walletBalance',
     icon: 'wallet',
-    description: 'Milestone tercapai ketika saldo wallet mencapai nominal tertentu',
+    description: 'milestones.conditionDescriptions.walletBalance',
   },
   {
     value: 'budget_control' as ConditionType,
-    label: 'Budget Tidak Overspend',
+    label: 'milestones.conditionTypes.budgetControl',
     icon: 'shield-check',
-    description: 'Milestone tercapai ketika budget tidak overspend selama X bulan',
+    description: 'milestones.conditionDescriptions.budgetControl',
   },
   {
     value: 'transaction_amount' as ConditionType,
-    label: 'Dapat Income/Expense Tertentu',
+    label: 'milestones.conditionTypes.transactionAmount',
     icon: 'banknote',
-    description: 'Milestone tercapai ketika ada 1 transaksi dengan nominal tertentu',
+    description: 'milestones.conditionDescriptions.transactionAmount',
   },
   {
     value: 'period_total' as ConditionType,
-    label: 'Total Income/Expense Periode',
+    label: 'milestones.conditionTypes.periodTotal',
     icon: 'calendar',
-    description: 'Milestone tercapai ketika total transaksi dalam periode mencapai target',
+    description: 'milestones.conditionDescriptions.periodTotal',
   },
   {
     value: 'net_worth' as ConditionType,
-    label: 'Net Worth Target',
+    label: 'milestones.conditionTypes.netWorth',
     icon: 'trending-up',
-    description: 'Milestone tercapai ketika total kekayaan mencapai target',
+    description: 'milestones.conditionDescriptions.netWorth',
   },
   {
     value: 'category_spending' as ConditionType,
-    label: 'Limit Spending Kategori',
+    label: 'milestones.conditionTypes.categorySpending',
     icon: 'tag',
-    description: 'Milestone tercapai ketika spending kategori dalam batas yang ditentukan',
+    description: 'milestones.conditionDescriptions.categorySpending',
   },
 ];
 
@@ -55,11 +55,11 @@ export const conditionTemplates: ConditionTemplate[] = [
 // ============================================================================
 
 export const operatorOptions = [
-  { value: '>=' as Operator, label: 'Lebih besar sama dengan (≥)' },
-  { value: '>' as Operator, label: 'Lebih besar (>)' },
-  { value: '<=' as Operator, label: 'Lebih kecil sama dengan (≤)' },
-  { value: '<' as Operator, label: 'Lebih kecil (<)' },
-  { value: '=' as Operator, label: 'Sama dengan (=)' },
+  { value: '>=' as Operator, label: 'milestones.operators.gte' },
+  { value: '>' as Operator, label: 'milestones.operators.gt' },
+  { value: '<=' as Operator, label: 'milestones.operators.lte' },
+  { value: '<' as Operator, label: 'milestones.operators.lt' },
+  { value: '=' as Operator, label: 'milestones.operators.eq' },
 ];
 
 // ============================================================================
@@ -67,10 +67,10 @@ export const operatorOptions = [
 // ============================================================================
 
 export const periodOptions = [
-  { value: 'month' as Period, label: 'Bulan Ini' },
-  { value: 'quarter' as Period, label: 'Kuartal Ini' },
-  { value: 'year' as Period, label: 'Tahun Ini' },
-  { value: 'custom' as Period, label: 'Periode Custom' },
+  { value: 'month' as Period, label: 'milestones.periods.thisMonth' },
+  { value: 'quarter' as Period, label: 'milestones.periods.thisQuarter' },
+  { value: 'year' as Period, label: 'milestones.periods.thisYear' },
+  { value: 'custom' as Period, label: 'milestones.periods.custom' },
 ];
 
 // ============================================================================
@@ -170,6 +170,20 @@ export const getStatusLabel = (status: MilestoneStatus): string => {
 };
 
 /**
+ * Get status icon class
+ */
+export const getStatusIconClass = (status: MilestoneStatus): string => {
+  const classes: Record<MilestoneStatus, string> = {
+    pending: 'text-gray-500',
+    in_progress: 'text-blue-500',
+    achieved: 'text-green-500',
+    failed: 'text-red-500',
+    cancelled: 'text-gray-400',
+  };
+  return classes[status] || 'text-gray-500';
+};
+
+/**
  * Get status badge class
  */
 export const getStatusBadgeClass = (status: MilestoneStatus): string => {
@@ -230,38 +244,38 @@ export const daysUntilTarget = (targetDate: string): number => {
 };
 
 /**
- * Get time remaining text
+ * Get time remaining translation key and params
  */
-export const getTimeRemaining = (targetDate: string): string => {
+export const getTimeRemaining = (targetDate: string): { key: string; params?: Record<string, any> } => {
   const days = daysUntilTarget(targetDate);
 
   if (days < 0) {
-    return `${Math.abs(days)} hari yang lalu`;
+    return { key: 'milestones.timeRemaining.daysAgo', params: { count: Math.abs(days) } };
   }
 
   if (days === 0) {
-    return 'Hari ini';
+    return { key: 'milestones.timeRemaining.today' };
   }
 
   if (days === 1) {
-    return 'Besok';
+    return { key: 'milestones.timeRemaining.tomorrow' };
   }
 
   if (days <= 30) {
-    return `${days} hari lagi`;
+    return { key: 'milestones.timeRemaining.daysLeft', params: { count: days } };
   }
 
   const months = Math.floor(days / 30);
   if (months === 1) {
-    return '1 bulan lagi';
+    return { key: 'milestones.timeRemaining.oneMonthLeft' };
   }
 
   if (months < 12) {
-    return `${months} bulan lagi`;
+    return { key: 'milestones.timeRemaining.monthsLeft', params: { count: months } };
   }
 
   const years = Math.floor(months / 12);
-  return `${years} tahun lagi`;
+  return { key: 'milestones.timeRemaining.yearsLeft', params: { count: years } };
 };
 
 /**

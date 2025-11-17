@@ -702,5 +702,85 @@ Optimized layout appearance section dengan better space distribution:
 
 ---
 
+## 🌐 Fix: i18n Translation Support (2025-11-17)
+
+### Added Proper Internationalization
+Fixed hardcoded Indonesian text untuk support multiple languages (English & Indonesian):
+
+**Problem:**
+- Condition types, operators, dan periods hardcoded dalam bahasa Indonesia
+- Tidak menggunakan i18n translation system
+- App set ke English tapi milestone conditions tetap muncul dalam Indonesia
+
+**Solution:**
+
+1. **Added Translation Keys**
+   - **File**: `src/i18n/locales/en.ts`
+   - **File**: `src/i18n/locales/id.ts`
+   - Added `milestones` section dengan:
+     - `conditionTypes`: 6 condition type labels
+     - `conditionDescriptions`: 6 condition descriptions
+     - `operators`: 5 operator labels (≥, >, ≤, <, =)
+     - `periods`: 4 period options (month, quarter, year, custom)
+
+2. **Updated milestoneHelpers.ts**
+   - **File**: `src/utils/milestoneHelpers.ts`
+   - Changed hardcoded labels ke translation keys:
+     - `conditionTemplates`: labels → `milestones.conditionTypes.*`
+     - `operatorOptions`: labels → `milestones.operators.*`
+     - `periodOptions`: labels → `milestones.periods.*`
+
+3. **Updated Components**
+   - **File**: `src/components/milestone/MilestoneForm.vue`
+   - Changed `{{ template.label }}` → `{{ $t(template.label) }}`
+   - Now properly translates based on selected language
+
+**Translation Keys Added:**
+
+English (en.ts):
+```typescript
+milestones: {
+  conditionTypes: {
+    walletBalance: 'Wallet Balance Reaches Target',
+    budgetControl: 'Budget No Overspend',
+    transactionAmount: 'Get Specific Income/Expense',
+    periodTotal: 'Period Income/Expense Total',
+    netWorth: 'Net Worth Target',
+    categorySpending: 'Category Spending Limit',
+  },
+  // ... operators & periods
+}
+```
+
+Indonesian (id.ts):
+```typescript
+milestones: {
+  conditionTypes: {
+    walletBalance: 'Saldo Wallet Mencapai Target',
+    budgetControl: 'Budget Tidak Overspend',
+    transactionAmount: 'Dapat Income/Expense Tertentu',
+    periodTotal: 'Total Income/Expense Periode',
+    netWorth: 'Net Worth Target',
+    categorySpending: 'Limit Spending Kategori',
+  },
+  // ... operators & periods
+}
+```
+
+**Benefits:**
+- ✅ **Multi-language support**: English & Indonesian
+- ✅ **Consistent with app**: Follows selected language setting
+- ✅ **Maintainable**: Centralized translations
+- ✅ **Scalable**: Easy to add more languages
+- ✅ **Better UX**: Users see content in their language
+
+**Files Modified:**
+- `src/i18n/locales/en.ts` - Added English translations
+- `src/i18n/locales/id.ts` - Added Indonesian translations
+- `src/utils/milestoneHelpers.ts` - Changed to translation keys
+- `src/components/milestone/MilestoneForm.vue` - Added $t() for translation
+
+---
+
 **Last Updated**: 2025-11-17
 **Status**: Ready for Testing
