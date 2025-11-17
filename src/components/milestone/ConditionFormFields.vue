@@ -368,7 +368,7 @@ const walletsStore = useWalletsStore();
 const budgetsStore = useBudgetsStore();
 const categoriesStore = useCategoriesStore();
 
-const localConfig = ref<any>({ ...props.modelValue } || {});
+const localConfig = ref<any>({ ...(props.modelValue || {}) });
 
 // Computed lists for dropdowns
 const walletOptions = computed(() => {
@@ -383,7 +383,7 @@ const budgetOptions = computed(() => {
   return budgetsStore.budgets.map(b => ({
     id: b.id,
     name: b.name,
-    amount: b.amount
+    amount: b.limit_amount
   }));
 });
 
@@ -405,15 +405,6 @@ const incomeCategoryOptions = computed(() => {
       name: c.name,
       icon: c.icon
     }));
-});
-
-const allCategoryOptions = computed(() => {
-  return categoriesStore.categories.map(c => ({
-    id: c.id,
-    name: c.name,
-    type: c.type,
-    icon: c.icon
-  }));
 });
 
 // Fetch data on mount

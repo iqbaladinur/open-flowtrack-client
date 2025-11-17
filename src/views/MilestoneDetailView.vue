@@ -55,7 +55,7 @@
 
             <!-- Edit - only for pending/in_progress/failed -->
             <button
-              v-if="milestone.status !== 'cancelled' && milestone.status !== 'achieved'"
+              v-if="milestone.status !== 'cancelled'"
               @click="goToEdit"
               class="p-2 text-gray-600 dark:text-white rounded-full"
               :title="$t('milestones.edit')"
@@ -80,7 +80,7 @@
             <!-- Icon -->
             <div
               v-if="milestone.icon"
-              class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
+              class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
               :style="{
                 backgroundColor: milestone.color ? `${milestone.color}15` : '#f3f4f6',
                 color: milestone.color || '#6b7280'
@@ -206,13 +206,13 @@ import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useMilestonesStore } from '@/stores/milestones';
 import {
-  getStatusBadgeClass,
   getStatusLabel,
   getStatusIconClass,
   getProgressColor,
   formatDate,
   getTimeRemaining,
 } from '@/utils/milestoneHelpers';
+import { getIcon } from '@/utils/icons';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import ConditionItem from '@/components/milestone/ConditionItem.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
@@ -225,12 +225,7 @@ import {
   CheckCircle,
   Trophy,
   AlertCircle,
-  Wallet,
-  ShieldCheck,
-  Banknote,
   Calendar,
-  TrendingUp,
-  Tag,
   Circle,
   Loader,
   XCircle,
@@ -253,20 +248,6 @@ const metConditionsCount = computed(() => {
   if (!milestone.value) return 0;
   return milestone.value.conditions.filter((c) => c.is_met).length;
 });
-
-// Icon mapping
-const iconMap: Record<string, any> = {
-  wallet: Wallet,
-  'shield-check': ShieldCheck,
-  banknote: Banknote,
-  calendar: Calendar,
-  'trending-up': TrendingUp,
-  tag: Tag,
-};
-
-const getIcon = (iconName: string) => {
-  return iconMap[iconName] || Wallet;
-};
 
 // Status icon mapping
 const statusIconMap: Record<string, any> = {
@@ -336,20 +317,6 @@ const handleDelete = async () => {
   }
 };
 
-// Click outside directive
-const vClickOutside = {
-  mounted(el: any, binding: any) {
-    el.clickOutsideEvent = (event: Event) => {
-      if (!(el === event.target || el.contains(event.target))) {
-        binding.value();
-      }
-    };
-    document.addEventListener('click', el.clickOutsideEvent);
-  },
-  unmounted(el: any) {
-    document.removeEventListener('click', el.clickOutsideEvent);
-  },
-};
 
 // Lifecycle
 onMounted(() => {

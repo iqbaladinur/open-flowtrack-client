@@ -1,4 +1,4 @@
-import type {
+import {
   ConditionType,
   ConditionTemplate,
   Operator,
@@ -122,11 +122,11 @@ export const formatConditionValue = (
 
   // For currency values
   const currencyTypes: ConditionType[] = [
-    'wallet_balance',
-    'transaction_amount',
-    'period_total',
-    'net_worth',
-    'category_spending',
+    ConditionType.WALLET_BALANCE,
+    ConditionType.TRANSACTION_AMOUNT,
+    ConditionType.PERIOD_TOTAL,
+    ConditionType.NET_WORTH,
+    ConditionType.CATEGORY_SPENDING,
   ];
 
   if (currencyTypes.includes(type)) {

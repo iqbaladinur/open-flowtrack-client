@@ -1,6 +1,6 @@
 <template>
   <AppLayout>
-    <div class="pt-0 pb-2 px-4 lg:p-8 mb-20 lg:mb-0">
+    <div class="pt-3.5 pb-2 px-4 lg:p-8 mb-20 lg:mb-0">
       <!-- Loading State -->
       <div v-if="loading && !milestone" class="card p-8">
         <LoadingSpinner fullHeight />
@@ -30,7 +30,7 @@
         </div>
 
         <!-- Cancelled/Achieved Milestone Message -->
-        <div v-if="milestone.status === 'cancelled' || milestone.status === 'achieved'" class="space-y-6">
+        <div v-if="milestone.status === 'cancelled'" class="space-y-6">
           <div class="card p-6">
             <div class="flex items-center gap-3 mb-4">
               <div
@@ -156,7 +156,7 @@ const milestoneFormData = computed<Partial<MilestoneFormState>>(() => {
     target_date: milestone.value.target_date.split('T')[0], // Convert ISO to yyyy-MM-dd
     conditions: milestone.value.conditions.map(c => {
       // Parse custom dates in config if they exist
-      const config = { ...c.config };
+      const config: any = { ...c.config };
       if (config.start_date) {
         config.start_date = config.start_date.split('T')[0];
       }

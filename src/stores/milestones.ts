@@ -7,7 +7,6 @@ import type {
   UpdateMilestoneDto,
   UpdateStatusDto,
   GetMilestonesParams,
-  MilestoneStatus,
 } from '@/types/milestone';
 
 export const useMilestonesStore = defineStore('milestones', () => {

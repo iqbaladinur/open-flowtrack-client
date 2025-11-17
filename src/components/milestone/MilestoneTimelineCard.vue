@@ -9,7 +9,7 @@
       <!-- Icon -->
       <div
         v-if="milestone.icon"
-        class="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center flex-shrink-0"
+        class="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-2xl flex items-center justify-center flex-shrink-0"
         :style="{
           backgroundColor: milestone.color ? `${milestone.color}15` : '#f3f4f6',
           color: milestone.color || '#6b7280'
@@ -101,17 +101,13 @@ import {
   getTimeRemaining,
   isMilestoneOverdue,
 } from '@/utils/milestoneHelpers';
+import { getIcon } from '@/utils/icons';
 import {
   Calendar,
   Clock,
   AlertCircle,
   Trophy,
   CheckCircle2,
-  Wallet,
-  ShieldCheck,
-  Banknote,
-  TrendingUp,
-  Tag,
   Circle,
   Loader,
   CheckCircle,
@@ -148,21 +144,6 @@ const cardClass = computed(() => {
   }
   return 'border-l-4 border-blue-500 bg-blue-50/50 dark:bg-blue-900/10';
 });
-
-// Icon mapping
-const iconMap: Record<string, any> = {
-  wallet: Wallet,
-  'shield-check': ShieldCheck,
-  banknote: Banknote,
-  calendar: Calendar,
-  'trending-up': TrendingUp,
-  tag: Tag,
-  trophy: Trophy,
-};
-
-const getIcon = (iconName: string) => {
-  return iconMap[iconName] || Wallet;
-};
 
 // Status icon mapping
 const statusIconMap: Record<string, any> = {

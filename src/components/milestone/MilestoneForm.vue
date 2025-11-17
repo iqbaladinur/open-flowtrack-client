@@ -65,26 +65,30 @@
                 <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">{{ $t('milestones.icon') }}</p>
                 <button
                   type="button"
+                  class="size-12 border-2 border-gray-200 dark:border-gray-700 rounded-2xl hover:border-gray-300 dark:hover:border-gray-600 transition-all flex items-center justify-center flex-shrink-0"
+                  :style="{
+                    backgroundColor: formData.color ? `${formData.color}15` : '#f3f4f6',
+                    color: formData.color || '#6b7280'
+                  }"
                   @click="showIconPicker = true"
-                  class="w-14 h-14 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-gray-300 dark:hover:border-gray-600 transition-all flex items-center justify-center flex-shrink-0"
                 >
-                  <component :is="getIcon(formData.icon)" class="w-6 h-6 text-gray-700 dark:text-gray-300" />
+                  <component :is="getIcon(formData.icon)" class="size-5" />
                 </button>
               </div>
 
               <!-- Color Picker (Flex-1) -->
               <div class="flex-1">
                 <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">{{ $t('milestones.color') }}</p>
-                <div class="relative h-14">
+                <div class="relative h-12">
                   <input
                     v-model="formData.color"
                     type="color"
                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
                   <div
-                    class="w-full h-full border-2 border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition-all"
+                    class="w-full h-full border-2 border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition-all p-1.5"
                   >
-                    <div class="w-8 h-8 rounded-md" :style="{ backgroundColor: formData.color }"></div>
+                    <div class="w-full h-8 rounded-md" :style="{ backgroundColor: formData.color }"></div>
                   </div>
                 </div>
               </div>
