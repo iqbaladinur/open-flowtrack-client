@@ -51,6 +51,7 @@ export default {
     profile: 'Profile',
     backup: 'Backup & Restore',
     more: 'More',
+    milestones: 'Milestones',
   },
 
   // Layout
@@ -570,5 +571,192 @@ export default {
     wallet: 'Wallet',
     saveFailed: 'Failed to save wallet. Please try again.',
     unexpectedError: 'An unexpected error occurred. Please try again.',
+  },
+
+  // Milestones
+  milestones: {
+    // Page titles
+    title: 'Milestones',
+    subtitle: 'Track your financial journey timeline',
+
+    // Navigation
+    back: 'Back',
+    backToMilestones: 'Back to Milestones',
+
+    // Buttons
+    createMilestone: 'Create Milestone',
+    updateMilestone: 'Update Milestone',
+    edit: 'Edit',
+    delete: 'Delete',
+    cancel: 'Cancel',
+    add: 'Add',
+    refreshProgress: 'Refresh Progress',
+    markAsAchieved: 'Mark as Achieved',
+    cancelMilestone: 'Cancel Milestone',
+    newMilestone: 'New Milestone',
+
+    // Stats
+    total: 'Total',
+    achieved: 'Achieved',
+    inProgress: 'In Progress',
+    completion: 'Completion',
+
+    // Empty states
+    noMilestonesYet: 'No Milestones Yet',
+    noMilestonesDescription: 'Create your first milestone to start tracking your financial journey',
+    noConditionsYet: 'No conditions yet. Click "Add" to get started.',
+
+    // Sections
+    milestoneInformation: 'Milestone Information',
+    conditions: 'Conditions',
+    progress: 'Progress',
+    appearance: 'Appearance',
+
+    // Form labels
+    name: 'Name',
+    description: 'Description',
+    targetDate: 'Target Date',
+    icon: 'Icon',
+    color: 'Color',
+    type: 'Type',
+    target: 'Target',
+    conditionsMet: '{count}/{total} met',
+    conditionsMetText: 'conditions met',
+    conditionNumber: 'Condition {number}',
+    selectConditionType: 'Select condition type...',
+    selectIcon: 'Select Icon',
+
+    // Placeholders
+    namePlaceholder: 'e.g., Emergency Fund - 30 Juta',
+    descriptionPlaceholder: 'Describe your milestone...',
+
+    // Messages
+    conditionsHelper: 'Add 1-10 conditions to track your milestone progress',
+
+    // Error states
+    milestoneNotFound: 'Milestone Not Found',
+    milestoneNotFoundDescription: 'The milestone you\'re looking for doesn\'t exist or has been deleted.',
+    milestoneNotFoundEdit: 'The milestone you\'re trying to edit doesn\'t exist or has been deleted.',
+
+    // Cancelled milestone
+    cancelledMilestoneTitle: 'Cancelled Milestone',
+    cancelledMilestoneMessage: 'This milestone has been cancelled and cannot be edited.',
+    achievedMilestoneTitle: 'Achieved Milestone',
+    achievedMilestoneMessage: 'This milestone has been achieved and cannot be edited.',
+    deleteThisMilestone: 'Delete This Milestone',
+    deleteDescription: 'Permanently remove this cancelled milestone from your records.',
+
+    // Confirm dialogs
+    deleteMilestone: 'Delete Milestone',
+    deleteConfirmation: 'Are you sure you want to delete this milestone? This action cannot be undone.',
+    cancelMilestoneTitle: 'Cancel Milestone',
+    cancelMilestoneConfirmation: 'Are you sure you want to cancel this milestone? This will mark it as cancelled and stop tracking progress.',
+
+    // Error messages
+    failedToCreate: 'Failed to create milestone',
+    failedToUpdate: 'Failed to update milestone',
+    failedToDelete: 'Failed to delete milestone',
+    failedToUpdateStatus: 'Failed to update status',
+    errorOccurred: 'An error occurred',
+
+    // Condition types
+    conditionTypes: {
+      walletBalance: 'Wallet Balance Reaches Target',
+      budgetControl: 'Budget No Overspend',
+      transactionAmount: 'Get Specific Income/Expense',
+      periodTotal: 'Period Income/Expense Total',
+      netWorth: 'Net Worth Target',
+      categorySpending: 'Category Spending Limit',
+    },
+    conditionDescriptions: {
+      walletBalance: 'Milestone achieved when wallet balance reaches a certain amount',
+      budgetControl: 'Milestone achieved when budget doesn\'t overspend for X months',
+      transactionAmount: 'Milestone achieved when there is 1 transaction with a certain amount',
+      periodTotal: 'Milestone achieved when total transactions in period reach target',
+      netWorth: 'Milestone achieved when total net worth reaches target',
+      categorySpending: 'Milestone achieved when category spending is within the limit',
+    },
+
+    // Operators
+    operators: {
+      gte: 'Greater than or equal to (≥)',
+      gt: 'Greater than (>)',
+      lte: 'Less than or equal to (≤)',
+      lt: 'Less than (<)',
+      eq: 'Equal to (=)',
+    },
+
+    // Periods
+    periods: {
+      thisMonth: 'This Month',
+      thisQuarter: 'This Quarter',
+      thisYear: 'This Year',
+      custom: 'Custom Period',
+    },
+
+    // Time remaining
+    timeRemaining: {
+      daysAgo: '{count} days ago',
+      today: 'Today',
+      tomorrow: 'Tomorrow',
+      daysLeft: '{count} days left',
+      oneMonthLeft: '1 month left',
+      monthsLeft: '{count} months left',
+      yearsLeft: '{count} years left',
+      overdue: 'Overdue',
+    },
+
+    // Condition form fields
+    conditionFields: {
+      wallet: 'Wallet',
+      allWallets: 'All Wallets',
+      hidden: '(Hidden)',
+      operator: 'Operator',
+      targetAmount: 'Target Amount',
+      budget: 'Budget',
+      selectBudget: 'Select Budget...',
+      condition: 'Condition',
+      noOverspend: 'No Overspend',
+      underPercentage: 'Under Percentage',
+      percentage: 'Percentage',
+      consecutiveMonths: 'Consecutive Months',
+      transactionType: 'Transaction Type',
+      income: 'Income',
+      expense: 'Expense',
+      amount: 'Amount',
+      category: 'Category',
+      categoryOptional: 'Category (optional)',
+      anyCategory: 'Any Category',
+      period: 'Period',
+      startDate: 'Start Date',
+      endDate: 'End Date',
+      includeHiddenWallets: 'Include hidden wallets',
+      selectCategory: 'Select Category...',
+
+      // Placeholders
+      amountPlaceholder: 'e.g., {amount}',
+      percentagePlaceholder: 'e.g., 80',
+      monthsPlaceholder: 'e.g., 3',
+    },
+
+    // Condition explanations
+    explanations: {
+      walletBalance: 'Wallet balance {operator} target',
+      walletBalanceAll: 'Total balance from all wallets {operator} target',
+      budgetControl: 'Budget must not overspend for {months} consecutive month{plural}',
+      transactionIncome: 'Get income transaction {operator} target',
+      transactionExpense: 'Get expense transaction {operator} target',
+      transactionIncomeCategory: 'Get income transaction {operator} target from specific category',
+      transactionExpenseCategory: 'Get expense transaction {operator} target from specific category',
+      periodTotalIncome: 'Total income in {period} {operator} target',
+      periodTotalExpense: 'Total expense in {period} {operator} target',
+      netWorth: 'Total net worth (assets - liabilities) {operator} target',
+      categorySpending: 'Spending in specific category for {period} {operator} limit',
+      thisMonth: 'this month',
+      thisQuarter: 'this quarter',
+      thisYear: 'this year',
+      customPeriod: 'custom period',
+      customPeriodDates: 'custom period ({start} - {end})',
+    },
   },
 };

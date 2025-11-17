@@ -51,6 +51,7 @@ export default {
     profile: 'Profil',
     backup: 'Cadangkan',
     more: 'Lainnya',
+    milestones: 'Pencapaian',
   },
 
   // Layout
@@ -570,5 +571,192 @@ export default {
     wallet: 'Dompet',
     saveFailed: 'Gagal menyimpan dompet. Silakan coba lagi.',
     unexpectedError: 'Terjadi kesalahan yang tidak terduga. Silakan coba lagi.',
+  },
+
+  // Milestones
+  milestones: {
+    // Page titles
+    title: 'Milestone',
+    subtitle: 'Lacak perjalanan keuangan Anda',
+
+    // Navigation
+    back: 'Kembali',
+    backToMilestones: 'Kembali ke Milestone',
+
+    // Buttons
+    createMilestone: 'Buat Milestone',
+    updateMilestone: 'Perbarui Milestone',
+    edit: 'Ubah',
+    delete: 'Hapus',
+    cancel: 'Batal',
+    add: 'Tambah',
+    refreshProgress: 'Refresh Progress',
+    markAsAchieved: 'Tandai Tercapai',
+    cancelMilestone: 'Batalkan Milestone',
+    newMilestone: 'Milestone Baru',
+
+    // Stats
+    total: 'Total',
+    achieved: 'Tercapai',
+    inProgress: 'Dalam Progress',
+    completion: 'Penyelesaian',
+
+    // Empty states
+    noMilestonesYet: 'Belum Ada Milestone',
+    noMilestonesDescription: 'Buat milestone pertama Anda untuk mulai melacak perjalanan keuangan',
+    noConditionsYet: 'Belum ada kondisi. Klik "Tambah" untuk memulai.',
+
+    // Sections
+    milestoneInformation: 'Informasi Milestone',
+    conditions: 'Kondisi',
+    progress: 'Progress',
+    appearance: 'Tampilan',
+
+    // Form labels
+    name: 'Nama',
+    description: 'Deskripsi',
+    targetDate: 'Tanggal Target',
+    icon: 'Ikon',
+    color: 'Warna',
+    type: 'Tipe',
+    target: 'Target',
+    conditionsMet: '{count}/{total} terpenuhi',
+    conditionsMetText: 'kondisi terpenuhi',
+    conditionNumber: 'Kondisi {number}',
+    selectConditionType: 'Pilih tipe kondisi...',
+    selectIcon: 'Pilih Ikon',
+
+    // Placeholders
+    namePlaceholder: 'mis., Dana Darurat - 30 Juta',
+    descriptionPlaceholder: 'Deskripsikan milestone Anda...',
+
+    // Messages
+    conditionsHelper: 'Tambahkan 1-10 kondisi untuk melacak progress milestone Anda',
+
+    // Error states
+    milestoneNotFound: 'Milestone Tidak Ditemukan',
+    milestoneNotFoundDescription: 'Milestone yang Anda cari tidak ada atau telah dihapus.',
+    milestoneNotFoundEdit: 'Milestone yang ingin Anda ubah tidak ada atau telah dihapus.',
+
+    // Cancelled milestone
+    cancelledMilestoneTitle: 'Milestone Dibatalkan',
+    cancelledMilestoneMessage: 'Milestone ini telah dibatalkan dan tidak dapat diubah.',
+    achievedMilestoneTitle: 'Milestone Tercapai',
+    achievedMilestoneMessage: 'Milestone ini telah tercapai dan tidak dapat diubah.',
+    deleteThisMilestone: 'Hapus Milestone Ini',
+    deleteDescription: 'Hapus permanen milestone yang dibatalkan ini dari catatan Anda.',
+
+    // Confirm dialogs
+    deleteMilestone: 'Hapus Milestone',
+    deleteConfirmation: 'Apakah Anda yakin ingin menghapus milestone ini? Tindakan ini tidak dapat dibatalkan.',
+    cancelMilestoneTitle: 'Batalkan Milestone',
+    cancelMilestoneConfirmation: 'Apakah Anda yakin ingin membatalkan milestone ini? Ini akan menandainya sebagai dibatalkan dan menghentikan pelacakan progress.',
+
+    // Error messages
+    failedToCreate: 'Gagal membuat milestone',
+    failedToUpdate: 'Gagal memperbarui milestone',
+    failedToDelete: 'Gagal menghapus milestone',
+    failedToUpdateStatus: 'Gagal memperbarui status',
+    errorOccurred: 'Terjadi kesalahan',
+
+    // Condition types
+    conditionTypes: {
+      walletBalance: 'Saldo Wallet Mencapai Target',
+      budgetControl: 'Budget Tidak Overspend',
+      transactionAmount: 'Dapat Income/Expense Tertentu',
+      periodTotal: 'Total Income/Expense Periode',
+      netWorth: 'Net Worth Target',
+      categorySpending: 'Limit Spending Kategori',
+    },
+    conditionDescriptions: {
+      walletBalance: 'Milestone tercapai ketika saldo wallet mencapai nominal tertentu',
+      budgetControl: 'Milestone tercapai ketika budget tidak overspend selama X bulan',
+      transactionAmount: 'Milestone tercapai ketika ada 1 transaksi dengan nominal tertentu',
+      periodTotal: 'Milestone tercapai ketika total transaksi dalam periode mencapai target',
+      netWorth: 'Milestone tercapai ketika total kekayaan mencapai target',
+      categorySpending: 'Milestone tercapai ketika spending kategori dalam batas yang ditentukan',
+    },
+
+    // Operators
+    operators: {
+      gte: 'Lebih besar sama dengan (≥)',
+      gt: 'Lebih besar (>)',
+      lte: 'Lebih kecil sama dengan (≤)',
+      lt: 'Lebih kecil (<)',
+      eq: 'Sama dengan (=)',
+    },
+
+    // Periods
+    periods: {
+      thisMonth: 'Bulan Ini',
+      thisQuarter: 'Kuartal Ini',
+      thisYear: 'Tahun Ini',
+      custom: 'Periode Custom',
+    },
+
+    // Time remaining
+    timeRemaining: {
+      daysAgo: '{count} hari yang lalu',
+      today: 'Hari ini',
+      tomorrow: 'Besok',
+      daysLeft: '{count} hari lagi',
+      oneMonthLeft: '1 bulan lagi',
+      monthsLeft: '{count} bulan lagi',
+      yearsLeft: '{count} tahun lagi',
+      overdue: 'Terlambat',
+    },
+
+    // Condition form fields
+    conditionFields: {
+      wallet: 'Wallet',
+      allWallets: 'Semua Wallet',
+      hidden: '(Tersembunyi)',
+      operator: 'Operator',
+      targetAmount: 'Jumlah Target',
+      budget: 'Budget',
+      selectBudget: 'Pilih Budget...',
+      condition: 'Kondisi',
+      noOverspend: 'Tidak Overspend',
+      underPercentage: 'Di Bawah Persentase',
+      percentage: 'Persentase',
+      consecutiveMonths: 'Bulan Berturut-turut',
+      transactionType: 'Tipe Transaksi',
+      income: 'Pemasukan',
+      expense: 'Pengeluaran',
+      amount: 'Jumlah',
+      category: 'Kategori',
+      categoryOptional: 'Kategori (opsional)',
+      anyCategory: 'Semua Kategori',
+      period: 'Periode',
+      startDate: 'Tanggal Mulai',
+      endDate: 'Tanggal Selesai',
+      includeHiddenWallets: 'Sertakan wallet tersembunyi',
+      selectCategory: 'Pilih Kategori...',
+
+      // Placeholders
+      amountPlaceholder: 'mis., {amount}',
+      percentagePlaceholder: 'mis., 80',
+      monthsPlaceholder: 'mis., 3',
+    },
+
+    // Condition explanations
+    explanations: {
+      walletBalance: 'Saldo wallet {operator} target',
+      walletBalanceAll: 'Total saldo dari semua wallet {operator} target',
+      budgetControl: 'Budget tidak boleh overspend selama {months} bulan berturut-turut{plural}',
+      transactionIncome: 'Dapat transaksi pemasukan {operator} target',
+      transactionExpense: 'Dapat transaksi pengeluaran {operator} target',
+      transactionIncomeCategory: 'Dapat transaksi pemasukan {operator} target dari kategori tertentu',
+      transactionExpenseCategory: 'Dapat transaksi pengeluaran {operator} target dari kategori tertentu',
+      periodTotalIncome: 'Total pemasukan di {period} {operator} target',
+      periodTotalExpense: 'Total pengeluaran di {period} {operator} target',
+      netWorth: 'Total kekayaan bersih (aset - liabilitas) {operator} target',
+      categorySpending: 'Pengeluaran di kategori tertentu untuk {period} {operator} limit',
+      thisMonth: 'bulan ini',
+      thisQuarter: 'kuartal ini',
+      thisYear: 'tahun ini',
+      customPeriod: 'periode custom',
+      customPeriodDates: 'periode custom ({start} - {end})',
+    },
   },
 };
