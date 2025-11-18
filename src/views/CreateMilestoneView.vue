@@ -1,6 +1,6 @@
 <template>
   <AppLayout>
-    <div class="pt-0 pb-2 px-4 lg:p-8 mb-20 lg:mb-0">
+    <div class="pt-3.5 pb-2 px-4 lg:p-8 mb-20 lg:mb-0">
       <!-- Header -->
       <div class="flex items-center gap-4 justify-between mb-6">
         <router-link to="/milestones" class="btn-icon flex gap-4 items-center">
