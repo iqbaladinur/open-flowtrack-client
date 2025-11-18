@@ -5,7 +5,7 @@
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-white">{{ $t('milestones.title') }}</h1>
+            <h1 class="text-xl lg:text-3xl font-bold">{{ $t('milestones.title') }}</h1>
             <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
               {{ $t('milestones.subtitle') }}
             </p>
