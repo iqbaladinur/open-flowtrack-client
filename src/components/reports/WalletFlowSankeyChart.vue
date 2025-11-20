@@ -30,7 +30,7 @@
         <!-- Net Summary -->
         <div class="text-center py-4">
           <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">{{ $t('reports.netFlow') }}</p>
-          <p :class="selectedWallet.net >= 0 ? 'text-success-600' : 'text-error-600'" class="text-2xl font-bold font-mono">
+          <p :class="selectedWallet.net >= 0 ? 'text-success-600' : 'text-error-600'" class="text-xs font-mono">
             {{ selectedWallet.net >= 0 ? '+' : '' }}{{ configStore.formatCurrency(selectedWallet.net) }}
           </p>
         </div>
@@ -42,7 +42,7 @@
               <TrendingUp class="size-4 text-success-600" />
               <span class="text-xs text-gray-600 dark:text-gray-400">{{ $t('reports.income') }}</span>
             </div>
-            <p class="font-mono font-semibold text-success-600">+{{ configStore.formatCurrency(selectedWallet.income) }}</p>
+            <p class="font-mono text-xs text-success-600">+{{ configStore.formatCurrency(selectedWallet.income) }}</p>
           </div>
 
           <div class="rounded-lg bg-error-50 dark:bg-error-900/20 p-3">
@@ -50,7 +50,7 @@
               <TrendingDown class="size-4 text-error-600" />
               <span class="text-xs text-gray-600 dark:text-gray-400">{{ $t('reports.expense') }}</span>
             </div>
-            <p class="font-mono font-semibold text-error-600">-{{ configStore.formatCurrency(selectedWallet.expense) }}</p>
+            <p class="font-mono text-xs text-error-600">-{{ configStore.formatCurrency(selectedWallet.expense) }}</p>
           </div>
 
           <div class="rounded-lg bg-blue-50 dark:bg-blue-900/20 p-3">
@@ -58,7 +58,7 @@
               <ArrowDownRight class="size-4 text-blue-600" />
               <span class="text-xs text-gray-600 dark:text-gray-400">{{ $t('reports.transferIn') }}</span>
             </div>
-            <p class="font-mono font-semibold text-blue-600">+{{ configStore.formatCurrency(selectedWallet.transferIn) }}</p>
+            <p class="font-mono text-xs text-blue-600">+{{ configStore.formatCurrency(selectedWallet.transferIn) }}</p>
           </div>
 
           <div class="rounded-lg bg-blue-50 dark:bg-blue-900/20 p-3">
@@ -66,7 +66,7 @@
               <ArrowUpRight class="size-4 text-blue-600" />
               <span class="text-xs text-gray-600 dark:text-gray-400">{{ $t('reports.transferOut') }}</span>
             </div>
-            <p class="font-mono font-semibold text-blue-600">-{{ configStore.formatCurrency(selectedWallet.transferOut) }}</p>
+            <p class="font-mono text-xs text-blue-600">-{{ configStore.formatCurrency(selectedWallet.transferOut) }}</p>
           </div>
         </div>
       </div>
