@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, markRaw } from 'vue';
 import VChart from 'vue-echarts';
 import { use } from 'echarts/core';
 import { SankeyChart } from 'echarts/charts';
@@ -179,16 +179,37 @@ const sankeyData = computed(() => {
     }
   });
 
-  // Add transfer links (Wallet -> Wallet)
+  // Add transfer links (Wallet -> Wallet) with cycle resolution (Net Flow)
+  const processedPairs = new Set<string>();
+  
   transferMap.forEach((amount, key) => {
     const [source, target] = key.split('->');
-    if (amount > 0) {
+    if (source === target) return; // Ignore self-loops
+
+    // Check if we already handled this pair
+    const pairKey = [source, target].sort().join('-');
+    if (processedPairs.has(pairKey)) return;
+
+    const reverseKey = `${target}->${source}`;
+    const reverseAmount = transferMap.get(reverseKey) || 0;
+
+    const netAmount = amount - reverseAmount;
+    
+    if (netAmount > 0) {
       links.push({
         source,
         target,
-        value: amount,
+        value: netAmount,
+      });
+    } else if (netAmount < 0) {
+      links.push({
+        source: target,
+        target: source,
+        value: Math.abs(netAmount),
       });
     }
+    
+    processedPairs.add(pairKey);
   });
 
   // Add expense links (Wallet -> Expense)
@@ -202,7 +223,27 @@ const sankeyData = computed(() => {
     }
   });
 
-  return { nodes, links };
+  // Optimization: If there are too many links, filter out very small ones to prevent rendering issues
+  // This is especially important for mobile devices
+  let finalLinks = links;
+  let finalNodes = nodes;
+
+  if (links.length > 50) {
+    const totalValue = links.reduce((sum, link) => sum + link.value, 0);
+    // Filter out links that represent less than 0.5% of the total flow
+    const threshold = totalValue * 0.005;
+    finalLinks = links.filter(link => link.value > threshold);
+
+    // Filter out nodes that are no longer connected
+    const connectedNodes = new Set<string>();
+    finalLinks.forEach(link => {
+      connectedNodes.add(link.source);
+      connectedNodes.add(link.target);
+    });
+    finalNodes = nodes.filter(node => connectedNodes.has(node.name));
+  }
+
+  return { nodes: finalNodes, links: finalLinks };
 });
 
 const hasData = computed(() => {
@@ -215,7 +256,7 @@ const chartOption = computed(() => {
   const tooltipTextColor = isDark.value ? '#d1d5db' : '#374151';
   const labelColor = isDark.value ? '#e5e7eb' : '#374151';
 
-  return {
+  return markRaw({
     tooltip: {
       trigger: 'item',
       triggerOn: 'mousemove',
@@ -244,7 +285,8 @@ const chartOption = computed(() => {
         },
         nodeAlign: 'justify',
         orient: 'horizontal',
-        draggable: true,
+        draggable: false, // Disable draggable to improve performance on mobile
+        animation: sankeyData.value.links.length < 100, // Disable animation for large datasets
         label: {
           show: true,
           position: 'right',
@@ -272,6 +314,6 @@ const chartOption = computed(() => {
         links: sankeyData.value.links,
       },
     ],
-  };
+  });
 });
 </script>
