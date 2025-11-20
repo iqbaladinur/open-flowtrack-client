@@ -21,7 +21,7 @@
         </ul>
       </div>
       <div class="flex-1 relative min-w-20" :class="{ '!w-full p-6': chartData.labels?.length > divideConst }">
-        <div class="w-full" style="height: 250px;">
+        <div class="w-full" style="height: 400px;">
           <v-chart ref="chartRef" class="w-full h-full" :option="chartOption" autoresize />
         </div>
       </div>
@@ -80,9 +80,9 @@ const chartOption = computed(() => {
       name,
       value: dataVisibility.value[index] ? props.chartData.datasets[0].data[index] : 0,
       itemStyle: {
-        color: props.chartData.datasets[0].borderColor?.[index] || props.chartData.datasets[0].backgroundColor[index],
-        borderColor: props.chartData.datasets[0].backgroundColor[index],
-        borderWidth: 0,
+        color: props.chartData.datasets[0].backgroundColor[index],
+        borderColor: props.chartData.datasets[0].borderColor?.[index] || props.chartData.datasets[0].backgroundColor[index],
+        borderWidth: 2,
       },
       originalValue: props.chartData.datasets[0].data[index],
     };
