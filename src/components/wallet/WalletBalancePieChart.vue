@@ -136,7 +136,7 @@ const chartOption = computed(() => {
       series: [
         {
           type: 'pie',
-          radius: [80, 190],
+          radius: ['40%', '90%'],
           label: {
             show: false,
             position: 'center'
