@@ -4,14 +4,78 @@
       <ArrowRightLeft class="w-10 h-10 text-gray-400 mx-auto mb-2" />
       <p class="text-gray-500 dark:text-gray-400 text-sm">{{ $t('reports.noWalletData') }}</p>
     </div>
-    <div v-else class="w-full" style="height: 400px;">
-      <v-chart ref="chartRef" class="w-full h-full" :option="chartOption" autoresize />
+    <div v-else class="space-y-4">
+      <!-- Sankey Chart -->
+      <div class="w-full" style="height: 400px;">
+        <v-chart ref="chartRef" class="w-full h-full" :option="chartOption" autoresize />
+      </div>
+
+      <!-- Wallet Details Legend -->
+      <div class="flex flex-wrap gap-2">
+        <button v-for="item in walletReportData" :key="item.name"
+          @click="openWalletDetail(item)"
+          class="flex items-center gap-2 rounded-full bg-gray-100 dark:bg-gray-800 px-3 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+          <span class="w-2 h-2 rounded-full bg-indigo-500 flex-shrink-0"></span>
+          <span class="text-xs text-gray-900 dark:text-white">{{ item.name }}</span>
+          <span :class="item.net >= 0 ? 'text-success-600' : 'text-error-600'" class="font-medium text-xs font-mono">
+            {{ item.net >= 0 ? '+' : '' }}{{ configStore.formatCurrency(item.net) }}
+          </span>
+        </button>
+      </div>
     </div>
+
+    <!-- Wallet Detail Modal -->
+    <Modal v-model="showModal" :title="selectedWallet?.name">
+      <div v-if="selectedWallet" class="space-y-4">
+        <!-- Net Summary -->
+        <div class="text-center py-4">
+          <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">{{ $t('reports.netFlow') }}</p>
+          <p :class="selectedWallet.net >= 0 ? 'text-success-600' : 'text-error-600'" class="text-2xl font-bold font-mono">
+            {{ selectedWallet.net >= 0 ? '+' : '' }}{{ configStore.formatCurrency(selectedWallet.net) }}
+          </p>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="rounded-lg bg-success-50 dark:bg-success-900/20 p-3">
+            <div class="flex items-center gap-2 mb-1">
+              <TrendingUp class="size-4 text-success-600" />
+              <span class="text-xs text-gray-600 dark:text-gray-400">{{ $t('reports.income') }}</span>
+            </div>
+            <p class="font-mono font-semibold text-success-600">+{{ configStore.formatCurrency(selectedWallet.income) }}</p>
+          </div>
+
+          <div class="rounded-lg bg-error-50 dark:bg-error-900/20 p-3">
+            <div class="flex items-center gap-2 mb-1">
+              <TrendingDown class="size-4 text-error-600" />
+              <span class="text-xs text-gray-600 dark:text-gray-400">{{ $t('reports.expense') }}</span>
+            </div>
+            <p class="font-mono font-semibold text-error-600">-{{ configStore.formatCurrency(selectedWallet.expense) }}</p>
+          </div>
+
+          <div class="rounded-lg bg-blue-50 dark:bg-blue-900/20 p-3">
+            <div class="flex items-center gap-2 mb-1">
+              <ArrowDownRight class="size-4 text-blue-600" />
+              <span class="text-xs text-gray-600 dark:text-gray-400">{{ $t('reports.transferIn') }}</span>
+            </div>
+            <p class="font-mono font-semibold text-blue-600">+{{ configStore.formatCurrency(selectedWallet.transferIn) }}</p>
+          </div>
+
+          <div class="rounded-lg bg-blue-50 dark:bg-blue-900/20 p-3">
+            <div class="flex items-center gap-2 mb-1">
+              <ArrowUpRight class="size-4 text-blue-600" />
+              <span class="text-xs text-gray-600 dark:text-gray-400">{{ $t('reports.transferOut') }}</span>
+            </div>
+            <p class="font-mono font-semibold text-blue-600">-{{ configStore.formatCurrency(selectedWallet.transferOut) }}</p>
+          </div>
+        </div>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import VChart from 'vue-echarts';
 import { use } from 'echarts/core';
 import { SankeyChart } from 'echarts/charts';
@@ -20,17 +84,37 @@ import { CanvasRenderer } from 'echarts/renderers';
 import type { Transaction } from '@/types/transaction';
 import { useConfigStore } from '@/stores/config';
 import { useThemeStore } from '@/stores/theme';
-import { ArrowRightLeft } from 'lucide-vue-next';
+import { ArrowRightLeft, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight } from 'lucide-vue-next';
+import Modal from '@/components/ui/Modal.vue';
 
 // Register ECharts components
 use([SankeyChart, TitleComponent, TooltipComponent, CanvasRenderer]);
 
+interface WalletData {
+  name: string;
+  income: number;
+  expense: number;
+  transferIn: number;
+  transferOut: number;
+  net: number;
+}
+
 const props = defineProps<{
   transactions: Transaction[];
+  walletReportData: WalletData[];
 }>();
 
 const configStore = useConfigStore();
 const themeStore = useThemeStore();
+
+// Modal state
+const showModal = ref(false);
+const selectedWallet = ref<WalletData | null>(null);
+
+const openWalletDetail = (wallet: WalletData) => {
+  selectedWallet.value = wallet;
+  showModal.value = true;
+};
 
 const isDark = computed(() => {
   if (themeStore.theme === 'system') {

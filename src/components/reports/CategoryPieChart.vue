@@ -124,21 +124,21 @@ const chartOption = computed(() => {
         radius: ['30%', '90%'],
         center: ['50%', '50%'],
         itemStyle: {
-          borderRadius: 6,
+          // borderRadius: 6,
         },
-        padAngle: 3,
+        roseType: 'radius',
         label: {
           show: false,
         },
         emphasis: {
           label: {
-            show: false,
+            show: true,
           },
           scale: true,
           scaleSize: 10,
         },
         labelLine: {
-          show: false,
+          show: true,
         },
         data: seriesData,
       },
