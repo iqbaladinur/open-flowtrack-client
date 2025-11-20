@@ -54,7 +54,7 @@
               {{ formatConditionValue(condition.current_value, condition.type) }}
             </span>
             <span class="text-[10px] font-semibold" :style="{ color: getProgressColor(condition.progress_percentage) }">
-              {{ condition.progress_percentage.toFixed(0) }}%
+              {{ configStore.formatProsentase(condition.progress_percentage) }}
             </span>
           </div>
           <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1 overflow-hidden">
@@ -100,6 +100,7 @@ import {
   Circle,
   ChevronDown,
 } from 'lucide-vue-next';
+import { useConfigStore } from '@/stores/config';
 
 interface Props {
   condition: ConditionWithProgress;
@@ -107,7 +108,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-
+const configStore = useConfigStore();
 // State
 const showExplanation = ref(false);
 

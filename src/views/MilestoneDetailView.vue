@@ -120,7 +120,7 @@
                 class="text-sm font-bold"
                 :style="{ color: getProgressColor(milestone.overall_progress || 0) }"
               >
-                {{ (milestone.overall_progress || 0).toFixed(1) }}%
+                {{ configStore.formatProsentase(milestone.overall_progress || 0) }}
               </span>
             </div>
             <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
@@ -231,11 +231,13 @@ import {
   XCircle,
   Ban,
 } from 'lucide-vue-next';
+import { useConfigStore } from '@/stores/config';
 
 const router = useRouter();
 const route = useRoute();
 const milestonesStore = useMilestonesStore();
 const { t } = useI18n();
+const configStore = useConfigStore();
 
 // State
 const showCancelConfirm = ref(false);

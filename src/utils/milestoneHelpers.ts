@@ -1,3 +1,4 @@
+import { useConfigStore } from '@/stores/config';
 import {
   ConditionType,
   ConditionTemplate,
@@ -103,12 +104,8 @@ export const getConditionLabel = (type: ConditionType): string => {
  * Format currency value
  */
 export const formatCurrency = (value: number): string => {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
+  const configStore = useConfigStore();
+  return configStore.formatCurrency(value);
 };
 
 /**
