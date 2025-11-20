@@ -4,12 +4,12 @@
       Total: {{ totalNominal }}
     </h3>
     <div class="flex items-center"
-      :class="{ 'flex-col-reverse gap-4 md:flex-row lg:gap-0': chartData.labels?.length > devideconst }">
-      <div class="pr-4 flex-1" :class="{ '!w-full': chartData.labels?.length > devideconst }">
-        <ul :class="{ 'grid grid-cols-2': chartData.labels?.length > devideconst }">
+      :class="{ 'flex-col-reverse gap-4 md:flex-row lg:gap-0': chartData.labels?.length > divideConst }">
+      <div class="pr-4 flex-1" :class="{ '!w-full': chartData.labels?.length > divideConst }">
+        <ul :class="{ 'grid grid-cols-2': chartData.labels?.length > divideConst }">
           <li v-for="(label, index) in chartData.labels" :key="index" @click="toggleData(index)"
-            class="flex items-start cursor-pointer p-1 rounded text-xs"
-            :class="{ 'line-through text-slate-600 dark:text-white': !dataVisibility[index] }">
+            class="flex items-start cursor-pointer p-1 rounded text-xs hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            :class="{ 'line-through opacity-50': !dataVisibility[index] }">
             <span class="w-4 h-4 mr-2 rounded-full mt-1 flex-shrink-0" :style="{
               backgroundColor: chartData.datasets[0].backgroundColor[index],
               borderColor: chartData.datasets[0].backgroundColor[index],
@@ -20,8 +20,10 @@
           </li>
         </ul>
       </div>
-      <div class="flex-1 relative min-w-20" :class="{ '!w-full p-6': chartData.labels?.length > devideconst }">
-        <Pie ref="pieChart" class="w-full h-full" :data="chartData" :options="chartOptions" />
+      <div class="flex-1 relative min-w-20" :class="{ '!w-full p-6': chartData.labels?.length > divideConst }">
+        <div class="w-full" style="height: 250px;">
+          <v-chart ref="chartRef" class="w-full h-full" :option="chartOption" autoresize />
+        </div>
       </div>
     </div>
   </div>
@@ -29,22 +31,19 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue';
-import { Pie } from 'vue-chartjs';
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  CategoryScale,
-  type Chart,
-} from 'chart.js';
+import VChart from 'vue-echarts';
+import { use } from 'echarts/core';
+import { PieChart } from 'echarts/charts';
+import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
+import { CanvasRenderer } from 'echarts/renderers';
 import type { PropType } from 'vue';
 import { useConfigStore } from '@/stores/config';
+import { useDark } from '@vueuse/core';
 
-ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
+// Register ECharts components
+use([PieChart, TitleComponent, TooltipComponent, LegendComponent, CanvasRenderer]);
 
-const devideconst = ref(7);
+const divideConst = ref(7);
 
 const props = defineProps({
   chartData: {
@@ -60,61 +59,107 @@ const props = defineProps({
   },
 });
 
-const pieChart = ref<InstanceType<typeof Pie> | null>(null);
+const chartRef = ref<InstanceType<typeof VChart> | null>(null);
 const dataVisibility = ref<boolean[]>([]);
 
-const chartOptions = computed(() => ({
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      display: false, // Hide the default legend
-    },
-  },
-}));
-
 const configStore = useConfigStore();
+const isDark = useDark();
 
-const totalNominal = computed(() => {
-  if (dataVisibility.value.length) {
-    // @ts-ignore
-    return configStore.formatCurrency(props.chartData.datasets[0].data?.filter((n, i) => dataVisibility.value[i]).reduce((sum, nominal) => sum + (nominal || 0), 0))
-  }
-
-  return configStore.formatCurrency(props.chartData.datasets[0].data?.reduce((sum, nominal) => sum + (nominal || 0), 0))
-})
-
+// Initialize visibility array when chartData changes
 const initializeVisibility = () => {
-  const chart = pieChart.value?.chart as Chart | undefined;
-  if (chart && chart.data.labels) {
-    dataVisibility.value = chart.data.labels.map((_, i) => chart.getDataVisibility(i));
+  if (props.chartData.labels) {
+    dataVisibility.value = props.chartData.labels.map(() => true);
   }
 };
 
-watch(pieChart, (newChart) => {
-  if (newChart) {
-    // Use nextTick to ensure the chart instance is fully mounted and ready
-    nextTick(() => {
-      initializeVisibility();
-    });
+// ECharts option configuration
+const chartOption = computed(() => {
+  const seriesData = props.chartData.labels.map((label, index) => {
+    const name = Array.isArray(label) ? label[0] : label;
+    return {
+      name,
+      value: dataVisibility.value[index] ? props.chartData.datasets[0].data[index] : 0,
+      itemStyle: {
+        color: props.chartData.datasets[0].borderColor?.[index] || props.chartData.datasets[0].backgroundColor[index],
+        borderColor: props.chartData.datasets[0].backgroundColor[index],
+        borderWidth: 0,
+      },
+      originalValue: props.chartData.datasets[0].data[index],
+    };
+  });
+
+  // Sort data from smallest to biggest value
+  seriesData.sort((a, b) => a.value - b.value);
+
+  const tooltipBg = isDark.value ? '#1f2937' : '#ffffff';
+  const tooltipBorder = isDark.value ? '#374151' : '#e5e7eb';
+  const tooltipTextColor = isDark.value ? '#d1d5db' : '#374151';
+
+  return {
+    tooltip: {
+      trigger: 'item',
+      backgroundColor: tooltipBg,
+      borderColor: tooltipBorder,
+      borderWidth: 1,
+      padding: 12,
+      textStyle: {
+        color: tooltipTextColor,
+        fontFamily: "'Inter', sans-serif",
+        fontSize: 12,
+      },
+      formatter: (params: any) => {
+        return `${params.name}: ${configStore.formatCurrency(params.value)}`;
+      },
+    },
+    series: [
+      {
+        type: 'pie',
+        radius: ['30%', '70%'],
+        center: ['50%', '50%'],
+        itemStyle: {
+          borderRadius: 6,
+        },
+        padAngle: 3,
+        label: {
+          show: false,
+        },
+        emphasis: {
+          label: {
+            show: false,
+          },
+          scale: true,
+          scaleSize: 10,
+        },
+        labelLine: {
+          show: false,
+        },
+        data: seriesData,
+      },
+    ],
+  };
+});
+
+const totalNominal = computed(() => {
+  if (dataVisibility.value.length) {
+    return configStore.formatCurrency(
+      props.chartData.datasets[0].data
+        ?.filter((_, i) => dataVisibility.value[i])
+        .reduce((sum, nominal) => sum + (nominal || 0), 0)
+    );
   }
+
+  return configStore.formatCurrency(
+    props.chartData.datasets[0].data?.reduce((sum, nominal) => sum + (nominal || 0), 0)
+  );
 });
 
 watch(() => props.chartData, () => {
   nextTick(() => {
     initializeVisibility();
   });
-}, { deep: true });
-
+}, { deep: true, immediate: true });
 
 const toggleData = (index: number) => {
-  const chart = pieChart.value?.chart as Chart | undefined;
-  if (!chart) return;
-
-  chart.toggleDataVisibility(index);
-  chart.update();
-
-  // Update our reactive state to reflect the change
-  dataVisibility.value[index] = chart.getDataVisibility(index);
+  dataVisibility.value[index] = !dataVisibility.value[index];
 };
 </script>

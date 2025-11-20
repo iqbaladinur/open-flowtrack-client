@@ -212,9 +212,9 @@
         />
 
         <!-- Breakdown Reports -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:items-start">
           <!-- Category Report -->
-          <div class="card p-4 lg:min-h-[500px] flex flex-col gap-4">
+          <div class="card p-4 lg:min-h-[500px] flex flex-col gap-4 lg:col-span-3">
             <div class="flex justify-between items-start mb-4 flex-col md:flex-row gap-4">
               <div>
                 <h2 class="text-sm font-semibold text-gray-900 dark:text-white">{{ $t('reports.breakdownByCategory') }} ({{ configStore.currency }})</h2>
@@ -238,7 +238,7 @@
           </div>
 
           <!-- Wallet Report -->
-          <div class="card p-4 lg:min-h-[500px]">
+          <div class="card p-4 lg:min-h-[500px] lg:col-span-2">
             <h2 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">
               {{ $t('reports.flowByWallet') }} ({{ configStore.currency }})
             </h2>
