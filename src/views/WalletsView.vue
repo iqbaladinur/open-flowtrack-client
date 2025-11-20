@@ -69,20 +69,31 @@
                 {{ $t('wallets.distribution') }} ({{ configStore.currency }})
               </h2>
             </div>
-            <button
-              @click="toggleHiddenWallets"
-              class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              :title="showHiddenWallets ? $t('wallets.hideHidden') : $t('wallets.showHidden')"
-            >
-              <EyeOff v-if="showHiddenWallets" class="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              <Eye v-else class="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            </button>
+            <div class="flex items-center gap-1">
+              <!-- Toggle Chart View -->
+              <button
+                @click="useCustomLegend = !useCustomLegend"
+                class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                :title="useCustomLegend ? 'Show chart labels' : 'Show custom legend'"
+              >
+                <List v-if="useCustomLegend" class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <Tag v-else class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              </button>
+              <button
+                @click="toggleHiddenWallets"
+                class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                :title="showHiddenWallets ? $t('wallets.hideHidden') : $t('wallets.showHidden')"
+              >
+                <EyeOff v-if="showHiddenWallets" class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <Eye v-else class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              </button>
+            </div>
           </div>
           <div v-if="visibleWallets.length === 0" class="text-center py-8">
             <WalletIcon class="w-12 h-12 text-gray-400 mx-auto mb-2" />
             <p class="text-gray-500 dark:text-gray-400">{{ $t('wallets.noVisibleWallets') }}</p>
           </div>
-          <WalletBalancePieChart v-else ref="chartRef" :chart-data="walletChartData" />
+          <WalletBalancePieChart v-else ref="chartRef" :chart-data="walletChartData" :use-custom-legend="useCustomLegend" />
         </div>
 
         <!-- Wallets Grid -->
@@ -139,6 +150,8 @@ import {
   PieChart as PieChartIcon,
   Eye,
   EyeOff,
+  List,
+  Tag,
 } from 'lucide-vue-next';
 import { useConfigStore } from '@/stores/config';
 
@@ -159,6 +172,7 @@ const wallets = computed(() => {
 
 const chartRef = ref<InstanceType<typeof WalletBalancePieChart> | null>(null);
 const showHiddenWallets = ref(true);
+const useCustomLegend = ref(true);
 
 const visibleWallets = computed(() => {
   return wallets.value.filter(w => {

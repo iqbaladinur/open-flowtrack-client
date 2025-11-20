@@ -4,7 +4,8 @@
       {{ $t('wallets.totalBalance') }}: {{ totalBalance }}
     </h3>
 
-    <div class="flex flex-col-reverse lg:flex-row items-center lg:items-start gap-6">
+    <!-- Layout with custom legend -->
+    <div v-if="useCustomLegend" class="flex flex-col-reverse lg:flex-row items-center gap-6">
       <!-- Legend -->
       <div class="w-full lg:w-1/2 lg:pr-4">
         <ul class="grid grid-cols-2 gap-1">
@@ -24,9 +25,16 @@
 
       <!-- Chart -->
       <div class="w-full lg:w-1/2 flex justify-center">
-        <div class="w-full max-w-xs" style="height: 280px;">
-          <Pie ref="pieChart" class="w-full h-full" :data="chartData" :options="chartOptions" />
+        <div class="w-full max-w-[400px]" style="height: 400px;">
+          <v-chart ref="chartRef" class="w-full h-full" :option="chartOption" autoresize />
         </div>
+      </div>
+    </div>
+
+    <!-- Layout with built-in chart labels -->
+    <div v-else class="flex justify-center">
+      <div class="w-full max-w-[600px]" style="height: 500px;">
+        <v-chart ref="chartRef" class="w-full h-full" :option="chartOption" autoresize />
       </div>
     </div>
   </div>
@@ -34,20 +42,17 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue';
-import { Pie } from 'vue-chartjs';
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  CategoryScale,
-  type Chart,
-} from 'chart.js';
+import VChart from 'vue-echarts';
+import { use } from 'echarts/core';
+import { PieChart } from 'echarts/charts';
+import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
+import { CanvasRenderer } from 'echarts/renderers';
 import type { PropType } from 'vue';
 import { useConfigStore } from '@/stores/config';
+import { useDark, useWindowSize } from '@vueuse/core';
 
-ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
+// Register ECharts components
+use([PieChart, TitleComponent, TooltipComponent, LegendComponent, CanvasRenderer]);
 
 const props = defineProps({
   chartData: {
@@ -61,76 +66,187 @@ const props = defineProps({
     }>,
     required: true,
   },
+  useCustomLegend: {
+    type: Boolean,
+    default: true,
+  },
 });
 
-const pieChart = ref<InstanceType<typeof Pie> | null>(null);
+const chartRef = ref<InstanceType<typeof VChart> | null>(null);
 const dataVisibility = ref<boolean[]>([]);
 
-const chartOptions = computed(() => ({
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      display: false, // Hide the default legend
-    },
-  },
-}));
-
 const configStore = useConfigStore();
+const isDark = useDark();
+const { width: windowWidth } = useWindowSize();
 
-const totalBalance = computed(() => {
-  if (dataVisibility.value.length) {
-    // @ts-ignore
-    return configStore.formatCurrency(props.chartData.datasets[0].data?.filter((n, i) => dataVisibility.value[i]).reduce((sum, nominal) => sum + (nominal || 0), 0))
+// Responsive radius based on screen size
+const chartRadius = computed(() => {
+  // Mobile: smaller radius to fit labels
+  // Desktop (lg: 1024px+): larger radius
+  if (windowWidth.value >= 1024) {
+    return ['15%', '65%'];
   }
+  return ['10%', '50%'];
+});
 
-  return configStore.formatCurrency(props.chartData.datasets[0].data?.reduce((sum, nominal) => sum + (nominal || 0), 0))
-})
-
+// Initialize visibility array when chartData changes
 const initializeVisibility = () => {
-  const chart = pieChart.value?.chart as Chart | undefined;
-  if (chart && chart.data.labels) {
-    dataVisibility.value = chart.data.labels.map((_, i) => chart.getDataVisibility(i));
+  if (props.chartData.labels) {
+    dataVisibility.value = props.chartData.labels.map(() => true);
   }
 };
 
-watch(pieChart, (newChart) => {
-  if (newChart) {
-    // Use nextTick to ensure the chart instance is fully mounted and ready
-    nextTick(() => {
-      initializeVisibility();
-    });
+// ECharts option configuration
+const chartOption = computed(() => {
+  const seriesData = props.chartData.labels.map((label, index) => {
+    const name = Array.isArray(label) ? label[0] : label;
+    return {
+      name,
+      value: dataVisibility.value[index] ? props.chartData.datasets[0].data[index] : 0,
+      itemStyle: {
+        color: props.chartData.datasets[0].borderColor?.[index] || props.chartData.datasets[0].backgroundColor[index],
+        borderColor: props.chartData.datasets[0].backgroundColor[index],
+        borderWidth: 0,
+      },
+      // Store original value for toggling
+      originalValue: props.chartData.datasets[0].data[index],
+    };
+  });
+
+  // Sort data from smallest to biggest value
+  seriesData.sort((a, b) => a.value - b.value);
+
+  // Configuration for custom legend (current layout)
+  if (props.useCustomLegend) {
+    return {
+      tooltip: {
+        trigger: 'item',
+        formatter: (params: any) => {
+          return `${params.name}: ${configStore.formatCurrency(params.value)}`;
+        },
+      },
+      series: [
+        {
+          type: 'pie',
+          radius: [40, 190],
+          roseType: 'area',
+          itemStyle: {
+            borderRadius: 8,
+          },
+          padAngle: 10,
+          label: {
+            show: false,
+            position: 'center'
+          },
+          emphasis: {
+            label: {
+              show: false,
+            },
+          },
+          labelLine: {
+            show: false,
+          },
+          data: seriesData,
+        },
+      ],
+    };
   }
+
+  // Configuration for built-in chart labels
+  const labelNameColor = isDark.value ? '#f3f4f6' : '#374151';
+  const labelValueColor = isDark.value ? '#9ca3af' : '#6b7280';
+  const labelLineColor = isDark.value ? '#6b7280' : '#9ca3af';
+
+  return {
+    tooltip: {
+      trigger: 'item',
+      formatter: (params: any) => {
+        return `${params.name}: ${configStore.formatCurrency(params.value)}`;
+      },
+    },
+    series: [
+      {
+        type: 'pie',
+        radius: chartRadius.value,
+        center: ['50%', '50%'],
+        roseType: 'area',
+        itemStyle: {
+          borderRadius: 8,
+        },
+        padAngle: 10,
+        label: {
+          show: true,
+          position: 'outside',
+          formatter: (params: any) => {
+            const name = params.name.split(' (')[0]; // Get name without percentage
+            return `{name|${name}}\n{value|${configStore.formatCurrency(params.value)}}`;
+          },
+          rich: {
+            name: {
+              fontSize: 11,
+              fontWeight: 'bold',
+              color: labelNameColor,
+              lineHeight: 16,
+            },
+            value: {
+              fontSize: 10,
+              color: labelValueColor,
+              lineHeight: 14,
+            },
+          },
+          alignTo: 'labelLine',
+          distanceToLabelLine: 3,
+        },
+        labelLine: {
+          show: true,
+          length: 10,
+          length2: 8,
+          smooth: true,
+          lineStyle: {
+            color: labelLineColor,
+          },
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: 12,
+            fontWeight: 'bold',
+          },
+        },
+        data: seriesData,
+      },
+    ],
+  };
+});
+
+const totalBalance = computed(() => {
+  if (dataVisibility.value.length) {
+    return configStore.formatCurrency(
+      props.chartData.datasets[0].data
+        ?.filter((_, i) => dataVisibility.value[i])
+        .reduce((sum, nominal) => sum + (nominal || 0), 0)
+    );
+  }
+
+  return configStore.formatCurrency(
+    props.chartData.datasets[0].data?.reduce((sum, nominal) => sum + (nominal || 0), 0)
+  );
 });
 
 watch(() => props.chartData, () => {
   nextTick(() => {
     initializeVisibility();
   });
-}, { deep: true });
-
+}, { deep: true, immediate: true });
 
 const toggleData = (index: number) => {
-  const chart = pieChart.value?.chart as Chart | undefined;
-  if (!chart) return;
-
-  chart.toggleDataVisibility(index);
-  chart.update();
-
-  // Update our reactive state to reflect the change
-  dataVisibility.value[index] = chart.getDataVisibility(index);
+  dataVisibility.value[index] = !dataVisibility.value[index];
 };
 
 const toggleMultipleData = (indices: number[]) => {
-  const chart = pieChart.value?.chart as Chart | undefined;
-  if (!chart) return;
-
   indices.forEach(index => {
-    chart.toggleDataVisibility(index);
-    dataVisibility.value[index] = chart.getDataVisibility(index);
+    dataVisibility.value[index] = !dataVisibility.value[index];
   });
-
-  chart.update();
 };
 
 // Expose methods to parent component

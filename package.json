@@ -16,6 +16,7 @@
     "chart.js": "^4.5.0",
     "cropperjs": "^2.0.1",
     "date-fns": "^4.1.0",
+    "echarts": "^6.0.0",
     "lucide-vue-next": "^0.525.0",
     "nprogress": "^0.2.0",
     "pinia": "^3.0.3",
@@ -23,6 +24,7 @@
     "vue": "^3.4.38",
     "vue-chartjs": "^5.3.2",
     "vue-cropperjs": "^5.0.0",
+    "vue-echarts": "^8.0.1",
     "vue-i18n": "^9.14.5",
     "vue-router": "^4.5.1"
   },
