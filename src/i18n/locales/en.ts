@@ -37,6 +37,8 @@ export default {
     user: 'User',
     view: 'View',
     details: 'Details',
+    income: 'income',
+    expense: 'expense',
   },
 
   // Navigation & Layout
@@ -691,6 +693,19 @@ export default {
       eq: 'Equal to (=)',
     },
 
+    // Condition Explanations
+    conditionExplanations: {
+      walletBalanceSpecific: 'Balance of "{wallet}" {operator} {target}',
+      walletBalanceAll: 'Total balance from all wallets {operator} {target}',
+      budgetControl: 'Budget must not overspend for {months} consecutive month(s)',
+      budgetControlSpecific: '"{budget}" budget must not overspend for {months} consecutive month(s)',
+      transactionAmount: 'Get {type} transaction {operator} {target}',
+      transactionAmountCategory: 'Get {type} transaction {operator} {target} from "{category}"',
+      periodTotal: 'Total {type} in {period} {operator} {target}',
+      netWorth: 'Total net worth (assets - liabilities) {operator} {target}',
+      categorySpending: 'Spending in "{category}" for {period} {operator} {target}',
+    },
+
     // Periods
     periods: {
       thisMonth: 'This Month',
@@ -698,6 +713,10 @@ export default {
       thisYear: 'This Year',
       custom: 'Custom Period',
     },
+
+    // Unknown
+    unknownWallet: 'Unknown Wallet',
+    unknownCategory: 'Unknown Category',
 
     // Time remaining
     timeRemaining: {

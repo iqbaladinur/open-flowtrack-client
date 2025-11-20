@@ -37,6 +37,8 @@ export default {
     user: 'Pengguna',
     view: 'Lihat',
     details: 'Detail',
+    income: 'pemasukan',
+    expense: 'pengeluaran',
   },
 
   // Navigation & Layout
@@ -691,6 +693,19 @@ export default {
       eq: 'Sama dengan (=)',
     },
 
+    // Condition Explanations
+    conditionExplanations: {
+      walletBalanceSpecific: 'Saldo dompet "{wallet}" {operator} {target}',
+      walletBalanceAll: 'Total saldo dari semua dompet {operator} {target}',
+      budgetControl: 'Anggaran tidak boleh overspend selama {months} bulan berturut-turut',
+      budgetControlSpecific: 'Anggaran "{budget}" tidak boleh overspend selama {months} bulan berturut-turut',
+      transactionAmount: 'Dapatkan transaksi {type} {operator} {target}',
+      transactionAmountCategory: 'Dapatkan transaksi {type} {operator} {target} dari "{category}"',
+      periodTotal: 'Total {type} di {period} {operator} {target}',
+      netWorth: 'Total kekayaan bersih (aset - kewajiban) {operator} {target}',
+      categorySpending: 'Pengeluaran di "{category}" untuk {period} {operator} {target}',
+    },
+
     // Periods
     periods: {
       thisMonth: 'Bulan Ini',
@@ -698,6 +713,10 @@ export default {
       thisYear: 'Tahun Ini',
       custom: 'Periode Custom',
     },
+
+    // Unknown
+    unknownWallet: 'Dompet Tidak Diketahui',
+    unknownCategory: 'Kategori Tidak Diketahui',
 
     // Time remaining
     timeRemaining: {

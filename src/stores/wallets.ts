@@ -96,7 +96,23 @@ export const useWalletsStore = defineStore('wallets', () => {
   };
 
   const getWalletByIdFromServer = async (id: string, params?: { start_date?: string, end_date?: string }) => {
+    // First check if we have it locally
+    const existing = getWalletById(id);
+    if (existing && !params) {
+      return existing;
+    }
+
+    // If not found locally or params provided, fetch from server
     const response = await api.get<Wallet>(`/wallets/${id}`, { params });
+    if (response.data && !params) {
+      // Only cache if no params (to avoid caching filtered data)
+      const existingIndex = wallets.value.findIndex((w) => w.id === id);
+      if (existingIndex === -1) {
+        wallets.value.push(response.data);
+      } else {
+        wallets.value[existingIndex] = response.data;
+      }
+    }
     return response?.data;
   }
 

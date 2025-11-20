@@ -87,6 +87,25 @@ export const useCategoriesStore = defineStore('categories', () => {
     return categories.value.find((c) => c.id === id);
   };
 
+  const getCategoryByIdFromServer = async (id: string) => {
+    // First check if we have it locally
+    const existing = getCategoryById(id);
+    if (existing) {
+      return existing;
+    }
+
+    // If not found locally, fetch from server
+    const response = await api.get<Category>(`/categories/${id}`);
+    if (response.data) {
+      // Optionally add to local cache
+      const existingIndex = categories.value.findIndex((c) => c.id === id);
+      if (existingIndex === -1) {
+        categories.value.push(response.data);
+      }
+    }
+    return response.data;
+  };
+
   return {
     categories,
     loading,
@@ -97,5 +116,6 @@ export const useCategoriesStore = defineStore('categories', () => {
     deleteCategory,
     getCategoriesByType,
     getCategoryById,
+    getCategoryByIdFromServer,
   };
 });

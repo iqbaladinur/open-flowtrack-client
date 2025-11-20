@@ -81,8 +81,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import type { ConditionWithProgress } from '@/types/milestone';
+import type { Wallet } from '@/types/wallet';
+import type { Category } from '@/types/category';
+import type { Budget } from '@/types/budget';
 import {
   getConditionLabel,
   formatConditionValue,
@@ -90,7 +94,7 @@ import {
   getOperatorSymbol,
 } from '@/utils/milestoneHelpers';
 import {
-  Wallet,
+  Wallet as WalletIcon,
   ShieldCheck,
   Banknote,
   Calendar,
@@ -101,6 +105,9 @@ import {
   ChevronDown,
 } from 'lucide-vue-next';
 import { useConfigStore } from '@/stores/config';
+import { useWalletsStore } from '@/stores/wallets';
+import { useCategoriesStore } from '@/stores/categories';
+import { useBudgetsStore } from '@/stores/budgets';
 
 interface Props {
   condition: ConditionWithProgress;
@@ -108,9 +115,17 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const { t } = useI18n();
 const configStore = useConfigStore();
+const walletsStore = useWalletsStore();
+const categoriesStore = useCategoriesStore();
+const budgetsStore = useBudgetsStore();
+
 // State
 const showExplanation = ref(false);
+const walletData = ref<Wallet | null | undefined>(null);
+const categoryData = ref<Category | null | undefined>(null);
+const budgetData = ref<Budget | null | undefined>(null);
 
 // Helper to format custom date
 const formatCustomDate = (dateString: string): string => {
@@ -122,61 +137,152 @@ const formatCustomDate = (dateString: string): string => {
   }
 };
 
+// Fetch related data (wallet/category/budget) from server if not in local cache
+const fetchRelatedData = async () => {
+  const config = props.condition.config as any;
+
+  // Fetch wallet data if needed
+  if (config.wallet_id) {
+    try {
+      walletData.value = await walletsStore.getWalletByIdFromServer(config.wallet_id);
+    } catch (error) {
+      console.error('Failed to fetch wallet:', error);
+      walletData.value = undefined;
+    }
+  }
+
+  // Fetch category data if needed
+  if (config.category_id) {
+    try {
+      categoryData.value = await categoriesStore.getCategoryByIdFromServer(config.category_id);
+    } catch (error) {
+      console.error('Failed to fetch category:', error);
+      categoryData.value = undefined;
+    }
+  }
+
+  // Fetch budget data if needed
+  if (config.budget_id) {
+    try {
+      budgetData.value = await budgetsStore.getBudgetById(config.budget_id);
+    } catch (error) {
+      console.error('Failed to fetch budget:', error);
+      budgetData.value = undefined;
+    }
+  }
+};
+
 // Generate explanation based on condition type and config
 const conditionExplanation = computed(() => {
   const config = props.condition.config as any;
+  const targetValue = props.condition.target_value;
+  const formattedTarget = typeof targetValue === 'number' ? configStore.formatCurrency(targetValue) : targetValue;
+  const operator = getOperatorSymbol(config.operator);
 
   switch (props.condition.type) {
     case 'wallet_balance':
       if (config.wallet_id) {
-        return `Wallet balance ${getOperatorSymbol(config.operator)} target`;
+        // Use fetched wallet data, fallback to local, then unknown
+        const walletName = walletData.value?.name ||
+                          walletsStore.getWalletById(config.wallet_id)?.name ||
+                          t('milestones.unknownWallet');
+        return t('milestones.conditionExplanations.walletBalanceSpecific', {
+          wallet: walletName,
+          operator,
+          target: formattedTarget
+        });
       }
-      return `Total balance from all wallets ${getOperatorSymbol(config.operator)} target`;
+      return t('milestones.conditionExplanations.walletBalanceAll', {
+        operator,
+        target: formattedTarget
+      });
 
     case 'budget_control':
       const months = config.consecutive_months || 1;
-      return `Budget must not overspend for ${months} consecutive month${months > 1 ? 's' : ''}`;
+      // Check if there's a specific budget_id
+      if (config.budget_id && budgetData.value) {
+        // Budget has name and categories
+        const budgetName = budgetData.value.name;
+        if (budgetName) {
+          return t('milestones.conditionExplanations.budgetControlSpecific', {
+            months,
+            budget: budgetName
+          });
+        }
+      }
+      return t('milestones.conditionExplanations.budgetControl', { months });
 
     case 'transaction_amount':
-      const txType = config.transaction_type === 'income' ? 'income' : 'expense';
+      const txType = config.transaction_type === 'income' ? t('common.income') : t('common.expense');
       if (config.category_id) {
-        return `Get ${txType} transaction ${getOperatorSymbol(config.operator)} target from specific category`;
+        // Use fetched category data, fallback to local, then unknown
+        const categoryName = categoryData.value?.name ||
+                            categoriesStore.getCategoryById(config.category_id)?.name ||
+                            t('milestones.unknownCategory');
+        return t('milestones.conditionExplanations.transactionAmountCategory', {
+          type: txType,
+          operator,
+          target: formattedTarget,
+          category: categoryName
+        });
       }
-      return `Get ${txType} transaction ${getOperatorSymbol(config.operator)} target`;
+      return t('milestones.conditionExplanations.transactionAmount', {
+        type: txType,
+        operator,
+        target: formattedTarget
+      });
 
     case 'period_total':
-      const periodType = config.transaction_type === 'income' ? 'income' : 'expense';
+      const periodType = config.transaction_type === 'income' ? t('common.income') : t('common.expense');
       let period = '';
       if (config.period === 'month') {
-        period = 'this month';
+        period = t('milestones.periods.thisMonth');
       } else if (config.period === 'quarter') {
-        period = 'this quarter';
+        period = t('milestones.periods.thisQuarter');
       } else if (config.period === 'year') {
-        period = 'this year';
+        period = t('milestones.periods.thisYear');
       } else if (config.period === 'custom' && config.start_date && config.end_date) {
-        period = `custom period (${formatCustomDate(config.start_date)} - ${formatCustomDate(config.end_date)})`;
+        period = `${formatCustomDate(config.start_date)} - ${formatCustomDate(config.end_date)}`;
       } else {
-        period = 'custom period';
+        period = t('milestones.periods.custom');
       }
-      return `Total ${periodType} in ${period} ${getOperatorSymbol(config.operator)} target`;
+      return t('milestones.conditionExplanations.periodTotal', {
+        type: periodType,
+        period,
+        operator,
+        target: formattedTarget
+      });
 
     case 'net_worth':
-      return `Total net worth (assets - liabilities) ${getOperatorSymbol(config.operator)} target`;
+      return t('milestones.conditionExplanations.netWorth', {
+        operator,
+        target: formattedTarget
+      });
 
     case 'category_spending':
+      // Use fetched category data, fallback to local, then unknown
+      const categoryName = categoryData.value?.name ||
+                          (config.category_id ? categoriesStore.getCategoryById(config.category_id)?.name : null) ||
+                          t('milestones.unknownCategory');
+
       let catPeriod = '';
       if (config.period === 'month') {
-        catPeriod = 'this month';
+        catPeriod = t('milestones.periods.thisMonth');
       } else if (config.period === 'quarter') {
-        catPeriod = 'this quarter';
+        catPeriod = t('milestones.periods.thisQuarter');
       } else if (config.period === 'year') {
-        catPeriod = 'this year';
+        catPeriod = t('milestones.periods.thisYear');
       } else if (config.period === 'custom' && config.start_date && config.end_date) {
-        catPeriod = `custom period (${formatCustomDate(config.start_date)} - ${formatCustomDate(config.end_date)})`;
+        catPeriod = `${formatCustomDate(config.start_date)} - ${formatCustomDate(config.end_date)}`;
       } else {
-        catPeriod = 'custom period';
+        catPeriod = t('milestones.periods.custom');
       }
-      return `Spending in specific category for ${catPeriod} ${getOperatorSymbol(config.operator)} limit`;
+      return t('milestones.conditionExplanations.categorySpending', {
+        category: categoryName,
+        period: catPeriod,
+        operator,
+        target: formattedTarget
+      });
 
     default:
       return '';
@@ -185,7 +291,7 @@ const conditionExplanation = computed(() => {
 
 // Icon mapping
 const conditionIconMap: Record<string, any> = {
-  wallet_balance: Wallet,
+  wallet_balance: WalletIcon,
   budget_control: ShieldCheck,
   transaction_amount: Banknote,
   period_total: Calendar,
@@ -196,4 +302,18 @@ const conditionIconMap: Record<string, any> = {
 const getConditionIcon = (type: string) => {
   return conditionIconMap[type] || Circle;
 };
+
+// Lifecycle: Fetch related data on mount
+onMounted(() => {
+  fetchRelatedData();
+});
+
+// Watch for condition changes and refetch data
+watch(
+  () => props.condition,
+  () => {
+    fetchRelatedData();
+  },
+  { deep: true }
+);
 </script>
