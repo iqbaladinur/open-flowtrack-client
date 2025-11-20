@@ -1,39 +1,32 @@
 <template>
-  <!-- @vue-ignore -->
-  <Line v-if="props.chartType === 'line'" :data="styledChartData" :options="chartOptions" />
-  <!-- @vues-ignore -->
-  <Bar v-else :data="styledChartData" :options="chartOptions" />
+  <v-chart ref="chartRef" class="w-full h-full" :option="chartOption" autoresize />
 </template>
 
 <script setup lang="ts">
-import { useThemeStore } from '@/stores/theme';
 import { computed } from 'vue';
-import { Line, Bar } from 'vue-chartjs';
+import VChart from 'vue-echarts';
+import { use } from 'echarts/core';
+import { LineChart, BarChart } from 'echarts/charts';
 import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-} from 'chart.js';
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent,
+} from 'echarts/components';
+import { CanvasRenderer } from 'echarts/renderers';
 import type { PropType } from 'vue';
+import { useThemeStore } from '@/stores/theme';
 
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Filler
-);
+// Register ECharts components
+use([
+  LineChart,
+  BarChart,
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent,
+  CanvasRenderer,
+]);
 
 const props = defineProps({
   chartData: {
@@ -54,117 +47,151 @@ const props = defineProps({
 });
 
 const themeStore = useThemeStore();
-const isDarkMode = computed(() => {
+
+const isDark = computed(() => {
   if (themeStore.theme === 'system') {
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   }
   return themeStore.theme === 'dark';
 });
 
-const styledChartData = computed(() => {
-  if (props.chartType === 'bar') {
-    return {
-      labels: props.chartData.labels,
-      datasets: props.chartData.datasets.map(dataset => ({
-        ...dataset,
-        borderColor: dataset.backgroundColor,
-        backgroundColor: dataset.backgroundColor,
-        borderWidth: 2.5,
-      })),
-    }
-  }
-  return {
-    labels: props.chartData.labels,
-    datasets: props.chartData.datasets.map(dataset => ({
-      ...dataset,
-      borderColor: dataset.backgroundColor,
-      backgroundColor: dataset.backgroundColor + '33', // Add 20% opacity for fill
-      tension: 0.4, // Smooth, rounded lines
-      fill: true,
-      pointStyle: 'circle',
-      pointRadius: 0.1,
-      pointHoverRadius: 6,
-      borderWidth: 2.5,
-    })),
-  }
-});
+const chartOption = computed(() => {
+  const textColor = isDark.value ? '#9ca3af' : '#6b7280';
+  const legendColor = isDark.value ? '#d1d5db' : '#374151';
+  const gridLineColor = isDark.value ? '#374151' : '#e5e7eb';
+  const tooltipBg = isDark.value ? '#1f2937' : '#ffffff';
+  const tooltipBorder = isDark.value ? '#374151' : '#e5e7eb';
 
-const chartOptions = computed(() => ({
-  responsive: true,
-  maintainAspectRatio: false,
-  scales: {
-    x: {
-      ticks: {
-        color: isDarkMode.value ? '#9ca3af' : '#6b7280',
-        font: {
-          family: "'Inter', sans-serif",
+  const series = props.chartData.datasets.map(dataset => {
+    const baseConfig = {
+      name: dataset.label,
+      data: dataset.data,
+      itemStyle: {
+        color: dataset.backgroundColor,
+      },
+    };
+
+    if (props.chartType === 'line') {
+      return {
+        ...baseConfig,
+        type: 'line',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 1,
+        lineStyle: {
+          width: 2.5,
+          color: dataset.backgroundColor,
         },
-        autoSkip: true,
-        maxTicksLimit: 4,
-      },
-      grid: {
-        display: false,
-      },
-      border: {
-        color: isDarkMode.value ? '#374151' : '#e5e7eb',
-      }
-    },
-    y: {
-      ticks: {
-        color: isDarkMode.value ? '#9ca3af' : '#6b7280',
-        font: {
-          family: "'Inter', sans-serif",
+        areaStyle: {
+          color: dataset.backgroundColor + '33',
         },
-        callback: function(value: any) {
-          return Intl.NumberFormat('en', { notation: 'compact' }).format(value);
-        }
-      },
-      grid: {
-        color: isDarkMode.value ? '#374151' : '#e5e7eb',
-        drawBorder: false,
-        display: false,
-      },
-    },
-  },
-  plugins: {
-    legend: {
-      position: 'top' as const,
-      align: 'end' as const,
-      labels: {
-        color: isDarkMode.value ? '#d1d5db' : '#374151',
-        boxWidth: 12,
-        padding: 20,
-        font: {
-          family: "'Inter', sans-serif",
-          size: 12,
+        emphasis: {
+          symbolSize: 8,
         },
-      },
-    },
+      };
+    } else {
+      return {
+        ...baseConfig,
+        type: 'bar',
+        barMaxWidth: 20,
+        itemStyle: {
+          color: dataset.backgroundColor,
+          borderRadius: [4, 4, 0, 0],
+        },
+      };
+    }
+  });
+
+  return {
     tooltip: {
-      enabled: true,
-      backgroundColor: isDarkMode.value ? '#1f2937' : '#ffffff',
-      titleColor: isDarkMode.value ? '#d1d5db' : '#374151',
-      bodyColor: isDarkMode.value ? '#9ca3af' : '#6b7280',
-      borderColor: isDarkMode.value ? '#374151' : '#e5e7eb',
+      trigger: 'axis',
+      backgroundColor: tooltipBg,
+      borderColor: tooltipBorder,
       borderWidth: 1,
       padding: 12,
-      cornerRadius: 8,
-      displayColors: true,
-      boxPadding: 4,
-      titleFont: {
-        family: "'Inter', sans-serif",
-        size: 14,
-        weight: 'bold' as const,
+      textStyle: {
+        color: legendColor,
+        fontFamily: "'Inter', sans-serif",
+        fontSize: 12,
       },
-      bodyFont: {
-        family: "'Inter', sans-serif",
-        size: 12,
+      axisPointer: {
+        type: props.chartType === 'line' ? 'cross' : 'shadow',
+        crossStyle: {
+          color: textColor,
+        },
+      },
+      formatter: (params: any) => {
+        let result = `<div style="font-weight: bold; margin-bottom: 8px;">${params[0].axisValue}</div>`;
+        params.forEach((param: any) => {
+          const value = Intl.NumberFormat('en', { notation: 'compact' }).format(param.value);
+          result += `<div style="display: flex; align-items: center; gap: 8px; margin: 4px 0;">
+            <span style="display: inline-block; width: 10px; height: 10px; background: ${param.color}; border-radius: 2px;"></span>
+            <span>${param.seriesName}: ${value}</span>
+          </div>`;
+        });
+        return result;
       },
     },
-  },
-  interaction: {
-    intersect: false,
-    mode: 'index' as const,
-  },
-}));
+    legend: {
+      show: true,
+      top: 0,
+      right: 0,
+      textStyle: {
+        color: legendColor,
+        fontFamily: "'Inter', sans-serif",
+        fontSize: 12,
+      },
+      itemWidth: 12,
+      itemHeight: 12,
+      itemGap: 20,
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      top: '15%',
+      containLabel: true,
+    },
+    xAxis: {
+      type: 'category',
+      data: props.chartData.labels,
+      axisLine: {
+        lineStyle: {
+          color: gridLineColor,
+        },
+      },
+      axisTick: {
+        show: false,
+      },
+      axisLabel: {
+        color: textColor,
+        fontFamily: "'Inter', sans-serif",
+        fontSize: 11,
+        interval: 'auto',
+        rotate: 0,
+      },
+    },
+    yAxis: {
+      type: 'value',
+      axisLine: {
+        show: false,
+      },
+      axisTick: {
+        show: false,
+      },
+      splitLine: {
+        show: false,
+      },
+      axisLabel: {
+        color: textColor,
+        fontFamily: "'Inter', sans-serif",
+        fontSize: 11,
+        formatter: (value: number) => {
+          return Intl.NumberFormat('en', { notation: 'compact' }).format(value);
+        },
+      },
+    },
+    series,
+  };
+});
 </script>

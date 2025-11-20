@@ -211,62 +211,41 @@
           :end-date="dateRange.end"
         />
 
-        <!-- Breakdown Reports -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:items-start">
-          <!-- Category Report -->
-          <div class="card p-4 lg:min-h-[500px] flex flex-col gap-4">
-            <div class="flex justify-between items-start mb-4 flex-col md:flex-row gap-4">
-              <div>
-                <h2 class="text-sm font-semibold text-gray-900 dark:text-white">{{ $t('reports.breakdownByCategory') }} ({{ configStore.currency }})</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400"></p>
-              </div>
-              <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full lg:w-auto">
-                <button @click="categoryReportType = 'expense'"
-                  :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', categoryReportType === 'expense' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('reports.spending') }}</button>
-                <button @click="categoryReportType = 'income'"
-                  :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', categoryReportType === 'income' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('reports.income') }}</button>
-              </div>
+        <!-- Breakdown by Category -->
+        <div class="card p-4 flex flex-col gap-4">
+          <div class="flex justify-between items-start mb-4 flex-col md:flex-row gap-4">
+            <div>
+              <h2 class="text-sm font-semibold text-gray-900 dark:text-white">{{ $t('reports.breakdownByCategory') }} ({{ configStore.currency }})</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400"></p>
             </div>
-            <div v-if="categoryChartData.labels.length === 0"
-              class="text-center py-8 flex-1 flex items-center justify-center flex-col">
-              <PieChart class="w-12 h-12 text-gray-400 mx-auto mb-2" />
-              <p class="text-gray-500 dark:text-gray-400">{{ $t('reports.noData') }} {{ categoryReportType === 'expense' ? $t('reports.spending').toLowerCase() : $t('reports.income').toLowerCase() }}</p>
-            </div>
-            <div v-else class="flex-1">
-              <CategoryPieChart :chart-data="categoryChartData" />
+            <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full lg:w-auto">
+              <button @click="categoryReportType = 'expense'"
+                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', categoryReportType === 'expense' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('reports.spending') }}</button>
+              <button @click="categoryReportType = 'income'"
+                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', categoryReportType === 'income' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('reports.income') }}</button>
             </div>
           </div>
+          <div v-if="categoryChartData.labels.length === 0"
+            class="text-center py-8 flex-1 flex items-center justify-center flex-col">
+            <PieChart class="w-12 h-12 text-gray-400 mx-auto mb-2" />
+            <p class="text-gray-500 dark:text-gray-400">{{ $t('reports.noData') }} {{ categoryReportType === 'expense' ? $t('reports.spending').toLowerCase() : $t('reports.income').toLowerCase() }}</p>
+          </div>
+          <div v-else class="flex-1">
+            <CategoryPieChart :chart-data="categoryChartData" />
+          </div>
+        </div>
 
-          <!-- Wallet Report -->
-          <div class="card p-4 lg:min-h-[500px]">
-            <h2 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">
-              {{ $t('reports.flowByWallet') }} ({{ configStore.currency }})
+        <!-- Wallet Flow Sankey -->
+        <div class="card p-4">
+          <div class="mb-4">
+            <h2 class="text-sm font-semibold text-gray-900 dark:text-white">
+              {{ $t('reports.walletFlowDiagram') }} ({{ configStore.currency }})
             </h2>
-            <div v-if="walletReportData.length === 0" class="text-center py-8">
-              <Wallet class="w-12 h-12 text-gray-400 mx-auto mb-2" />
-              <p class="text-gray-500 dark:text-gray-400 px-2">{{ $t('reports.noWalletData') }}</p>
-            </div>
-            <div v-else class="space-y-2">
-              <div v-for="item in walletReportData" :key="item.name"
-                class="rounded-lg shadow p-3 -mx-3">
-                <div class="flex items-center justify-between mb-2">
-                  <h3 class="font-medium text-gray-900 dark:text-white truncate">{{ item.name }}</h3>
-                  <span :class="item.net >= 0 ? 'text-success-600' : 'text-error-600'" class="flex items-center gap-2">
-                    <component :is="(item.net >= 0) ? ArrowUp : ArrowDown" class="size-3" />
-                    <span class="font-medium text-sm font-mono">
-                      {{ configStore.formatCurrency(item.net) }}
-                    </span>
-                  </span>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs font-mono">
-                  <span class="text-success-500 flex justify-between items-center"><span class="size-5 rounded-md bg-purple-400/10 flex items-center justify-center"><TrendingUp class="size-3" /></span><span>+{{ configStore.formatCurrency(item.income) }}</span></span>
-                  <span class="text-error-500 flex justify-between items-center"><span class="size-5 rounded-md bg-purple-400/10 flex items-center justify-center"><TrendingDown class="size-3" /></span><span>-{{ configStore.formatCurrency(item.expense) }}</span></span>
-                  <span class="text-blue-500 flex justify-between items-center"><span class="size-5 rounded-md bg-purple-400/10 flex items-center justify-center"><ArrowDownRight class="size-3" /></span><span>+{{ configStore.formatCurrency(item.transferIn) }}</span></span>
-                  <span class="text-blue-500 flex justify-between items-center"><span class="size-5 rounded-md bg-purple-400/10 flex items-center justify-center"><ArrowUpRight class="size-3" /></span><span>-{{ configStore.formatCurrency(item.transferOut) }}</span></span>
-                </div>
-              </div>
-            </div>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              {{ $t('reports.walletFlowDescription') }}
+            </p>
           </div>
+          <WalletFlowSankeyChart :transactions="transactions" :wallet-report-data="walletReportData" />
         </div>
       </div>
     </div>
@@ -284,7 +263,8 @@ import TimeSeriesChart from '@/components/reports/TimeSeriesChart.vue';
 import CategoryPieChart from '@/components/reports/CategoryPieChart.vue';
 import SummaryCard3 from '@/components/dashboard/SummaryCard3.vue';
 import ExpenseAnalysisCard from '@/components/reports/ExpenseAnalysisCard.vue';
-import { ArrowUp, ArrowDown, Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, Wallet, TrendingUp, TrendingDown, Scale, PieChartIcon, ArrowRightLeft, Filter, FilterX, ChevronLeft, ChevronRight, ArrowUpRight, ArrowDownRight } from 'lucide-vue-next';
+import WalletFlowSankeyChart from '@/components/reports/WalletFlowSankeyChart.vue';
+import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, TrendingUp, TrendingDown, Scale, PieChartIcon, ArrowRightLeft, Filter, FilterX, ChevronLeft, ChevronRight } from 'lucide-vue-next';
 import type { Transaction } from '@/types/transaction';
 import { format, parseISO } from 'date-fns';
 
