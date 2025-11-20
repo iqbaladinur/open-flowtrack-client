@@ -200,7 +200,7 @@
             <LoadingSpinner class="w-8 h-8" />
           </div>
 
-          <div v-else-if="budgets.length > 0" class="space-y-3">
+          <div v-else-if="budgets.length > 0" class="space-y-10">
             <div class="card p-4">
               <div class="mb-3">
                 <h3 class="text-sm font-semibold text-gray-900 dark:text-white">{{ $t('dashboard.overallActiveBudget')
@@ -276,10 +276,7 @@
 
                   <!-- Remaining -->
                   <div class="text-center">
-                    <p class="text-[9px] mb-1" :class="{
-                      'text-success-600': budgetSummary.usage_percent <= 100,
-                      'text-error-500': budgetSummary.usage_percent > 100
-                    }">
+                    <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">
                       {{ budgetSummary.usage_percent > 100 ? $t('dashboard.over') : $t('dashboard.left') }}
                     </p>
                     <p class="text-xs font-semibold font-mono" :class="{
@@ -294,8 +291,8 @@
 
               <!-- Progress Bar -->
               <div class="space-y-1.5">
-                <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
-                  <div class="h-2 rounded-full transition-all duration-500" :class="{
+                <div class="w-full bg-gray-200 rounded-full h-1 dark:bg-gray-700">
+                  <div class="h-1 rounded-full transition-all duration-500" :class="{
                     'bg-blue-500': budgetSummary.usage_percent <= 50,
                     'bg-success-500': budgetSummary.usage_percent > 50 && budgetSummary.usage_percent <= 75,
                     'bg-warning-500': budgetSummary.usage_percent > 75 && budgetSummary.usage_percent <= 90,
@@ -318,7 +315,7 @@
               </div>
             </div>
             <div class="card">
-              <BudgetCard v-for="budget in budgets" :key="`budgetlist_` + budget.id" :budget="budget"
+              <BudgetCard v-for="budget in budgets" :key="`budgetlist_` + budget.id" class="mb-1 last:mb-0" :budget="budget"
                 :simple-view="true" />
             </div>
           </div>

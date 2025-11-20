@@ -5,7 +5,7 @@
       'max-h-[1000px]': isDetailsVisible,
       'max-h-[300px] sm:max-h-[300px]': !isDetailsVisible,
       'card': !simpleView,
-      'hover:bg-gray-50 dark:hover:bg-gray-800/30 cursor-pointer first:rounded-t-md': simpleView
+      'hover:bg-gray-50 dark:hover:bg-gray-800/30 cursor-pointer first:rounded-t-md last:rounded-b-md': simpleView
     }"
     @click="isDetailsSimpleVisible = !isDetailsSimpleVisible"
   >
@@ -29,23 +29,40 @@
           </div>
         </div>
         
-        <div class="text-right">
-          <p v-show="!isDetailsSimpleVisible" class="text-[9px] tracking-wider text-gray-500 dark:text-gray-400 mb-0.5">
-            <span>{{ formattedProgress }}</span>
-          </p>
-          <div v-show="isDetailsSimpleVisible">
-            <p class="text-[9px] tracking-wider text-gray-500 dark:text-gray-400 mb-0.5">
-              {{ isOverspent ? $t('dashboard.over') : $t('dashboard.left') }}
-            </p>
-            <p class="font-mono text-xs leading-none" :class="amountClass">
-              {{ formattedRemaining }}
-            </p>
+        <div class="text-right relative">
+          <!-- State 1: Progress % -->
+          <div 
+            class="grid transition-all duration-300 ease-in-out"
+            :class="!isDetailsSimpleVisible ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
+          >
+            <div class="overflow-hidden">
+              <p class="text-[9px] tracking-wider text-gray-500 dark:text-gray-400 mb-0.5">
+                <span>{{ formattedProgress }}</span>
+              </p>
+            </div>
+          </div>
+          
+          <!-- State 2: Details -->
+          <div 
+            class="grid transition-all duration-300 ease-in-out"
+            :class="isDetailsSimpleVisible ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
+          >
+            <div class="overflow-hidden">
+              <div class="flex flex-col items-end">
+                <p class="text-[9px] tracking-wider text-gray-500 dark:text-gray-400 mb-0.5">
+                  {{ isOverspent ? $t('dashboard.over') : $t('dashboard.left') }}
+                </p>
+                <p class="font-mono text-xs leading-none" :class="amountClass">
+                  {{ formattedRemaining }}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="space-y-1.5">
-        <div class="h-[2px] w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+      <div class="flex flex-col">
+        <div class="h-[2px] w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden" :class="{ '!h-1': isDetailsSimpleVisible }">
           <div
             class="h-full transition-all duration-500 rounded-full"
             :class="progressBarClass"
@@ -53,9 +70,16 @@
           ></div>
         </div>
         
-        <div v-show="isDetailsSimpleVisible" class="flex justify-between items-center text-[10px] font-medium text-gray-500 dark:text-gray-400">
-          <span>{{ formattedProgress }}%</span>
-          <span class="font-mono">{{ formattedSpent }} <span class="text-gray-300 dark:text-gray-600">/</span> {{ formattedLimit }}</span>
+        <div 
+          class="grid transition-all duration-300 ease-in-out"
+          :class="isDetailsSimpleVisible ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
+        >
+          <div class="overflow-hidden">
+            <div class="flex justify-between items-center text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-1.5">
+              <span>{{ formattedProgress }}%</span>
+              <span class="font-mono">{{ formattedSpent }} <span class="text-gray-300 dark:text-gray-600">/</span> {{ formattedLimit }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
