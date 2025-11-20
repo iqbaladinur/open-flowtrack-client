@@ -172,6 +172,24 @@ const numberOfWeeks = computed(() => {
   return weeks >= 0 ? weeks + 1 : 1;
 });
 
+// Function to determine if a color is light or dark
+const getContrastColor = (hexColor: string): string => {
+  // Remove # if present
+  const hex = hexColor.replace('#', '');
+
+  // Parse RGB values
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  // Calculate relative luminance using the formula
+  // https://www.w3.org/TR/WCAG20/#relativeluminancedef
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+  // Return black for light colors, white for dark colors
+  return luminance > 0.5 ? '#1f2937' : '#ffffff';
+};
+
 const analysisData = computed(() => {
   const expenseTransactions = props.transactions.filter(t => t.type === 'expense' && t.category);
   const categoryStats = new Map<string, { name: string, color: string, icon: string, count: number, total: number, amounts: number[] }>();
@@ -196,18 +214,48 @@ const chartOption = computed(() => {
   const tooltipBg = isDark.value ? '#1f2937' : '#ffffff';
   const tooltipBorder = isDark.value ? '#374151' : '#e5e7eb';
   const tooltipTextColor = isDark.value ? '#d1d5db' : '#374151';
-  const labelColor = isDark.value ? '#ffffff' : '#374151';
 
-  const treemapData = analysisData.value.map(cat => ({
-    name: cat.name,
-    value: sizeBy.value === 'total' ? cat.total : cat.count,
-    itemStyle: {
-      color: cat.color + '4d', // Add transparency (80% opacity)
-      borderColor: cat.color,
-      borderWidth: 0,
-    },
-    categoryData: cat,
-  }));
+  const treemapData = analysisData.value.map(cat => {
+    const itemLabelColor = getContrastColor(cat.color);
+    return {
+      name: cat.name,
+      value: sizeBy.value === 'total' ? cat.total : cat.count,
+      itemStyle: {
+        color: cat.color + '4d', // Add transparency (80% opacity)
+        borderColor: cat.color,
+        borderWidth: 0,
+      },
+      categoryData: cat,
+      label: {
+        show: true,
+        formatter: () => {
+          if (sizeBy.value === 'total') {
+            return `{name|${cat.name}}\n{value|${configStore.formatCurrency(cat.total)}}`;
+          }
+          return `{name|${cat.name}}\n{value|${cat.count} trx}`;
+        },
+        rich: {
+          name: {
+            fontSize: 11,
+            fontWeight: 'bold',
+            color: itemLabelColor,
+            lineHeight: 16,
+            verticalAlign: 'middle',
+          },
+          value: {
+            fontSize: 10,
+            color: itemLabelColor,
+            lineHeight: 14,
+            opacity: 0.8,
+            verticalAlign: 'middle',
+          },
+        },
+        position: ['50%', '50%'],
+        align: 'center',
+        verticalAlign: 'middle',
+      },
+    };
+  });
 
   return {
     backgroundColor: chartBg,
@@ -238,37 +286,10 @@ const chartOption = computed(() => {
         top: 4,
         right: 4,
         bottom: 4,
-        roam: 'zoom',
+        roam: false,
         nodeClick: false,
         breadcrumb: {
           show: false,
-        },
-        label: {
-          show: true,
-          formatter: (params: any) => {
-            const data = params.data.categoryData;
-            if (sizeBy.value === 'total') {
-              return `{name|${data.name}}\n{value|${configStore.formatCurrency(data.total)}}`;
-            }
-            return `{name|${data.name}}\n{value|${data.count} trx}`;
-          },
-          rich: {
-            name: {
-              fontSize: 11,
-              fontWeight: 'bold',
-              color: labelColor,
-              lineHeight: 16,
-            },
-            value: {
-              fontSize: 10,
-              color: labelColor,
-              lineHeight: 14,
-              opacity: 0.8,
-            },
-          },
-          position: 'inside',
-          align: 'center',
-          verticalAlign: 'middle',
         },
         itemStyle: {
           borderRadius: 4,
