@@ -5,12 +5,59 @@
       'max-h-[1000px]': isDetailsVisible,
       'max-h-[300px] sm:max-h-[300px]': !isDetailsVisible,
       'card': !simpleView,
-      'border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-800/30': simpleView
+      'hover:bg-gray-50 dark:hover:bg-gray-800/30': simpleView
     }"
   >
-    <div :class="simpleView ? 'p-3 py-4' : 'p-3'">
+    <!-- Simple View -->
+    <div v-if="simpleView" class="p-3 hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
+      <div class="flex justify-between items-start mb-2">
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-2">
+            <h3 class="font-medium text-gray-900 dark:text-white text-xs">{{ budget.name }}</h3>
+            <div class="flex -space-x-1">
+              <div
+                v-for="category in budgetCategories"
+                :key="category.id"
+                class="flex items-center justify-center size-4 rounded-full ring-1 ring-white dark:ring-gray-800 bg-gray-100 dark:bg-gray-900"
+                :style="{ color: category.color }"
+                :title="category.name"
+              >
+                <component :is="getIcon(category.icon)" class="size-2.5" />
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="text-right">
+          <p class="text-[9px] tracking-wider text-gray-500 dark:text-gray-400 mb-0.5">
+            {{ isOverspent ? $t('dashboard.over') : $t('dashboard.left') }}
+          </p>
+          <p class="font-mono text-sm leading-none" :class="amountClass">
+            {{ formattedRemaining }}
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-1.5">
+        <div class="h-1 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div
+            class="h-full transition-all duration-500 rounded-full"
+            :class="progressBarClass"
+            :style="{ width: progressPercentage + '%' }"
+          ></div>
+        </div>
+        
+        <div class="flex justify-between items-center text-[10px] font-medium text-gray-500 dark:text-gray-400">
+          <span>{{ Math.round(progressPercentage) }}%</span>
+          <span class="font-mono">{{ formattedSpent }} <span class="text-gray-300 dark:text-gray-600">/</span> {{ formattedLimit }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Normal View -->
+    <div v-else class="p-3">
       <!-- Header -->
-      <div v-if="!simpleView" class="flex items-center justify-between w-full mb-4">
+      <div class="flex items-center justify-between w-full mb-4">
         <div class="flex items-center gap-1.5 card p-2 text-xs font-bold text-gray-600 dark:text-gray-300">
           <CalendarDays class="w-4 h-4" />
           <span>{{ formatDateRange(budget.start_date, budget.end_date) }}</span>
@@ -26,14 +73,16 @@
           </div>
         </div>
       </div>
-      <div class="flex items-start justify-between" :class="{ 'card p-2': !simpleView }">
-        <div :class="{ 'flex items-center gap-3 justify-between w-full mb-3': simpleView }">
-          <h3 class="font-bold text-sm text-gray-900 dark:text-white" :class="{ 'text-sm font-semibold truncate max-w-[60%]': simpleView }">
+
+      <!-- Title & Categories -->
+      <div class="flex items-start justify-between card p-2">
+        <div>
+          <h3 class="font-bold text-sm text-gray-900 dark:text-white">
             {{ budget.name }}
           </h3>
-          <div class="flex items-center flex-wrap gap-1" :class="{ 'mt-2': !simpleView }">
+          <div class="flex items-center flex-wrap gap-1 mt-2">
             <div
-              v-for="(category) in budgetCategories"
+              v-for="category in budgetCategories"
               :key="category.id"
               class="flex items-center rounded-full size-6 justify-center"
               :style="{ backgroundColor: category.color + '20', color: category.color }"
@@ -47,68 +96,22 @@
 
       <!-- Budget Details & Progress -->
       <div class="mt-2">
-        <!-- Simple View Layout -->
-        <div v-if="simpleView" class="space-y-1.5">
-          <!-- Spent & Remaining Row -->
-          <div class="flex items-center justify-between gap-2">
-            <div class="flex-1">
-              <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-0.5">{{ $t('dashboard.spent') }}</p>
-              <p class="text-[11px] font-semibold font-mono text-gray-900 dark:text-white">
-                {{ configStore.formatCurrency(budget.total_spent || 0) }}
-              </p>
-            </div>
-            <div class="flex-1 text-right">
-              <p class="text-[9px] dark:text-gray-400 mb-0.5" :class="isOverspent ? 'text-error-500' : 'text-success-600'">
-                {{ isOverspent ? $t('dashboard.over') : $t('dashboard.left') }}
-              </p>
-              <p
-                class="text-[11px] font-semibold font-mono"
-                :class="isOverspent ? 'text-error-500' : 'text-success-600 dark:text-success-400'"
-              >
-                {{ configStore.formatCurrency(remainingAmount) }}
-              </p>
-            </div>
-          </div>
-
-          <!-- Progress Bar -->
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
-            <div
-              class="h-1 rounded-full transition-all duration-500"
-              :class="progressBarClass"
-              :style="{ width: Math.min(getBudgetProgress(budget), 100) + '%' }"
-            ></div>
-          </div>
-
-          <!-- Limit -->
-          <div class="text-right">
-            <p class="text-[9px] text-gray-400 dark:text-gray-500">
-              {{ $t('dashboard.limit') }}: <span class="font-mono font-medium">{{ configStore.formatCurrency(budget.limit_amount) }}</span>
-            </p>
-          </div>
+        <div class="text-left mb-3">
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ isOverspent ? $t('dashboard.over') : $t('dashboard.left') }}</p>
+          <p class="font-mono text-lg font-bold" :class="amountClass">
+            {{ formattedRemaining }}
+          </p>
         </div>
-
-        <!-- Normal View Layout -->
-        <div v-else>
-          <div class="text-left mb-3">
-            <p class="text-xs text-gray-500 dark:text-gray-400">{{ isOverspent ? $t('dashboard.over') : $t('dashboard.left') }}</p>
-            <p
-              class="font-mono text-lg font-bold"
-              :class="isOverspent ? 'text-error-500' : 'text-success-600 dark:text-success-400'"
-            >
-              {{ configStore.formatCurrency(remainingAmount) }}
-            </p>
-          </div>
-          <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
-            <span>{{ $t('dashboard.spent') }}: {{ configStore.formatCurrency(budget.total_spent || 0) }}</span>
-            <span>{{ $t('dashboard.limit') }}: {{ configStore.formatCurrency(budget.limit_amount) }}</span>
-          </div>
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-            <div
-              class="h-2 rounded-full transition-all duration-500"
-              :class="progressBarClass"
-              :style="{ width: Math.min(getBudgetProgress(budget), 100) + '%' }"
-            ></div>
-          </div>
+        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+          <span>{{ $t('dashboard.spent') }}: {{ formattedSpent }}</span>
+          <span>{{ $t('dashboard.limit') }}: {{ formattedLimit }}</span>
+        </div>
+        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+          <div
+            class="h-2 rounded-full transition-all duration-500"
+            :class="progressBarClass"
+            :style="{ width: progressPercentage + '%' }"
+          ></div>
         </div>
       </div>
     </div>
@@ -204,6 +207,18 @@ const getBudgetProgress = (budget: Budget) => {
   if (limit === 0) return 100;
   return ((budget.total_spent || 0) / limit) * 100;
 };
+
+const progressPercentage = computed(() => {
+  return Math.min(getBudgetProgress(props.budget), 100);
+});
+
+const formattedSpent = computed(() => configStore.formatCurrency(props.budget.total_spent || 0));
+const formattedLimit = computed(() => configStore.formatCurrency(props.budget.limit_amount));
+const formattedRemaining = computed(() => configStore.formatCurrency(remainingAmount.value));
+
+const amountClass = computed(() => {
+  return isOverspent.value ? 'text-error-500' : 'text-success-600 dark:text-success-400';
+});
 
 const formatDateRange = (start: string, end: string) => {
   if (!start || !end) return '';
