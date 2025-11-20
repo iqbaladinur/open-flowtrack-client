@@ -38,7 +38,7 @@ import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/compo
 import { CanvasRenderer } from 'echarts/renderers';
 import type { PropType } from 'vue';
 import { useConfigStore } from '@/stores/config';
-import { useDark } from '@vueuse/core';
+import { useThemeStore } from '@/stores/theme';
 
 // Register ECharts components
 use([PieChart, TitleComponent, TooltipComponent, LegendComponent, CanvasRenderer]);
@@ -63,7 +63,14 @@ const chartRef = ref<InstanceType<typeof VChart> | null>(null);
 const dataVisibility = ref<boolean[]>([]);
 
 const configStore = useConfigStore();
-const isDark = useDark();
+const themeStore = useThemeStore();
+
+const isDark = computed(() => {
+  if (themeStore.theme === 'system') {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  return themeStore.theme === 'dark';
+});
 
 // Initialize visibility array when chartData changes
 const initializeVisibility = () => {

@@ -15,7 +15,7 @@ import {
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import type { PropType } from 'vue';
-import { useDark } from '@vueuse/core';
+import { useThemeStore } from '@/stores/theme';
 
 // Register ECharts components
 use([
@@ -46,7 +46,14 @@ const props = defineProps({
   },
 });
 
-const isDark = useDark();
+const themeStore = useThemeStore();
+
+const isDark = computed(() => {
+  if (themeStore.theme === 'system') {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  return themeStore.theme === 'dark';
+});
 
 const chartOption = computed(() => {
   const textColor = isDark.value ? '#9ca3af' : '#6b7280';
