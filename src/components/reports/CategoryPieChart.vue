@@ -21,7 +21,7 @@
         </ul>
       </div>
       <div class="flex-1 relative min-w-20" :class="{ '!w-full p-6': chartData.labels?.length > divideConst }">
-        <div class="w-full" style="height: 400px;">
+        <div class="w-full h-[250px] lg:h-[400px]">
           <v-chart ref="chartRef" class="w-full h-full" :option="chartOption" autoresize />
         </div>
       </div>
@@ -121,7 +121,7 @@ const chartOption = computed(() => {
     series: [
       {
         type: 'pie',
-        radius: ['30%', '70%'],
+        radius: ['30%', '90%'],
         center: ['50%', '50%'],
         itemStyle: {
           borderRadius: 6,

@@ -250,6 +250,8 @@ export default {
     noIncomeData: 'Tidak ada data pemasukan',
     noData: 'Tidak ada',
     flowByWallet: 'Arus Berdasarkan Dompet',
+    walletFlowDiagram: 'Diagram Aliran Dompet',
+    walletFlowDescription: 'Visualisasi aliran uang antar dompet Anda',
     noWalletData: 'Tidak ada data dompet',
     monthlyReportFor: 'Laporan Bulanan untuk',
     yearlyReportFor: 'Laporan Tahunan untuk',

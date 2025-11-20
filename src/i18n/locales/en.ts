@@ -250,6 +250,8 @@ export default {
     noIncomeData: 'No income data',
     noData: 'No',
     flowByWallet: 'Flow by Wallet',
+    walletFlowDiagram: 'Wallet Flow Diagram',
+    walletFlowDescription: 'Visualize how money flows between your wallets',
     noWalletData: 'No wallet data available',
     monthlyReportFor: 'Monthly Report for',
     yearlyReportFor: 'Yearly Report for',
