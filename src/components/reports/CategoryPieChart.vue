@@ -143,7 +143,7 @@ const chartOption = computed(() => {
         itemStyle: {
           // borderRadius: 6,
         },
-        roseType: 'radius',
+        // roseType: 'radius',
         label: {
           show: false,
         },
