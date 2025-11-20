@@ -5,8 +5,9 @@
       'max-h-[1000px]': isDetailsVisible,
       'max-h-[300px] sm:max-h-[300px]': !isDetailsVisible,
       'card': !simpleView,
-      'hover:bg-gray-50 dark:hover:bg-gray-800/30': simpleView
+      'hover:bg-gray-50 dark:hover:bg-gray-800/30 cursor-pointer first:rounded-t-md': simpleView
     }"
+    @click="isDetailsSimpleVisible = !isDetailsSimpleVisible"
   >
     <!-- Simple View -->
     <div v-if="simpleView" class="p-3 hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
@@ -29,17 +30,22 @@
         </div>
         
         <div class="text-right">
-          <p class="text-[9px] tracking-wider text-gray-500 dark:text-gray-400 mb-0.5">
-            {{ isOverspent ? $t('dashboard.over') : $t('dashboard.left') }}
+          <p v-show="!isDetailsSimpleVisible" class="text-[9px] tracking-wider text-gray-500 dark:text-gray-400 mb-0.5">
+            <span>{{ formattedProgress }}</span>
           </p>
-          <p class="font-mono text-sm leading-none" :class="amountClass">
-            {{ formattedRemaining }}
-          </p>
+          <div v-show="isDetailsSimpleVisible">
+            <p class="text-[9px] tracking-wider text-gray-500 dark:text-gray-400 mb-0.5">
+              {{ isOverspent ? $t('dashboard.over') : $t('dashboard.left') }}
+            </p>
+            <p class="font-mono text-xs leading-none" :class="amountClass">
+              {{ formattedRemaining }}
+            </p>
+          </div>
         </div>
       </div>
 
       <div class="space-y-1.5">
-        <div class="h-1 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+        <div class="h-[2px] w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
           <div
             class="h-full transition-all duration-500 rounded-full"
             :class="progressBarClass"
@@ -47,8 +53,8 @@
           ></div>
         </div>
         
-        <div class="flex justify-between items-center text-[10px] font-medium text-gray-500 dark:text-gray-400">
-          <span>{{ Math.round(progressPercentage) }}%</span>
+        <div v-show="isDetailsSimpleVisible" class="flex justify-between items-center text-[10px] font-medium text-gray-500 dark:text-gray-400">
+          <span>{{ formattedProgress }}%</span>
           <span class="font-mono">{{ formattedSpent }} <span class="text-gray-300 dark:text-gray-600">/</span> {{ formattedLimit }}</span>
         </div>
       </div>
@@ -178,6 +184,7 @@ const configStore = useConfigStore();
 const categoriesStore = useCategoriesStore();
 
 const isDetailsVisible = ref(false);
+const isDetailsSimpleVisible = ref(false);
 const isLoadingDetails = ref(false);
 const detailedTransactions = ref<Transaction[]>([]);
 
@@ -212,6 +219,7 @@ const progressPercentage = computed(() => {
   return Math.min(getBudgetProgress(props.budget), 100);
 });
 
+const formattedProgress = computed(() => configStore.formatProsentase(progressPercentage.value))
 const formattedSpent = computed(() => configStore.formatCurrency(props.budget.total_spent || 0));
 const formattedLimit = computed(() => configStore.formatCurrency(props.budget.limit_amount));
 const formattedRemaining = computed(() => configStore.formatCurrency(remainingAmount.value));
