@@ -1,30 +1,31 @@
 <template>
-  <div>
-    <h3 class="text-slate-600 dark:text-white text-center font-mono font-medium my-6 lg:mb-10 lg:mt-6">
+  <div class="space-y-4">
+    <h3 class="text-slate-600 dark:text-white text-center font-mono font-medium">
       Total: {{ totalNominal }}
     </h3>
-    <div class="flex items-center"
-      :class="{ 'flex-col-reverse gap-4 md:flex-row lg:gap-0': chartData.labels?.length > divideConst }">
-      <div class="pr-4 flex-1" :class="{ '!w-full': chartData.labels?.length > divideConst }">
-        <ul :class="{ 'grid grid-cols-2': chartData.labels?.length > divideConst }">
-          <li v-for="(label, index) in chartData.labels" :key="index" @click="toggleData(index)"
-            class="flex items-start cursor-pointer p-1 rounded text-xs hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            :class="{ 'line-through opacity-50': !dataVisibility[index] }">
-            <span class="w-4 h-4 mr-2 rounded-full mt-1 flex-shrink-0" :style="{
-              backgroundColor: chartData.datasets[0].backgroundColor[index],
-              borderColor: chartData.datasets[0].backgroundColor[index],
-              borderWidth: '2px',
-            }"></span>
-            <span class="whitespace-pre-wrap text-slate-600 dark:text-white text-xs">{{ Array.isArray(label) ?
-              label.join('\n') : label }}</span>
-          </li>
-        </ul>
-      </div>
-      <div class="flex-1 relative min-w-20" :class="{ '!w-full p-6': chartData.labels?.length > divideConst }">
-        <div class="w-full h-[250px] lg:h-[400px]">
-          <v-chart ref="chartRef" class="w-full h-full" :option="chartOption" autoresize />
-        </div>
-      </div>
+
+    <!-- Chart -->
+    <div class="w-full h-[300px] lg:h-[400px]">
+      <v-chart ref="chartRef" class="w-full h-full" :option="chartOption" autoresize />
+    </div>
+
+    <!-- Legend as chips -->
+    <div class="flex flex-wrap gap-2 justify-center">
+      <button v-for="(label, index) in chartData.labels" :key="index" @click="toggleData(index)"
+        class="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs transition-colors"
+        :class="dataVisibility[index]
+          ? 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+          : 'bg-gray-50 dark:bg-gray-900 opacity-50'">
+        <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" :style="{
+          backgroundColor: chartData.datasets[0].borderColor?.[index] || chartData.datasets[0].backgroundColor[index],
+        }"></span>
+        <span class="text-slate-600 dark:text-white" :class="{ 'line-through': !dataVisibility[index] }">
+          {{ Array.isArray(label) ? label[0] : label }}
+        </span>
+        <span v-if="Array.isArray(label) && label[1]" class="text-gray-500 dark:text-gray-400 font-mono" :class="{ 'line-through': !dataVisibility[index] }">
+          {{ label[1] }}
+        </span>
+      </button>
     </div>
   </div>
 </template>
@@ -42,8 +43,6 @@ import { useThemeStore } from '@/stores/theme';
 
 // Register ECharts components
 use([PieChart, TitleComponent, TooltipComponent, LegendComponent, CanvasRenderer]);
-
-const divideConst = ref(7);
 
 const props = defineProps({
   chartData: {
@@ -97,6 +96,24 @@ const chartOption = computed(() => {
 
   // Sort data from smallest to biggest value
   seriesData.sort((a, b) => a.value - b.value);
+
+  // Add label only for the largest value (last item after sorting)
+  const labelColor = isDark.value ? '#e5e7eb' : '#374151';
+  seriesData.forEach((item, index) => {
+    if (index === seriesData.length - 1 && item.value > 0) {
+      // @ts-ignore
+      item.label = {
+        show: true,
+        position: 'outside',
+        formatter: (params: any) => {
+          return `${params.name}\n${configStore.formatCurrency(params.value)} (${params.percent}%)`;
+        },
+        color: labelColor,
+        fontSize: 11,
+        fontWeight: 'bold',
+      };
+    }
+  });
 
   const tooltipBg = isDark.value ? '#1f2937' : '#ffffff';
   const tooltipBorder = isDark.value ? '#374151' : '#e5e7eb';
