@@ -112,9 +112,9 @@ const chartOption = computed(() => {
       name,
       value: dataVisibility.value[index] ? props.chartData.datasets[0].data[index] : 0,
       itemStyle: {
-        color: props.chartData.datasets[0].borderColor?.[index] || props.chartData.datasets[0].backgroundColor[index],
-        borderColor: props.chartData.datasets[0].backgroundColor[index],
-        borderWidth: 0,
+        color: props.chartData.datasets[0].backgroundColor[index],
+        borderColor: props.chartData.datasets[0].borderColor?.[index] || props.chartData.datasets[0].backgroundColor[index],
+        borderWidth: 2,
       },
       // Store original value for toggling
       originalValue: props.chartData.datasets[0].data[index],
@@ -136,12 +136,7 @@ const chartOption = computed(() => {
       series: [
         {
           type: 'pie',
-          radius: [40, 190],
-          roseType: 'area',
-          itemStyle: {
-            borderRadius: 8,
-          },
-          padAngle: 10,
+          radius: [80, 190],
           label: {
             show: false,
             position: 'center'
@@ -177,11 +172,6 @@ const chartOption = computed(() => {
         type: 'pie',
         radius: chartRadius.value,
         center: ['50%', '50%'],
-        roseType: 'area',
-        itemStyle: {
-          borderRadius: 8,
-        },
-        padAngle: 10,
         label: {
           show: true,
           position: 'outside',
