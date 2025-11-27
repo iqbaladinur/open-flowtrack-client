@@ -416,7 +416,7 @@ const activeBudgetDate = reactive({
 });
 
 const readableDate = computed(() => {
-  return format(endOfDay(endDateSummary.value), 'E, dd MMM')
+  return format(endOfDay(endDateSummary.value), 'E, dd MMM yyy')
 });
 
 const activeBudgetPeriod = computed(() => {
@@ -544,22 +544,44 @@ const nextDate = () => {
 const prevDate = () => {
   const firstDay = configStore.firstDayOfMonth;
   const endDateNow = endOfDay(endDateSummary.value);
-  const start = parseISO(endDateNow.toISOString());
+  const today = endOfDay(new Date());
 
-  const newStart = new Date(start);
-  // Set to day 1 first to avoid month overflow issues
-  newStart.setDate(1);
-  // Move to previous month
-  newStart.setMonth(newStart.getMonth() - 1);
-  // Set the correct end date
-  if (firstDay === 1) {
-    // Get last day of this month by going to next month day 0
-    newStart.setMonth(newStart.getMonth() + 1);
-    newStart.setDate(0);
-  } else {
-    newStart.setDate(firstDay - 1);
+  // Calculate current period's start date
+  let currentPeriodStart = new Date(today.getFullYear(), today.getMonth(), firstDay - 1);
+  if (today.getDate() < firstDay) {
+    currentPeriodStart.setMonth(currentPeriodStart.getMonth() - 1);
   }
-  endDateSummary.value = newStart;
+
+  // Check if current endDateSummary is at today (meaning user hasn't navigated yet)
+  const isAtToday =
+    endDateNow.getFullYear() === today.getFullYear() &&
+    endDateNow.getMonth() === today.getMonth() &&
+    endDateNow.getDate() === today.getDate();
+
+  let newEnd;
+
+  if (isAtToday) {
+    // First click: go to the first day of current period
+    newEnd = new Date(currentPeriodStart);
+  } else {
+    // Subsequent clicks: navigate to previous month period end
+    const start = parseISO(endDateNow.toISOString());
+    newEnd = new Date(start);
+    // Set to day 1 first to avoid month overflow issues
+    newEnd.setDate(1);
+    // Move to previous month
+    newEnd.setMonth(newEnd.getMonth() - 1);
+    // Set the correct end date
+    if (firstDay === 1) {
+      // Get last day of this month by going to next month day 0
+      newEnd.setMonth(newEnd.getMonth() + 1);
+      newEnd.setDate(0);
+    } else {
+      newEnd.setDate(firstDay - 1);
+    }
+  }
+
+  endDateSummary.value = newEnd;
   const todayIso = endDateSummary.value.toISOString();
   walletsStore.fetchWallets(true, undefined, todayIso);
   setSummary({ endDate: todayIso, includeHidden: configStore.includeHiddenWalletsInCalculation });
