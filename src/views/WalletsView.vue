@@ -221,7 +221,7 @@ const toggleHiddenWallets = () => {
 };
 
 const readableDate = computed(() => {
-  return format(endOfDay(endDate.value), 'E, dd MMM')
+  return format(endOfDay(endDate.value), 'E, dd MMM yyy')
 });
 
 const handleWalletSaved = () => {
