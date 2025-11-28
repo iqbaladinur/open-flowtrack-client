@@ -196,7 +196,7 @@
             <p class="text-gray-500 dark:text-gray-400 mb-4">{{ $t('dashboard.noBudgetActive') }}</p>
           </div>
 
-          <div v-if="budgetsStore.loading" class="flex justify-center items-center py-8 my-auto">
+          <div v-if="budgetsStore.loading && budgets.length === 0" class="flex justify-center items-center py-8 my-auto">
             <LoadingSpinner class="w-8 h-8" />
           </div>
 
