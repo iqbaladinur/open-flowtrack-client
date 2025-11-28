@@ -64,12 +64,12 @@
       </div>
 
       <!-- Loading State -->
-      <div v-if="milestonesStore.loading" class="card p-8">
+      <div v-if="milestonesStore.loading && sortedMilestones.length === 0" class="card p-8">
         <LoadingSpinner fullHeight />
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="sortedMilestones.length === 0" class="card p-12 text-center">
+      <div v-else-if="!milestonesStore.loading && sortedMilestones.length === 0" class="card p-12 text-center">
         <div
           class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4"
         >
