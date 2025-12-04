@@ -10,16 +10,16 @@
     @click="isDetailsSimpleVisible = !isDetailsSimpleVisible"
   >
     <!-- Simple View -->
-    <div v-if="simpleView" class="p-3 hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
+    <div v-if="simpleView" class="p-3 hover:bg-sepia-50 dark:hover:bg-gray-800/30 transition-colors">
       <div class="flex justify-between items-start mb-2">
         <div class="flex flex-col gap-1">
           <div class="flex items-center gap-2">
-            <h3 class="font-medium text-gray-900 dark:text-white text-xs">{{ budget.name }}</h3>
+            <h3 class="font-medium text-sepia-900 dark:text-white text-xs">{{ budget.name }}</h3>
             <div class="flex -space-x-1">
               <div
                 v-for="category in budgetCategories"
                 :key="category.id"
-                class="flex items-center justify-center size-4 rounded-full ring-1 ring-white dark:ring-gray-800 bg-gray-100 dark:bg-gray-900"
+                class="flex items-center justify-center size-4 rounded-full ring-1 ring-white dark:ring-gray-800 bg-sepia-100 dark:bg-gray-900"
                 :style="{ color: category.color }"
                 :title="category.name"
               >
@@ -28,28 +28,28 @@
             </div>
           </div>
         </div>
-        
+
         <div class="text-right relative">
           <!-- State 1: Progress % -->
-          <div 
+          <div
             class="grid transition-all duration-300 ease-in-out"
             :class="!isDetailsSimpleVisible ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
           >
             <div class="overflow-hidden">
-              <p class="text-[9px] tracking-wider text-gray-500 dark:text-gray-400 mb-0.5">
+              <p class="text-[9px] tracking-wider text-sepia-500 dark:text-gray-400 mb-0.5">
                 <span>{{ formattedProgress }}</span>
               </p>
             </div>
           </div>
-          
+
           <!-- State 2: Details -->
-          <div 
+          <div
             class="grid transition-all duration-300 ease-in-out"
             :class="isDetailsSimpleVisible ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
           >
             <div class="overflow-hidden">
               <div class="flex flex-col items-end">
-                <p class="text-[9px] tracking-wider text-gray-500 dark:text-gray-400 mb-0.5">
+                <p class="text-[9px] tracking-wider text-sepia-500 dark:text-gray-400 mb-0.5">
                   {{ isOverspent ? $t('dashboard.over') : $t('dashboard.left') }}
                 </p>
                 <p class=" text-xs leading-none" :class="amountClass">
@@ -62,22 +62,22 @@
       </div>
 
       <div class="flex flex-col">
-        <div class="h-[2px] w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden" :class="{ '!h-1': isDetailsSimpleVisible }">
+        <div class="h-[2px] w-full bg-sepia-200 dark:bg-gray-700 rounded-full overflow-hidden" :class="{ '!h-1': isDetailsSimpleVisible }">
           <div
             class="h-full transition-all duration-500 rounded-full"
             :class="progressBarClass"
             :style="{ width: progressPercentage + '%' }"
           ></div>
         </div>
-        
-        <div 
+
+        <div
           class="grid transition-all duration-300 ease-in-out"
           :class="isDetailsSimpleVisible ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
         >
           <div class="overflow-hidden">
-            <div class="flex justify-between items-center text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-1.5">
+            <div class="flex justify-between items-center text-[10px] font-medium text-sepia-500 dark:text-gray-400 mt-1.5">
               <span>{{ formattedProgress }}%</span>
-              <span class="">{{ formattedSpent }} <span class="text-gray-300 dark:text-gray-600">/</span> {{ formattedLimit }}</span>
+              <span class="">{{ formattedSpent }} <span class="text-sepia-300 dark:text-gray-600">/</span> {{ formattedLimit }}</span>
             </div>
           </div>
         </div>
@@ -88,16 +88,16 @@
     <div v-else class="p-3">
       <!-- Header -->
       <div class="flex items-center justify-between w-full mb-4">
-        <div class="flex items-center gap-1.5 card p-2 text-xs font-bold text-gray-600 dark:text-gray-300">
+        <div class="flex items-center gap-1.5 card p-2 text-xs font-bold text-sepia-600 dark:text-gray-300">
           <CalendarDays class="w-4 h-4" />
           <span>{{ formatDateRange(budget.start_date, budget.end_date) }}</span>
         </div>
         <div class="flex flex-col items-end gap-2 card">
           <div class="flex items-center space-x-1">
-            <button @click="$emit('edit', budget)" class="p-2 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+            <button @click="$emit('edit', budget)" class="p-2 rounded-full text-sepia-400 dark:text-slate-50 hover:bg-sepia-100 dark:hover:bg-gray-700 hover:text-sepia-600 dark:hover:text-gray-300 transition-colors">
               <NotebookPen class="w-4 h-4" />
             </button>
-            <button @click="$emit('delete', budget.id)" class="p-2 rounded-full text-gray-400 hover:bg-red-100 dark:hover:bg-red-900/50 hover:text-error-600 dark:hover:text-error-400 transition-colors">
+            <button @click="$emit('delete', budget.id)" class="p-2 rounded-full text-sepia-400 dark:text-slate-50 hover:bg-red-100 dark:hover:bg-red-900/50 hover:text-error-600 dark:hover:text-error-400 transition-colors">
               <Trash2 class="w-4 h-4" />
             </button>
           </div>
@@ -107,7 +107,7 @@
       <!-- Title & Categories -->
       <div class="flex items-start justify-between card p-2">
         <div>
-          <h3 class="font-bold text-sm text-gray-900 dark:text-white">
+          <h3 class="font-bold text-sm text-sepia-900 dark:text-white">
             {{ budget.name }}
           </h3>
           <div class="flex items-center flex-wrap gap-1 mt-2">
@@ -127,16 +127,16 @@
       <!-- Budget Details & Progress -->
       <div class="mt-2">
         <div class="text-left mb-3">
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ isOverspent ? $t('dashboard.over') : $t('dashboard.left') }}</p>
+          <p class="text-xs text-sepia-500 dark:text-gray-400">{{ isOverspent ? $t('dashboard.over') : $t('dashboard.left') }}</p>
           <p class=" text-lg font-bold" :class="amountClass">
             {{ formattedRemaining }}
           </p>
         </div>
-        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+        <div class="flex justify-between text-xs text-sepia-500 dark:text-gray-400 mb-1">
           <span>{{ $t('dashboard.spent') }}: {{ formattedSpent }}</span>
           <span>{{ $t('dashboard.limit') }}: {{ formattedLimit }}</span>
         </div>
-        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+        <div class="w-full bg-sepia-200 dark:bg-gray-700 rounded-full h-2">
           <div
             class="h-2 rounded-full transition-all duration-500"
             :class="progressBarClass"
@@ -147,17 +147,17 @@
     </div>
 
     <!-- View Details Section -->
-    <div v-if="!simpleView" class="border-t border-gray-200 dark:border-gray-700">
-      <button @click="toggleDetails" class="w-full text-sm py-3 px-5 font-medium text-primary-600 dark:text-primary-400 bg-gray-50 dark:bg-gray-700/50 flex items-center justify-center gap-2 transition-colors">
+    <div v-if="!simpleView" class="border-t border-sepia-200 dark:border-gray-700">
+      <button @click="toggleDetails" class="w-full text-sm py-3 px-5 font-medium text-primary-600 dark:text-primary-400 bg-sepia-50 dark:bg-gray-700/50 flex items-center justify-center gap-2 transition-colors">
         <span>{{ isDetailsVisible ? $t('common.close') : $t('common.view') }} {{ $t('common.details') }}</span>
         <ChevronDown class="w-4 h-4 transition-transform" :class="{ 'rotate-180': isDetailsVisible }" />
       </button>
 
-      <div v-if="isDetailsVisible" class="bg-gray-50 dark:bg-gray-900/50">
+      <div v-if="isDetailsVisible" class="bg-sepia-50 dark:bg-gray-900/50">
         <div v-if="isLoadingDetails" class="flex justify-center items-center p-6">
           <LoadingSpinner />
         </div>
-        <div v-else-if="detailedTransactions.length > 0" class="divide-y divide-gray-200 dark:divide-gray-700">
+        <div v-else-if="detailedTransactions.length > 0" class="divide-y divide-sepia-200 dark:divide-gray-700">
           <TransactionItem
             v-for="transaction in detailedTransactions"
             :key="transaction.id"
@@ -165,7 +165,7 @@
             class="px-5 py-3"
           />
         </div>
-        <div v-else class="text-center text-gray-500 dark:text-gray-400 py-8 px-5">
+        <div v-else class="text-center text-sepia-500 dark:text-gray-400 py-8 px-5">
           <p>{{ $t('budgetCard.noTransactions') }}</p>
         </div>
       </div>

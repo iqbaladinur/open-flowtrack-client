@@ -3,15 +3,15 @@
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Header -->
       <div>
-        <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('settings.title') }}</h1>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        <h1 class="text-xl lg:text-3xl font-bold text-sepia-900 dark:text-neon">{{ $t('settings.title') }}</h1>
+        <p class="text-sm text-sepia-700 dark:text-gray-400 mt-1">
           {{ $t('settings.subtitle') }}
         </p>
       </div>
 
       <!-- Language Settings -->
       <div class="card p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-neon mb-4">
+        <h3 class="text-lg font-semibold text-sepia-900 dark:text-neon mb-4">
           {{ $t('settings.language') }}
         </h3>
         <div class="space-y-4">
@@ -38,7 +38,7 @@
 
       <!-- Currency Settings -->
       <div class="card p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-neon mb-4">
+        <h3 class="text-lg font-semibold text-sepia-900 dark:text-neon mb-4">
           {{ $t('settings.globalSettings') }}
         </h3>
         <form @submit.prevent="updateCurrencySettings" class="space-y-4">
@@ -103,7 +103,7 @@
 
       <!-- Date Settings -->
       <div class="card p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-neon mb-4">
+        <h3 class="text-lg font-semibold text-sepia-900 dark:text-neon mb-4">
           {{ $t('settings.dateSettings') }}
         </h3>
         <form @submit.prevent="updateDateSettings" class="space-y-4">
@@ -117,7 +117,7 @@
               max="28"
               class="input"
             />
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p class="text-sm text-sepia-600 dark:text-gray-400 mt-1">
               {{ $t('settings.firstDayOfMonthHint') }}
             </p>
           </div>
@@ -138,16 +138,16 @@
 
       <!-- Calculation Settings -->
       <div class="card p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-neon mb-4">
+        <h3 class="text-lg font-semibold text-sepia-900 dark:text-neon mb-4">
           {{ $t('settings.calculationSettings') }}
         </h3>
         <div class="space-y-4">
-          <div class="flex item-start lg:items-center justify-between rounded-lg p-3 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 gap-4">
+          <div class="flex item-start lg:items-center justify-between rounded-lg p-3 border border-sepia-300 dark:border-gray-700 bg-sepia-100 dark:bg-gray-800/50 gap-4">
             <div>
-              <label for="hidden-toggle" class="font-medium text-gray-900 dark:text-gray-100">
+              <label for="hidden-toggle" class="font-medium text-sepia-900 dark:text-gray-100">
                 {{ $t('settings.includeHiddenWallets') }}
               </label>
-              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p class="text-xs text-sepia-600 dark:text-gray-400 mt-1">
                 {{ $t('settings.includeHiddenWalletsHint') }}
               </p>
             </div>
@@ -155,8 +155,8 @@
               type="button"
               @click="calculationSettingsForm.includeHiddenWalletsInCalculation = !calculationSettingsForm.includeHiddenWalletsInCalculation"
               :class="[
-                calculationSettingsForm.includeHiddenWalletsInCalculation ? 'bg-primary-600 dark:bg-neon' : 'bg-gray-200 dark:bg-gray-700',
-                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900'
+                calculationSettingsForm.includeHiddenWalletsInCalculation ? 'bg-sepia-700 dark:bg-neon' : 'bg-sepia-300 dark:bg-gray-700',
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sepia-500 dark:focus:ring-neon focus:ring-offset-2 dark:focus:ring-offset-gray-900'
               ]"
               role="switch"
               :aria-checked="calculationSettingsForm.includeHiddenWalletsInCalculation"

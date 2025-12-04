@@ -25,7 +25,7 @@
             class="py-2 rounded-lg border-2 transition-all text-success-700 dark:text-success-300"
             :class="form.type === 'income'
               ? 'border-success-500 bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300'
-              : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
+              : 'border-sepia-300 dark:border-gray-600 hover:border-sepia-400 dark:hover:border-gray-500'"
           >
             <TrendingUp class="size-4 mx-auto" />
             <span class="text-xs font-medium">{{ $t('categoryModal.income') }}</span>
@@ -36,7 +36,7 @@
             class="py-2 rounded-lg border-2 transition-all text-error-700 dark:text-error-300"
             :class="form.type === 'expense'
               ? 'border-error-500 bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300'
-              : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
+              : 'border-sepia-300 dark:border-gray-600 hover:border-sepia-400 dark:hover:border-gray-500'"
           >
             <TrendingDown class="size-4 mx-auto" />
             <span class="text-xs font-medium">{{ $t('categoryModal.expense') }}</span>
@@ -96,7 +96,7 @@
       <!-- Icon -->
       <div>
         <label class="label">{{ $t('categoryModal.icon') }}</label>
-        <div class="grid grid-cols-6 sm:grid-cols-8 gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <div class="grid grid-cols-6 sm:grid-cols-8 gap-2 p-2 bg-sepia-50 dark:bg-gray-800 rounded-lg">
           <button
             v-for="icon in iconList"
             :key="icon"
@@ -104,8 +104,8 @@
             @click="form.icon = icon"
             class="h-10 w-10 flex items-center justify-center rounded-lg transition-all"
             :class="form.icon === icon
-              ? 'bg-primary-500 text-white ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 ring-primary-500'
-              : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'"
+              ? 'bg-sepia-500 dark:bg-primary-500 text-white ring-2 ring-offset-2 ring-offset-sepia-50 dark:ring-offset-gray-900 ring-sepia-500 dark:ring-primary-500'
+              : 'bg-sepia-200 dark:bg-gray-700 text-sepia-600 dark:text-gray-300 hover:bg-sepia-300 dark:hover:bg-gray-600'"
           >
             <!-- @vue-ignore -->
             <component :is="getIcon(icon)" class="w-5 h-5" />

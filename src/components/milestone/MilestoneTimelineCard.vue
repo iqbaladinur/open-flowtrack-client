@@ -21,7 +21,7 @@
       <!-- Title & Status -->
       <div class="flex-1 min-w-0">
         <div class="flex items-start justify-between gap-1 sm:gap-2 mb-0.5 sm:mb-1">
-          <h3 class="text-xs sm:text-sm md:text-base font-semibold text-gray-900 dark:text-white line-clamp-1">
+          <h3 class="text-xs sm:text-sm md:text-base font-semibold text-sepia-900 dark:text-white line-clamp-1">
             {{ milestone.name }}
           </h3>
           <div :title="getStatusLabel(milestone.status)" class="flex-shrink-0">
@@ -34,7 +34,7 @@
         </div>
 
         <!-- Date Info -->
-        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 md:gap-3 text-[9px] sm:text-[10px] md:text-xs text-gray-500 dark:text-gray-400">
+        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 md:gap-3 text-[9px] sm:text-[10px] md:text-xs text-sepia-600 dark:text-gray-400">
           <div class="flex items-center gap-0.5 sm:gap-1">
             <Calendar class="w-2.5 h-2.5 sm:w-3 sm:h-3" />
             <span>{{ formatDateShort(milestone.target_date) }}</span>
@@ -58,12 +58,12 @@
     <!-- Progress Bar -->
     <div class="mb-1.5 sm:mb-2">
       <div class="flex items-center justify-between mb-0.5 sm:mb-1">
-        <span class="text-[9px] sm:text-[10px] md:text-xs font-medium text-gray-700 dark:text-gray-300">{{ $t('milestones.progress') }}</span>
+        <span class="text-[9px] sm:text-[10px] md:text-xs font-medium text-sepia-800 dark:text-gray-300">{{ $t('milestones.progress') }}</span>
         <span class="text-[10px] sm:text-xs md:text-sm font-semibold" :style="{ color: getProgressColor(milestone.overall_progress || 0) }">
           {{ (milestone.overall_progress || 0).toFixed(1) }}%
         </span>
       </div>
-      <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1 sm:h-1.5 md:h-2 overflow-hidden">
+      <div class="w-full bg-sepia-200 dark:bg-gray-700 rounded-full h-1 sm:h-1.5 md:h-2 overflow-hidden">
         <div
           class="h-1 sm:h-1.5 md:h-2 rounded-full transition-all duration-500"
           :style="{
@@ -82,7 +82,7 @@
           : 'text-gray-400'"
         class="w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0"
       />
-      <span class="text-gray-600 dark:text-gray-400">
+      <span class="text-sepia-700 dark:text-gray-400">
         {{ metConditionsCount }}/{{ milestone.conditions.length }}
       </span>
     </div>
@@ -148,7 +148,7 @@ const cardClass = computed(() => {
   if (props.milestone.status === 'failed') {
     return 'border-l-4 border-red-500 bg-red-50/50 dark:bg-red-900/10';
   }
-  return 'border-l-4 bg-gray-50/50 dark:bg-gray-900/10';
+  return 'border-l-4 bg-sepia-100/50 dark:bg-gray-900/10';
 });
 
 // Status icon mapping

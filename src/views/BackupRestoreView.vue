@@ -3,10 +3,10 @@
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Header -->
       <div>
-        <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">
+        <h1 class="text-xl lg:text-3xl font-bold text-sepia-900 dark:text-neon">
           {{ $t("backup.title") }}
         </h1>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        <p class="text-sm text-sepia-600 dark:text-gray-400 mt-1">
           {{ $t("backup.subtitle") }}
         </p>
       </div>
@@ -14,10 +14,10 @@
       <!-- Create Backup -->
       <div class="card p-6">
         <div class="mb-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-neon mb-1">
+          <h2 class="text-lg font-semibold text-sepia-900 dark:text-neon mb-1">
             {{ $t("backup.createBackup") }}
           </h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
+          <p class="text-sm text-sepia-600 dark:text-gray-400">
             {{ $t("backup.createBackupDesc") }}
           </p>
         </div>
@@ -124,10 +124,10 @@
       <!-- Restore Backup -->
       <div class="card p-6">
         <div class="mb-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-neon mb-1">
+          <h2 class="text-lg font-semibold text-sepia-900 dark:text-neon mb-1">
             {{ $t("backup.restoreFromBackup") }}
           </h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
+          <p class="text-sm text-sepia-600 dark:text-gray-400">
             {{ $t("backup.restoreFromBackupDesc") }}
           </p>
         </div>
@@ -153,19 +153,19 @@
           </div>
           <div
             v-else
-            class="flex items-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg w-full lg:w-auto lg:min-w-[300px] lg:max-w-md"
+            class="flex items-center gap-2 px-3 py-2 bg-sepia-100 dark:bg-gray-700 rounded-lg w-full lg:w-auto lg:min-w-[300px] lg:max-w-md"
           >
             <FileJson
               class="size-5 text-blue-600 dark:text-blue-400 flex-shrink-0"
             />
-            <span class="text-sm text-gray-900 dark:text-white truncate flex-1">
+            <span class="text-sm text-sepia-900 dark:text-white truncate flex-1">
               {{ selectedFile.name }}
             </span>
             <button
               @click="clearSelectedFile"
-              class="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex-shrink-0"
+              class="p-1 rounded hover:bg-sepia-200 dark:hover:bg-gray-600 transition-colors flex-shrink-0"
             >
-              <X class="w-4 h-4 text-gray-500 dark:text-gray-400" />
+              <X class="w-4 h-4 text-sepia-500 dark:text-gray-400" />
             </button>
           </div>
 

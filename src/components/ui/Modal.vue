@@ -17,21 +17,21 @@
       >
         <div
           v-if="modelValue"
-          class="w-full max-h-[90vh] transform rounded-t-2xl bg-white dark:bg-gray-800 shadow-xl transition-all sm:my-8 sm:max-w-md sm:rounded-xl"
+          class="w-full max-h-[90vh] transform rounded-t-2xl bg-sepia-50 dark:bg-gray-800 shadow-xl transition-all sm:my-8 sm:max-w-md sm:rounded-xl"
           @click.stop
         >
           <div class="flex flex-col h-full relative">
             <div class="px-6 py-4 flex-shrink-0">
               <div class="flex items-center justify-between">
-                <h3 
+                <h3
                   v-if="title"
-                  class="text-lg font-semibold text-gray-900 dark:text-white"
+                  class="text-lg font-semibold text-sepia-900 dark:text-white"
                 >
                   {{ title }}
                 </h3>
                 <button
                   @click="$emit('update:modelValue', false)"
-                  class="rounded-lg p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  class="rounded-lg p-1 text-sepia-600 hover:text-sepia-800 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
                 >
                   <X class="w-5 h-5" />
                 </button>
@@ -42,7 +42,7 @@
               <slot />
             </div>
 
-            <div v-if="$slots.footer" class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0 absolute bottom-0 w-full bg-white dark:bg-gray-800 rounded-b-xl">
+            <div v-if="$slots.footer" class="px-6 py-4 border-t border-sepia-300 dark:border-gray-700 flex-shrink-0 absolute bottom-0 w-full bg-sepia-50 dark:bg-gray-800 rounded-b-xl">
               <slot name="footer" />
             </div>
           </div>
