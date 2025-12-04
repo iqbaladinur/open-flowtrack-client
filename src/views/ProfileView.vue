@@ -3,8 +3,8 @@
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Header -->
       <div>
-        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">{{ $t('profile.title') }}</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">
+        <h1 class="text-2xl lg:text-3xl font-bold text-sepia-900 dark:text-white">{{ $t('profile.title') }}</h1>
+        <p class="text-sepia-600 dark:text-gray-400 mt-1">
           {{ $t('profile.subtitle') }}
         </p>
       </div>
@@ -12,8 +12,8 @@
       <!-- Profile Information -->
       <div class="card p-6">
         <div class="flex items-center space-x-4 mb-6">
-          <div class="w-20 h-20 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
-            <User class="w-10 h-10 text-primary-600 dark:text-primary-400" />
+          <div class="w-20 h-20 bg-sepia-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
+            <User class="w-10 h-10 text-sepia-600 dark:text-primary-400" />
           </div>
           <div>
             <h2 class="text-xl font-semibold text-gray-900 dark:text-white">

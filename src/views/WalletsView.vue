@@ -46,11 +46,11 @@
       </div>
 
       <div v-else-if="wallets.length === 0" class="card p-12 text-center">
-        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-          <WalletIcon class="w-8 h-8 text-gray-400" />
+        <div class="w-16 h-16 bg-sepia-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+          <WalletIcon class="w-8 h-8 text-sepia-400" />
         </div>
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{{ $t('wallets.noWalletsYet') }}</h3>
-        <p class="text-gray-500 dark:text-gray-400 mb-6">
+        <h3 class="text-lg font-medium text-sepia-900 dark:text-white mb-2">{{ $t('wallets.noWalletsYet') }}</h3>
+        <p class="text-sepia-500 dark:text-gray-400 mb-6">
           {{ $t('wallets.createFirstWallet') }}
         </p>
         <button @click="showAddModal = true" class="btn-primary">

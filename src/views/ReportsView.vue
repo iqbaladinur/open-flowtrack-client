@@ -105,8 +105,8 @@
         <LoadingSpinner />
       </div>
       <div v-else-if="transactions.length === 0" class="card text-center py-12">
-        <BarChart3 class="w-12 h-12 text-gray-400 mx-auto mb-2" />
-        <p class="text-gray-500 dark:text-gray-400 px-2">{{ $t('reports.noDataAvailable') }}</p>
+        <BarChart3 class="w-12 h-12 text-sepia-400 mx-auto mb-2" />
+        <p class="text-sepia-500 dark:text-gray-400 px-2">{{ $t('reports.noDataAvailable') }}</p>
       </div>
       <div v-else class="space-y-6">
         <!-- Summary Cards -->

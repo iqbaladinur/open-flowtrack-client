@@ -159,7 +159,7 @@
     </main>
 
     <!-- Mobile Bottom Navigation -->
-    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-sepia-100 dark:bg-gray-800 border-t border-sepia-300 dark:border-gray-700 safe-area-bottom">
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-sepia-200 dark:bg-gray-800 border-t border-sepia-300 dark:border-gray-700 safe-area-bottom">
       <div class="grid grid-cols-5">
         <router-link
           v-for="item in mainBottomNav"
@@ -204,7 +204,7 @@
         leave-to-class="translate-y-full"
       >
         <div v-if="showMoreMenu" class="fixed bottom-0 left-0 right-0 z-50 lg:hidden safe-area-bottom">
-          <div class="bg-sepia-50 dark:bg-gray-800 rounded-t-2xl p-4">
+          <div class="bg-sepia-100 dark:bg-gray-800 rounded-t-2xl p-4">
             <div class="flex flex-col space-y-1">
                 <router-link
                   v-for="item in moreMenuNav"

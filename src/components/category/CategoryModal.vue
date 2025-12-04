@@ -48,7 +48,7 @@
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label class="label">{{ $t('categoryModal.preview') }}</label>
-          <div class="flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <div class="flex items-center justify-center p-4 bg-sepia-50 dark:bg-gray-800 rounded-lg">
             <div class="w-24">
               <div class="card p-3 aspect-square flex flex-col items-center justify-center text-center relative">
                 <!-- Type Indicator -->
@@ -84,7 +84,7 @@
           <div class="relative flex-1 flex flex-col">
             <input id="color" v-model="form.color" type="color" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
             <div
-              class="w-full rounded-lg border-2 border-gray-200 dark:border-gray-700 flex items-center justify-center px-3 flex-1"
+              class="w-full rounded-lg border-2 border-sepia-200 dark:border-gray-700 flex items-center justify-center px-3 flex-1"
               :style="{ backgroundColor: form.color + '33' }"
             >
               <div class="w-12 h-12 rounded" :style="{ backgroundColor: form.color }"></div>

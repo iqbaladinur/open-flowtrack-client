@@ -193,7 +193,7 @@
               class="w-16 h-16 bg-sepia-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
               <Target class="size-8 text-sepia-400 dark:text-gray-400" />
             </div>
-            <p class="text-gray-500 dark:text-gray-400 mb-4">{{ $t('dashboard.noBudgetActive') }}</p>
+            <p class="text-sepia-500 dark:text-gray-400 mb-4">{{ $t('dashboard.noBudgetActive') }}</p>
           </div>
 
           <div v-if="budgetsStore.loading && budgets.length === 0" class="flex justify-center items-center py-8 my-auto">
@@ -337,7 +337,7 @@
                 class="w-16 h-16 bg-sepia-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
                 <TrendingUpDown class="w-8 h-8 text-sepia-400 dark:text-gray-400" />
               </div>
-              <p class="text-gray-500 dark:text-gray-400 mb-4">{{ $t('dashboard.noTransactionsYet') }}</p>
+              <p class="text-sepia-500 dark:text-gray-400 mb-4">{{ $t('dashboard.noTransactionsYet') }}</p>
               <button @click="showAddTransactionModal = true" class="btn-primary">
                 {{ $t('dashboard.addFirstTransaction') }}
               </button>
