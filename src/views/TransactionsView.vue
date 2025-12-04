@@ -4,8 +4,8 @@
       <!-- Header -->
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('transactions.title') }}</h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
+          <h1 class="text-xl lg:text-3xl font-bold text-sepia-900 dark:text-neon">{{ $t('transactions.title') }}</h1>
+          <p class="text-sepia-600 dark:text-gray-400 mt-1 text-sm">
             {{ $t('transactions.subtitle') }}
           </p>
         </div>
