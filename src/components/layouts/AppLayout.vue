@@ -88,10 +88,10 @@
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="item in navigation" :key="item.name" :title="item.name">
                   <router-link :to="item.to" class="group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold" :class="[
-                    $route.name?.toString()?.toLocaleLowerCase() === item.routeName?.toLocaleLowerCase() ? 'bg-gray-100 dark:bg-gray-700 text-blue-700 dark:text-neon' : 'text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700',
+                    $route.name?.toString()?.toLocaleLowerCase() === item.routeName?.toLocaleLowerCase() ? 'bg-gray-100 dark:bg-gray-700 text-black dark:text-neon' : 'text-gray-700 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700',
                     uiStore.isSidebarMinimized && 'justify-center'
                   ]">
-                    <component :is="item.icon" class="h-5 w-5 shrink-0" />
+                    <component :is="item.icon" class="h-5 w-5 shrink-0" :class="[$route.name?.toString()?.toLocaleLowerCase() === item.routeName?.toLocaleLowerCase() ? 'fill-[#16a34a]/50 text-[#16a34a] dark:fill-none dark:text-inherit' : '']" />
                     <span v-show="!uiStore.isSidebarMinimized" class="truncate">{{ item.name }}</span>
                   </router-link>
                 </li>
@@ -167,20 +167,20 @@
           :to="item.to"
           class="flex flex-col items-center justify-center text-center py-2 transition-colors"
           :class="$route.name?.toString()?.toLowerCase() === item.routeName?.toLowerCase()
-            ? 'text-blue-700 dark:text-neon'
+            ? 'text-black dark:text-neon'
             : 'text-gray-500 dark:text-gray-400'"
         >
-          <component :is="item.icon" class="w-5 h-5 mb-1" />
+          <component :is="item.icon" class="w-5 h-5 mb-1" :class="[$route.name?.toString()?.toLocaleLowerCase() === item.routeName?.toLocaleLowerCase() ? 'fill-[#16a34a]/50 text-[#16a34a] dark:fill-none dark:text-inherit' : '']" />
           <span class="text-[10px] font-medium">{{ item.name }}</span>
         </router-link>
         <button
           @click="showMoreMenu = true"
           class="flex flex-col items-center justify-center text-center py-2 transition-colors"
           :class="isMoreMenuActive
-            ? 'text-blue-700 dark:text-neon'
+            ? 'text-black dark:text-neon'
             : 'text-gray-500 dark:text-gray-400'"
         >
-          <Ellipsis class="w-5 h-5 mb-1" />
+          <Ellipsis class="w-5 h-5 mb-1" :class="[isMoreMenuActive ? 'fill-[#16a34a]/50 text-[#16a34a] dark:fill-none dark:text-inherit' : '']" />
           <span class="text-[10px] font-medium">{{ $t('nav.more') }}</span>
         </button>
       </div>
@@ -213,15 +213,15 @@
                   @click="showMoreMenu = false"
                   class="flex items-center gap-x-3 px-4 py-3 rounded-lg transition-colors"
                   :class="$route.name?.toString()?.toLowerCase() === item.routeName?.toLowerCase()
-                    ? 'bg-blue-50 dark:bg-gray-700 text-blue-700 dark:text-neon'
+                    ? 'bg-slate-100 dark:bg-gray-700 text-black dark:text-neon'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'"
                 >
                   <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
                     :class="$route.name?.toString()?.toLowerCase() === item.routeName?.toLowerCase()
-                      ? 'bg-blue-100 dark:bg-gray-600'
-                      : 'bg-gray-100 dark:bg-gray-700'"
+                      ? 'bg-gray-200 dark:bg-gray-600'
+                      : 'bg-gray-200 dark:bg-gray-700'"
                   >
-                    <component :is="item.icon" class="w-5 h-5" />
+                    <component :is="item.icon" class="w-5 h-5" :class="[$route.name?.toString()?.toLocaleLowerCase() === item.routeName?.toLocaleLowerCase() ? 'fill-[#16a34a]/50 text-[#16a34a] dark:fill-none dark:text-inherit' : '']" />
                   </div>
                   <span class="text-sm font-medium">{{ item.name }}</span>
                 </router-link>

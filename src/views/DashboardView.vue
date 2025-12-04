@@ -216,7 +216,7 @@
                   <div class="flex items-baseline justify-between gap-3">
                     <p class="text-[10px] text-gray-500 dark:text-gray-400 flex-shrink-0">{{ $t('dashboard.spent') }}
                     </p>
-                    <p class="text-sm font-semibold font-mono text-right break-all" :class="{
+                    <p class="text-sm font-semibold text-right break-all" :class="{
                       'text-blue-600 dark:text-blue-400': budgetSummary.usage_percent <= 50,
                       'text-success-600 dark:text-success-400': budgetSummary.usage_percent > 50 && budgetSummary.usage_percent <= 75,
                       'text-warning-600 dark:text-warning-400': budgetSummary.usage_percent > 75 && budgetSummary.usage_percent <= 90,
@@ -232,7 +232,7 @@
                     <p class="text-[10px] flex-shrink-0 text-gray-500 dark:text-gray-400">
                       {{ budgetSummary.usage_percent > 100 ? $t('dashboard.over') : $t('dashboard.left') }}
                     </p>
-                    <p class="text-sm font-semibold font-mono text-right break-all" :class="{
+                    <p class="text-sm font-semibold text-right break-all" :class="{
                       'text-success-600 dark:text-success-400': budgetSummary.usage_percent <= 100,
                       'text-error-500': budgetSummary.usage_percent > 100
                     }">
@@ -244,7 +244,7 @@
                   <div class="flex items-baseline justify-between gap-3">
                     <p class="text-[10px] text-gray-500 dark:text-gray-400 flex-shrink-0">{{ $t('dashboard.limit') }}
                     </p>
-                    <p class="text-sm font-semibold font-mono text-gray-900 dark:text-white text-right break-all">
+                    <p class="text-sm font-semibold text-gray-900 dark:text-white text-right break-all">
                       {{ configStore.formatCurrency(budgetSummary.total_limit) }}
                     </p>
                   </div>
@@ -255,7 +255,7 @@
                   <!-- Total Limit -->
                   <div class="text-center">
                     <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">{{ $t('dashboard.limit') }}</p>
-                    <p class="text-xs font-semibold font-mono text-gray-900 dark:text-white">
+                    <p class="text-xs font-semibold text-gray-900 dark:text-white">
                       {{ configStore.formatCurrency(budgetSummary.total_limit) }}
                     </p>
                   </div>
@@ -263,7 +263,7 @@
                   <!-- Total Spent -->
                   <div class="text-center">
                     <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">{{ $t('dashboard.spent') }}</p>
-                    <p class="text-xs font-semibold font-mono" :class="{
+                    <p class="text-xs font-semibold" :class="{
                       'text-blue-600 dark:text-blue-400': budgetSummary.usage_percent <= 50,
                       'text-success-600 dark:text-success-400': budgetSummary.usage_percent > 50 && budgetSummary.usage_percent <= 75,
                       'text-warning-600 dark:text-warning-400': budgetSummary.usage_percent > 75 && budgetSummary.usage_percent <= 90,
@@ -279,7 +279,7 @@
                     <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">
                       {{ budgetSummary.usage_percent > 100 ? $t('dashboard.over') : $t('dashboard.left') }}
                     </p>
-                    <p class="text-xs font-semibold font-mono" :class="{
+                    <p class="text-xs font-semibold" :class="{
                       'text-success-600 dark:text-success-400': budgetSummary.usage_percent <= 100,
                       'text-error-500': budgetSummary.usage_percent > 100
                     }">

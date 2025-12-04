@@ -142,7 +142,13 @@ const cardClass = computed(() => {
   if (props.milestone.status === 'achieved') {
     return 'border-l-4 border-green-500 bg-green-50/50 dark:bg-green-900/10';
   }
-  return 'border-l-4 border-blue-500 bg-blue-50/50 dark:bg-blue-900/10';
+  if (props.milestone.status === 'in_progress') {
+    return 'border-l-4 border-blue-500 bg-blue-50/50 dark:bg-blue-900/10';
+  }
+  if (props.milestone.status === 'failed') {
+    return 'border-l-4 border-red-500 bg-red-50/50 dark:bg-red-900/10';
+  }
+  return 'border-l-4 bg-gray-50/50 dark:bg-gray-900/10';
 });
 
 // Status icon mapping
