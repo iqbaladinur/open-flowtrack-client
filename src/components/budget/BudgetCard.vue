@@ -52,7 +52,7 @@
                 <p class="text-[9px] tracking-wider text-gray-500 dark:text-gray-400 mb-0.5">
                   {{ isOverspent ? $t('dashboard.over') : $t('dashboard.left') }}
                 </p>
-                <p class="font-mono text-xs leading-none" :class="amountClass">
+                <p class=" text-xs leading-none" :class="amountClass">
                   {{ formattedRemaining }}
                 </p>
               </div>
@@ -77,7 +77,7 @@
           <div class="overflow-hidden">
             <div class="flex justify-between items-center text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-1.5">
               <span>{{ formattedProgress }}%</span>
-              <span class="font-mono">{{ formattedSpent }} <span class="text-gray-300 dark:text-gray-600">/</span> {{ formattedLimit }}</span>
+              <span class="">{{ formattedSpent }} <span class="text-gray-300 dark:text-gray-600">/</span> {{ formattedLimit }}</span>
             </div>
           </div>
         </div>
@@ -128,7 +128,7 @@
       <div class="mt-2">
         <div class="text-left mb-3">
           <p class="text-xs text-gray-500 dark:text-gray-400">{{ isOverspent ? $t('dashboard.over') : $t('dashboard.left') }}</p>
-          <p class="font-mono text-lg font-bold" :class="amountClass">
+          <p class=" text-lg font-bold" :class="amountClass">
             {{ formattedRemaining }}
           </p>
         </div>

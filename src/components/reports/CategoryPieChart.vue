@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-4">
-    <h3 class="text-slate-600 dark:text-white text-center font-mono font-medium">
+    <h3 class="text-slate-600 dark:text-white text-center  font-medium">
       Total: {{ totalNominal }}
     </h3>
 
@@ -22,7 +22,7 @@
         <span class="text-slate-600 dark:text-white" :class="{ 'line-through': !dataVisibility[index] }">
           {{ Array.isArray(label) ? label[0] : label }}
         </span>
-        <span v-if="Array.isArray(label) && label[1]" class="text-gray-500 dark:text-gray-400 font-mono" :class="{ 'line-through': !dataVisibility[index] }">
+        <span v-if="Array.isArray(label) && label[1]" class="text-gray-500 dark:text-gray-400 " :class="{ 'line-through': !dataVisibility[index] }">
           {{ label[1] }}
         </span>
       </button>

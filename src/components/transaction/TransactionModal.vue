@@ -53,7 +53,7 @@
           <label for="wallet" class="label">{{ form.type === 'transfer' ? $t('transactionModal.sourceWallet') : $t('transactionModal.wallet') }}</label>
           <select id="wallet" v-model="form.wallet_id" required class="input" :disabled="loading || walletsStore.loading" autocomplete="off">
             <option value="">{{ $t('transactionModal.selectWallet') }}</option>
-            <option v-for="wallet in walletsStore.wallets" :key="wallet.id" :value="wallet.id" class="font-mono">
+            <option v-for="wallet in walletsStore.wallets" :key="wallet.id" :value="wallet.id" class="">
               {{ wallet.name }} {{ wallet.is_main_wallet ? $t('transactionModal.main') : '' }} ({{ configStore.formatCurrency(wallet.current_balance || 0) }})
             </option>
           </select>
@@ -64,7 +64,7 @@
           <label for="destination_wallet" class="label">{{ $t('transactionModal.destinationWallet') }}</label>
           <select id="destination_wallet" v-model="form.destination_wallet_id" required class="input" :disabled="loading || walletsStore.loading" autocomplete="off">
             <option value="">{{ $t('transactionModal.selectDestination') }}</option>
-            <option v-for="wallet in availableDestinationWallets" :key="wallet.id" :value="wallet.id" class="font-mono">
+            <option v-for="wallet in availableDestinationWallets" :key="wallet.id" :value="wallet.id" class="">
               {{ wallet.name }} {{ wallet.is_main_wallet ? $t('transactionModal.main') : '' }} ({{ configStore.formatCurrency(wallet.current_balance || 0) }})
             </option>
           </select>

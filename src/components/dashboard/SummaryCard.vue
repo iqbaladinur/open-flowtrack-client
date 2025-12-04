@@ -6,7 +6,7 @@
       </div>
       <div class="mt-auto">
         <p class="text-xs text-gray-500 dark:text-gray-400">{{ title }}</p>
-        <p class="lg:text-base text-xs font-mono" :class="valueClass">
+        <p class="lg:text-base text-xs " :class="valueClass">
           {{ prefix }}{{ configStore.formatCurrency(value) }}
         </p>
       </div>

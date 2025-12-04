@@ -29,12 +29,12 @@
             <div class="w-4 h-0.5 bg-cyan-400/40" />
           </div>
         </div>
-        <div class="text-xs text-cyan-400/60 font-mono">
+        <div class="text-xs text-cyan-400/60 ">
           #
         </div>
       </div>
       
-      <p class="text-xs text-gray-400 uppercase tracking-wider mb-2 font-mono">
+      <p class="text-xs text-gray-400 uppercase tracking-wider mb-2 ">
         {{ title }}
       </p>
       

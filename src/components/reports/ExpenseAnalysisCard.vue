@@ -56,18 +56,18 @@
 
               <div class="mt-4 text-center">
                 <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('expenseAnalysis.totalSpent') }}</p>
-                <p class="font-mono text-xl font-bold text-error-500 dark:text-error-400 break-words">{{ configStore.formatCurrency(selectedCategoryStats.total) }}</p>
+                <p class=" text-xl font-bold text-error-500 dark:text-error-400 break-words">{{ configStore.formatCurrency(selectedCategoryStats.total) }}</p>
               </div>
             </div>
 
             <div class="mt-auto">
                 <div class="grid grid-cols-2 gap-2 text-xs mt-4">
                   <div class="text-center rounded-md py-2 px-2 bg-gray-100 dark:bg-gray-700/50">
-                    <p class="font-mono text-gray-700 dark:text-gray-300 font-semibold text-sm">{{ configStore.formatCurrency(selectedCategoryStats.average) }}</p>
+                    <p class=" text-gray-700 dark:text-gray-300 font-semibold text-sm">{{ configStore.formatCurrency(selectedCategoryStats.average) }}</p>
                     <p class="text-gray-500 dark:text-gray-400 capitalize text-[10px]">{{ $t('expenseAnalysis.avg') }} / {{ analysisPeriod === 'period' ? $t('expenseAnalysis.trx') : analysisPeriod }}</p>
                   </div>
                   <div class="text-center rounded-md py-2 px-2 bg-gray-100 dark:bg-gray-700/50">
-                    <p class="font-mono text-gray-700 dark:text-gray-300 font-semibold text-sm">{{ configStore.formatCurrency(selectedCategoryStats.median) }}</p>
+                    <p class=" text-gray-700 dark:text-gray-300 font-semibold text-sm">{{ configStore.formatCurrency(selectedCategoryStats.median) }}</p>
                     <p class="text-gray-500 dark:text-gray-400 text-[10px]">{{ $t('expenseAnalysis.median') }}</p>
                   </div>
                 </div>

@@ -119,7 +119,7 @@
               </h3>
               <div class="p-2 border rounded-md bg-gray-50 dark:bg-gray-800/50 h-[50vh]">
                 <textarea v-model="ocrResultText"
-                  class="textarea textarea-bordered w-full h-full min-h-[300px] font-mono dark:bg-white dark:text-black p-4"
+                  class="textarea textarea-bordered w-full h-full min-h-[300px]  dark:bg-white dark:text-black p-4"
                   :placeholder="$t('bulkExpense.extractedTextPlaceholder')"></textarea>
               </div>
             </div>

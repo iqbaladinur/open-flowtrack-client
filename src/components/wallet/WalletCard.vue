@@ -27,7 +27,7 @@
         <div class="space-y-2">
           <div class="flex items-center justify-between">
             <span
-              class="text-sm font-medium font-mono"
+              class="text-sm font-medium "
               :class="(wallet.current_balance || 0) >= 0 ? 'text-success-600 dark:text-success-400' : 'text-error-600 dark:text-error-400'"
             >
               {{ configStore.formatCurrency(wallet.current_balance || 0) }}
@@ -43,7 +43,7 @@
             >
               {{ (((wallet.current_balance || 0) - wallet.initial_balance) / wallet.initial_balance * 100).toFixed(2) }} %
             </span>
-            <span class="text-gray-600 dark:text-gray-400 font-mono font-medium flex items-center gap-2">
+            <span class="text-gray-600 dark:text-gray-400  font-medium flex items-center gap-2">
               <component
                 :is="(wallet.current_balance || 0) >= wallet.initial_balance ? TrendingUp : TrendingDown"
                 class="w-4 h-4"
@@ -52,7 +52,7 @@
                   : 'text-error-500'"
               />
               <span
-                class="font-medium font-mono"
+                class="font-medium "
                 :class="(wallet.current_balance || 0) >= wallet.initial_balance 
                   ? 'text-success-600 dark:text-success-400' 
                   : 'text-error-600 dark:text-error-400'"
@@ -63,7 +63,7 @@
           </div>
           <!-- <div class="flex items-center justify-between">
             <span class="text-xs text-gray-500 dark:text-gray-400">Initial Balance</span>
-            <span class="text-sm text-gray-600 dark:text-gray-400 font-mono font-medium">
+            <span class="text-sm text-gray-600 dark:text-gray-400  font-medium">
               {{ configStore.formatCurrency(wallet.initial_balance) }}
             </span>
           </div> -->

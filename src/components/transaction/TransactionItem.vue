@@ -47,7 +47,7 @@
           </div>
           <div class="text-right ml-2 flex-shrink-0">
             <p
-              class="font-medium font-mono"
+              class="font-medium "
               :class="{
                 'text-success-600 dark:text-success-400': transaction.type === 'income',
                 'text-error-600 dark:text-error-400': transaction.type === 'expense',

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="text-slate-600 dark:text-white text-center font-mono font-medium text-sm lg:text-base mb-8 lg:mb-10">
+    <h3 class="text-slate-600 dark:text-white text-center  font-medium text-sm lg:text-base mb-8 lg:mb-10">
       {{ $t('wallets.totalBalance') }}: {{ totalBalance }}
     </h3>
 
