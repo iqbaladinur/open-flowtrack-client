@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors text-xs" :class="{ 'opacity-20': transaction.wallet?.hidden }">
+  <div class="p-3 hover:bg-sepia-100 dark:hover:bg-gray-800/50 transition-colors text-xs" :class="{ 'opacity-20': transaction.wallet?.hidden }">
     <div class="flex items-start space-x-3">
       <!-- Category Icon -->
       <div

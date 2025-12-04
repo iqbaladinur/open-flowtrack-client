@@ -8,8 +8,8 @@
 
       <!-- Error State -->
       <div v-else-if="!milestone" class="card p-12 text-center">
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{{ $t('milestones.milestoneNotFound') }}</h3>
-        <p class="text-gray-500 dark:text-gray-400 mb-6">
+        <h3 class="text-lg font-medium text-sepia-900 dark:text-white mb-2">{{ $t('milestones.milestoneNotFound') }}</h3>
+        <p class="text-sepia-500 dark:text-gray-400 mb-6">
           {{ $t('milestones.milestoneNotFoundEdit') }}
         </p>
         <router-link to="/milestones" class="btn-primary">
@@ -24,7 +24,7 @@
           <router-link :to="`/milestones/${milestoneId}`" class="btn-icon flex gap-4 items-center">
             <ArrowLeft class="w-5 h-5" />
             <div>
-              <h1 class="text-sm font-medium text-gray-800 dark:text-neon">{{ $t('milestones.back') }}</h1>
+              <h1 class="text-sm font-medium text-sepia-800 dark:text-neon">{{ $t('milestones.back') }}</h1>
             </div>
           </router-link>
         </div>
@@ -48,28 +48,28 @@
                 />
               </div>
               <div>
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                <h2 class="text-lg font-semibold text-sepia-900 dark:text-white">
                   {{ milestone.status === 'cancelled' ? $t('milestones.cancelledMilestoneTitle') : $t('milestones.achievedMilestoneTitle') }}
                 </h2>
-                <p class="text-sm text-gray-600 dark:text-gray-400">
+                <p class="text-sm text-sepia-600 dark:text-gray-400">
                   {{ milestone.status === 'cancelled' ? $t('milestones.cancelledMilestoneMessage') : $t('milestones.achievedMilestoneMessage') }}
                 </p>
               </div>
             </div>
 
-            <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+            <div class="border-t border-sepia-200 dark:border-gray-700 pt-4 mt-4">
               <div class="space-y-2">
                 <div>
-                  <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('milestones.name') }}:</span>
-                  <span class="text-sm text-gray-900 dark:text-white ml-2">{{ milestone.name }}</span>
+                  <span class="text-sm font-medium text-sepia-700 dark:text-gray-300">{{ $t('milestones.name') }}:</span>
+                  <span class="text-sm text-sepia-900 dark:text-white ml-2">{{ milestone.name }}</span>
                 </div>
                 <div v-if="milestone.description">
-                  <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('milestones.description') }}:</span>
-                  <span class="text-sm text-gray-900 dark:text-white ml-2">{{ milestone.description }}</span>
+                  <span class="text-sm font-medium text-sepia-700 dark:text-gray-300">{{ $t('milestones.description') }}:</span>
+                  <span class="text-sm text-sepia-900 dark:text-white ml-2">{{ milestone.description }}</span>
                 </div>
                 <div>
-                  <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('milestones.targetDate') }}:</span>
-                  <span class="text-sm text-gray-900 dark:text-white ml-2">{{ formatDate(milestone.target_date) }}</span>
+                  <span class="text-sm font-medium text-sepia-700 dark:text-gray-300">{{ $t('milestones.targetDate') }}:</span>
+                  <span class="text-sm text-sepia-900 dark:text-white ml-2">{{ formatDate(milestone.target_date) }}</span>
                 </div>
               </div>
             </div>
@@ -78,8 +78,8 @@
           <div class="card p-6">
             <div class="flex items-center justify-between">
               <div>
-                <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-1">{{ $t('milestones.deleteThisMilestone') }}</h3>
-                <p class="text-xs text-gray-600 dark:text-gray-400">{{ $t('milestones.deleteDescription') }}</p>
+                <h3 class="text-sm font-semibold text-sepia-900 dark:text-white mb-1">{{ $t('milestones.deleteThisMilestone') }}</h3>
+                <p class="text-xs text-sepia-600 dark:text-gray-400">{{ $t('milestones.deleteDescription') }}</p>
               </div>
               <button @click="confirmDelete" class="btn bg-red-600 hover:bg-red-700 text-white">
                 <Trash2 class="w-4 h-4 mr-2" />
@@ -103,7 +103,7 @@
 
       <!-- Delete Confirmation Modal -->
       <Modal v-model="showDeleteConfirm" :title="$t('milestones.deleteMilestone')">
-        <p class="text-gray-600 dark:text-gray-400 mb-4">
+        <p class="text-sepia-600 dark:text-gray-400 mb-4">
           {{ $t('milestones.deleteConfirmation') }}
         </p>
         <div class="flex items-center justify-end gap-3">

@@ -1,7 +1,7 @@
 <template>
   <button
     @click="$emit('edit', category)"
-    class="group relative flex aspect-square flex-col items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white p-4 text-center transition-colors hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+    class="group relative flex aspect-square flex-col items-center justify-center gap-2 rounded-lg border border-sepia-200 bg-sepia-50 p-4 text-center transition-colors hover:bg-sepia-100 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
   >
     <!-- Type Indicator Badge -->
     <div class="absolute left-2 top-2">

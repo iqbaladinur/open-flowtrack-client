@@ -10,7 +10,7 @@
           :disabled="loading"
           :placeholder="$t('budgetModal.budgetLimitPlaceholder')"
         />
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+        <p class="text-xs text-sepia-500 dark:text-gray-400 mt-2">
           {{ $t('budgetModal.budgetLimitHint') }}
         </p>
       </div>
@@ -56,17 +56,17 @@
 
       <div>
         <label class="label">{{ $t('budgetModal.categories') }}</label>
-        <div class="max-h-56 overflow-y-auto rounded-lg border dark:border-gray-700 p-2">
+        <div class="max-h-56 overflow-y-auto rounded-lg border border-sepia-300 dark:border-gray-700 p-2">
           <div class="grid grid-cols-3 gap-2">
             <div
               v-for="category in expenseCategories"
               :key="category.id"
               @click="toggleCategory(category.id)"
               class="relative card p-3 flex flex-col items-center justify-center text-center h-24 cursor-pointer border-2 transition-all truncate"
-              :class="form.category_ids.includes(category.id || 'nodata') ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-transparent hover:bg-gray-100 dark:hover:bg-gray-700 bg-gray-50 dark:bg-black/30'"
+              :class="form.category_ids.includes(category.id || 'nodata') ? 'border-sepia-500 bg-sepia-50 dark:bg-primary-900/20' : 'border-transparent hover:bg-sepia-100 dark:hover:bg-gray-700 bg-sepia-50 dark:bg-black/30'"
             >
               <!-- Selected Check Icon -->
-              <div v-if="form.category_ids.includes(category.id || 'nodata')" class="absolute top-2 right-2 w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center text-white">
+              <div v-if="form.category_ids.includes(category.id || 'nodata')" class="absolute top-2 right-2 w-5 h-5 bg-sepia-500 dark:bg-primary-500 rounded-full flex items-center justify-center text-white">
                 <Check class="w-3 h-3" />
               </div>
 
@@ -77,7 +77,7 @@
               >
                 <component :is="getIcon(category.icon)" class="w-4 h-4" :style="{ color: category.color }" />
               </div>
-              <p class="text-xs text-gray-800 dark:text-gray-200 leading-tight truncate max-w-[80%]">
+              <p class="text-xs text-sepia-800 dark:text-gray-200 leading-tight truncate max-w-[80%]">
                 {{ category.name }}
               </p>
             </div>

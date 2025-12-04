@@ -4,8 +4,8 @@
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('budgets.title') }}</h1>
-          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <h1 class="text-xl lg:text-3xl font-bold text-sepia-900 dark:text-neon">{{ $t('budgets.title') }}</h1>
+          <p class="text-sm text-sepia-600 dark:text-gray-400 mt-1">
             {{ $t('budgets.subtitle') }}
           </p>
         </div>
@@ -20,7 +20,7 @@
           </div>
           <div class="flex items-center gap-2">
             <input type="date" v-model="dateRange.start" @change="fetchBudgets" class="input text-xs" />
-            <span class="text-gray-500">-</span>
+            <span class="text-sepia-500 dark:text-gray-500">-</span>
             <input type="date" v-model="dateRange.end" @change="fetchBudgets" class="input text-xs" />
           </div>
           <button @click="showAddModal = true" class="btn-primary hidden sm:flex p-2">
@@ -35,11 +35,11 @@
       </div>
 
       <div v-else-if="budgets.length === 0" class="card p-12 text-center">
-        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Target class="w-8 h-8 text-gray-400" />
+        <div class="w-16 h-16 bg-sepia-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Target class="w-8 h-8 text-sepia-400 dark:text-gray-400" />
         </div>
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{{ $t('budgets.noBudgetsFound') }}</h3>
-        <p class="text-gray-500 dark:text-gray-400 mb-6">
+        <h3 class="text-lg font-medium text-sepia-900 dark:text-white mb-2">{{ $t('budgets.noBudgetsFound') }}</h3>
+        <p class="text-sepia-500 dark:text-gray-400 mb-6">
           {{ $t('budgets.createFirstBudget') }}
         </p>
         <button @click="showAddModal = true" class="btn-primary">

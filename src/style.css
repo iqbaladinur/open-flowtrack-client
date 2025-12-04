@@ -10,7 +10,7 @@
   }
   
   body {
-    @apply bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-neon;
+    @apply bg-sepia-100 dark:bg-gray-950 text-sepia-900 dark:text-neon;
     margin: 0;
     min-height: 100vh;
     line-height: 1.6;
@@ -29,11 +29,11 @@
   }
   
   .btn-primary {
-    @apply btn bg-black text-white hover:bg-black/80 focus:bg-black/90 dark:bg-neon/80 dark:hover:bg-neon/70 dark:focus:ring-neon/80 border-primary-600 dark:border-neon/80;
+    @apply btn bg-sepia-800 text-sepia-50 hover:bg-sepia-700 focus:bg-sepia-900 dark:bg-neon/80 dark:hover:bg-neon/70 dark:focus:ring-neon/80 border-sepia-800 dark:border-neon/80;
   }
   
   .btn-secondary {
-    @apply btn text-gray-900 focus:ring-gray-500 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-gray-500/50 border-gray-300 dark:border-gray-500;
+    @apply btn text-sepia-900 focus:ring-sepia-500 dark:text-gray-400 hover:bg-sepia-200/50 dark:hover:bg-gray-500/50 border-sepia-400 dark:border-gray-500;
   }
   
   .btn-success {
@@ -49,18 +49,18 @@
   }
 
   .card {
-    @apply rounded-xl border-[1.5px] border-gray-200 dark:border-white/10 bg-white dark:bg-slate-800/10;
+    @apply rounded-xl border-[1.5px] border-sepia-300 dark:border-white/10 bg-sepia-50 dark:bg-slate-800/10;
   }
   
   .input {
-    @apply w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors;
+    @apply w-full px-3 py-2 text-sm border border-sepia-400 dark:border-gray-600 rounded-lg bg-sepia-50 dark:bg-gray-700 text-sepia-900 dark:text-gray-100 placeholder-sepia-600 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sepia-500 focus:border-transparent transition-colors;
     &:disabled {
-      @apply cursor-not-allowed bg-gray-200/50 dark:bg-gray-100/50;
+      @apply cursor-not-allowed bg-sepia-200/50 dark:bg-gray-100/50;
     }
   }
   
   .label {
-    @apply block text-sm font-medium text-gray-700 dark:text-gray-400 mb-1;
+    @apply block text-sm font-medium text-sepia-800 dark:text-gray-400 mb-1;
   }
 }
 
@@ -71,15 +71,15 @@
 
 /* Custom scrollbar */
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100 dark:bg-gray-800;
+  @apply bg-sepia-100 dark:bg-gray-800;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+  @apply bg-sepia-400 dark:bg-gray-600 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400 dark:bg-gray-500;
+  @apply bg-sepia-500 dark:bg-gray-500;
 }
 
 /* Safe area for mobile devices */

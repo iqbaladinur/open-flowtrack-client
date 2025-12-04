@@ -7,7 +7,7 @@ export const useThemeStore = defineStore('theme', () => {
   const theme = ref<Theme>('system');
 
   const updateThemeColorMeta = (isDark: boolean) => {
-    let color = isDark ? '#111827' : '#ffffff';
+    let color = isDark ? '#111827' : '#f7f0e6';
     let metaThemeColor = document.querySelector('meta[name=theme-color]');
     if (metaThemeColor) {
       metaThemeColor.setAttribute('content', color);

@@ -3,10 +3,10 @@
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Welcome Section -->
       <div>
-        <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon mb-2">
+        <h1 class="text-xl lg:text-3xl font-bold text-sepia-900 dark:text-neon mb-2">
           {{ $t('dashboard.title') }}, {{ authStore.user?.full_name || $t('common.user') }}!
         </h1>
-        <p class="text-gray-600 dark:text-gray-400 text-sm">
+        <p class="text-sepia-600 dark:text-gray-400 text-sm">
           {{ $t('dashboard.subtitle') }}
         </p>
       </div>
@@ -63,7 +63,7 @@
         <!-- Add Income -->
         <button @click="toggleAddTransaction('income')" :title="$t('dashboard.addIncome')"
           :aria-label="$t('dashboard.addIncome')"
-          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-white dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-success-100 lg:to-success-200 dark:lg:from-success-900/40 dark:lg:to-success-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-success-200 lg:hover:to-success-300 dark:lg:hover:from-success-900/50 dark:lg:hover:to-success-800/40">
+          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-sepia-100 dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-success-100 lg:to-success-200 dark:lg:from-success-900/40 dark:lg:to-success-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-success-200 lg:hover:to-success-300 dark:lg:hover:from-success-900/50 dark:lg:hover:to-success-800/40">
           <div
             class="relative flex size-12 lg:h-5 lg:w-5 flex-shrink-0 items-center justify-center rounded-xl lg:rounded-md bg-success-500 dark:bg-success-600">
             <Plus class="absolute size-5 lg:h-3.5 lg:w-3.5 text-white" strokeWidth="2.5" />
@@ -81,7 +81,7 @@
         <!-- Add Expense -->
         <button @click="toggleAddTransaction('expense')" :title="$t('dashboard.addExpense')"
           :aria-label="$t('dashboard.addExpense')"
-          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-white dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-error-100 lg:to-error-200 dark:lg:from-error-900/40 dark:lg:to-error-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-error-200 lg:hover:to-error-300 dark:lg:hover:from-error-900/50 dark:lg:hover:to-error-800/40">
+          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-sepia-100 dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-error-100 lg:to-error-200 dark:lg:from-error-900/40 dark:lg:to-error-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-error-200 lg:hover:to-error-300 dark:lg:hover:from-error-900/50 dark:lg:hover:to-error-800/40">
           <div
             class="relative flex size-12 lg:h-5 lg:w-5 flex-shrink-0 items-center justify-center rounded-xl lg:rounded-md bg-error-500 dark:bg-error-600">
             <Minus class="absolute size-5 lg:h-3.5 lg:w-3.5 text-white" strokeWidth="2.5" />
@@ -99,7 +99,7 @@
         <!-- Add Transfer -->
         <button @click="toggleAddTransaction('transfer')" :title="$t('dashboard.addTransfer')"
           :aria-label="$t('dashboard.addTransfer')"
-          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-white dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-blue-100 lg:to-blue-200 dark:lg:from-blue-900/40 dark:lg:to-blue-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-blue-200 lg:hover:to-blue-300 dark:lg:hover:from-blue-900/50 dark:lg:hover:to-blue-800/40">
+          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-sepia-100 dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-blue-100 lg:to-blue-200 dark:lg:from-blue-900/40 dark:lg:to-blue-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-blue-200 lg:hover:to-blue-300 dark:lg:hover:from-blue-900/50 dark:lg:hover:to-blue-800/40">
           <div
             class="relative flex size-12 lg:h-5 lg:w-5 flex-shrink-0 items-center justify-center rounded-xl lg:rounded-md bg-blue-500 dark:bg-blue-600">
             <ArrowRightLeft class="absolute size-5 lg:h-3.5 lg:w-3.5 text-white" />
@@ -116,7 +116,7 @@
 
         <!-- Manage Wallets -->
         <router-link to="/wallets" :title="$t('dashboard.manageWallets')" :aria-label="$t('dashboard.manageWallets')"
-          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-white dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-purple-100 lg:to-purple-200 dark:lg:from-purple-900/40 dark:lg:to-purple-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-purple-200 lg:hover:to-purple-300 dark:lg:hover:from-purple-900/50 dark:lg:hover:to-purple-800/40">
+          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-sepia-100 dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-purple-100 lg:to-purple-200 dark:lg:from-purple-900/40 dark:lg:to-purple-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-purple-200 lg:hover:to-purple-300 dark:lg:hover:from-purple-900/50 dark:lg:hover:to-purple-800/40">
           <div
             class="relative flex size-12 lg:h-5 lg:w-5 flex-shrink-0 items-center justify-center rounded-xl lg:rounded-md bg-purple-500 dark:bg-purple-600">
             <Wallet class="absolute size-5 lg:h-3.5 lg:w-3.5 text-white" />
@@ -150,12 +150,12 @@
         </div>
         <div v-else-if="analyticsSugestion.length > 0" class="flex gap-2 flex-wrap">
           <p v-for="(suggestion, index) in analyticsSugestion" :key="index"
-            class="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/10 px-3 py-2 rounded-lg w-full lg:whitespace-nowrap lg:w-auto">
+            class="text-sm text-sepia-700 dark:text-gray-300 bg-sepia-50 dark:bg-gray-700/10 px-3 py-2 rounded-lg w-full lg:whitespace-nowrap lg:w-auto">
             {{ suggestion }}
           </p>
         </div>
         <div v-else class="text-center py-8">
-          <p class="text-gray-500 dark:text-gray-400">
+          <p class="text-sepia-500 dark:text-gray-400">
             {{ configStore.isApiKeyAiExist ? $t('dashboard.noSuggestionsAvailable') : $t('dashboard.addApiKeyForAi') }}
           </p>
         </div>
@@ -190,10 +190,10 @@
 
           <div v-if="budgets.length === 0 && !budgetsStore.loading" class="text-center py-8 m-auto">
             <div
-              class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Target class="size-8 text-gray-400" />
+              class="w-16 h-16 bg-sepia-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Target class="size-8 text-sepia-400 dark:text-gray-400" />
             </div>
-            <p class="text-gray-500 dark:text-gray-400 mb-4">{{ $t('dashboard.noBudgetActive') }}</p>
+            <p class="text-sepia-500 dark:text-gray-400 mb-4">{{ $t('dashboard.noBudgetActive') }}</p>
           </div>
 
           <div v-if="budgetsStore.loading && budgets.length === 0" class="flex justify-center items-center py-8 my-auto">
@@ -334,10 +334,10 @@
 
             <div v-if="recentTransactions.length === 0" class="text-center py-8">
               <div
-                class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                <TrendingUpDown class="w-8 h-8 text-gray-400" />
+                class="w-16 h-16 bg-sepia-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                <TrendingUpDown class="w-8 h-8 text-sepia-400 dark:text-gray-400" />
               </div>
-              <p class="text-gray-500 dark:text-gray-400 mb-4">{{ $t('dashboard.noTransactionsYet') }}</p>
+              <p class="text-sepia-500 dark:text-gray-400 mb-4">{{ $t('dashboard.noTransactionsYet') }}</p>
               <button @click="showAddTransactionModal = true" class="btn-primary">
                 {{ $t('dashboard.addFirstTransaction') }}
               </button>

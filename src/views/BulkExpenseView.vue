@@ -4,10 +4,10 @@
       <!-- Header -->
       <div class="flex justify-between gap-4">
         <div>
-          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">
+          <h1 class="text-xl lg:text-3xl font-bold text-sepia-900 dark:text-neon">
             {{ $t('bulkExpense.title') }}
           </h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
+          <p class="text-sepia-600 dark:text-gray-400 mt-1 text-sm">
             {{ $t('bulkExpense.subtitle') }}
           </p>
         </div>
@@ -23,18 +23,18 @@
 
           <div v-if="!selectedImage">
             <div @click="triggerFileInput" @dragover.prevent @dragleave.prevent @drop.prevent="handleDrop"
-              class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-300 dark:border-gray-600 px-6 py-10 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+              class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-300 dark:border-gray-600 px-6 py-10 cursor-pointer hover:bg-sepia-100 dark:hover:bg-gray-800/50 transition-colors">
               <div class="text-center">
-                <UploadCloud class="mx-auto h-12 w-12 text-gray-400" />
-                <div class="mt-4 flex text-sm leading-6 text-gray-600 dark:text-gray-400">
+                <UploadCloud class="mx-auto h-12 w-12 text-sepia-400 dark:text-gray-400" />
+                <div class="mt-4 flex text-sm leading-6 text-sepia-600 dark:text-gray-400">
                   <label for="file-upload"
-                    class="relative cursor-pointer rounded-md font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-500">
+                    class="relative cursor-pointer rounded-md font-semibold text-sepia-600 dark:text-primary-400 hover:text-primary-500">
                     <span>{{ $t('common.uploadFile') }}</span>
                     <input id="file-upload" name="file-upload" type="file" class="sr-only" @change="handleImageUpload"/>
                   </label>
                   <p class="pl-1">{{ $t('common.dragAndDrop') }}</p>
                 </div>
-                <p class="text-xs leading-5 text-gray-500 dark:text-gray-500">
+                <p class="text-xs leading-5 text-sepia-500 dark:text-gray-500">
                   {{ $t('bulkExpense.fileTypes') }}
                 </p>
               </div>
@@ -42,18 +42,18 @@
           </div>
 
           <div v-if="selectedImage" class="mt-4">
-            <div class="flex items-center justify-between p-2 border rounded-md bg-gray-50 dark:bg-gray-800/50">
+            <div class="flex items-center justify-between p-2 border rounded-md bg-sepia-50 dark:bg-gray-800/50 border-sepia-200 dark:border-gray-400/20">
               <div class="flex items-center gap-3 truncate">
                 <img :src="imagePreviewUrl" alt="Preview" class="h-12 w-12 rounded-md object-cover flex-shrink-0" />
                 <div class="text-sm font-medium truncate">
                   <p class="truncate">{{ selectedImage.name }} {{ $t('bulkExpense.cropped') }}</p>
-                  <p class="text-xs text-gray-500">
+                  <p class="text-xs text-sepia-500 dark:text-gray-500">
                     {{ (selectedImage.size / 1024).toFixed(2) }} KB
                   </p>
                 </div>
               </div>
-              <button @click="removeImage" class="btn btn-sm btn-ghost btn-circle">
-                <X class="w-4 h-4" />
+              <button @click="removeImage" class="btn btn-sm btn-ghost btn-circle border-none">
+                <X class="w-4 h-4 text-sepia-700 dark:text-white" />
               </button>
             </div>
           </div>

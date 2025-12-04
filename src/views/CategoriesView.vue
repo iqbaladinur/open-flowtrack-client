@@ -4,21 +4,21 @@
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('categories.title') }}</h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
+          <h1 class="text-xl lg:text-3xl font-bold text-sepia-900 dark:text-neon">{{ $t('categories.title') }}</h1>
+          <p class="text-sepia-600 dark:text-gray-400 mt-1 text-sm">
             {{ $t('categories.subtitle') }}
           </p>
         </div>
 
         <div class="flex items-center gap-2 justify-end">
           <div class="flex items-center gap-2 justify-end">
-            <button @click="filterType = ''" :class="['btn', filterType === '' ? 'text-blue-700 dark:text-neon' : 'btn-secondary']" class="p-2">
+            <button @click="filterType = ''" :class="['btn', filterType === '' ? 'text-sepia-700 dark:text-neon' : 'btn-secondary']" class="p-2">
               <LayoutGrid class="size-4" />
             </button>
-            <button @click="filterType = 'income'" :class="['btn', filterType === 'income' ? 'text-blue-700 dark:text-neon' : 'btn-secondary']" class="flex items-center gap-2 text-xs p-2">
+            <button @click="filterType = 'income'" :class="['btn', filterType === 'income' ? 'text-sepia-700 dark:text-neon' : 'btn-secondary']" class="flex items-center gap-2 text-xs p-2">
               <TrendingUp class="size-4" />
             </button>
-            <button @click="filterType = 'expense'" :class="['btn', filterType === 'expense' ? 'text-blue-700 dark:text-neon' : 'btn-secondary']" class="flex items-center gap-2 text-xs p-2">
+            <button @click="filterType = 'expense'" :class="['btn', filterType === 'expense' ? 'text-sepia-700 dark:text-neon' : 'btn-secondary']" class="flex items-center gap-2 text-xs p-2">
               <TrendingDown class="size-4" />
             </button>
           </div>
@@ -34,11 +34,11 @@
       </div>
 
       <div v-else-if="categories.length === 0" class="card p-12 text-center">
-        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Tag class="w-8 h-8 text-gray-400" />
+        <div class="w-16 h-16 bg-sepia-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Tag class="w-8 h-8 text-sepia-400 dark:text-gray-400" />
         </div>
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{{ $t('categories.noCategoriesFound') }}</h3>
-        <p class="text-gray-500 dark:text-gray-400 mb-6">
+        <h3 class="text-lg font-medium text-sepia-900 dark:text-white mb-2">{{ $t('categories.noCategoriesFound') }}</h3>
+        <p class="text-sepia-500 dark:text-gray-400 mb-6">
           {{ $t('categories.createFirstCategory') }}
         </p>
         <button @click="showAddModal = true" class="btn-primary">

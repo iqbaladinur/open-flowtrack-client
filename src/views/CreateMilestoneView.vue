@@ -6,7 +6,7 @@
         <router-link to="/milestones" class="btn-icon flex gap-4 items-center">
           <ArrowLeft class="w-5 h-5" />
           <div>
-            <h1 class="text-sm font-medium text-gray-800 dark:text-neon">{{ $t('milestones.back') }}</h1>
+            <h1 class="text-sm font-medium text-sepia-900 dark:text-neon">{{ $t('milestones.back') }}</h1>
           </div>
         </router-link>
       </div>

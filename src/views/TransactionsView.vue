@@ -4,8 +4,8 @@
       <!-- Header -->
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('transactions.title') }}</h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
+          <h1 class="text-xl lg:text-3xl font-bold text-sepia-900 dark:text-neon">{{ $t('transactions.title') }}</h1>
+          <p class="text-sepia-600 dark:text-gray-400 mt-1 text-sm">
             {{ $t('transactions.subtitle') }}
           </p>
         </div>
@@ -137,11 +137,11 @@
         </div>
 
         <div v-else-if="transactions.length === 0" class="text-center py-12 px-2">
-          <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-            <TrendingUpDown class="w-8 h-8 text-gray-400" />
+          <div class="w-16 h-16 bg-sepia-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+            <TrendingUpDown class="w-8 h-8 text-sepia-400" />
           </div>
-          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{{ $t('transactions.noTransactionsFound') }}</h3>
-          <p class="text-gray-500 dark:text-gray-400 mb-6">
+          <h3 class="text-lg font-medium text-sepia-900 dark:text-white mb-2">{{ $t('transactions.noTransactionsFound') }}</h3>
+          <p class="text-sepia-500 dark:text-gray-400 mb-6">
             {{ $t('transactions.tryAdjustingFilters') }}
           </p>
           <button @click="showAddModal = true" class="btn-primary">

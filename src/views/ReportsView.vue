@@ -3,8 +3,8 @@
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Header -->
       <div>
-        <h1 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('reports.title') }}</h1>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        <h1 class="text-xl lg:text-3xl font-bold text-sepia-900 dark:text-neon">{{ $t('reports.title') }}</h1>
+        <p class="text-sm text-sepia-700 dark:text-gray-400 mt-1">
           {{ $t('reports.subtitle') }}
         </p>
       </div>
@@ -15,7 +15,7 @@
           <button @click="goToPreviousPeriod" class="flex items-center btn-secondary p-2 rounded-full btn-borderless" :disabled="currentView !== 'custom'">
             <ChevronLeft class="size-4" />
           </button>
-          <span class="text-xs italic text-gray-600 dark:text-gray-300">
+          <span class="text-xs italic text-sepia-700 dark:text-gray-300">
             {{ readableDate }}
           </span>
           <button @click="goToNextPeriod" class="flex items-center btn-secondary p-2 rounded-full btn-borderless" :disabled="currentView !== 'custom'">
@@ -25,7 +25,7 @@
 
         <label v-else class="label">{{ $t('reports.filters') }}</label>
 
-        <button @click="showFilters = !showFilters" class="btn btn-sm text-xs btn-secondary p-2" :class="{ 'text-blue-700 dark:text-neon': showFilters }">
+        <button @click="showFilters = !showFilters" class="btn btn-sm text-xs btn-secondary p-2" :class="{ 'text-sepia-800 dark:text-neon': showFilters }">
           <FilterX v-if="showFilters" class="size-4" />
           <Filter v-else class="size-4" />
         </button>
@@ -105,8 +105,8 @@
         <LoadingSpinner />
       </div>
       <div v-else-if="transactions.length === 0" class="card text-center py-12">
-        <BarChart3 class="w-12 h-12 text-gray-400 mx-auto mb-2" />
-        <p class="text-gray-500 dark:text-gray-400 px-2">{{ $t('reports.noDataAvailable') }}</p>
+        <BarChart3 class="w-12 h-12 text-sepia-400 mx-auto mb-2" />
+        <p class="text-sepia-500 dark:text-gray-400 px-2">{{ $t('reports.noDataAvailable') }}</p>
       </div>
       <div v-else class="space-y-6">
         <!-- Summary Cards -->
@@ -166,8 +166,8 @@
         </div>
 
         <!-- Expense Ratio Description -->
-        <div class="card p-4 text-sm text-gray-600 dark:text-gray-400 space-y-2">
-          <h3 class="font-bold text-gray-800 dark:text-gray-200">{{ $t('reports.understandingExpenseRatio') }}</h3>
+        <div class="card p-4 text-sm text-sepia-700 dark:text-gray-400 space-y-2">
+          <h3 class="font-bold text-sepia-900 dark:text-gray-200">{{ $t('reports.understandingExpenseRatio') }}</h3>
           <div v-if="summary.totalIncome > 0">
             <div v-if="summary.expenseRatio < 70">
               <p><span class="font-semibold text-success-600 dark:text-success-400">{{ $t('reports.healthyZone') }}</span> {{ $t('reports.healthyZoneDesc') }}</p>
@@ -188,15 +188,15 @@
         <div class="card p-4">
           <div class="flex justify-between items-start mb-4 flex-col md:flex-row gap-4">
             <div>
-              <h2 class="text-sm font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-sm font-semibold text-sepia-900 dark:text-white">
                 {{ reportTitle }} ({{ configStore.currency }})
               </h2>
             </div>
-            <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full lg:w-auto">
+            <div class="flex items-center space-x-1 bg-sepia-200 dark:bg-gray-700 p-1 rounded-lg w-full lg:w-auto">
               <button @click="chartType = 'bar'"
-                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', chartType === 'bar' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('reports.barView') }}</button>
+                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', chartType === 'bar' ? 'bg-sepia-100 dark:bg-gray-600 shadow' : '']">{{ $t('reports.barView') }}</button>
               <button @click="chartType = 'line'"
-                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', chartType === 'line' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('reports.lineView') }}</button>
+                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', chartType === 'line' ? 'bg-sepia-100 dark:bg-gray-600 shadow' : '']">{{ $t('reports.lineView') }}</button>
             </div>
           </div>
           <div class="h-96">
@@ -215,14 +215,14 @@
         <div class="card p-4 flex flex-col gap-4">
           <div class="flex justify-between items-start mb-4 flex-col md:flex-row gap-4">
             <div>
-              <h2 class="text-sm font-semibold text-gray-900 dark:text-white">{{ $t('reports.breakdownByCategory') }} ({{ configStore.currency }})</h2>
-              <p class="text-sm text-gray-500 dark:text-gray-400"></p>
+              <h2 class="text-sm font-semibold text-sepia-900 dark:text-white">{{ $t('reports.breakdownByCategory') }} ({{ configStore.currency }})</h2>
+              <p class="text-sm text-sepia-600 dark:text-gray-400"></p>
             </div>
-            <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full lg:w-auto">
+            <div class="flex items-center space-x-1 bg-sepia-200 dark:bg-gray-700 p-1 rounded-lg w-full lg:w-auto">
               <button @click="categoryReportType = 'expense'"
-                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', categoryReportType === 'expense' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('reports.spending') }}</button>
+                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', categoryReportType === 'expense' ? 'bg-sepia-100 dark:bg-gray-600 shadow' : '']">{{ $t('reports.spending') }}</button>
               <button @click="categoryReportType = 'income'"
-                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', categoryReportType === 'income' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('reports.income') }}</button>
+                :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless', categoryReportType === 'income' ? 'bg-sepia-100 dark:bg-gray-600 shadow' : '']">{{ $t('reports.income') }}</button>
             </div>
           </div>
           <div v-if="categoryChartData.labels.length === 0"
@@ -238,10 +238,10 @@
         <!-- Wallet Flow Sankey -->
         <div class="card p-4">
           <div class="mb-4">
-            <h2 class="text-sm font-semibold text-gray-900 dark:text-white">
+            <h2 class="text-sm font-semibold text-sepia-900 dark:text-white">
               {{ $t('reports.walletFlowDiagram') }} ({{ configStore.currency }})
             </h2>
-            <p class="text-xs text-gray-500 dark:text-gray-400">
+            <p class="text-xs text-sepia-600 dark:text-gray-400">
               {{ $t('reports.walletFlowDescription') }}
             </p>
           </div>

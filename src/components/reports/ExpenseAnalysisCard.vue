@@ -2,22 +2,22 @@
   <div class="card p-4">
     <div class="flex justify-between items-start sm:items-center mb-3 flex-col sm:flex-row gap-3 sm:gap-0">
       <div>
-        <h2 class="text-sm font-semibold text-gray-900 dark:text-white">
-          {{ $t('expenseAnalysis.title') }} 
+        <h2 class="text-sm font-semibold text-sepia-900 dark:text-white">
+          {{ $t('expenseAnalysis.title') }}
         </h2>
-        <p class="text-xs text-gray-500 dark:text-gray-400">
+        <p class="text-xs text-sepia-600 dark:text-gray-400">
           {{ $t('expenseAnalysis.subtitle') }}
         </p>
       </div>
-      <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full sm:w-auto">
-        <button @click="sizeBy = 'total'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', sizeBy === 'total' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('expenseAnalysis.byAmount') }}</button>
-        <button @click="sizeBy = 'frequency'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', sizeBy === 'frequency' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('expenseAnalysis.byFrequency') }}</button>
+      <div class="flex items-center space-x-1 bg-sepia-200 dark:bg-gray-700 p-1 rounded-lg w-full sm:w-auto">
+        <button @click="sizeBy = 'total'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', sizeBy === 'total' ? 'bg-sepia-100 dark:bg-gray-600 shadow' : '']">{{ $t('expenseAnalysis.byAmount') }}</button>
+        <button @click="sizeBy = 'frequency'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', sizeBy === 'frequency' ? 'bg-sepia-100 dark:bg-gray-600 shadow' : '']">{{ $t('expenseAnalysis.byFrequency') }}</button>
       </div>
     </div>
 
     <div v-if="analysisData.length === 0" class="text-center py-8 flex flex-col items-center justify-center min-h-[300px]">
-      <Activity class="w-10 h-10 text-gray-400 mx-auto mb-2" />
-      <p class="text-gray-500 dark:text-gray-400 text-sm">{{ $t('expenseAnalysis.noData') }}</p>
+      <Activity class="w-10 h-10 text-sepia-400 dark:text-gray-400 mx-auto mb-2" />
+      <p class="text-sepia-600 dark:text-gray-400 text-sm">{{ $t('expenseAnalysis.noData') }}</p>
     </div>
 
     <div v-else class="relative min-h-[300px]">
@@ -33,8 +33,8 @@
       </div>
 
       <!-- Details View -->
-      <div v-if="selectedCategoryStats" class="absolute inset-0 bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300">
-        <div class="w-full sm:max-w-xs bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col h-full sm:h-auto">
+      <div v-if="selectedCategoryStats" class="absolute inset-0 bg-sepia-50/80 dark:bg-gray-800/80 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300">
+        <div class="w-full sm:max-w-xs bg-sepia-50 dark:bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col h-full sm:h-auto">
             <div>
               <div class="flex justify-between items-start">
                 <div class="flex items-center gap-3">
@@ -45,37 +45,37 @@
                     <component :is="getIcon(selectedCategoryStats.icon)" class="size-5" :style="{ color: selectedCategoryStats.color }" />
                   </div>
                   <div>
-                    <h3 class="font-bold text-gray-800 dark:text-gray-200 text-md">{{ selectedCategoryStats.name }}</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ selectedCategoryStats.count }} {{ $t('expenseAnalysis.transactions') }}</p>
+                    <h3 class="font-bold text-sepia-900 dark:text-gray-200 text-md">{{ selectedCategoryStats.name }}</h3>
+                    <p class="text-xs text-sepia-600 dark:text-gray-400">{{ selectedCategoryStats.count }} {{ $t('expenseAnalysis.transactions') }}</p>
                   </div>
                 </div>
-                <button @click="closeDetails" class="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
-                  <X class="size-4 text-gray-500" />
+                <button @click="closeDetails" class="p-1 rounded-full hover:bg-sepia-200 dark:hover:bg-gray-700">
+                  <X class="size-4 text-sepia-600 dark:text-gray-500" />
                 </button>
               </div>
 
               <div class="mt-4 text-center">
-                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('expenseAnalysis.totalSpent') }}</p>
+                <p class="text-xs text-sepia-600 dark:text-gray-400">{{ $t('expenseAnalysis.totalSpent') }}</p>
                 <p class=" text-xl font-bold text-error-500 dark:text-error-400 break-words">{{ configStore.formatCurrency(selectedCategoryStats.total) }}</p>
               </div>
             </div>
 
             <div class="mt-auto">
                 <div class="grid grid-cols-2 gap-2 text-xs mt-4">
-                  <div class="text-center rounded-md py-2 px-2 bg-gray-100 dark:bg-gray-700/50">
-                    <p class=" text-gray-700 dark:text-gray-300 font-semibold text-sm">{{ configStore.formatCurrency(selectedCategoryStats.average) }}</p>
-                    <p class="text-gray-500 dark:text-gray-400 capitalize text-[10px]">{{ $t('expenseAnalysis.avg') }} / {{ analysisPeriod === 'period' ? $t('expenseAnalysis.trx') : analysisPeriod }}</p>
+                  <div class="text-center rounded-md py-2 px-2 bg-sepia-100 dark:bg-gray-700/50">
+                    <p class=" text-sepia-900 dark:text-gray-300 font-semibold text-sm">{{ configStore.formatCurrency(selectedCategoryStats.average) }}</p>
+                    <p class="text-sepia-600 dark:text-gray-400 capitalize text-[10px]">{{ $t('expenseAnalysis.avg') }} / {{ analysisPeriod === 'period' ? $t('expenseAnalysis.trx') : analysisPeriod }}</p>
                   </div>
-                  <div class="text-center rounded-md py-2 px-2 bg-gray-100 dark:bg-gray-700/50">
-                    <p class=" text-gray-700 dark:text-gray-300 font-semibold text-sm">{{ configStore.formatCurrency(selectedCategoryStats.median) }}</p>
-                    <p class="text-gray-500 dark:text-gray-400 text-[10px]">{{ $t('expenseAnalysis.median') }}</p>
+                  <div class="text-center rounded-md py-2 px-2 bg-sepia-100 dark:bg-gray-700/50">
+                    <p class=" text-sepia-900 dark:text-gray-300 font-semibold text-sm">{{ configStore.formatCurrency(selectedCategoryStats.median) }}</p>
+                    <p class="text-sepia-600 dark:text-gray-400 text-[10px]">{{ $t('expenseAnalysis.median') }}</p>
                   </div>
                 </div>
 
-                <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full mt-3">
-                  <button @click="analysisPeriod = 'daily'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', analysisPeriod === 'daily' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('expenseAnalysis.daily') }}</button>
-                  <button @click="analysisPeriod = 'weekly'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', analysisPeriod === 'weekly' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('expenseAnalysis.weekly') }}</button>
-                  <button @click="analysisPeriod = 'period'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', analysisPeriod === 'period' ? 'bg-white dark:bg-gray-600 shadow' : '']">{{ $t('expenseAnalysis.period') }}</button>
+                <div class="flex items-center space-x-1 bg-sepia-200 dark:bg-gray-700 p-1 rounded-lg w-full mt-3">
+                  <button @click="analysisPeriod = 'daily'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', analysisPeriod === 'daily' ? 'bg-sepia-100 dark:bg-gray-600 shadow' : '']">{{ $t('expenseAnalysis.daily') }}</button>
+                  <button @click="analysisPeriod = 'weekly'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', analysisPeriod === 'weekly' ? 'bg-sepia-100 dark:bg-gray-600 shadow' : '']">{{ $t('expenseAnalysis.weekly') }}</button>
+                  <button @click="analysisPeriod = 'period'" :class="['btn btn-xs flex-1 lg:flex-auto btn-borderless px-2', analysisPeriod === 'period' ? 'bg-sepia-100 dark:bg-gray-600 shadow' : '']">{{ $t('expenseAnalysis.period') }}</button>
                 </div>
             </div>
         </div>
@@ -210,10 +210,10 @@ const analysisData = computed(() => {
 });
 
 const chartOption = computed(() => {
-  const chartBg = isDark.value ? '#111827' : '#f9fafb';
-  const tooltipBg = isDark.value ? '#1f2937' : '#ffffff';
-  const tooltipBorder = isDark.value ? '#374151' : '#e5e7eb';
-  const tooltipTextColor = isDark.value ? '#d1d5db' : '#374151';
+  const chartBg = isDark.value ? '#111827' : '#f7f0e6';
+  const tooltipBg = isDark.value ? '#1f2937' : '#fdf8f3';
+  const tooltipBorder = isDark.value ? '#374151' : '#e8d5bb';
+  const tooltipTextColor = isDark.value ? '#d1d5db' : '#5a4a35';
 
   const treemapData = analysisData.value.map(cat => {
     const itemLabelColor = getContrastColor(cat.color);

@@ -11,7 +11,7 @@
           :disabled="loading"
           :placeholder="$t('walletModal.initialBalancePlaceholder')"
         />
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+        <p class="text-xs text-sepia-600 dark:text-gray-400 mt-2">
           {{ $t('walletModal.initialBalanceHint') }}
         </p>
       </div>
@@ -32,12 +32,12 @@
       </div>
 
       <!-- Hidden Wallet -->
-      <div class="flex items-center justify-between rounded-lg p-3 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+      <div class="flex items-center justify-between rounded-lg p-3 border border-sepia-300 dark:border-gray-700 bg-sepia-100 dark:bg-gray-800/50">
         <div>
-          <label for="hidden-toggle" class="font-medium text-gray-900 dark:text-gray-100">
+          <label for="hidden-toggle" class="font-medium text-sepia-900 dark:text-gray-100">
             {{ $t('walletModal.hideWallet') }}
           </label>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <p class="text-xs text-sepia-600 dark:text-gray-400 mt-1">
             {{ $t('walletModal.hideWalletHint') }}
           </p>
         </div>
@@ -45,8 +45,8 @@
           type="button"
           @click="form.hidden = !form.hidden"
           :class="[
-            form.hidden ? 'bg-primary-600 dark:bg-neon' : 'bg-gray-200 dark:bg-gray-700',
-            'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900'
+            form.hidden ? 'bg-sepia-700 dark:bg-neon' : 'bg-sepia-300 dark:bg-gray-700',
+            'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sepia-500 dark:focus:ring-neon focus:ring-offset-2 dark:focus:ring-offset-gray-900'
           ]"
           role="switch"
           :aria-checked="form.hidden"
@@ -65,12 +65,12 @@
       </div>
 
       <!-- Main Wallet -->
-      <div class="flex items-center justify-between rounded-lg p-3 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+      <div class="flex items-center justify-between rounded-lg p-3 border border-sepia-300 dark:border-gray-700 bg-sepia-100 dark:bg-gray-800/50">
         <div>
-          <label for="main-wallet-toggle" class="font-medium text-gray-900 dark:text-gray-100">
+          <label for="main-wallet-toggle" class="font-medium text-sepia-900 dark:text-gray-100">
             {{ $t('walletModal.setAsMain') }}
           </label>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <p class="text-xs text-sepia-600 dark:text-gray-400 mt-1">
             {{ $t('walletModal.setAsMainHint') }}
           </p>
         </div>
@@ -78,8 +78,8 @@
           type="button"
           @click="form.is_main_wallet = !form.is_main_wallet"
           :class="[
-            form.is_main_wallet ? 'bg-primary-600 dark:bg-neon' : 'bg-gray-200 dark:bg-gray-700',
-            'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900'
+            form.is_main_wallet ? 'bg-sepia-700 dark:bg-neon' : 'bg-sepia-300 dark:bg-gray-700',
+            'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sepia-500 dark:focus:ring-neon focus:ring-offset-2 dark:focus:ring-offset-gray-900'
           ]"
           role="switch"
           :aria-checked="form.is_main_wallet"

@@ -4,7 +4,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Card 1: Milestone Information -->
       <div class="card p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h3 class="text-lg font-semibold text-sepia-900 dark:text-white mb-4">
           {{ $t('milestones.milestoneInformation') }}
         </h3>
 
@@ -62,10 +62,10 @@
             <div class="flex gap-3">
               <!-- Icon Picker Button (Square) -->
               <div>
-                <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">{{ $t('milestones.icon') }}</p>
+                <p class="text-xs text-sepia-700 dark:text-gray-400 mb-2">{{ $t('milestones.icon') }}</p>
                 <button
                   type="button"
-                  class="size-12 border-2 border-gray-200 dark:border-gray-700 rounded-2xl hover:border-gray-300 dark:hover:border-gray-600 transition-all flex items-center justify-center flex-shrink-0"
+                  class="size-12 border-2 border-sepia-300 dark:border-gray-700 rounded-2xl hover:border-sepia-400 dark:hover:border-gray-600 transition-all flex items-center justify-center flex-shrink-0"
                   :style="{
                     backgroundColor: formData.color ? `${formData.color}15` : '#f3f4f6',
                     color: formData.color || '#6b7280'
@@ -78,7 +78,7 @@
 
               <!-- Color Picker (Flex-1) -->
               <div class="flex-1">
-                <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">{{ $t('milestones.color') }}</p>
+                <p class="text-xs text-sepia-700 dark:text-gray-400 mb-2">{{ $t('milestones.color') }}</p>
                 <div class="relative h-12">
                   <input
                     v-model="formData.color"
@@ -86,7 +86,7 @@
                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
                   <div
-                    class="w-full h-full border-2 border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition-all p-1.5"
+                    class="w-full h-full border-2 border-sepia-300 dark:border-gray-700 rounded-lg flex items-center justify-center cursor-pointer hover:border-sepia-400 dark:hover:border-gray-600 transition-all p-1.5"
                   >
                     <div class="w-full h-8 rounded-md" :style="{ backgroundColor: formData.color }"></div>
                   </div>
@@ -104,8 +104,8 @@
                   @click="formData.color = color"
                   class="w-6 h-6 rounded-md transition-all border-2 flex-shrink-0"
                   :class="formData.color === color
-                    ? 'border-gray-900 dark:border-white scale-110'
-                    : 'border-transparent hover:border-gray-300 dark:hover:border-gray-600'"
+                    ? 'border-sepia-900 dark:border-white scale-110'
+                    : 'border-transparent hover:border-sepia-400 dark:hover:border-gray-600'"
                   :style="{ backgroundColor: color }"
                   :title="color"
                 >
@@ -120,7 +120,7 @@
       <!-- Card 2: Conditions -->
       <div class="card p-6">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+          <h3 class="text-lg font-semibold text-sepia-900 dark:text-white">
             {{ $t('milestones.conditions') }} <span class="text-red-500">*</span>
           </h3>
           <button
@@ -134,12 +134,12 @@
           </button>
         </div>
 
-        <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
+        <p class="text-xs text-sepia-600 dark:text-gray-400 mb-4">
           {{ $t('milestones.conditionsHelper') }}
         </p>
 
         <!-- Conditions List -->
-        <div v-if="formData.conditions.length === 0" class="text-center py-8 text-gray-500 dark:text-gray-400">
+        <div v-if="formData.conditions.length === 0" class="text-center py-8 text-sepia-600 dark:text-gray-400">
           {{ $t('milestones.noConditionsYet') }}
         </div>
 
@@ -147,10 +147,10 @@
           <div
             v-for="(condition, index) in formData.conditions"
             :key="index"
-            class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800/50"
+            class="p-4 border border-sepia-300 dark:border-gray-700 rounded-lg bg-sepia-100 dark:bg-gray-800/50"
           >
             <div class="flex items-start justify-between mb-3">
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span class="text-sm font-medium text-sepia-800 dark:text-gray-300">
                 {{ $t('milestones.conditionNumber', { number: index + 1 }) }}
               </span>
               <button
@@ -164,14 +164,14 @@
 
             <!-- Condition Type Selection -->
             <div class="mb-3">
-              <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+              <label class="block text-xs font-medium text-sepia-700 dark:text-gray-400 mb-1">
                 {{ $t('milestones.type') }}
               </label>
               <select
                 v-model="condition.type"
                 @change="resetConditionConfig(index)"
                 required
-                class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                class="w-full px-3 py-2 text-sm border border-sepia-400 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-sepia-500 focus:border-transparent bg-sepia-50 dark:bg-gray-800 text-sepia-900 dark:text-white"
               >
                 <option value="">{{ $t('milestones.selectConditionType') }}</option>
                 <option v-for="template in conditionTemplates" :key="template.value" :value="template.value">
@@ -227,8 +227,8 @@
           @click="selectIcon(iconName)"
           class="aspect-square flex items-center justify-center rounded-lg transition-all"
           :class="formData.icon === iconName
-            ? 'bg-primary-500 text-white ring-2 ring-primary-500'
-            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
+            ? 'bg-sepia-700 text-white ring-2 ring-sepia-700'
+            : 'bg-sepia-100 dark:bg-gray-700 text-sepia-700 dark:text-gray-300 hover:bg-sepia-200 dark:hover:bg-gray-600'"
         >
           <component :is="getIcon(iconName)" class="w-5 h-5" />
         </button>
