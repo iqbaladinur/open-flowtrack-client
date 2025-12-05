@@ -148,7 +148,7 @@
 
     <!-- View Details Section -->
     <div v-if="!simpleView" class="border-t border-sepia-200 dark:border-gray-700">
-      <button @click="toggleDetails" class="w-full text-sm py-3 px-5 font-medium text-primary-600 dark:text-primary-400 bg-sepia-50 dark:bg-gray-700/50 flex items-center justify-center gap-2 transition-colors">
+      <button @click="toggleDetails" class="w-full text-sm py-3 px-5 font-medium text-sepia-600 dark:text-primary-400 bg-sepia-100 dark:bg-gray-700/50 flex items-center justify-center gap-2 transition-colors">
         <span>{{ isDetailsVisible ? $t('common.close') : $t('common.view') }} {{ $t('common.details') }}</span>
         <ChevronDown class="w-4 h-4 transition-transform" :class="{ 'rotate-180': isDetailsVisible }" />
       </button>
@@ -279,7 +279,6 @@ const toggleDetails = async () => {
       // Assuming fetchTransactions can handle an array of category_ids
       // @ts-ignore
       const result = await transactionsStore.fetchTransactions(filters, true, true);
-      console.log(result);
       detailedTransactions.value = <Transaction[]>result?.filter((a: Transaction) => category_ids.includes(a.category_id || 'noid')) || [];
     } catch (error) {
       console.error("Failed to fetch transactions for budget:", error);
