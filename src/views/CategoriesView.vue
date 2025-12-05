@@ -29,11 +29,11 @@
       </div>
 
       <!-- Categories List -->
-      <div v-if="categoriesStore.loading" class="card p-8">
+      <div v-if="categoriesStore.loading && categories.length === 0" class="card p-8">
         <LoadingSpinner fullHeight />
       </div>
 
-      <div v-else-if="categories.length === 0" class="card p-12 text-center">
+      <div v-else-if="categories.length === 0 && !categoriesStore.loading" class="card p-12 text-center">
         <div class="w-16 h-16 bg-sepia-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
           <Tag class="w-8 h-8 text-sepia-400 dark:text-gray-400" />
         </div>

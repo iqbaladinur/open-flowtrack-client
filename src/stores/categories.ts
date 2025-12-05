@@ -70,13 +70,32 @@ export const useCategoriesStore = defineStore('categories', () => {
   };
 
   const deleteCategory = async (id: string) => {
-    const response = await api.delete(`/categories/${id}`);
-    if (!response.error) {
-      // Force a refresh of the categories list
-      await fetchCategories(true);
-      return { success: true };
+    // Find the category and its index before deletion
+    const index = categories.value.findIndex((c) => c.id === id);
+    if (index === -1) {
+      return { success: false, error: 'Category not found' };
     }
-    return { success: false, error: response.error };
+
+    // Make a copy of the object
+    const deletedCategory = { ...categories.value[index] };
+
+    // Delete from local list first (optimistic update)
+    categories.value.splice(index, 1);
+
+    // Try to delete from server
+    const response = await api.delete(`/categories/${id}`);
+
+    if (response.error) {
+      // Rollback: restore the deleted category at its original position
+      categories.value.splice(index, 0, deletedCategory);
+      return { success: false, error: response.error };
+    }
+
+    // Force a refresh of the categories list
+    if (categories.value.length > 0) {
+      await fetchCategories(true);
+    }
+    return { success: true };
   };
 
   const getCategoriesByType = (type: 'income' | 'expense' | 'transfer') => {
