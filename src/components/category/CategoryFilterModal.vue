@@ -7,23 +7,23 @@
 
       <!-- Search Input -->
       <div class="relative">
-        <Search class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+        <Search class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-sepia-400 dark:text-gray-400" />
         <input
           v-model="searchQuery"
           type="text"
           :placeholder="$t('categoryFilterModal.searchPlaceholder')"
-          class="w-full rounded-lg border border-gray-200 bg-white pl-9 pr-3 py-2 text-sm transition-colors placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-primary-400"
+          class="w-full rounded-lg border border-sepia-200 bg-sepia-50 pl-9 pr-3 py-2 text-sm transition-colors placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-primary-400"
         />
       </div>
 
       <div class="max-h-72 overflow-y-auto">
         <!-- Empty State -->
         <div v-if="sortedCategories.length === 0" class="flex flex-col items-center justify-center py-8 text-center">
-          <Search class="h-12 w-12 text-gray-300 dark:text-gray-600 mb-3" />
-          <p class="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
+          <Search class="h-12 w-12 text-sepia-300 dark:text-gray-600 mb-3" />
+          <p class="text-sm font-medium text-sepia-900 dark:text-gray-100 mb-1">
             {{ $t('categoryFilterModal.noResults') }}
           </p>
-          <p class="text-xs text-gray-500 dark:text-gray-400">
+          <p class="text-xs text-sepia-500 dark:text-gray-400">
             {{ $t('categoryFilterModal.tryDifferentSearch') }}
           </p>
         </div>
@@ -34,10 +34,10 @@
             v-for="category in sortedCategories"
             :key="category.id"
             @click="toggleCategory(category.id)"
-            class="relative flex flex-col items-center justify-center gap-2 rounded-lg border bg-white p-3 text-center transition-all h-28 cursor-pointer"
+            class="relative flex flex-col items-center justify-center gap-2 rounded-lg border bg-sepia p-3 text-center transition-all h-28 cursor-pointer"
             :class="category.id && internalExcludedCategories.includes(category.id)
-              ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 dark:border-primary-400'
-              : 'border-gray-200 hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800'"
+              ? 'border-sepia-500 bg-sepia-50 dark:bg-primary-900/20 dark:border-primary-400'
+              : 'border-sepia-200 hover:bg-sepia-50 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800'"
           >
             <!-- Type Indicator Badge -->
             <div class="absolute left-2 top-2">
@@ -64,7 +64,7 @@
             <!-- Selected Check Icon -->
             <div
               v-if="category.id && internalExcludedCategories.includes(category.id)"
-              class="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary-500 text-white"
+              class="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full text-sepia-50 bg-sepia-500 dark:bg-primary-500 dark:text-white"
             >
               <Check class="h-3 w-3" />
             </div>
@@ -86,13 +86,13 @@
       </div>
     </div>
     <template #footer>
-      <div class="flex justify-between items-center gap-2 p-0 bg-gray-50 dark:bg-gray-800/50">
+      <div class="flex justify-between items-center gap-2 p-0 dark:bg-gray-800/50">
         <button
           @click="toggleSelectAll"
           class="btn-ghost btn-borderless"
           :class="{
             'text-error-600 dark:text-error-400': allCategoriesSelected,
-            'text-primary-600 dark:text-primary-400': !allCategoriesSelected,
+            'text-sepia-600 dark:text-primary-400': !allCategoriesSelected,
           }"
         >
           {{ allCategoriesSelected ? $t('categoryFilterModal.clearSelection') : $t('categoryFilterModal.selectAll') }}

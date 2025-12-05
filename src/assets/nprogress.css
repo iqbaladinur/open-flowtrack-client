@@ -1,6 +1,10 @@
 /* nprogress.css */
 :root {
-  --nprogress-color: #adff2f;
+  --nprogress-color: #c9b38b; /* sepia-500 for light mode */
+}
+
+:root.dark {
+  --nprogress-color: #adff2f; /* neon green for dark mode */
 }
 
 #nprogress {

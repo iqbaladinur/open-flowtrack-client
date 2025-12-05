@@ -33,7 +33,7 @@
   }
   
   .btn-secondary {
-    @apply btn text-sepia-900 focus:ring-sepia-500 dark:text-gray-400 hover:bg-sepia-200/50 dark:hover:bg-gray-500/50 border-sepia-400 dark:border-gray-500;
+    @apply btn text-sepia-900 focus:ring-sepia-500 dark:focus:ring-gray-500/50 dark:text-gray-400 hover:bg-sepia-200/50 dark:hover:bg-gray-500/50 border-sepia-400 dark:border-gray-500;
   }
   
   .btn-success {
