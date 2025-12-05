@@ -9,7 +9,7 @@
       </div>
 
       <div class="mt-auto">
-        <p class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ title }}</p>
+        <p class="text-xs font-medium text-sepia-700 dark:text-gray-300">{{ title }}</p>
         <p class="font-semibold text-sm" :class="valueClass">
           <span v-if="isCurrency">
             {{  configStore.showAmount ? prefix : '*' }}{{ configStore.formatCurrency(value) }}

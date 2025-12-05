@@ -12,13 +12,13 @@
         <div class="flex items-center gap-4 lg:gap-2 justify-between">
           <div class="flex items-center gap-3 justify-start">
             <button @click="prevDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
-              <ChevronLeft class="size-4" />
+              <ChevronLeft class="size-4 text-sepia-600 dark:text-gray-300" />
             </button>
-            <span class="text-xs italic text-gray-600 dark:text-gray-300">
+            <span class="text-xs italic text-sepia-600 dark:text-gray-300">
               {{ readableDate }}
             </span>
             <button @click="nextDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
-              <ChevronRight class="size-4" />
+              <ChevronRight class="size-4 text-sepia-600 dark:text-gray-300" />
             </button>
           </div>
           <div class="flex items-center gap-2 justify-end">

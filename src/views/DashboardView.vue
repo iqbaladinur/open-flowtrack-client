@@ -15,18 +15,18 @@
         <div class="flex items-center justify-between card p-2 mb-3 rounded-2xl">
           <div class="flex items-center gap-3 justify-start">
             <button @click="prevDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
-              <ChevronLeft class="size-4" />
+              <ChevronLeft class="size-4 text-sepia-600 dark:text-gray-300" />
             </button>
-            <span class="text-xs italic text-gray-600 dark:text-gray-300">
+            <span class="text-xs italic text-sepia-600 dark:text-gray-300">
               {{ readableDate }}
             </span>
             <button @click="nextDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
-              <ChevronRight class="size-4" />
+              <ChevronRight class="size-4 text-sepia-600 dark:text-gray-300" />
             </button>
           </div>
 
           <button @click="configStore.toggleShowAmount"
-            class="p-2 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+            class="p-2 rounded-full text-sepia-600 hover:bg-sepia-100 dark:hover:bg-gray-700 hover:text-sepia-700 dark:hover:text-gray-300 transition-colors">
             <Unlock v-if="configStore.showAmount" class="size-4" />
             <lock v-else class="size-4" />
           </button>
@@ -137,11 +137,11 @@
         <div class="flex items-center mb-4">
           <div
             class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/50 mr-3">
-            <BrainCircuit class="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+            <BrainCircuit class="w-4 h-4 text-sepia-600 dark:text-indigo-400" />
           </div>
           <div>
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">{{ $t('dashboard.aiSuggestions') }}</h2>
-            <p v-if="configStore.isApiKeyAiExist" class="text-xs text-gray-500 dark:text-gray-400 italic">({{
+            <h2 class="text-lg font-semibold text-sepia-900 dark:text-neon">{{ $t('dashboard.aiSuggestions') }}</h2>
+            <p v-if="configStore.isApiKeyAiExist" class="text-xs text-sepia-500 dark:text-gray-400 italic">({{
               periodicAnalytics.start }} - {{ periodicAnalytics.end }})</p>
           </div>
         </div>
@@ -168,21 +168,21 @@
             <div class="flex items-center gap-3 mt-4 lg:mt-0 lg:justify-start">
               <button @click="navigateBudgetDate('previous')"
                 class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
-                <ChevronLeft class="size-4" />
+                <ChevronLeft class="size-4 text-sepia-600 dark:text-gray-300" />
               </button>
-              <span class="text-xs italic text-gray-600 dark:text-gray-300 mx-auto">
+              <span class="text-xs italic text-sepia-600 dark:text-gray-300 mx-auto">
                 {{ activeBudgetPeriod }}
               </span>
               <button @click="navigateBudgetDate('next')"
                 class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
-                <ChevronRight class="size-4" />
+                <ChevronRight class="size-4 text-sepia-600 dark:text-gray-300" />
               </button>
             </div>
 
             <div class="flex gap-2 justify-between items-center lg:justify-end lg:items-start">
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">{{ $t('dashboard.activeBudget') }}</h2>
+              <h2 class="text-lg font-semibold text-sepia-900 dark:text-neon">{{ $t('dashboard.activeBudget') }}</h2>
               <router-link to="/budgets"
-                class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
+                class="text-sm text-sepia-600 dark:text-primary-400 hover:text-sepia-700 dark:hover:text-primary-300 font-medium">
                 <LucideArrowUpRightFromSquare class="size-4" />
               </router-link>
             </div>
@@ -203,9 +203,9 @@
           <div v-else-if="budgets.length > 0" class="space-y-10">
             <div class="card p-4">
               <div class="mb-3">
-                <h3 class="text-sm font-semibold text-gray-900 dark:text-white">{{ $t('dashboard.overallActiveBudget')
+                <h3 class="text-sm font-semibold text-sepia-900 dark:text-white">{{ $t('dashboard.overallActiveBudget')
                   }}</h3>
-                <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">{{ $t('dashboard.combinedUsage') }}</p>
+                <p class="text-[10px] text-sepia-500 dark:text-gray-400 mt-0.5">{{ $t('dashboard.combinedUsage') }}</p>
               </div>
 
               <!-- Metrics Grid -->
@@ -214,7 +214,7 @@
                 <div class="flex flex-col space-y-2.5 md:hidden">
                   <!-- Total Spent -->
                   <div class="flex items-baseline justify-between gap-3">
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400 flex-shrink-0">{{ $t('dashboard.spent') }}
+                    <p class="text-[10px] text-sepia-500 dark:text-gray-400 flex-shrink-0">{{ $t('dashboard.spent') }}
                     </p>
                     <p class="text-sm font-semibold text-right break-all" :class="{
                       'text-blue-600 dark:text-blue-400': budgetSummary.usage_percent <= 50,
@@ -229,7 +229,7 @@
 
                   <!-- Remaining -->
                   <div class="flex items-baseline justify-between gap-3">
-                    <p class="text-[10px] flex-shrink-0 text-gray-500 dark:text-gray-400">
+                    <p class="text-[10px] flex-shrink-0 text-sepia-500 dark:text-gray-400">
                       {{ budgetSummary.usage_percent > 100 ? $t('dashboard.over') : $t('dashboard.left') }}
                     </p>
                     <p class="text-sm font-semibold text-right break-all" :class="{
@@ -242,7 +242,7 @@
 
                   <!-- Budget Limit -->
                   <div class="flex items-baseline justify-between gap-3">
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400 flex-shrink-0">{{ $t('dashboard.limit') }}
+                    <p class="text-[10px] text-sepia-500 dark:text-gray-400 flex-shrink-0">{{ $t('dashboard.limit') }}
                     </p>
                     <p class="text-sm font-semibold text-gray-900 dark:text-white text-right break-all">
                       {{ configStore.formatCurrency(budgetSummary.total_limit) }}
@@ -254,7 +254,7 @@
                 <div class="hidden md:grid md:grid-cols-3 gap-3">
                   <!-- Total Limit -->
                   <div class="text-center">
-                    <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">{{ $t('dashboard.limit') }}</p>
+                    <p class="text-[9px] text-sepia-500 dark:text-gray-400 mb-1">{{ $t('dashboard.limit') }}</p>
                     <p class="text-xs font-semibold text-gray-900 dark:text-white">
                       {{ configStore.formatCurrency(budgetSummary.total_limit) }}
                     </p>
@@ -262,7 +262,7 @@
 
                   <!-- Total Spent -->
                   <div class="text-center">
-                    <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">{{ $t('dashboard.spent') }}</p>
+                    <p class="text-[9px] text-sepia-500 dark:text-gray-400 mb-1">{{ $t('dashboard.spent') }}</p>
                     <p class="text-xs font-semibold" :class="{
                       'text-blue-600 dark:text-blue-400': budgetSummary.usage_percent <= 50,
                       'text-success-600 dark:text-success-400': budgetSummary.usage_percent > 50 && budgetSummary.usage_percent <= 75,
@@ -276,7 +276,7 @@
 
                   <!-- Remaining -->
                   <div class="text-center">
-                    <p class="text-[9px] text-gray-500 dark:text-gray-400 mb-1">
+                    <p class="text-[9px] text-sepia-500 dark:text-gray-400 mb-1">
                       {{ budgetSummary.usage_percent > 100 ? $t('dashboard.over') : $t('dashboard.left') }}
                     </p>
                     <p class="text-xs font-semibold" :class="{
@@ -291,7 +291,7 @@
 
               <!-- Progress Bar -->
               <div class="space-y-1.5">
-                <div class="w-full bg-gray-200 rounded-full h-1 dark:bg-gray-700">
+                <div class="w-full bg-sepia-200 rounded-full h-1 dark:bg-gray-700">
                   <div class="h-1 rounded-full transition-all duration-500" :class="{
                     'bg-blue-500': budgetSummary.usage_percent <= 50,
                     'bg-success-500': budgetSummary.usage_percent > 50 && budgetSummary.usage_percent <= 75,
@@ -324,10 +324,10 @@
         <div>
           <div class="card p-4">
             <div class="flex items-center lg:items-start justify-between mb-4">
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-neon">{{ $t('dashboard.recentTransactions') }}
+              <h2 class="text-lg font-semibold text-sepia-900 dark:text-neon">{{ $t('dashboard.recentTransactions') }}
               </h2>
               <router-link to="/transactions"
-                class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
+                class="text-sm text-sepia-600 dark:text-primary-400 hover:text-sepia-700 dark:hover:text-primary-300 font-medium">
                 <LucideArrowUpRightFromSquare class="w-4 h-4" />
               </router-link>
             </div>

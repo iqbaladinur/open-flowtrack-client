@@ -5,12 +5,12 @@
       'max-h-[1000px]': isDetailsVisible,
       'max-h-[300px] sm:max-h-[300px]': !isDetailsVisible,
       'card': !simpleView,
-      'hover:bg-gray-50 dark:hover:bg-gray-800/30 cursor-pointer first:rounded-t-md last:rounded-b-md': simpleView
+      'hover:bg-sepia-100 dark:hover:bg-gray-800/30 cursor-pointer first:rounded-t-md last:rounded-b-md hover:first:rounded-t-xl hover:last:rounded-b-xl': simpleView
     }"
     @click="isDetailsSimpleVisible = !isDetailsSimpleVisible"
   >
     <!-- Simple View -->
-    <div v-if="simpleView" class="p-3 hover:bg-sepia-50 dark:hover:bg-gray-800/30 transition-colors">
+    <div v-if="simpleView" class="p-3 dark:hover:bg-gray-800/30 transition-colors">
       <div class="flex justify-between items-start mb-2">
         <div class="flex flex-col gap-1">
           <div class="flex items-center gap-2">
