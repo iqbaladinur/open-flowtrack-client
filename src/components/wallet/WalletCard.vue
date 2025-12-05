@@ -7,7 +7,7 @@
       <!-- Wallet Info -->
       <div class="p-2 border-2 border-transparent relative">
         <div class="mb-6">
-          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2 flex items-start gap-2">
+          <h3 class="text-lg font-medium text-sepia-800 dark:text-white mb-2 flex items-start gap-2">
             <span>{{ wallet.name }}</span>
             <span
               v-if="wallet.is_main_wallet"

@@ -23,7 +23,7 @@
         <div class="flex justify-between items-start">
           <div class="flex-1 min-w-0">
             <div class="flex items-center">
-              <p class="font-medium text-gray-900 dark:text-white truncate">
+              <p class="font-medium text-sepia-900 dark:text-white truncate">
                 {{ transaction.type === 'transfer' ? $t('transactions.transfer') : transaction.category?.name || $t('transactions.uncategorized') }}
               </p>
               <component
@@ -37,11 +37,11 @@
                 }"
               />
             </div>
-            <p v-if="transaction.type === 'transfer'" class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+            <p v-if="transaction.type === 'transfer'" class="text-xs text-sepia-500 dark:text-gray-400 truncate mt-0.5">
               {{ transaction.wallet?.name }} → {{ transaction.destinationWallet?.name }}
               <br> {{ formatDate(transaction.date) }}
             </p>
-            <p v-else class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+            <p v-else class="text-xs text-sepia-500 dark:text-gray-400 truncate mt-0.5">
               {{ transaction.wallet?.name }} • {{ formatDate(transaction.date) }}
             </p>
           </div>
@@ -73,13 +73,13 @@
           >
             <button
               @click="$emit('edit', transaction)"
-              class="p-2 rounded-full text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              class="p-2 rounded-full text-sepia-400 dark:text-gray-300 hover:bg-sepia-200 dark:hover:bg-gray-700 hover:text-sepia-600 dark:hover:text-gray-300 transition-colors"
             >
               <NotebookPen class="w-4 h-4" />
             </button>
             <button
               @click="$emit('delete', transaction.id)"
-              class="p-2 rounded-full text-gray-400 hover:bg-red-100 dark:hover:bg-red-900/50 hover:text-error-600 dark:hover:text-error-400 transition-colors"
+              class="p-2 rounded-full text-sepia-400 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-900/50 hover:text-error-600 dark:hover:text-error-400 transition-colors"
             >
               <Trash2 class="w-4 h-4" />
             </button>

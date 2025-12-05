@@ -15,7 +15,7 @@
       >
         <component
           :is="category.type === 'income' ? TrendingUp : TrendingDown"
-          class="h-3 w-3"
+          class="size-2.5"
           :class="
             category.type === 'income'
               ? 'text-success-600 dark:text-success-400'
@@ -28,28 +28,28 @@
     <!-- Delete Button -->
     <div
       v-if="category.id"
-      class="absolute right-2 top-2 transition-opacity md:opacity-0 md:group-hover:opacity-100"
+      class="absolute right-2 top-2 transition-opacity md:opacity-0 md:group-hover:opacity-100 flex items-start justify-center"
     >
       <button
         @click.stop="$emit('delete', category.id)"
         class="rounded-md p-1 text-gray-400 transition-colors hover:bg-error-100 hover:text-error-600 dark:hover:bg-error-900/30 dark:hover:text-error-400"
         :disabled="category.is_default"
       >
-        <Trash2 class="h-3.5 w-3.5" />
+        <Trash2 class="size-2.5" />
       </button>
     </div>
 
     <!-- Category Icon -->
     <div
-      class="flex h-12 w-12 items-center justify-center rounded-lg transition-transform group-hover:scale-105"
+      class="flex size-10 items-center justify-center rounded-lg transition-transform group-hover:scale-105"
       :style="{ backgroundColor: category.color + '15' }"
     >
       <!-- @vue-ignore -->
-      <component :is="getIcon(category.icon)" class="h-5 w-5" :style="{ color: category.color }" />
+      <component :is="getIcon(category.icon)" class="size-4" :style="{ color: category.color }" />
     </div>
 
     <!-- Category Name -->
-    <h3 class="w-full truncate text-sm font-medium text-gray-900 dark:text-gray-100">
+    <h3 class="w-full truncate text-sm font-medium text-sepia-900 dark:text-gray-100">
       {{ category.name }}
     </h3>
   </button>

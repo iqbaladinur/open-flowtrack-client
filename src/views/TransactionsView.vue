@@ -12,13 +12,13 @@
         <div class="flex items-center gap-4 lg:gap-2 justify-between">
           <div class="flex items-center gap-3 justify-start">
             <button @click="goToPreviousPeriod" class="flex items-center btn-secondary p-2 rounded-full btn-borderless" :disabled="readableDate === 'All'">
-              <ChevronLeft class="size-4" />
+              <ChevronLeft class="size-4 text-sepia-600 dark:text-gray-300" />
             </button>
-            <span class="text-xs italic text-gray-600 dark:text-gray-300">
+            <span class="text-xs italic text-sepia-600 dark:text-gray-300">
               {{ readableDate }}
             </span>
             <button @click="goToNextPeriod" class="flex items-center btn-secondary p-2 rounded-full btn-borderless" :disabled="readableDate === 'All'">
-              <ChevronRight class="size-4" />
+              <ChevronRight class="size-4 text-sepia-600 dark:text-gray-300" />
             </button>
           </div>
           <div class="flex items-center gap-2 self-end sm:self-auto">
@@ -29,7 +29,7 @@
             <button @click="showCategoryFilterModal = true" class="btn-secondary gap-2 flex items-center p-2 relative">
               <Tag class="size-4"/>
               <span v-if="excludedCategoryIds.length > 0"
-                class="bg-primary-100 text-primary-800 dark:bg-primary-400 dark:text-primary-900 rounded-full text-[10px] absolute -right-2 -top-2 h-4 min-w-4 flex items-center justify-center">
+                class="border border-sepia-600 dark:border-transparent bg-sepia-100 text-sepia-800 dark:bg-primary-400 dark:text-primary-900 rounded-full text-[10px] absolute -right-2 -top-2 h-4 min-w-4 flex items-center justify-center">
                 {{ excludedCategoryIds.length }}
               </span>
             </button>
