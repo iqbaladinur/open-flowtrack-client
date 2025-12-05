@@ -3,7 +3,7 @@
     <span
       class="absolute left-0 top-1/2 transform -translate-y-1/2 text-xl text-gray-400 dark:text-gray-500 px-1 rounded-md dark:bg-gray-700/90 bg-gray-200/90"
     >
-      {{ configStore.currency }}
+      {{ currentCurrency }}
     </span>
     <input
       :id="elId"
@@ -24,17 +24,26 @@
 import { computed } from 'vue'
 import { useConfigStore } from '@/stores/config'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   modelValue: number | null;
   disabled: boolean;
   required: boolean;
   placeholder: string;
   elId: string;
-}>()
+  currency?: string;
+  fractions?: number;
+}>(), {
+  currency: undefined,
+  fractions: undefined,
+})
 
 const emit = defineEmits(['update:modelValue'])
 
 const configStore = useConfigStore()
+
+// Use prop currency if provided, otherwise fallback to configStore
+const currentCurrency = computed(() => props.currency || configStore.currency)
+const currentFractions = computed(() => props.fractions !== undefined ? props.fractions : configStore.fractions)
 
 const displayValue = computed({
   get: () => {
@@ -44,10 +53,10 @@ const displayValue = computed({
     // Format the number without the currency symbol for better editing experience
     const options: Intl.NumberFormatOptions = {
       style: 'decimal',
-      minimumFractionDigits: configStore.fractions,
-      maximumFractionDigits: configStore.fractions
+      minimumFractionDigits: currentFractions.value,
+      maximumFractionDigits: currentFractions.value
     }
-    const locale = configStore.currency === 'IDR' ? 'id-ID' : 'en-US'
+    const locale = currentCurrency.value === 'IDR' ? 'id-ID' : 'en-US'
     return new Intl.NumberFormat(locale, options).format(props.modelValue)
   },
   set: (value) => {
@@ -59,7 +68,7 @@ const displayValue = computed({
     }
 
     // Convert the string of digits to a numeric value, respecting the fraction digits
-    const numberValue = parseInt(digits, 10) / Math.pow(10, configStore.fractions)
+    const numberValue = parseInt(digits, 10) / Math.pow(10, currentFractions.value)
     emit('update:modelValue', numberValue)
   }
 })

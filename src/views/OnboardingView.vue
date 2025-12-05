@@ -1,46 +1,78 @@
 <template>
-  <div class="min-h-[100dvh] flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-950 p-4 sm:p-6 lg:p-8">
+  <div
+    class="min-h-[100dvh] flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-950 p-4 sm:p-6 lg:p-8"
+  >
     <div class="max-w-4xl w-full">
       <!-- Step 1: Category Selection -->
       <div v-if="step === 1">
         <div class="text-center mb-8">
-          <h1 class="text-3xl font-bold text-sepia-900 dark:text-neon">{{ $t('onboarding.title') }}</h1>
-          <p class="mt-2 text-sepia-600 dark:text-gray-400">{{ $t('onboarding.subtitle') }}</p>
+          <h1 class="text-3xl font-bold text-sepia-900 dark:text-neon">
+            {{ $t("onboarding.title") }}
+          </h1>
+          <p class="mt-2 text-sepia-600 dark:text-gray-400">
+            {{ $t("onboarding.subtitle") }}
+          </p>
         </div>
 
         <!-- Predefined Categories -->
         <div>
-          <h2 class="text-lg font-semibold text-sepia-900 dark:text-neon mb-3">{{ $t('onboarding.expenses') }}</h2>
-          <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 justify-center">
+          <h2 class="text-lg font-semibold text-sepia-900 dark:text-neon mb-3">
+            {{ $t("onboarding.expenses") }}
+          </h2>
+          <div
+            class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 justify-center"
+          >
             <div
               v-for="category in predefinedExpenses"
               :key="category.name"
               @click="toggleCategory(category)"
               class="cursor-pointer w-full"
             >
-              <CategoryCard :category="category" class="w-full" :class="{ 'ring-2 ring-sepia-500 dark:ring-slate-500 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-950': isSelected(category) }" />
+              <CategoryCard
+                :category="category"
+                class="w-full"
+                :class="{
+                  'ring-2 ring-sepia-500 dark:ring-slate-500 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-950':
+                    isSelected(category),
+                }"
+              />
             </div>
           </div>
         </div>
 
         <div class="mt-6">
-          <h2 class="text-lg font-semibold text-sepia-900 dark:text-neon mb-3">{{ $t('onboarding.income') }}</h2>
-          <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 justify-center">
+          <h2 class="text-lg font-semibold text-sepia-900 dark:text-neon mb-3">
+            {{ $t("onboarding.income") }}
+          </h2>
+          <div
+            class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 justify-center"
+          >
             <div
               v-for="category in predefinedIncome"
               :key="category.name"
               @click="toggleCategory(category)"
               class="cursor-pointer w-full"
             >
-              <CategoryCard :category="category" class="w-full" :class="{ 'ring-2 ring-sepia-500 dark:ring-slate-500 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-950': isSelected(category) }" />
+              <CategoryCard
+                :category="category"
+                class="w-full"
+                :class="{
+                  'ring-2 ring-sepia-500 dark:ring-slate-500 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-950':
+                    isSelected(category),
+                }"
+              />
             </div>
           </div>
         </div>
 
         <!-- Actions -->
         <div class="mt-10 flex justify-end">
-          <button @click="goToNextStep" class="btn-primary" :disabled="selectedCategories.size === 0">
-            {{ $t('onboarding.continue') }}
+          <button
+            @click="goToNextStep"
+            class="btn-primary"
+            :disabled="selectedCategories.size === 0"
+          >
+            {{ $t("onboarding.continue") }}
           </button>
         </div>
       </div>
@@ -48,8 +80,12 @@
       <!-- Step 2: Settings -->
       <div v-if="step === 2">
         <div class="text-center mb-8">
-          <h1 class="text-3xl font-bold text-sepia-900 dark:text-neon">{{ $t('onboarding.finalDetails') }}</h1>
-          <p class="mt-2 text-sepia-600 dark:text-gray-400">{{ $t('onboarding.finalDetailsSubtitle') }}</p>
+          <h1 class="text-3xl font-bold text-sepia-900 dark:text-neon">
+            {{ $t("onboarding.currencySettings") }}
+          </h1>
+          <p class="mt-2 text-sepia-600 dark:text-gray-400">
+            {{ $t("onboarding.currencySettingsSubtitle") }}
+          </p>
         </div>
 
         <OnboardingSettings :form="settingsForm" />
@@ -57,12 +93,180 @@
         <!-- Actions -->
         <div class="max-w-md mx-auto">
           <div class="mt-10 flex justify-between items-center">
-            <button @click="step = 1" class="btn btn-secondary flex items-center justify-center gap-2 min-h-[37.8px] min-w-[86px]">{{ $t('onboarding.back') }}</button>
-            <button @click="finishOnboarding" class="btn btn-primary h-full flex items-center justify-center gap-2 min-h-[37.8px] min-w-[86px]" :disabled="loading">
-              <LoadingSpinner v-if="loading" size="sm" />
-              <span v-else>{{ $t('onboarding.finishSetup') }}</span>
+            <button
+              @click="step = 1"
+              class="btn btn-secondary flex items-center justify-center gap-2 min-h-[37.8px] min-w-[86px]"
+            >
+              {{ $t("onboarding.back") }}
+            </button>
+            <button
+              @click="goToWalletStep"
+              class="btn btn-primary h-full flex items-center justify-center gap-2 min-h-[37.8px] min-w-[86px]"
+            >
+              {{ $t("onboarding.continue") }}
             </button>
           </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Wallet Creation -->
+      <div v-if="step === 3">
+        <div class="text-center mb-8">
+          <h1 class="text-3xl font-bold text-sepia-900 dark:text-neon">
+            {{ $t("onboarding.createWallet") }}
+          </h1>
+          <p class="mt-2 text-sepia-600 dark:text-gray-400">
+            {{ $t("onboarding.createWalletSubtitle") }}
+          </p>
+        </div>
+
+        <div class="max-w-md mx-auto">
+          <form @submit.prevent="finishOnboarding">
+            <div class="card space-y-6 p-6">
+              <!-- Initial Balance -->
+              <div class="text-center">
+                <label for="wallet-balance" class="label sr-only">{{
+                  $t("walletModal.initialBalance")
+                }}</label>
+                <CurrencyInput
+                  v-model="walletForm.initial_balance"
+                  el-id="wallet-balance"
+                  :required="true"
+                  :disabled="false"
+                  :placeholder="$t('walletModal.initialBalancePlaceholder')"
+                  :currency="settingsForm.currency"
+                  :fractions="settingsForm.fractions"
+                />
+                <p class="text-xs text-sepia-600 dark:text-gray-400 mt-2">
+                  {{ $t("walletModal.initialBalanceHint") }}
+                </p>
+              </div>
+
+              <!-- Wallet Name -->
+              <div>
+                <label for="wallet-name" class="label">{{
+                  $t("walletModal.walletName")
+                }}</label>
+                <input
+                  id="wallet-name"
+                  v-model="walletForm.name"
+                  type="text"
+                  required
+                  class="input"
+                  :placeholder="$t('walletModal.walletNamePlaceholder')"
+                  autocomplete="off"
+                />
+              </div>
+
+              <!-- Hidden Wallet -->
+              <div
+                class="flex items-center justify-between rounded-lg p-3 border border-sepia-300 dark:border-gray-700 bg-sepia-100 dark:bg-gray-800/50"
+              >
+                <div>
+                  <label
+                    for="wallet-hidden-toggle"
+                    class="font-medium text-sepia-900 dark:text-gray-100"
+                  >
+                    {{ $t("walletModal.hideWallet") }}
+                  </label>
+                  <p class="text-xs text-sepia-600 dark:text-gray-400 mt-1">
+                    {{ $t("walletModal.hideWalletHint") }}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  @click="walletForm.hidden = !walletForm.hidden"
+                  :class="[
+                    walletForm.hidden
+                      ? 'bg-sepia-700 dark:bg-neon'
+                      : 'bg-sepia-300 dark:bg-gray-700',
+                    'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sepia-500 dark:focus:ring-neon focus:ring-offset-2 dark:focus:ring-offset-gray-900',
+                  ]"
+                  role="switch"
+                  :aria-checked="walletForm.hidden"
+                  id="wallet-hidden-toggle"
+                  :disabled="loading"
+                >
+                  <span class="sr-only">{{
+                    $t("walletModal.useSetting")
+                  }}</span>
+                  <span
+                    aria-hidden="true"
+                    :class="[
+                      walletForm.hidden ? 'translate-x-5' : 'translate-x-0',
+                      'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                    ]"
+                  />
+                </button>
+              </div>
+
+              <!-- Main Wallet -->
+              <div
+                class="flex items-center justify-between rounded-lg p-3 border border-sepia-300 dark:border-gray-700 bg-sepia-100 dark:bg-gray-800/50"
+              >
+                <div>
+                  <label
+                    for="wallet-main-toggle"
+                    class="font-medium text-sepia-900 dark:text-gray-100"
+                  >
+                    {{ $t("walletModal.setAsMain") }}
+                  </label>
+                  <p class="text-xs text-sepia-600 dark:text-gray-400 mt-1">
+                    {{ $t("walletModal.setAsMainHint") }}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  @click="
+                    walletForm.is_main_wallet = !walletForm.is_main_wallet
+                  "
+                  :class="[
+                    walletForm.is_main_wallet
+                      ? 'bg-sepia-700 dark:bg-neon'
+                      : 'bg-sepia-300 dark:bg-gray-700',
+                    'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sepia-500 dark:focus:ring-neon focus:ring-offset-2 dark:focus:ring-offset-gray-900',
+                  ]"
+                  role="switch"
+                  :aria-checked="walletForm.is_main_wallet"
+                  id="wallet-main-toggle"
+                  :disabled="loading"
+                >
+                  <span class="sr-only">{{
+                    $t("walletModal.useSetting")
+                  }}</span>
+                  <span
+                    aria-hidden="true"
+                    :class="[
+                      walletForm.is_main_wallet
+                        ? 'translate-x-5'
+                        : 'translate-x-0',
+                      'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                    ]"
+                  />
+                </button>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-10 flex justify-between items-center">
+              <button
+                type="button"
+                @click="step = 2"
+                class="btn btn-secondary flex items-center justify-center gap-2 min-h-[37.8px] min-w-[109px]"
+                :disabled="loading"
+              >
+                {{ $t("onboarding.back") }}
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary h-full flex items-center justify-center gap-2 min-h-[37.8px] min-w-[109px]"
+                :disabled="!isWalletFormValid || loading"
+              >
+                <LoadingSpinner v-if="loading" size="sm" />
+                <span v-else>{{ $t("onboarding.finishSetup") }}</span>
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -70,44 +274,107 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
-import { useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
-import { useCategoriesStore } from '@/stores/categories';
-import { useConfigStore } from '@/stores/config';
-import type { Category } from '@/types/category';
-import CategoryCard from '@/components/category/CategoryCard.vue';
-import OnboardingSettings from '@/components/onboarding/OnboardingSettings.vue';
-import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
+import { ref, reactive, computed } from "vue";
+import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
+import { useCategoriesStore } from "@/stores/categories";
+import { useWalletsStore } from "@/stores/wallets";
+import { useConfigStore } from "@/stores/config";
+import type { Category } from "@/types/category";
+import CategoryCard from "@/components/category/CategoryCard.vue";
+import OnboardingSettings from "@/components/onboarding/OnboardingSettings.vue";
+import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
+import CurrencyInput from "@/components/ui/CurrencyInput.vue";
 
 const { t } = useI18n();
 const router = useRouter();
 const categoriesStore = useCategoriesStore();
+const walletsStore = useWalletsStore();
 const configStore = useConfigStore();
 
 const step = ref(1);
 const loading = ref(false);
 
 // --- Step 1: Category Selection ---
-const predefinedExpenses: Omit<Category, 'id' | 'created_at' | 'user_id' | 'is_default'>[] = [
-  { name: t('onboarding.food'), type: 'expense', icon: 'UtensilsCrossed', color: '#f97316' },
-  { name: t('onboarding.transport'), type: 'expense', icon: 'Car', color: '#3b82f6' },
-  { name: t('onboarding.housing'), type: 'expense', icon: 'Home', color: '#8b5cf6' },
-  { name: t('onboarding.bills'), type: 'expense', icon: 'Receipt', color: '#ef4444' },
-  { name: t('onboarding.shopping'), type: 'expense', icon: 'ShoppingBag', color: '#ec4899' },
+const predefinedExpenses: Omit<
+  Category,
+  "id" | "created_at" | "user_id" | "is_default"
+>[] = [
+  {
+    name: t("onboarding.food"),
+    type: "expense",
+    icon: "UtensilsCrossed",
+    color: "#f97316",
+  },
+  {
+    name: t("onboarding.transport"),
+    type: "expense",
+    icon: "Car",
+    color: "#3b82f6",
+  },
+  {
+    name: t("onboarding.housing"),
+    type: "expense",
+    icon: "Home",
+    color: "#8b5cf6",
+  },
+  {
+    name: t("onboarding.bills"),
+    type: "expense",
+    icon: "Receipt",
+    color: "#ef4444",
+  },
+  {
+    name: t("onboarding.shopping"),
+    type: "expense",
+    icon: "ShoppingBag",
+    color: "#ec4899",
+  },
 ];
 
-const predefinedIncome: Omit<Category, 'id' | 'created_at' | 'user_id' | 'is_default'>[] = [
-  { name: t('onboarding.salary'), type: 'income', icon: 'Briefcase', color: '#10b981' },
-  { name: t('onboarding.freelance'), type: 'income', icon: 'Laptop', color: '#06b6d4' },
-  { name: t('onboarding.investment'), type: 'income', icon: 'DollarSign', color: '#f59e0b' },
-  { name: t('onboarding.gifts'), type: 'income', icon: 'Gift', color: '#d946ef' },
-  { name: t('onboarding.other'), type: 'income', icon: 'MoreHorizontal', color: '#6b7280' },
+const predefinedIncome: Omit<
+  Category,
+  "id" | "created_at" | "user_id" | "is_default"
+>[] = [
+  {
+    name: t("onboarding.salary"),
+    type: "income",
+    icon: "Briefcase",
+    color: "#10b981",
+  },
+  {
+    name: t("onboarding.freelance"),
+    type: "income",
+    icon: "Laptop",
+    color: "#06b6d4",
+  },
+  {
+    name: t("onboarding.investment"),
+    type: "income",
+    icon: "DollarSign",
+    color: "#f59e0b",
+  },
+  {
+    name: t("onboarding.gifts"),
+    type: "income",
+    icon: "Gift",
+    color: "#d946ef",
+  },
+  {
+    name: t("onboarding.other"),
+    type: "income",
+    icon: "MoreHorizontal",
+    color: "#6b7280",
+  },
 ];
 
-const selectedCategories = ref(new Set<Omit<Category, 'id' | 'created_at' | 'user_id' | 'is_default'>>());
+const selectedCategories = ref(
+  new Set<Omit<Category, "id" | "created_at" | "user_id" | "is_default">>()
+);
 
-const toggleCategory = (category: Omit<Category, 'id' | 'created_at' | 'user_id' | 'is_default'>) => {
+const toggleCategory = (
+  category: Omit<Category, "id" | "created_at" | "user_id" | "is_default">
+) => {
   if (selectedCategories.value.has(category)) {
     selectedCategories.value.delete(category);
   } else {
@@ -115,7 +382,9 @@ const toggleCategory = (category: Omit<Category, 'id' | 'created_at' | 'user_id'
   }
 };
 
-const isSelected = (category: Omit<Category, 'id' | 'created_at' | 'user_id' | 'is_default'>) => {
+const isSelected = (
+  category: Omit<Category, "id" | "created_at" | "user_id" | "is_default">
+) => {
   return selectedCategories.value.has(category);
 };
 
@@ -127,24 +396,49 @@ const goToNextStep = () => {
 
 // --- Step 2: Settings ---
 const settingsForm = reactive({
-  currency: 'USD',
+  currency: "USD",
   fractions: 2,
+});
+
+const goToWalletStep = () => {
+  step.value = 3;
+};
+
+// --- Step 3: Wallet Creation ---
+const walletForm = reactive({
+  name: "",
+  initial_balance: 0,
+  hidden: false,
+  is_main_wallet: true,
+});
+
+const isWalletFormValid = computed(() => {
+  return walletForm.name.trim() && walletForm.initial_balance >= 0;
 });
 
 const finishOnboarding = async () => {
   loading.value = true;
   try {
+    // Save settings first
+    await configStore.updateConfig(settingsForm);
+
     // Create categories
     const categoriesToCreate = Array.from(selectedCategories.value);
     await categoriesStore.createManyCategories(categoriesToCreate);
 
-    // Save settings
-    await configStore.updateConfig(settingsForm);
+    // Create wallet
+    const walletData = {
+      name: walletForm.name.trim(),
+      initial_balance: walletForm.initial_balance,
+      hidden: walletForm.hidden,
+      is_main_wallet: walletForm.is_main_wallet,
+    };
+    await walletsStore.createWallet(walletData);
 
     // Redirect to dashboard
-    router.push('/dashboard');
+    router.push("/dashboard");
   } catch (error) {
-    console.error('Onboarding failed:', error);
+    console.error("Onboarding failed:", error);
     // Optionally, show an error message to the user
   } finally {
     loading.value = false;
