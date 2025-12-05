@@ -4,13 +4,13 @@
       <!-- Step 1: Category Selection -->
       <div v-if="step === 1">
         <div class="text-center mb-8">
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('onboarding.title') }}</h1>
-          <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $t('onboarding.subtitle') }}</p>
+          <h1 class="text-3xl font-bold text-sepia-900 dark:text-neon">{{ $t('onboarding.title') }}</h1>
+          <p class="mt-2 text-sepia-600 dark:text-gray-400">{{ $t('onboarding.subtitle') }}</p>
         </div>
 
         <!-- Predefined Categories -->
         <div>
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-neon mb-3">{{ $t('onboarding.expenses') }}</h2>
+          <h2 class="text-lg font-semibold text-sepia-900 dark:text-neon mb-3">{{ $t('onboarding.expenses') }}</h2>
           <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 justify-center">
             <div
               v-for="category in predefinedExpenses"
@@ -18,13 +18,13 @@
               @click="toggleCategory(category)"
               class="cursor-pointer w-full"
             >
-              <CategoryCard :category="category" class="w-full" :class="{ 'ring-2 ring-primary-500 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-950': isSelected(category) }" />
+              <CategoryCard :category="category" class="w-full" :class="{ 'ring-2 ring-sepia-500 dark:ring-slate-500 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-950': isSelected(category) }" />
             </div>
           </div>
         </div>
 
         <div class="mt-6">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-neon mb-3">{{ $t('onboarding.income') }}</h2>
+          <h2 class="text-lg font-semibold text-sepia-900 dark:text-neon mb-3">{{ $t('onboarding.income') }}</h2>
           <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 justify-center">
             <div
               v-for="category in predefinedIncome"
@@ -32,7 +32,7 @@
               @click="toggleCategory(category)"
               class="cursor-pointer w-full"
             >
-              <CategoryCard :category="category" class="w-full" :class="{ 'ring-2 ring-primary-500 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-950': isSelected(category) }" />
+              <CategoryCard :category="category" class="w-full" :class="{ 'ring-2 ring-sepia-500 dark:ring-slate-500 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-950': isSelected(category) }" />
             </div>
           </div>
         </div>
@@ -48,8 +48,8 @@
       <!-- Step 2: Settings -->
       <div v-if="step === 2">
         <div class="text-center mb-8">
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-neon">{{ $t('onboarding.finalDetails') }}</h1>
-          <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $t('onboarding.finalDetailsSubtitle') }}</p>
+          <h1 class="text-3xl font-bold text-sepia-900 dark:text-neon">{{ $t('onboarding.finalDetails') }}</h1>
+          <p class="mt-2 text-sepia-600 dark:text-gray-400">{{ $t('onboarding.finalDetailsSubtitle') }}</p>
         </div>
 
         <OnboardingSettings :form="settingsForm" />
@@ -57,8 +57,8 @@
         <!-- Actions -->
         <div class="max-w-md mx-auto">
           <div class="mt-10 flex justify-between items-center">
-            <button @click="step = 1" class="btn-secondary">{{ $t('onboarding.back') }}</button>
-            <button @click="finishOnboarding" class="btn-primary" :disabled="loading">
+            <button @click="step = 1" class="btn btn-secondary flex items-center justify-center gap-2 min-h-[37.8px] min-w-[86px]">{{ $t('onboarding.back') }}</button>
+            <button @click="finishOnboarding" class="btn btn-primary h-full flex items-center justify-center gap-2 min-h-[37.8px] min-w-[86px]" :disabled="loading">
               <LoadingSpinner v-if="loading" size="sm" />
               <span v-else>{{ $t('onboarding.finishSetup') }}</span>
             </button>
