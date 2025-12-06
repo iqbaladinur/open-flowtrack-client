@@ -340,17 +340,16 @@ export default {
   // Onboarding
   onboarding: {
     title: "Let's Get You Set Up",
-    subtitle:
-      "Select the categories you'd like to start with. You can always change this later.",
+    subtitle: "Let's configure your preferences first.",
+    generalSettings: "General Settings",
+    generalSettingsSubtitle: "Configure your language, currency, and date preferences.",
+    selectCategories: "Select Categories",
+    selectCategoriesSubtitle: "Choose the categories you'd like to start with. You can always change this later.",
     expenses: "Expenses",
     income: "Income",
     continue: "Continue",
-    currencySettings: "Currency Settings",
-    currencySettingsSubtitle: "Configure your preferred currency and decimal format.",
     createWallet: "Create Your First Wallet",
     createWalletSubtitle: "Set up your primary wallet to start tracking your finances.",
-    finalDetails: "Final Details",
-    finalDetailsSubtitle: "Configure your currency settings.",
     back: "Back",
     finishSetup: "Finish Setup",
     // Default categories

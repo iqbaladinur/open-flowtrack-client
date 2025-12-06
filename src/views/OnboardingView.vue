@@ -3,7 +3,7 @@
     class="min-h-[100dvh] flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-950 p-4 sm:p-6 lg:p-8"
   >
     <div class="max-w-4xl w-full">
-      <!-- Step 1: Category Selection -->
+      <!-- Step 1: Settings -->
       <div v-if="step === 1">
         <div class="text-center mb-8">
           <h1 class="text-3xl font-bold text-sepia-900 dark:text-neon">
@@ -11,6 +11,32 @@
           </h1>
           <p class="mt-2 text-sepia-600 dark:text-gray-400">
             {{ $t("onboarding.subtitle") }}
+          </p>
+        </div>
+
+        <OnboardingSettings :form="settingsForm" />
+
+        <!-- Actions -->
+        <div class="max-w-md mx-auto">
+          <div class="mt-10 flex justify-end">
+            <button
+              @click="goToCategoryStep"
+              class="btn btn-primary flex items-center justify-center gap-2 min-h-[37.8px] min-w-[86px]"
+            >
+              {{ $t("onboarding.continue") }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Category Selection -->
+      <div v-if="step === 2">
+        <div class="text-center mb-8">
+          <h1 class="text-3xl font-bold text-sepia-900 dark:text-neon">
+            {{ $t("onboarding.selectCategories") }}
+          </h1>
+          <p class="mt-2 text-sepia-600 dark:text-gray-400">
+            {{ $t("onboarding.selectCategoriesSubtitle") }}
           </p>
         </div>
 
@@ -66,46 +92,20 @@
         </div>
 
         <!-- Actions -->
-        <div class="mt-10 flex justify-end">
+        <div class="mt-10 flex justify-between items-center max-w-md mx-auto">
           <button
-            @click="goToNextStep"
-            class="btn-primary"
+            @click="step = 1"
+            class="btn btn-secondary flex items-center justify-center gap-2 min-h-[37.8px] min-w-[86px]"
+          >
+            {{ $t("onboarding.back") }}
+          </button>
+          <button
+            @click="goToWalletStep"
+            class="btn btn-primary flex items-center justify-center gap-2 min-h-[37.8px] min-w-[86px]"
             :disabled="selectedCategories.size === 0"
           >
             {{ $t("onboarding.continue") }}
           </button>
-        </div>
-      </div>
-
-      <!-- Step 2: Settings -->
-      <div v-if="step === 2">
-        <div class="text-center mb-8">
-          <h1 class="text-3xl font-bold text-sepia-900 dark:text-neon">
-            {{ $t("onboarding.currencySettings") }}
-          </h1>
-          <p class="mt-2 text-sepia-600 dark:text-gray-400">
-            {{ $t("onboarding.currencySettingsSubtitle") }}
-          </p>
-        </div>
-
-        <OnboardingSettings :form="settingsForm" />
-
-        <!-- Actions -->
-        <div class="max-w-md mx-auto">
-          <div class="mt-10 flex justify-between items-center">
-            <button
-              @click="step = 1"
-              class="btn btn-secondary flex items-center justify-center gap-2 min-h-[37.8px] min-w-[86px]"
-            >
-              {{ $t("onboarding.back") }}
-            </button>
-            <button
-              @click="goToWalletStep"
-              class="btn btn-primary h-full flex items-center justify-center gap-2 min-h-[37.8px] min-w-[86px]"
-            >
-              {{ $t("onboarding.continue") }}
-            </button>
-          </div>
         </div>
       </div>
 
@@ -274,7 +274,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { useCategoriesStore } from "@/stores/categories";
@@ -286,7 +286,7 @@ import OnboardingSettings from "@/components/onboarding/OnboardingSettings.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import CurrencyInput from "@/components/ui/CurrencyInput.vue";
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const router = useRouter();
 const categoriesStore = useCategoriesStore();
 const walletsStore = useWalletsStore();
@@ -295,7 +295,24 @@ const configStore = useConfigStore();
 const step = ref(1);
 const loading = ref(false);
 
-// --- Step 1: Category Selection ---
+// --- Step 1: Settings ---
+const settingsForm = reactive({
+  language: "en",
+  currency: "USD",
+  fractions: 2,
+  firstDayOfMonth: 1,
+});
+
+// Watch for language changes and update locale immediately
+watch(() => settingsForm.language, (newLanguage) => {
+  locale.value = newLanguage;
+});
+
+const goToCategoryStep = () => {
+  step.value = 2;
+};
+
+// --- Step 2: Category Selection ---
 const predefinedExpenses: Omit<
   Category,
   "id" | "created_at" | "user_id" | "is_default"
@@ -388,18 +405,6 @@ const isSelected = (
   return selectedCategories.value.has(category);
 };
 
-const goToNextStep = () => {
-  if (selectedCategories.value.size > 0) {
-    step.value = 2;
-  }
-};
-
-// --- Step 2: Settings ---
-const settingsForm = reactive({
-  currency: "USD",
-  fractions: 2,
-});
-
 const goToWalletStep = () => {
   step.value = 3;
 };
@@ -419,8 +424,16 @@ const isWalletFormValid = computed(() => {
 const finishOnboarding = async () => {
   loading.value = true;
   try {
-    // Save settings first
-    await configStore.updateConfig(settingsForm);
+    // Update locale
+    locale.value = settingsForm.language;
+
+    // Save all settings
+    await configStore.updateConfig({
+      currency: settingsForm.currency,
+      fractions: settingsForm.fractions,
+    });
+    await configStore.updateLanguage(settingsForm.language);
+    await configStore.updateFirstDayOfMonth(settingsForm.firstDayOfMonth);
 
     // Create categories
     const categoriesToCreate = Array.from(selectedCategories.value);

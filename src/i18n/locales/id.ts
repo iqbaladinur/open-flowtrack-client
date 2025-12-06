@@ -341,17 +341,16 @@ export default {
   // Onboarding
   onboarding: {
     title: "Mari Mengatur Akun Anda",
-    subtitle:
-      "Pilih kategori yang ingin Anda mulai. Anda selalu dapat mengubahnya nanti.",
+    subtitle: "Mari konfigurasikan preferensi Anda terlebih dahulu.",
+    generalSettings: "Pengaturan Umum",
+    generalSettingsSubtitle: "Konfigurasikan bahasa, mata uang, dan preferensi tanggal Anda.",
+    selectCategories: "Pilih Kategori",
+    selectCategoriesSubtitle: "Pilih kategori yang ingin Anda mulai. Anda selalu dapat mengubahnya nanti.",
     expenses: "Pengeluaran",
     income: "Pemasukan",
     continue: "Lanjutkan",
-    currencySettings: "Pengaturan Mata Uang",
-    currencySettingsSubtitle: "Konfigurasikan mata uang dan format desimal yang Anda inginkan.",
     createWallet: "Buat Dompet Pertama Anda",
     createWalletSubtitle: "Siapkan dompet utama Anda untuk mulai melacak keuangan.",
-    finalDetails: "Detail Akhir",
-    finalDetailsSubtitle: "Konfigurasikan pengaturan mata uang Anda.",
     back: "Kembali",
     finishSetup: "Selesaikan Pengaturan",
     // Default categories
