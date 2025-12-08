@@ -68,6 +68,39 @@
       </div>
     </header>
 
+    <!-- Warning Banner -->
+    <div v-if="showWarning" class="fixed top-16 lg:top-4 left-4 right-4 lg:left-auto lg:right-4 lg:w-96 z-50 bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-700 rounded-lg shadow-lg p-4">
+      <div class="flex items-start gap-3">
+        <div class="flex-1">
+          <h3 class="text-sm font-semibold text-amber-900 dark:text-amber-200 mb-1">
+            {{ $t('warning.freeTierTitle') }}
+          </h3>
+          <p class="text-xs text-amber-800 dark:text-amber-300 mb-3">
+            {{ $t('warning.freeTierMessage') }}
+          </p>
+          <a
+            href="https://ftracks.my.id/#support"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-600 dark:bg-amber-700 hover:bg-amber-700 dark:hover:bg-amber-600 text-white text-xs font-medium rounded-md transition-colors"
+          >
+            {{ $t('warning.supportLink') }}
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        </div>
+        <button @click="dismissWarning" class="shrink-0 p-1 rounded-full hover:bg-amber-200 dark:hover:bg-amber-800 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-700 dark:text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
     <!-- Desktop Sidebar -->
     <aside class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:flex lg:flex-col transition-all duration-300 ease-in-out" :class="uiStore.isSidebarMinimized ? 'lg:w-20' : 'lg:w-64'">
       <button @click="uiStore.toggleSidebar" class="absolute top-6 -right-3 z-10 bg-sepia-50 dark:bg-gray-700 border border-sepia-300 dark:border-gray-600 rounded-full p-1 text-sepia-600 hover:text-sepia-900 dark:text-gray-400 dark:hover:text-white">
@@ -268,6 +301,10 @@ const uiStore = useUIStore();
 const { t } = useI18n();
 const showProfileMenu = ref(false);
 const showMoreMenu = ref(false);
+const showWarning = ref(false);
+
+const WARNING_STORAGE_KEY = 'warningDismissedAt';
+const SEVEN_DAYS_IN_MS = 7 * 24 * 60 * 60 * 1000;
 
 const navigation = computed(() => [
   { name: t('nav.dashboard'), to: '/dashboard', icon: Home, routeName: 'Dashboard' },
@@ -300,8 +337,31 @@ const handleClickOutside = (event: Event) => {
   }
 };
 
+const checkWarningVisibility = () => {
+  const dismissedAt = localStorage.getItem(WARNING_STORAGE_KEY);
+
+  if (!dismissedAt) {
+    showWarning.value = true;
+    return;
+  }
+
+  const dismissedTime = parseInt(dismissedAt, 10);
+  const currentTime = Date.now();
+  const timeDifference = currentTime - dismissedTime;
+
+  if (timeDifference >= SEVEN_DAYS_IN_MS) {
+    showWarning.value = true;
+  }
+};
+
+const dismissWarning = () => {
+  localStorage.setItem(WARNING_STORAGE_KEY, Date.now().toString());
+  showWarning.value = false;
+};
+
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
+  checkWarningVisibility();
 });
 
 onUnmounted(() => {

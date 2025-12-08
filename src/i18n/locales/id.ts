@@ -63,6 +63,14 @@ export default {
     theme: "Tema",
   },
 
+  // Warning
+  warning: {
+    freeTierTitle: "⚠️ Peringatan Free Tier",
+    freeTierMessage: "Anda menggunakan versi gratis yang di-hosting di Leapcell free tier. Data Anda dapat hilang kapan saja. Mohon backup data Anda secara berkala untuk menghindari kehilangan informasi penting.",
+    supportLink: "Dukung Developer",
+    dismiss: "Tutup",
+  },
+
   // Dashboard
   dashboard: {
     title: "Selamat datang kembali",

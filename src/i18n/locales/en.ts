@@ -63,6 +63,14 @@ export default {
     theme: "Theme",
   },
 
+  // Warning
+  warning: {
+    freeTierTitle: "⚠️ Free Tier Warning",
+    freeTierMessage: "You are using the free version hosted on Leapcell free tier. Your data may be lost at any time. Please backup your data regularly to avoid losing important information.",
+    supportLink: "Support the Developer",
+    dismiss: "Dismiss",
+  },
+
   // Dashboard
   dashboard: {
     title: "Welcome back",
