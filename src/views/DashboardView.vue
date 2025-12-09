@@ -136,7 +136,7 @@
       <div v-if="configStore.isApiKeyAiExist" class="card p-4">
         <div class="flex items-center mb-4">
           <div
-            class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-indigo-100 dark:bg-indigo-900/50 mr-3">
+            class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-sepia-100 dark:bg-indigo-900/50 mr-3">
             <BrainCircuit class="w-4 h-4 text-sepia-600 dark:text-indigo-400" />
           </div>
           <div>
@@ -150,7 +150,7 @@
         </div>
         <div v-else-if="analyticsSugestion.length > 0" class="flex gap-2 flex-wrap">
           <p v-for="(suggestion, index) in analyticsSugestion" :key="index"
-            class="text-sm text-sepia-700 dark:text-gray-300 bg-sepia-50 dark:bg-gray-700/10 px-3 py-2 rounded-lg w-full lg:whitespace-nowrap lg:w-auto">
+            class="text-sm text-sepia-700 dark:text-gray-300 bg-sepia-200 dark:bg-gray-700/10 px-3 py-2 rounded-lg w-full lg:whitespace-nowrap lg:w-auto">
             {{ suggestion }}
           </p>
         </div>
