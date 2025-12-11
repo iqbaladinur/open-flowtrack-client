@@ -145,7 +145,7 @@
               periodicAnalytics.start }} - {{ periodicAnalytics.end }})</p>
           </div>
         </div>
-        <div v-if="analyticsLoading" class="flex justify-center items-center py-8">
+        <div v-if="analyticsLoading && analyticsSugestion.length === 0" class="flex justify-center items-center py-8">
           <LoadingSpinner class="w-8 h-8" />
         </div>
         <div v-else-if="analyticsSugestion.length > 0" class="flex gap-2 flex-wrap">
