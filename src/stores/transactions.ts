@@ -89,7 +89,7 @@ export const useTransactionsStore = defineStore('transactions', () => {
   const deleteTransaction = async (id: string) => {
     const response = await api.delete(`/transactions/${id}`);
     if (!response.error) {
-      await fetchTransactions({}, true); // Force refresh
+      // await fetchTransactions({}, true); // Force refresh
       return { success: true };
     }
     return { success: false, error: response.error };

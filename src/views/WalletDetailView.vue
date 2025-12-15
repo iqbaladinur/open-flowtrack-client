@@ -540,6 +540,7 @@ const deleteTransaction = async (id: string) => {
   if (confirm(t('walletDetail.deleteTransactionConfirm'))) {
     const result = await transactionsStore.deleteTransaction(id);
     if (result.success) {
+      setFilter(selectedFilter.value as any);
       await fetchWalletData();
     }
   }

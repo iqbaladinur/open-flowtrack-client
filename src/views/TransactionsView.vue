@@ -398,16 +398,17 @@ const deleteTransaction = async (id: string) => {
   if (confirm(t('transactions.deleteConfirm'))) {
     const result = await transactionsStore.deleteTransaction(id);
     if (result.success) {
+      getTransactions(filters, true);
       walletsStore.fetchWallets(true);
     }
   }
 };
 
-const getTransactions = (filters: any) => {
+const getTransactions = (filters: any, force: boolean = false) => {
   const cleanedFilters = Object.fromEntries(
     Object.entries(filters).filter(([, value]) => value !== '')
   );
-  transactionsStore.fetchTransactions(cleanedFilters, Object.keys(cleanedFilters).length === 0);
+  transactionsStore.fetchTransactions(cleanedFilters, Object.keys(cleanedFilters).length === 0) || force;
 }
 
 const navigatePeriod = (direction: 'previous' | 'next') => {
