@@ -1,5 +1,5 @@
 <template>
-  <div class="card p-3 w-72 lg:w-full flex-shrink-0 relative rounded-2xl overflow-hidden h-[130px] md:h-auto hover:bg-sepia-100 dark:hover:bg-gray-800 transition-colors">
+  <div class="card p-3 w-72 lg:w-full flex-shrink-0 relative rounded-2xl overflow-hidden h-[130px] md:h-auto hover:bg-sepia-50/10 dark:hover:bg-gray-800 transition-colors">
 
     <div class="relative flex flex-col h-full">
       <div class="size-10 rounded-xl flex items-center justify-center mb-4 backdrop-blur-sm shadow
