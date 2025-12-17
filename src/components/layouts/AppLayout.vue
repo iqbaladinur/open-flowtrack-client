@@ -69,7 +69,7 @@
     </header>
 
     <!-- Warning Banner -->
-    <div v-if="showWarning" class="fixed top-16 lg:top-4 left-4 right-4 lg:left-auto lg:right-4 lg:w-96 z-50 bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-700 rounded-lg shadow-lg p-4">
+    <div v-if="showWarning" class="fixed top-16 lg:top-4 left-4 right-4 lg:left-auto lg:right-4 lg:w-96 z-50 bg-amber-50 dark:bg-amber-900 border border-amber-300 dark:border-amber-700 rounded-lg shadow-lg p-4">
       <div class="flex items-start gap-3">
         <div class="flex-1">
           <h3 class="text-sm font-semibold text-amber-900 dark:text-amber-200 mb-1">
