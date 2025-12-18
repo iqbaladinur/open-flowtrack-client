@@ -134,34 +134,82 @@
         </div>
 
         <!-- Recurring Options -->
-        <div class="space-y-3">
-          <div class="flex items-center">
-            <input
-              id="recurring"
-              v-model="form.is_recurring"
-              type="checkbox"
-              class="rounded border-gray-300 text-primary-600 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50"
+        <div v-if="!transaction" class="space-y-3">
+          <div class="flex item-start lg:items-center justify-between rounded-lg p-3 border border-sepia-300 dark:border-gray-700 bg-sepia-100 dark:bg-gray-800/50 gap-4">
+            <div>
+              <label for="recurring" class="font-medium text-sepia-900 dark:text-gray-100">
+                {{ $t('transactionModal.makeRecurring') }}
+              </label>
+            </div>
+            <button
+              type="button"
+              @click="form.is_recurring = !form.is_recurring"
+              :class="[
+                form.is_recurring ? 'bg-sepia-700 dark:bg-neon' : 'bg-sepia-300 dark:bg-gray-700',
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sepia-500 dark:focus:ring-neon focus:ring-offset-2 dark:focus:ring-offset-gray-900'
+              ]"
+              role="switch"
+              :aria-checked="form.is_recurring"
               :disabled="loading"
-            />
-            <label for="recurring" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
-              {{ $t('transactionModal.makeRecurring') }}
-            </label>
+              id="recurring"
+            >
+              <span class="sr-only">{{ $t('transactionModal.makeRecurring') }}</span>
+              <span
+                aria-hidden="true"
+                :class="[
+                  form.is_recurring ? 'translate-x-5' : 'translate-x-0',
+                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
+                ]"
+              />
+            </button>
           </div>
 
-          <div v-if="form.is_recurring">
-            <label for="pattern" class="label">{{ $t('transactionModal.recurringPattern') }}</label>
-            <select
-              id="pattern"
-              v-model="form.recurring_pattern"
-              class="input"
-              :disabled="loading"
-              autocomplete="off"
-            >
-              <option value="daily">{{ $t('transactionModal.daily') }}</option>
-              <option value="weekly">{{ $t('transactionModal.weekly') }}</option>
-              <option value="monthly">{{ $t('transactionModal.monthly') }}</option>
-              <option value="yearly">{{ $t('transactionModal.yearly') }}</option>
-            </select>
+          <div v-if="form.is_recurring" class="space-y-4">
+            <div>
+              <label for="pattern" class="label">{{ $t('transactionModal.recurringPattern') }}</label>
+              <select
+                id="pattern"
+                v-model="form.recurring_pattern"
+                class="input"
+                :disabled="loading"
+                autocomplete="off"
+              >
+                <option value="daily">{{ $t('transactionModal.daily') }}</option>
+                <option value="weekly">{{ $t('transactionModal.weekly') }}</option>
+                <option value="monthly">{{ $t('transactionModal.monthly') }}</option>
+                <option value="yearly">{{ $t('transactionModal.yearly') }}</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="recurring_count" class="label">{{ $t('transactionModal.recurringCount') }}</label>
+                <input
+                  id="recurring_count"
+                  v-model.number="form.recurring_count"
+                  type="number"
+                  min="0"
+                  class="input"
+                  :placeholder="$t('transactionModal.recurringCountPlaceholder')"
+                  :disabled="loading"
+                  autocomplete="off"
+                />
+                <p class="text-xs label mt-1">{{ $t('transactionModal.recurringCountHint') }}</p>
+              </div>
+
+              <div>
+                <label for="recurring_until" class="label">{{ $t('transactionModal.recurringUntil') }}</label>
+                <input
+                  id="recurring_until"
+                  v-model="form.recurring_until"
+                  type="date"
+                  class="input"
+                  :disabled="loading"
+                  autocomplete="off"
+                />
+                <p class="text-xs label mt-1">{{ $t('transactionModal.recurringUntilHint') }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -214,7 +262,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import CategoryModal from '@/components/category/CategoryModal.vue';
 import type { Transaction, TransactionType } from '@/types/transaction';
 import { TrendingUp, TrendingDown, Plus, ArrowRightLeft } from 'lucide-vue-next';
-import { format } from 'date-fns';
+import { format, addDays, addWeeks, addMonths, addYears } from 'date-fns';
 import { Category } from '@/types/category';
 import { getIcon } from '@/utils/icons';
 import CurrencyInput from '../ui/CurrencyInput.vue';
@@ -270,6 +318,8 @@ const form = reactive({
   note: '',
   is_recurring: false,
   recurring_pattern: 'monthly' as 'daily' | 'weekly' | 'monthly' | 'yearly',
+  recurring_count: undefined as number | undefined,
+  recurring_until: '',
 });
 
 const availableCategories = computed(() => {
@@ -311,6 +361,8 @@ const handleSubmit = async () => {
       note: form.note || undefined,
       is_recurring: form.is_recurring,
       recurring_pattern: form.is_recurring ? form.recurring_pattern : undefined,
+      recurring_count: form.is_recurring && form.recurring_count ? form.recurring_count : undefined,
+      recurring_until: form.is_recurring && form.recurring_until ? new Date(form.recurring_until).toISOString() : undefined,
     };
 
     let result;
@@ -344,6 +396,8 @@ const resetForm = () => {
     note: '',
     is_recurring: false,
     recurring_pattern: 'monthly',
+    recurring_count: undefined,
+    recurring_until: '',
   });
 };
 
@@ -359,8 +413,10 @@ watch(() => props.modelValue, (isOpen) => {
       category_id: props.transaction.category_id,
       date: format(new Date(props.transaction.date), 'yyyy-MM-dd'),
       note: props.transaction.note || '',
-      is_recurring: props.transaction.is_recurring,
+      is_recurring: props.transaction.is_recurring || false,
       recurring_pattern: props.transaction.recurring_pattern || 'monthly',
+      recurring_count: props.transaction.recurring_count,
+      recurring_until: props.transaction.recurring_until ? format(new Date(props.transaction.recurring_until), 'yyyy-MM-dd') : '',
     });
   } else {
     resetForm();
@@ -371,6 +427,33 @@ watch(() => props.modelValue, (isOpen) => {
 
 watch(() => props.type, (newType) => {
   if (newType) form.type = newType;
+});
+
+// Auto-calculate recurring_until based on recurring_pattern
+watch([() => form.recurring_pattern, () => form.date, () => form.is_recurring], () => {
+  if (form.is_recurring && !form.recurring_until && !form.recurring_count) {
+    const startDate = new Date(form.date);
+    let defaultEndDate: Date;
+
+    switch (form.recurring_pattern) {
+      case 'daily':
+        defaultEndDate = addDays(startDate, 30);
+        break;
+      case 'weekly':
+        defaultEndDate = addWeeks(startDate, 12);
+        break;
+      case 'monthly':
+        defaultEndDate = addMonths(startDate, 12);
+        break;
+      case 'yearly':
+        defaultEndDate = addYears(startDate, 5);
+        break;
+      default:
+        defaultEndDate = addMonths(startDate, 12);
+    }
+
+    form.recurring_until = format(defaultEndDate, 'yyyy-MM-dd');
+  }
 });
 
 function toggleFormType(type: TransactionType) {

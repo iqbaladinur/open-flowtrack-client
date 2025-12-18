@@ -17,7 +17,7 @@
       >
         <div
           v-if="modelValue"
-          class="w-full max-h-[90vh] transform rounded-t-2xl bg-sepia-50 dark:bg-gray-800 shadow-xl transition-all sm:my-8 sm:max-w-md sm:rounded-xl"
+          class="w-full max-h-[90vh] transform rounded-t-2xl bg-sepia-50 dark:bg-gray-800 shadow-xl transition-all sm:my-8 sm:max-w-lg sm:rounded-xl"
           @click.stop
         >
           <div class="flex flex-col h-full relative">
