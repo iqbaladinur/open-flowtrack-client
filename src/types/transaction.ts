@@ -10,13 +10,16 @@ export interface Transaction {
   destination_wallet_id?: string;
   date: string;
   note?: string;
-  is_recurring: boolean;
-  recurring_pattern?: 'daily' | 'weekly' | 'monthly' | 'yearly';
   wallet?: Wallet;
   category?: Category;
   destinationWallet?: Wallet;
   created_at: string;
   updated_at: string;
+  // helper only
+  is_recurring?: boolean;
+  recurring_pattern?: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  recurring_count?: number;
+  recurring_until?: string;
 }
 
 export type TransactionType = 'income' | 'expense' | 'transfer';

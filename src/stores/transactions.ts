@@ -57,8 +57,12 @@ export const useTransactionsStore = defineStore('transactions', () => {
     note?: string;
     is_recurring?: boolean;
     recurring_pattern?: 'daily' | 'weekly' | 'monthly' | 'yearly';
+    recurring_count?: number;
+    recurring_until?: string;
   }) => {
-    const response = await api.post<Transaction>('/transactions', transactionData);
+    const response = transactionData.is_recurring
+      ? await api.post<Transaction>('/transactions/bulk-recurring', transactionData)
+      : await api.post<Transaction>('/transactions', transactionData);
     if (response.data) {
       return { success: true };
     }
