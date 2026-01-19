@@ -206,6 +206,7 @@ export default {
     onWallet: "on wallet",
     shareTransactionData:
       "Here is my transactions data for the selected period",
+    searchPlaceholder: "Search by note or category...",
   },
 
   // Budgets
