@@ -130,6 +130,26 @@
         </div>
       </div>
 
+      <!-- Search -->
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <Search class="size-4 text-sepia-400 dark:text-gray-500" />
+        </div>
+        <input
+          v-model="searchQuery"
+          type="text"
+          :placeholder="$t('transactions.searchPlaceholder')"
+          class="input pl-10 pr-10 w-full md:w-[360px] rounded-xl"
+        />
+        <button
+          v-if="searchQuery"
+          @click="searchQuery = ''"
+          class="absolute inset-y-0 right-0 pr-3 flex items-center"
+        >
+          <X class="size-4 text-sepia-400 dark:text-gray-500 hover:text-sepia-600 dark:hover:text-gray-300" />
+        </button>
+      </div>
+
       <!-- Transactions List -->
       <div class="card">
         <div v-if="transactionsStore.loading" class="p-8">
@@ -221,7 +241,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Tag,
-  TrendingUpDown
+  TrendingUpDown,
+  Search,
+  X
 } from 'lucide-vue-next';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, endOfDay, format, parseISO } from 'date-fns';
 
@@ -237,6 +259,7 @@ const selectedTransaction = ref<Transaction | null>(null);
 const loadingShare = ref<boolean>(false);
 const showCategoryFilterModal = ref(false);
 const excludedCategoryIds = ref<string[]>([]);
+const searchQuery = ref('');
 
 const filters = reactive({
   type: '',
@@ -251,17 +274,28 @@ const showCustomDateRange = ref(false);
 const categories = computed(() => categoriesStore.categories);
 
 const transactions = computed(() => {
-  const sortedTransactions = transactionsStore.transactions
+  let result = transactionsStore.transactions
     .slice()
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-  if (excludedCategoryIds.value.length === 0) {
-    return sortedTransactions;
+  // Filter by excluded categories
+  if (excludedCategoryIds.value.length > 0) {
+    result = result.filter(t => {
+      return !t.category_id || !excludedCategoryIds.value.includes(t.category_id);
+    });
   }
 
-  return sortedTransactions.filter(t => {
-    return !t.category_id || !excludedCategoryIds.value.includes(t.category_id);
-  });
+  // Filter by search query (note and category name)
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase().trim();
+    result = result.filter(t => {
+      const noteMatch = t.note?.toLowerCase().includes(query);
+      const categoryMatch = t.category?.name?.toLowerCase().includes(query);
+      return noteMatch || categoryMatch;
+    });
+  }
+
+  return result;
 });
 
 const readableDate = computed(() => {
@@ -373,6 +407,7 @@ const resetFilters = () => {
   filters.end_date = '';
   dateRangePreset.value = null;
   showCustomDateRange.value = false;
+  searchQuery.value = '';
 };
 
 const editTransaction = (transaction: Transaction) => {

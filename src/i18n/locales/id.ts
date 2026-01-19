@@ -215,6 +215,7 @@ export default {
     onWallet: "di dompet",
     shareTransactionData:
       "Berikut data transaksi saya untuk periode yang dipilih",
+    searchPlaceholder: "Cari berdasarkan catatan atau kategori...",
   },
 
   // Budgets
