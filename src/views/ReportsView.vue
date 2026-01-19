@@ -247,6 +247,198 @@
           </div>
           <WalletFlowSankeyChart :transactions="transactions" :wallet-report-data="walletReportData" />
         </div>
+
+        <hr>
+
+        <!-- Budget Performance Overview -->
+        <div v-if="budgetsStore.budgets.length > 0" class="space-y-6">
+          <!-- Budget Summary Cards -->
+          <div class="flex lg:grid lg:grid-cols-4 lg:gap-4 overflow-x-auto space-x-3 lg:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+            <SummaryCard3
+              :title="$t('reports.totalBudgets')"
+              :value="budgetSummary.totalBudgets"
+              :icon="Target"
+              :is-currency="false"
+              icon-bg-class="!bg-purple-100 dark:!bg-purple-900/50"
+              icon-class="text-purple-600 dark:text-purple-400"
+              value-class="text-purple-600 dark:text-purple-400"
+            />
+            <SummaryCard3
+              :title="$t('reports.totalBudgetAllocated')"
+              :value="budgetSummary.totalAllocated"
+              :icon="Target"
+              icon-bg-class="!bg-blue-100 dark:!bg-blue-900/50"
+              icon-class="text-blue-600 dark:text-blue-400"
+              value-class="text-blue-600 dark:text-blue-400"
+            />
+            <SummaryCard3
+              :title="$t('reports.totalBudgetSpent')"
+              :value="budgetSummary.totalSpent"
+              :icon="TrendingDown"
+              icon-bg-class="!bg-orange-100 dark:!bg-orange-900/50"
+              icon-class="text-orange-600 dark:text-orange-400"
+              :value-class="{
+                'text-success-600 dark:text-success-400': budgetSummary.averageUsage <= 75,
+                'text-warning-600 dark:text-warning-400': budgetSummary.averageUsage > 75 && budgetSummary.averageUsage <= 90,
+                'text-error-600 dark:text-error-400': budgetSummary.averageUsage > 90,
+              }"
+            />
+            <SummaryCard3
+              :title="$t('reports.averageBudgetUsage')"
+              :value="budgetSummary.averageUsage"
+              :formatter="configStore.formatProsentase"
+              :icon="Scale"
+              :is-currency="false"
+              icon-bg-class="!bg-indigo-100 dark:!bg-indigo-900/50"
+              icon-class="text-indigo-600 dark:text-indigo-400"
+              :value-class="{
+                'text-success-600 dark:text-success-400': budgetSummary.averageUsage <= 75,
+                'text-warning-600 dark:text-warning-400': budgetSummary.averageUsage > 75 && budgetSummary.averageUsage <= 90,
+                'text-error-600 dark:text-error-400': budgetSummary.averageUsage > 90,
+              }"
+            />
+          </div>
+
+          <!-- Budget Status Card -->
+          <div class="card p-4 text-sm text-sepia-700 dark:text-gray-400 space-y-3">
+            <h3 class="font-bold text-sepia-900 dark:text-gray-200">{{ $t('reports.budgetStatus') }}</h3>
+
+            <!-- Budget Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="p-3 bg-sepia-50 dark:bg-gray-800 rounded-lg">
+                <p class="text-xs text-sepia-500 dark:text-gray-400 mb-1">{{ $t('reports.onTrackBudgets') }}</p>
+                <p class="text-lg font-bold text-success-600 dark:text-success-400">
+                  {{ budgetSummary.budgetsOnTrack }} / {{ budgetSummary.totalBudgets }}
+                </p>
+              </div>
+              <div class="p-3 bg-sepia-50 dark:bg-gray-800 rounded-lg">
+                <p class="text-xs text-sepia-500 dark:text-gray-400 mb-1">{{ $t('reports.overBudget') }}</p>
+                <p class="text-lg font-bold text-error-600 dark:text-error-400">
+                  {{ budgetSummary.budgetsOverBudget }} / {{ budgetSummary.totalBudgets }}
+                </p>
+              </div>
+              <div class="p-3 bg-sepia-50 dark:bg-gray-800 rounded-lg">
+                <p class="text-xs text-sepia-500 dark:text-gray-400 mb-1">{{ $t('reports.totalRemaining') }}</p>
+                <p class="text-lg font-bold" :class="{
+                  'text-success-600 dark:text-success-400': budgetSummary.remaining >= 0,
+                  'text-error-600 dark:text-error-400': budgetSummary.remaining < 0,
+                }">
+                  {{ configStore.formatCurrency(Math.abs(budgetSummary.remaining)) }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Budget vs Income Comparison -->
+            <div class="border-t border-sepia-200 dark:border-gray-700 pt-3 mt-3">
+              <h4 class="font-semibold text-sepia-900 dark:text-gray-200 mb-3 text-xs">{{ $t('reports.budgetVsIncomeComparison') }}</h4>
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div class="p-3 bg-sepia-50 dark:bg-gray-800 rounded-lg">
+                  <p class="text-xs text-sepia-500 dark:text-gray-400 mb-1">{{ $t('reports.periodNetIncome') }}</p>
+                  <p class="text-sm font-bold" :class="{
+                    'text-success-600 dark:text-success-400': summary.net > 0,
+                    'text-gray-800 dark:text-gray-200': summary.net === 0,
+                    'text-error-600 dark:text-error-400': summary.net < 0,
+                  }">
+                    {{ configStore.formatCurrency(Math.abs(summary.net)) }}
+                  </p>
+                </div>
+                <div class="p-3 bg-sepia-50 dark:bg-gray-800 rounded-lg">
+                  <p class="text-xs text-sepia-500 dark:text-gray-400 mb-1">{{ $t('reports.budgetRemaining') }}</p>
+                  <p class="text-sm font-bold" :class="{
+                    'text-success-600 dark:text-success-400': budgetSummary.remaining >= 0,
+                    'text-error-600 dark:text-error-400': budgetSummary.remaining < 0,
+                  }">
+                    {{ configStore.formatCurrency(Math.abs(budgetSummary.remaining)) }}
+                  </p>
+                </div>
+                <div class="p-3 bg-sepia-50 dark:bg-gray-800 rounded-lg">
+                  <p class="text-xs text-sepia-500 dark:text-gray-400 mb-1">{{ $t('reports.coverageRatio') }}</p>
+                  <p class="text-sm font-bold" :class="{
+                    'text-success-600 dark:text-success-400': budgetSummary.remaining > 0 && summary.net >= budgetSummary.remaining,
+                    'text-warning-600 dark:text-warning-400': budgetSummary.remaining > 0 && summary.net < budgetSummary.remaining && summary.net > 0,
+                    'text-error-600 dark:text-error-400': summary.net <= 0 || budgetSummary.remaining < 0,
+                  }">
+                    {{ budgetSummary.remaining > 0 && summary.net > 0 ? ((summary.net / budgetSummary.remaining) * 100).toFixed(0) + '%' : '-' }}
+                  </p>
+                </div>
+                <div class="p-3 rounded-lg" :class="{
+                  'bg-success-100 dark:bg-success-900/30': budgetSummary.remaining > 0 && summary.net >= budgetSummary.remaining,
+                  'bg-warning-100 dark:bg-warning-900/30': budgetSummary.remaining > 0 && summary.net < budgetSummary.remaining && summary.net > 0,
+                  'bg-error-100 dark:bg-error-900/30': summary.net <= 0 || budgetSummary.remaining < 0,
+                }">
+                  <p class="text-xs text-sepia-500 dark:text-gray-400 mb-1">{{ $t('reports.healthStatus') }}</p>
+                  <p class="text-sm font-bold" :class="{
+                    'text-success-600 dark:text-success-400': budgetSummary.remaining > 0 && summary.net >= budgetSummary.remaining,
+                    'text-warning-600 dark:text-warning-400': budgetSummary.remaining > 0 && summary.net < budgetSummary.remaining && summary.net > 0,
+                    'text-error-600 dark:text-error-400': summary.net <= 0 || budgetSummary.remaining < 0,
+                  }">
+                    <span v-if="budgetSummary.remaining > 0 && summary.net >= budgetSummary.remaining">{{ $t('reports.healthy') }}</span>
+                    <span v-else-if="budgetSummary.remaining > 0 && summary.net < budgetSummary.remaining && summary.net > 0">{{ $t('reports.caution') }}</span>
+                    <span v-else>{{ $t('reports.warning') }}</span>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Status Description -->
+              <div class="mt-3 p-3 rounded-lg text-xs" :class="{
+                'bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-400': budgetSummary.remaining > 0 && summary.net >= budgetSummary.remaining,
+                'bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-400': budgetSummary.remaining > 0 && summary.net < budgetSummary.remaining && summary.net > 0,
+                'bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-400': summary.net <= 0 || budgetSummary.remaining < 0,
+              }">
+                <p v-if="budgetSummary.remaining > 0 && summary.net >= budgetSummary.remaining">
+                  <span class="font-semibold">{{ $t('reports.healthyStatus') }}:</span> {{ $t('reports.healthyStatusDesc') }}
+                </p>
+                <p v-else-if="budgetSummary.remaining > 0 && summary.net < budgetSummary.remaining && summary.net > 0">
+                  <span class="font-semibold">{{ $t('reports.cautionStatus') }}:</span> {{ $t('reports.cautionStatusDesc') }}
+                </p>
+                <p v-else-if="budgetSummary.remaining < 0">
+                  <span class="font-semibold">{{ $t('reports.overBudgetStatus') }}:</span> {{ $t('reports.overBudgetStatusDesc') }}
+                </p>
+                <p v-else>
+                  <span class="font-semibold">{{ $t('reports.negativeIncomeStatus') }}:</span> {{ $t('reports.negativeIncomeStatusDesc') }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Budget Performance Chart -->
+          <div class="card p-4">
+            <div class="mb-4">
+              <h2 class="text-sm font-semibold text-sepia-900 dark:text-white">
+                {{ $t('reports.budgetPerformanceChart') }} ({{ configStore.currency }})
+              </h2>
+              <p class="text-xs text-sepia-600 dark:text-gray-400">
+                {{ $t('reports.budgetPerformanceDescription') }}
+              </p>
+            </div>
+            <div class="h-96">
+              <BudgetPerformanceChart :budgets="budgetsStore.budgets" :currency="configStore.currency" />
+            </div>
+          </div>
+
+          <!-- Budget Performance List -->
+          <div class="card p-4">
+            <div class="flex justify-between items-start mb-4 flex-col md:flex-row gap-4">
+              <div>
+                <h2 class="text-sm font-semibold text-sepia-900 dark:text-white">{{ $t('reports.budgetPerformanceDetails') }}</h2>
+                <p class="text-xs text-sepia-600 dark:text-gray-400">{{ $t('reports.budgetPerformanceDetailsDesc') }}</p>
+              </div>
+              <div class="flex items-center space-x-1 bg-sepia-200 dark:bg-gray-700 p-1 rounded-lg w-full lg:w-auto">
+                <button @click="budgetSortBy = 'usage'"
+                  :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless text-xs', budgetSortBy === 'usage' ? 'bg-sepia-100 dark:bg-gray-600 shadow' : '']">{{ $t('reports.byUsage') }}</button>
+                <button @click="budgetSortBy = 'spent'"
+                  :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless text-xs', budgetSortBy === 'spent' ? 'bg-sepia-100 dark:bg-gray-600 shadow' : '']">{{ $t('reports.bySpent') }}</button>
+                <button @click="budgetSortBy = 'name'"
+                  :class="['btn btn-sm flex-1 lg:flex-auto btn-borderless text-xs', budgetSortBy === 'name' ? 'bg-sepia-100 dark:bg-gray-600 shadow' : '']">{{ $t('reports.byName') }}</button>
+              </div>
+            </div>
+            <BudgetPerformanceList
+              :budgets="budgetsStore.budgets"
+              :format-currency="configStore.formatCurrency"
+              :sort-by="budgetSortBy"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </AppLayout>
@@ -257,6 +449,7 @@ import { ref, reactive, computed, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useTransactionsStore } from '@/stores/transactions';
 import { useConfigStore } from '@/stores/config';
+import { useBudgetsStore } from '@/stores/budgets';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import TimeSeriesChart from '@/components/reports/TimeSeriesChart.vue';
@@ -264,7 +457,9 @@ import CategoryPieChart from '@/components/reports/CategoryPieChart.vue';
 import SummaryCard3 from '@/components/dashboard/SummaryCard3.vue';
 import ExpenseAnalysisCard from '@/components/reports/ExpenseAnalysisCard.vue';
 import WalletFlowSankeyChart from '@/components/reports/WalletFlowSankeyChart.vue';
-import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, TrendingUp, TrendingDown, Scale, PieChartIcon, ArrowRightLeft, Filter, FilterX, ChevronLeft, ChevronRight } from 'lucide-vue-next';
+import BudgetPerformanceChart from '@/components/reports/BudgetPerformanceChart.vue';
+import BudgetPerformanceList from '@/components/reports/BudgetPerformanceList.vue';
+import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, TrendingUp, TrendingDown, Scale, PieChartIcon, ArrowRightLeft, Filter, FilterX, ChevronLeft, ChevronRight, Target } from 'lucide-vue-next';
 import type { Transaction } from '@/types/transaction';
 import { format, parseISO } from 'date-fns';
 
@@ -275,12 +470,14 @@ type ChartType = 'line' | 'bar';
 const { t } = useI18n();
 const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
+const budgetsStore = useBudgetsStore();
 
 const showFilters = ref(false);
 const currentView = ref<ReportView>('monthly');
 const customAggregationLevel = ref<AggregationLevel>('monthly');
 const categoryReportType = ref<'income' | 'expense'>('expense');
 const chartType = ref<ChartType>('bar');
+const budgetSortBy = ref<'name' | 'usage' | 'spent' | 'remaining'>('usage');
 const loading = ref(false);
 const transactions = ref<Transaction[]>([]);
 
@@ -543,6 +740,36 @@ const walletReportData = computed(() => {
   })).sort((a, b) => b.net - a.net);
 });
 
+const budgetSummary = computed(() => {
+  const budgets = budgetsStore.budgets;
+  const totalBudgets = budgets.length;
+  const totalAllocated = budgets.reduce((sum, b) => sum + (Number(b.limit_amount) || 0), 0);
+  const totalSpent = budgets.reduce((sum, b) => sum + (Number(b.total_spent) || 0), 0);
+  const averageUsage = totalAllocated > 0 ? (totalSpent / totalAllocated) * 100 : 0;
+  const budgetsOnTrack = budgets.filter(b => {
+    const limit = Number(b.limit_amount) || 0;
+    const spent = Number(b.total_spent) || 0;
+    const usage = limit > 0 ? (spent / limit) * 100 : 0;
+    return usage <= 90;
+  }).length;
+  const budgetsOverBudget = budgets.filter(b => {
+    const limit = Number(b.limit_amount) || 0;
+    const spent = Number(b.total_spent) || 0;
+    const usage = limit > 0 ? (spent / limit) * 100 : 0;
+    return usage > 100;
+  }).length;
+
+  return {
+    totalBudgets,
+    totalAllocated,
+    totalSpent,
+    averageUsage,
+    budgetsOnTrack,
+    budgetsOverBudget,
+    remaining: totalAllocated - totalSpent,
+  };
+});
+
 const fetchReportData = async () => {
   loading.value = true;
   let startDate: Date, endDate: Date;
@@ -572,7 +799,11 @@ const fetchReportData = async () => {
     end_date: endDate.toISOString().split('T')[0],
   };
 
-  await transactionsStore.fetchTransactions(filters, true);
+  await Promise.all([
+    transactionsStore.fetchTransactions(filters, true),
+    budgetsStore.fetchBudgets(filters.start_date, filters.end_date),
+  ]);
+
   transactions.value = transactionsStore.transactions
     .filter(t => configStore.includeHiddenWalletsInCalculation ? true : !t.wallet?.hidden);
 
