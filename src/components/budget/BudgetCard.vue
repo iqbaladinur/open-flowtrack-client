@@ -227,7 +227,7 @@ const duplicateForNextMonth = () => {
 
   // Smart naming: replace existing month suffix or add new one
   const monthYearPattern = / - [A-Z][a-z]{2} \d{4}$/;
-  const targetMonthYear = format(nextStart, 'MMM yyyy');
+  const targetMonthYear = format(nextEnd, 'MMM yyyy');
 
   let newName: string;
   if (monthYearPattern.test(props.budget.name)) {
