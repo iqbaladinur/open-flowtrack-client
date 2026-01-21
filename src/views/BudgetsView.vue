@@ -135,7 +135,7 @@ const duplicateBudget = async (budgetId: string, payload: CreateBudgetPayload) =
     const result = await budgetsStore.duplicateBudget(payload);
     if (result.success) {
       toast.success(t('budgets.duplicateSuccess'));
-      navigatePeriod('next');
+      // navigatePeriod('next');
     } else if (result.error) {
       toast.error(result.error);
     }
