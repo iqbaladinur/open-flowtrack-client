@@ -53,8 +53,10 @@
           v-for="budget in budgets"
           :key="budget.id"
           :budget="budget"
+          :duplicating="duplicatingBudgetId === budget.id"
           @edit="editBudget"
           @delete="deleteBudget"
+          @duplicate="duplicateBudget"
         />
       </div>
     </div>
@@ -82,7 +84,8 @@ import AppLayout from '@/components/layouts/AppLayout.vue';
 import BudgetModal from '@/components/budget/BudgetModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import BudgetCard from '@/components/budget/BudgetCard.vue';
-import type { Budget } from '@/types/budget';
+import type { Budget, CreateBudgetPayload } from '@/types/budget';
+import { useToast } from '@/composables/useToast';
 import { Plus, Target, ChevronRight, ChevronLeft } from 'lucide-vue-next';
 import { format, parseISO } from 'date-fns';
 import { useConfigStore } from '@/stores/config';
@@ -90,8 +93,10 @@ import { useConfigStore } from '@/stores/config';
 const { t } = useI18n();
 const budgetsStore = useBudgetsStore();
 const configStore = useConfigStore();
+const toast = useToast();
 const showAddModal = ref(false);
 const selectedBudget = ref<Budget | null>(null);
+const duplicatingBudgetId = ref<string | null>(null);
 
 const dateRange = reactive({
   start: '',
@@ -121,6 +126,21 @@ const deleteBudget = async (id: string) => {
     if (!result.success && result.error) {
       alert(result.error);
     }
+  }
+};
+
+const duplicateBudget = async (budgetId: string, payload: CreateBudgetPayload) => {
+  duplicatingBudgetId.value = budgetId;
+  try {
+    const result = await budgetsStore.duplicateBudget(payload);
+    if (result.success) {
+      toast.success(t('budgets.duplicateSuccess'));
+      navigatePeriod('next');
+    } else if (result.error) {
+      toast.error(result.error);
+    }
+  } finally {
+    duplicatingBudgetId.value = null;
   }
 };
 

@@ -4,6 +4,7 @@ export default {
     cancel: "Cancel",
     delete: "Delete",
     edit: "Edit",
+    duplicate: "Duplicate",
     add: "Add",
     search: "Search",
     close: "Close",
@@ -218,6 +219,7 @@ export default {
       "Create your first budget for the selected date range to start tracking your spending.",
     createBudget: "Create Budget",
     deleteConfirm: "Are you sure you want to delete this budget?",
+    duplicateSuccess: "Budget duplicated for next month",
   },
 
   // Reports

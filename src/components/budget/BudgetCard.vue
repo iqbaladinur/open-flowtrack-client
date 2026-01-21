@@ -94,10 +94,14 @@
         </div>
         <div class="flex flex-col items-end gap-2 card">
           <div class="flex items-center space-x-1">
-            <button @click="$emit('edit', budget)" class="p-2 rounded-full text-sepia-400 dark:text-slate-50 hover:bg-sepia-100 dark:hover:bg-gray-700 hover:text-sepia-600 dark:hover:text-gray-300 transition-colors">
+            <button @click="duplicateForNextMonth" :disabled="duplicating" class="p-2 rounded-full text-sepia-400 dark:text-slate-50 hover:bg-sepia-100 dark:hover:bg-gray-700 hover:text-sepia-600 dark:hover:text-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" :title="$t('common.duplicate')">
+              <Loader2 v-if="duplicating" class="w-4 h-4 animate-spin" />
+              <Copy v-else class="w-4 h-4" />
+            </button>
+            <button @click="emit('edit', budget)" class="p-2 rounded-full text-sepia-400 dark:text-slate-50 hover:bg-sepia-100 dark:hover:bg-gray-700 hover:text-sepia-600 dark:hover:text-gray-300 transition-colors">
               <NotebookPen class="w-4 h-4" />
             </button>
-            <button @click="$emit('delete', budget.id)" class="p-2 rounded-full text-sepia-400 dark:text-slate-50 hover:bg-red-100 dark:hover:bg-red-900/50 hover:text-error-600 dark:hover:text-error-400 transition-colors">
+            <button @click="emit('delete', budget.id)" class="p-2 rounded-full text-sepia-400 dark:text-slate-50 hover:bg-red-100 dark:hover:bg-red-900/50 hover:text-error-600 dark:hover:text-error-400 transition-colors">
               <Trash2 class="w-4 h-4" />
             </button>
           </div>
@@ -182,7 +186,7 @@ import { useCategoriesStore } from '@/stores/categories';
 import type { Budget } from '@/types/budget';
 import type { Transaction } from '@/types/transaction';
 import { getIcon } from '@/utils/icons';
-import { Trash2, ChevronDown, CalendarDays, NotebookPen } from 'lucide-vue-next';
+import { Trash2, ChevronDown, CalendarDays, NotebookPen, Copy, Loader2 } from 'lucide-vue-next';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import { format } from 'date-fns';
@@ -195,13 +199,53 @@ const props = defineProps({
   simpleView: {
     type: Boolean as PropType<boolean>,
     required: false,
+  },
+  duplicating: {
+    type: Boolean as PropType<boolean>,
+    default: false,
   }
 });
 
-defineEmits<{
+import type { CreateBudgetPayload } from '@/types/budget';
+
+const emit = defineEmits<{
   (e: 'edit', budget: Budget): void;
   (e: 'delete', id: string): void;
+  (e: 'duplicate', budgetId: string, payload: CreateBudgetPayload): void;
 }>();
+
+const duplicateForNextMonth = () => {
+  const currentStart = new Date(props.budget.start_date);
+  const currentEnd = new Date(props.budget.end_date);
+
+  // Calculate next month dates
+  const nextStart = new Date(currentStart);
+  nextStart.setMonth(nextStart.getMonth() + 1);
+
+  const nextEnd = new Date(currentEnd);
+  nextEnd.setMonth(nextEnd.getMonth() + 1);
+
+  // Smart naming: replace existing month suffix or add new one
+  const monthYearPattern = / - [A-Z][a-z]{2} \d{4}$/;
+  const targetMonthYear = format(nextStart, 'MMM yyyy');
+
+  let newName: string;
+  if (monthYearPattern.test(props.budget.name)) {
+    newName = props.budget.name.replace(monthYearPattern, ` - ${targetMonthYear}`);
+  } else {
+    newName = `${props.budget.name} - ${targetMonthYear}`;
+  }
+
+  const payload: CreateBudgetPayload = {
+    name: newName,
+    limit_amount: Number(props.budget.limit_amount),
+    start_date: format(nextStart, 'yyyy-MM-dd'),
+    end_date: format(nextEnd, 'yyyy-MM-dd'),
+    category_ids: props.budget.category_ids,
+  };
+
+  emit('duplicate', props.budget.id, payload);
+};
 
 const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
