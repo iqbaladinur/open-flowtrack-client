@@ -4,6 +4,7 @@ export default {
     cancel: "Batal",
     delete: "Hapus",
     edit: "Ubah",
+    duplicate: "Duplikat",
     add: "Tambah",
     search: "Cari",
     close: "Tutup",
@@ -227,6 +228,7 @@ export default {
       "Buat anggaran pertama Anda untuk rentang tanggal yang dipilih untuk mulai melacak pengeluaran.",
     createBudget: "Buat Anggaran",
     deleteConfirm: "Apakah Anda yakin ingin menghapus anggaran ini?",
+    duplicateSuccess: "Anggaran berhasil diduplikasi untuk bulan depan",
   },
 
   // Reports

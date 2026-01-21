@@ -27,13 +27,19 @@ export const useBudgetsStore = defineStore('budgets', () => {
     }
   };
 
-  const createBudget = async (budgetData: CreateBudgetPayload) => {
+  const createBudget = async (budgetData: CreateBudgetPayload, isDuplicate: Boolean = false) => {
     const response = await api.post<Budget>('/budgets', budgetData);
     if (response.data) {
-      budgets.value.push(response.data);
+      if (!isDuplicate) {
+        budgets.value.push(response.data);
+      }
       return { success: true, data: response.data };
     }
     return { success: false, error: response.error };
+  };
+  
+  const duplicateBudget = async (budgetData: CreateBudgetPayload) => {
+    return await createBudget(budgetData, true);
   };
 
   const updateBudget = async (id: string, budgetData: UpdateBudgetPayload) => {
@@ -75,5 +81,6 @@ export const useBudgetsStore = defineStore('budgets', () => {
     updateBudget,
     deleteBudget,
     getBudgetById,
+    duplicateBudget,
   };
 });
