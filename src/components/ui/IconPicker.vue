@@ -1,53 +1,35 @@
 <template>
   <div class="relative inline-block" ref="containerRef">
     <!-- Trigger Button (Icon Only) -->
-    <button
-      type="button"
-      ref="triggerRef"
-      @click.stop="openPicker"
-      :disabled="disabled"
-      class="p-1.5 rounded-xl border-2 transition-all duration-200 hover:scale-105"
-      :class="[
+    <button type="button" ref="triggerRef" @click.stop="openPicker" :disabled="disabled"
+      class="p-1.5 rounded-xl border-2 transition-all duration-200 hover:scale-105" :class="[
         isOpen
           ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30'
           : 'border-transparent hover:border-sepia-300 dark:hover:border-gray-600'
-      ]"
-    >
-      <div class="dark:bg-slate-400 bg-sepia-200 rounded-lg shadow">
+      ]">
+      <div class="size-10 rounded-xl flex items-center justify-center backdrop-blur-sm shadow
+                 bg-gradient-to-br from-white/60 to-sepia-200/60 dark:from-gray-500/60 dark:to-gray-600/50">
         <component :is="selectedIconComponent" :size="38" class="text-gray-200/0" />
       </div>
     </button>
 
     <!-- Desktop Dropdown (Teleported) -->
     <Teleport to="body">
-      <Transition
-        enter-active-class="transition duration-150 ease-out"
-        enter-from-class="opacity-0 scale-95"
-        enter-to-class="opacity-100 scale-100"
-        leave-active-class="transition duration-100 ease-in"
-        leave-from-class="opacity-100 scale-100"
-        leave-to-class="opacity-0 scale-95"
-      >
-        <div
-          v-if="isOpen && !isMobile"
+      <Transition enter-active-class="transition duration-150 ease-out" enter-from-class="opacity-0 scale-95"
+        enter-to-class="opacity-100 scale-100" leave-active-class="transition duration-100 ease-in"
+        leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
+        <div v-if="isOpen && !isMobile"
           class="fixed z-[9999] bg-white dark:bg-gray-800 border border-sepia-200 dark:border-gray-700 rounded-xl shadow-2xl p-2"
-          :style="dropdownStyle"
-        >
+          :style="dropdownStyle">
           <div class="grid grid-cols-6 gap-1">
-            <button
-              v-for="icon in allIcons"
-              :key="icon.value"
-              type="button"
-              @click.stop="selectIcon(icon.value)"
-              class="p-1.5 flex items-center justify-center rounded-lg transition-all duration-100"
-              :class="[
+            <button v-for="icon in allIcons" :key="icon.value" type="button" @click.stop="selectIcon(icon.value)"
+              class="p-1.5 flex items-center justify-center rounded-lg transition-all duration-100" :class="[
                 modelValue === icon.value
                   ? 'bg-sepia-200 dark:bg-gray-600 ring-2 ring-sepia-500 dark:ring-neon ring-offset-1 ring-offset-white dark:ring-offset-gray-800'
                   : 'hover:bg-sepia-100 dark:hover:bg-gray-700'
-              ]"
-              :title="t(`iconPicker.${icon.value}`)"
-            >
-              <div class="dark:bg-slate-400 bg-sepia-100 rounded-lg">
+              ]" :title="t(`iconPicker.${icon.value}`)">
+              <div class="size-10 rounded-xl flex items-center justify-center backdrop-blur-sm shadow
+                 bg-gradient-to-br from-white/60 to-sepia-200/60 dark:from-gray-500/60 dark:to-gray-600/50">
                 <component :is="icon.component" :size="38" class="text-gray-200/0" />
               </div>
             </button>
@@ -58,54 +40,34 @@
 
     <!-- Mobile Bottom Sheet -->
     <Teleport to="body">
-      <Transition
-        enter-active-class="transition duration-200 ease-out"
-        enter-from-class="opacity-0"
-        enter-to-class="opacity-100"
-        leave-active-class="transition duration-150 ease-in"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
-      >
-        <div
-          v-if="isOpen && isMobile"
-          class="fixed inset-0 z-[9999] bg-black/50"
-          @click="isOpen = false"
-        >
-          <Transition
-            enter-active-class="transition duration-200 ease-out"
-            enter-from-class="translate-y-full"
-            enter-to-class="translate-y-0"
-            leave-active-class="transition duration-150 ease-in"
-            leave-from-class="translate-y-0"
-            leave-to-class="translate-y-full"
-          >
-            <div
-              v-if="isOpen"
+      <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0"
+        enter-to-class="opacity-100" leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100"
+        leave-to-class="opacity-0">
+        <div v-if="isOpen && isMobile" class="fixed inset-0 z-[9999] bg-black/50" @click="isOpen = false">
+          <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="translate-y-full"
+            enter-to-class="translate-y-0" leave-active-class="transition duration-150 ease-in"
+            leave-from-class="translate-y-0" leave-to-class="translate-y-full">
+            <div v-if="isOpen"
               class="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-800 rounded-t-2xl p-4 pb-8 max-h-[70vh] overflow-y-auto"
-              @click.stop
-            >
+              @click.stop>
               <!-- Handle -->
               <div class="flex justify-center mb-4">
                 <div class="w-10 h-1 bg-sepia-300 dark:bg-gray-600 rounded-full"></div>
               </div>
 
               <!-- Title -->
-              <h3 class="text-base font-semibold text-sepia-800 dark:text-white mb-4 text-center">{{ t('iconPicker.selectIcon') }}</h3>
+              <h3 class="text-base font-semibold text-sepia-800 dark:text-white mb-4 text-center">{{
+                t('iconPicker.selectIcon') }}</h3>
 
               <div class="grid grid-cols-6 gap-1 mb-10">
-                <button
-                  v-for="icon in allIcons"
-                  :key="icon.value"
-                  type="button"
-                  @click.stop="selectIcon(icon.value)"
-                  class="aspect-square flex items-center justify-center rounded-xl transition-all duration-100"
-                  :class="[
+                <button v-for="icon in allIcons" :key="icon.value" type="button" @click.stop="selectIcon(icon.value)"
+                  class="aspect-square flex items-center justify-center rounded-xl transition-all duration-100" :class="[
                     modelValue === icon.value
                       ? 'bg-sepia-200 dark:bg-gray-600 ring-2 ring-sepia-500 dark:ring-neon'
                       : 'hover:bg-sepia-100 dark:hover:bg-gray-700 active:bg-sepia-200 dark:active:bg-gray-600'
-                  ]"
-                >
-                  <div class="dark:bg-slate-400 bg-sepia-100 rounded-lg">
+                  ]">
+                  <div class="size-10 rounded-xl flex items-center justify-center backdrop-blur-sm shadow
+                 bg-gradient-to-br from-white/60 to-sepia-200/60 dark:from-gray-500/60 dark:to-gray-600/50">
                     <component :is="icon.component" :size="38" class="text-gray-200/0" />
                   </div>
                 </button>
