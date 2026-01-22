@@ -639,6 +639,7 @@ export default {
   walletModal: {
     editWallet: "Edit Dompet",
     addWallet: "Tambah Dompet",
+    selectIcon: "Pilih Ikon",
     initialBalance: "Saldo Awal",
     initialBalancePlaceholder: "0.00",
     initialBalanceHint: "Masukkan saldo awal untuk dompet ini.",

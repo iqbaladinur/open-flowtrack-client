@@ -637,6 +637,7 @@ export default {
   walletModal: {
     editWallet: "Edit Wallet",
     addWallet: "Add Wallet",
+    selectIcon: "Select Icon",
     initialBalance: "Initial Balance",
     initialBalancePlaceholder: "0.00",
     initialBalanceHint: "Enter the starting balance for this wallet.",
