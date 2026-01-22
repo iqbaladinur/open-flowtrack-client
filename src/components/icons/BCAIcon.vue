@@ -1,7 +1,7 @@
 <template>
   <svg :width="size" :height="size" viewBox="0 0 112 112" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_6_7359)">
-      <rect x="-9.15527e-05" width="108" height="108" rx="8" fill="white" />
+      <rect x="-9.15527e-05" width="108" height="108" rx="8" fill="currentColor" />
       <path
         d="M25.7878 60.0307C25.7878 59.0314 25.7986 56.3604 25.774 56.0313C25.7955 52.0568 22.9057 49.2531 21.08 49.4717C19.8167 49.5813 18.758 50.0964 18.1895 51.5783C17.6627 52.9593 18.1337 54.7963 19.8855 55.2273C21.7586 55.6902 22.8523 56.0754 23.6439 56.6188C24.6138 57.284 25.4056 58.5549 25.4266 60.0323"
         fill="#0060AF" />
@@ -53,7 +53,7 @@
     </g>
     <defs>
       <clipPath id="clip0_6_7359">
-        <rect width="108" height="108" rx="8" fill="white" />
+        <rect width="108" height="108" rx="8" fill="currentColor" />
       </clipPath>
     </defs>
 

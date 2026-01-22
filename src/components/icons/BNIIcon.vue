@@ -7,7 +7,7 @@
     xmlns="http://www.w3.org/2000/svg"
   >
     <g clip-path="url(#clip0_6_7362)">
-    <rect width="108" height="108" rx="8" fill="white"/>
+    <rect width="108" height="108" rx="8" fill="currentColor"/>
     <path fill-rule="evenodd" clip-rule="evenodd" d="M14 50.1352L20.749 58.6488L14 64.2413V50.1352Z" fill="#F15A23"/>
     <path fill-rule="evenodd" clip-rule="evenodd" d="M16.7163 64.2413L21.7946 59.993L25.3046 64.2413H16.7163Z" fill="#F15A23"/>
     <path fill-rule="evenodd" clip-rule="evenodd" d="M14 45.5796L15.7612 47.8075L23.0028 56.8564L25.3493 54.9878C25.3493 54.9878 23.4013 52.6944 22.0933 50.1351C19.5359 45.1315 21.3465 42.0163 21.3465 42.0163H14V45.5796Z" fill="#F15A23"/>
@@ -20,7 +20,7 @@
     </g>
     <defs>
     <clipPath id="clip0_6_7362">
-    <rect width="108" height="108" rx="8" fill="white"/>
+    <rect width="108" height="108" rx="8" fill="currentColor"/>
     </clipPath>
     </defs>
   </svg>

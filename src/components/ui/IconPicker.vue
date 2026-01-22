@@ -13,7 +13,7 @@
           : 'border-transparent hover:border-sepia-300 dark:hover:border-gray-600'
       ]"
     >
-      <component :is="selectedIconComponent" :size="28" />
+      <component :is="selectedIconComponent" :size="36" />
     </button>
 
     <!-- Desktop Dropdown (Teleported) -->
@@ -32,7 +32,7 @@
           :style="dropdownStyle"
         >
           <!-- Banks -->
-          <p class="text-[10px] font-semibold text-sepia-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-1">Bank</p>
+          <p class="text-xs text-sepia-400 dark:text-gray-500 tracking-wider mb-2 px-1">Bank</p>
           <div class="grid grid-cols-6 gap-1 mb-3">
             <button
               v-for="icon in bankIcons"
@@ -52,7 +52,7 @@
           </div>
 
           <!-- E-Wallets -->
-          <p class="text-[10px] font-semibold text-sepia-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-1">E-Wallet</p>
+          <p class="text-xs text-sepia-400 dark:text-gray-500 tracking-wider mb-2 px-1">E-Wallet</p>
           <div class="grid grid-cols-6 gap-1 mb-3">
             <button
               v-for="icon in ewalletIcons"
@@ -72,7 +72,7 @@
           </div>
 
           <!-- Generic -->
-          <p class="text-[10px] font-semibold text-sepia-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-1">Lainnya</p>
+          <p class="text-xs text-sepia-400 dark:text-gray-500 tracking-wider mb-2 px-1">Lainnya</p>
           <div class="grid grid-cols-6 gap-1">
             <button
               v-for="icon in genericIcons"
@@ -131,7 +131,7 @@
               <h3 class="text-base font-semibold text-sepia-800 dark:text-white mb-4 text-center">Pilih Ikon</h3>
 
               <!-- Banks -->
-              <p class="text-xs font-semibold text-sepia-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-1">Bank</p>
+              <p class="text-xs text-sepia-400 dark:text-gray-500 tracking-wider mb-2 px-1">Bank</p>
               <div class="grid grid-cols-4 gap-2 mb-4">
                 <button
                   v-for="icon in bankIcons"
@@ -150,7 +150,7 @@
               </div>
 
               <!-- E-Wallets -->
-              <p class="text-xs font-semibold text-sepia-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-1">E-Wallet</p>
+              <p class="text-xs text-sepia-400 dark:text-gray-500 tracking-wider mb-2 px-1">E-Wallet</p>
               <div class="grid grid-cols-4 gap-2 mb-4">
                 <button
                   v-for="icon in ewalletIcons"
@@ -169,7 +169,7 @@
               </div>
 
               <!-- Generic -->
-              <p class="text-xs font-semibold text-sepia-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-1">Lainnya</p>
+              <p class="text-xs text-sepia-400 dark:text-gray-500 tracking-wider mb-2 px-1">Lainnya</p>
               <div class="grid grid-cols-4 gap-2">
                 <button
                   v-for="icon in genericIcons"
