@@ -6,10 +6,12 @@
     >
       <!-- Wallet Info -->
       <div class="p-2 border-2 border-transparent relative">
-        <div class="mb-6 flex items-start gap-3">
+        <div class="mb-6 flex items-center gap-3">
           <!-- Icon -->
           <div class="flex-shrink-0">
-            <component :is="walletIconComponent" :size="32" />
+            <div class="dark:bg-slate-400 bg-sepia-100 rounded-lg">
+              <component :is="walletIconComponent" :size="38" class="text-gray-200/0" />
+            </div>
           </div>
           <!-- Name & Badges -->
           <div class="flex-1 min-w-0">

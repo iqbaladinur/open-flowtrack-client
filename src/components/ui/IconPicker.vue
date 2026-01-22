@@ -6,14 +6,16 @@
       ref="triggerRef"
       @click.stop="openPicker"
       :disabled="disabled"
-      class="p-1.5 rounded-lg border-2 transition-all duration-200 hover:scale-105"
+      class="p-1.5 rounded-xl border-2 transition-all duration-200 hover:scale-105"
       :class="[
         isOpen
           ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30'
           : 'border-transparent hover:border-sepia-300 dark:hover:border-gray-600'
       ]"
     >
-      <component :is="selectedIconComponent" :size="36" />
+      <div class="dark:bg-slate-400 bg-sepia-200 rounded-lg shadow">
+        <component :is="selectedIconComponent" :size="38" class="text-gray-200/0" />
+      </div>
     </button>
 
     <!-- Desktop Dropdown (Teleported) -->
@@ -28,66 +30,26 @@
       >
         <div
           v-if="isOpen && !isMobile"
-          class="fixed z-[9999] bg-white dark:bg-gray-800 border border-sepia-200 dark:border-gray-700 rounded-xl shadow-2xl p-3 w-[464px]"
+          class="fixed z-[9999] bg-white dark:bg-gray-800 border border-sepia-200 dark:border-gray-700 rounded-xl shadow-2xl p-2"
           :style="dropdownStyle"
         >
-          <!-- Banks -->
-          <p class="text-xs text-sepia-400 dark:text-gray-500 tracking-wider mb-2 px-1">Bank</p>
-          <div class="grid grid-cols-6 gap-1 mb-3">
-            <button
-              v-for="icon in bankIcons"
-              :key="icon.value"
-              type="button"
-              @click.stop="selectIcon(icon.value)"
-              class="aspect-square flex items-center justify-center rounded-lg transition-all duration-100"
-              :class="[
-                modelValue === icon.value
-                  ? 'bg-sepia-200 dark:bg-gray-600 ring-2 ring-sepia-500 dark:ring-neon'
-                  : 'hover:bg-sepia-100 dark:hover:bg-gray-700'
-              ]"
-              :title="icon.label"
-            >
-              <component :is="icon.component" :size="36" />
-            </button>
-          </div>
-
-          <!-- E-Wallets -->
-          <p class="text-xs text-sepia-400 dark:text-gray-500 tracking-wider mb-2 px-1">E-Wallet</p>
-          <div class="grid grid-cols-6 gap-1 mb-3">
-            <button
-              v-for="icon in ewalletIcons"
-              :key="icon.value"
-              type="button"
-              @click.stop="selectIcon(icon.value)"
-              class="aspect-square flex items-center justify-center rounded-lg transition-all duration-100"
-              :class="[
-                modelValue === icon.value
-                  ? 'bg-sepia-200 dark:bg-gray-600 ring-2 ring-sepia-500 dark:ring-neon'
-                  : 'hover:bg-sepia-100 dark:hover:bg-gray-700'
-              ]"
-              :title="icon.label"
-            >
-              <component :is="icon.component" :size="36" />
-            </button>
-          </div>
-
-          <!-- Generic -->
-          <p class="text-xs text-sepia-400 dark:text-gray-500 tracking-wider mb-2 px-1">Lainnya</p>
           <div class="grid grid-cols-6 gap-1">
             <button
-              v-for="icon in genericIcons"
+              v-for="icon in allIcons"
               :key="icon.value"
               type="button"
               @click.stop="selectIcon(icon.value)"
-              class="aspect-square flex items-center justify-center rounded-lg transition-all duration-100"
+              class="p-1.5 flex items-center justify-center rounded-lg transition-all duration-100"
               :class="[
                 modelValue === icon.value
-                  ? 'bg-sepia-200 dark:bg-gray-600 ring-2 ring-sepia-500 dark:ring-neon'
+                  ? 'bg-sepia-200 dark:bg-gray-600 ring-2 ring-sepia-500 dark:ring-neon ring-offset-1 ring-offset-white dark:ring-offset-gray-800'
                   : 'hover:bg-sepia-100 dark:hover:bg-gray-700'
               ]"
-              :title="icon.label"
+              :title="t(`iconPicker.${icon.value}`)"
             >
-              <component :is="icon.component" :size="36" />
+              <div class="dark:bg-slate-400 bg-sepia-100 rounded-lg">
+                <component :is="icon.component" :size="38" class="text-gray-200/0" />
+              </div>
             </button>
           </div>
         </div>
@@ -128,13 +90,11 @@
               </div>
 
               <!-- Title -->
-              <h3 class="text-base font-semibold text-sepia-800 dark:text-white mb-4 text-center">Pilih Ikon</h3>
+              <h3 class="text-base font-semibold text-sepia-800 dark:text-white mb-4 text-center">{{ t('iconPicker.selectIcon') }}</h3>
 
-              <!-- Banks -->
-              <p class="text-xs text-sepia-400 dark:text-gray-500 tracking-wider mb-2 px-1">Bank</p>
-              <div class="grid grid-cols-4 gap-2 mb-4">
+              <div class="grid grid-cols-6 gap-1 mb-10">
                 <button
-                  v-for="icon in bankIcons"
+                  v-for="icon in allIcons"
                   :key="icon.value"
                   type="button"
                   @click.stop="selectIcon(icon.value)"
@@ -145,45 +105,9 @@
                       : 'hover:bg-sepia-100 dark:hover:bg-gray-700 active:bg-sepia-200 dark:active:bg-gray-600'
                   ]"
                 >
-                  <component :is="icon.component" :size="32" />
-                </button>
-              </div>
-
-              <!-- E-Wallets -->
-              <p class="text-xs text-sepia-400 dark:text-gray-500 tracking-wider mb-2 px-1">E-Wallet</p>
-              <div class="grid grid-cols-4 gap-2 mb-4">
-                <button
-                  v-for="icon in ewalletIcons"
-                  :key="icon.value"
-                  type="button"
-                  @click.stop="selectIcon(icon.value)"
-                  class="aspect-square flex items-center justify-center rounded-xl transition-all duration-100"
-                  :class="[
-                    modelValue === icon.value
-                      ? 'bg-sepia-200 dark:bg-gray-600 ring-2 ring-sepia-500 dark:ring-neon'
-                      : 'hover:bg-sepia-100 dark:hover:bg-gray-700 active:bg-sepia-200 dark:active:bg-gray-600'
-                  ]"
-                >
-                  <component :is="icon.component" :size="32" />
-                </button>
-              </div>
-
-              <!-- Generic -->
-              <p class="text-xs text-sepia-400 dark:text-gray-500 tracking-wider mb-2 px-1">Lainnya</p>
-              <div class="grid grid-cols-4 gap-2">
-                <button
-                  v-for="icon in genericIcons"
-                  :key="icon.value"
-                  type="button"
-                  @click.stop="selectIcon(icon.value)"
-                  class="aspect-square flex items-center justify-center rounded-xl transition-all duration-100"
-                  :class="[
-                    modelValue === icon.value
-                      ? 'bg-sepia-200 dark:bg-gray-600 ring-2 ring-sepia-500 dark:ring-neon'
-                      : 'hover:bg-sepia-100 dark:hover:bg-gray-700 active:bg-sepia-200 dark:active:bg-gray-600'
-                  ]"
-                >
-                  <component :is="icon.component" :size="32" />
+                  <div class="dark:bg-slate-400 bg-sepia-100 rounded-lg">
+                    <component :is="icon.component" :size="38" class="text-gray-200/0" />
+                  </div>
                 </button>
               </div>
             </div>
@@ -196,6 +120,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import {
   BRIIcon, BCAIcon, BNIIcon, MandiriIcon, JagoIcon,
@@ -217,6 +142,8 @@ const emit = defineEmits<{
   'update:modelValue': [value: string];
 }>();
 
+const { t } = useI18n();
+
 const isOpen = ref(false);
 const isMobile = ref(false);
 const containerRef = ref<HTMLElement | null>(null);
@@ -224,30 +151,30 @@ const triggerRef = ref<HTMLElement | null>(null);
 const dropdownStyle = ref({ top: '0px', left: '0px' });
 
 const bankIcons = [
-  { value: 'bri', label: 'BRI', component: BRIIcon },
-  { value: 'bca', label: 'BCA', component: BCAIcon },
-  { value: 'bni', label: 'BNI', component: BNIIcon },
-  { value: 'mandiri', label: 'Mandiri', component: MandiriIcon },
-  { value: 'bsi', label: 'BSI', component: BSIIcon },
-  { value: 'btn', label: 'BTN', component: BTNIcon },
-  { value: 'cimb', label: 'CIMB', component: CIMBIcon },
-  { value: 'permata', label: 'Permata', component: PermataIcon },
-  { value: 'jago', label: 'Jago', component: JagoIcon },
-  { value: 'jenius', label: 'Jenius', component: JeniusIcon },
-  { value: 'seabank', label: 'Seabank', component: SeabankIcon },
+  { value: 'bri', component: BRIIcon },
+  { value: 'bca', component: BCAIcon },
+  { value: 'bni', component: BNIIcon },
+  { value: 'mandiri', component: MandiriIcon },
+  { value: 'bsi', component: BSIIcon },
+  { value: 'btn', component: BTNIcon },
+  { value: 'cimb', component: CIMBIcon },
+  { value: 'permata', component: PermataIcon },
+  { value: 'jago', component: JagoIcon },
+  { value: 'jenius', component: JeniusIcon },
+  { value: 'seabank', component: SeabankIcon },
 ];
 
 const ewalletIcons = [
-  { value: 'gopay', label: 'GoPay', component: GopayIcon },
-  { value: 'ovo', label: 'OVO', component: OvoIcon },
-  { value: 'dana', label: 'DANA', component: DanaIcon },
-  { value: 'shopeepay', label: 'ShopeePay', component: ShopeePayIcon },
-  { value: 'linkaja', label: 'LinkAja', component: LinkAjaIcon },
+  { value: 'gopay', component: GopayIcon },
+  { value: 'ovo', component: OvoIcon },
+  { value: 'dana', component: DanaIcon },
+  { value: 'shopeepay', component: ShopeePayIcon },
+  { value: 'linkaja', component: LinkAjaIcon },
 ];
 
 const genericIcons = [
-  { value: 'cash', label: 'Cash', component: BankCashIcon },
-  { value: 'wallet', label: 'Wallet', component: WalletIcon },
+  { value: 'cash', component: BankCashIcon },
+  { value: 'wallet', component: WalletIcon },
 ];
 
 const allIcons = [...bankIcons, ...ewalletIcons, ...genericIcons];
