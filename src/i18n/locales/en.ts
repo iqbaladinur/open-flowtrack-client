@@ -641,10 +641,37 @@ export default {
     period: "Period",
   },
 
+  // Icon Picker
+  iconPicker: {
+    selectIcon: "Select Icon",
+    // Banks
+    bri: "BRI",
+    bca: "BCA",
+    bni: "BNI",
+    mandiri: "Mandiri",
+    bsi: "BSI",
+    btn: "BTN",
+    cimb: "CIMB",
+    permata: "Permata",
+    jago: "Jago",
+    jenius: "Jenius",
+    seabank: "Seabank",
+    // E-Wallets
+    gopay: "GoPay",
+    ovo: "OVO",
+    dana: "DANA",
+    shopeepay: "ShopeePay",
+    linkaja: "LinkAja",
+    // Generic
+    cash: "Cash",
+    wallet: "Wallet",
+  },
+
   // Modal: Wallet
   walletModal: {
     editWallet: "Edit Wallet",
     addWallet: "Add Wallet",
+    selectIcon: "Select Icon",
     initialBalance: "Initial Balance",
     initialBalancePlaceholder: "0.00",
     initialBalanceHint: "Enter the starting balance for this wallet.",

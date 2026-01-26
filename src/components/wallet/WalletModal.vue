@@ -16,19 +16,22 @@
         </p>
       </div>
 
-      <!-- Wallet Name -->
+      <!-- Icon Picker + Wallet Name -->
       <div>
         <label for="name" class="label">{{ $t('walletModal.walletName') }}</label>
-        <input
-          id="name"
-          v-model="form.name"
-          type="text"
-          required
-          class="input"
-          :placeholder="$t('walletModal.walletNamePlaceholder')"
-          :disabled="loading"
-          autocomplete="off"
-        />
+        <div class="flex items-center gap-2">
+          <IconPicker v-model="form.icon" :disabled="loading" />
+          <input
+            id="name"
+            v-model="form.name"
+            type="text"
+            required
+            class="input flex-1"
+            :placeholder="$t('walletModal.walletNamePlaceholder')"
+            :disabled="loading"
+            autocomplete="off"
+          />
+        </div>
       </div>
 
       <!-- Hidden Wallet -->
@@ -136,6 +139,7 @@ import { useWalletsStore } from '@/stores/wallets';
 import Modal from '@/components/ui/Modal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import CurrencyInput from '@/components/ui/CurrencyInput.vue';
+import IconPicker from '@/components/ui/IconPicker.vue';
 import type { Wallet } from '@/types/wallet';
 
 interface Props {
@@ -160,6 +164,7 @@ const error = ref('');
 
 const form = reactive({
   name: '',
+  icon: 'wallet',
   initial_balance: 0,
   hidden: false,
   is_main_wallet: false,
@@ -178,6 +183,7 @@ const handleSubmit = async () => {
   try {
     const walletData = {
       name: form.name.trim(),
+      icon: form.icon,
       initial_balance: form.initial_balance,
       hidden: form.hidden,
       is_main_wallet: form.is_main_wallet,
@@ -211,6 +217,7 @@ const isModalOpen = computed({
 const resetForm = () => {
   Object.assign(form, {
     name: '',
+    icon: 'wallet',
     initial_balance: 0,
     hidden: false,
     is_main_wallet: false,
@@ -222,6 +229,7 @@ watch(() => props.wallet, (newWallet) => {
   if (newWallet) {
     Object.assign(form, {
       name: newWallet.name,
+      icon: newWallet.icon || 'wallet',
       initial_balance: Number(newWallet.initial_balance) || 0,
       hidden: newWallet.hidden,
       is_main_wallet: newWallet.is_main_wallet || false

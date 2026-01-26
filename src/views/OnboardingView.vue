@@ -147,15 +147,18 @@
                 <label for="wallet-name" class="label">{{
                   $t("walletModal.walletName")
                 }}</label>
-                <input
-                  id="wallet-name"
-                  v-model="walletForm.name"
-                  type="text"
-                  required
-                  class="input"
-                  :placeholder="$t('walletModal.walletNamePlaceholder')"
-                  autocomplete="off"
-                />
+                <div class="flex items-center gap-2">
+                  <IconPicker v-model="walletForm.icon" :disabled="loading" />
+                  <input
+                    id="wallet-name"
+                    v-model="walletForm.name"
+                    type="text"
+                    required
+                    class="input flex-1"
+                    :placeholder="$t('walletModal.walletNamePlaceholder')"
+                    autocomplete="off"
+                  />
+                </div>
               </div>
 
               <!-- Hidden Wallet -->
@@ -285,6 +288,7 @@ import CategoryCard from "@/components/category/CategoryCard.vue";
 import OnboardingSettings from "@/components/onboarding/OnboardingSettings.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import CurrencyInput from "@/components/ui/CurrencyInput.vue";
+import IconPicker from "@/components/ui/IconPicker.vue";
 
 const { t, locale } = useI18n();
 const router = useRouter();
@@ -412,6 +416,7 @@ const goToWalletStep = () => {
 // --- Step 3: Wallet Creation ---
 const walletForm = reactive({
   name: "",
+  icon: "wallet",
   initial_balance: 0,
   hidden: false,
   is_main_wallet: true,
@@ -442,6 +447,7 @@ const finishOnboarding = async () => {
     // Create wallet
     const walletData = {
       name: walletForm.name.trim(),
+      icon: walletForm.icon,
       initial_balance: walletForm.initial_balance,
       hidden: walletForm.hidden,
       is_main_wallet: walletForm.is_main_wallet,

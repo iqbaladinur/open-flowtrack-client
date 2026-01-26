@@ -53,6 +53,7 @@ export const useWalletsStore = defineStore('wallets', () => {
 
   const createWallet = async (walletData: {
     name: string;
+    icon?: string;
     initial_balance: number;
     hidden: boolean;
     is_main_wallet?: boolean;
@@ -69,6 +70,7 @@ export const useWalletsStore = defineStore('wallets', () => {
     id: string,
     walletData: Partial<{
       name: string;
+      icon?: string;
       initial_balance: number;
       hidden: boolean;
       is_main_wallet?: boolean;

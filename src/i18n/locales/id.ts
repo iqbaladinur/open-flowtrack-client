@@ -643,10 +643,37 @@ export default {
     period: "Periode",
   },
 
+  // Icon Picker
+  iconPicker: {
+    selectIcon: "Pilih Ikon",
+    // Banks
+    bri: "BRI",
+    bca: "BCA",
+    bni: "BNI",
+    mandiri: "Mandiri",
+    bsi: "BSI",
+    btn: "BTN",
+    cimb: "CIMB",
+    permata: "Permata",
+    jago: "Jago",
+    jenius: "Jenius",
+    seabank: "Seabank",
+    // E-Wallets
+    gopay: "GoPay",
+    ovo: "OVO",
+    dana: "DANA",
+    shopeepay: "ShopeePay",
+    linkaja: "LinkAja",
+    // Generic
+    cash: "Tunai",
+    wallet: "Dompet",
+  },
+
   // Modal: Wallet
   walletModal: {
     editWallet: "Edit Dompet",
     addWallet: "Tambah Dompet",
+    selectIcon: "Pilih Ikon",
     initialBalance: "Saldo Awal",
     initialBalancePlaceholder: "0.00",
     initialBalanceHint: "Masukkan saldo awal untuk dompet ini.",

@@ -750,7 +750,7 @@ const budgetSummary = computed(() => {
     const limit = Number(b.limit_amount) || 0;
     const spent = Number(b.total_spent) || 0;
     const usage = limit > 0 ? (spent / limit) * 100 : 0;
-    return usage <= 90;
+    return usage <= 100;
   }).length;
   const budgetsOverBudget = budgets.filter(b => {
     const limit = Number(b.limit_amount) || 0;
