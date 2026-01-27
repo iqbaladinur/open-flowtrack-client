@@ -61,7 +61,7 @@
 
       <div v-else class="space-y-6">
         <!-- Wallet Distribution Chart -->
-        <div class="card p-4 lg:p-6">
+        <div class="card p-4">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-sepia-200 dark:border-gray-700">
             <div class="flex items-center gap-2">
               <PieChartIcon class="w-5 h-5 text-sepia-600 dark:text-blue-400" />
@@ -97,7 +97,7 @@
         </div>
 
         <!-- Wallets Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
           <div
             v-for="wallet in wallets"
             :key="wallet.id"
