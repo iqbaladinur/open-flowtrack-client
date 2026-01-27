@@ -1,7 +1,6 @@
 <template>
   <div
     class="card p-4 transition-all relative rounded-2xl overflow-hidden hover:bg-sepia-50/10 dark:hover:bg-gray-800/50"
-    :class="{ 'opacity-60': wallet.hidden }"
   >
     <!-- Header: Icon + Badges + Actions -->
     <div class="flex items-start justify-between mb-4">
