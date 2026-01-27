@@ -164,7 +164,6 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronDown,
-  PieChart as PieChartIcon,
   Eye,
   EyeOff,
   List,
