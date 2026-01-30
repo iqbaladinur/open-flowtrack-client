@@ -37,14 +37,34 @@
 
       <!-- Content -->
       <div v-else class="space-y-6">
-        <!-- Wallet Card -->
-        <WalletCard :wallet="wallet" :enableActions="false">
-          <template #description>
-            <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">
-              {{ walletEndDate }}
-            </p>
-          </template>
-        </WalletCard>
+        <!-- Wallet Card & Active Budget Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- Wallet Card -->
+          <WalletCard :wallet="wallet" :enableActions="false">
+            <template #description>
+              <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">
+                {{ walletEndDate }}
+              </p>
+            </template>
+          </WalletCard>
+
+          <!-- Active Budget Overview -->
+          <div class="card p-4">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-gray-800 dark:text-white text-xs">{{ $t('dashboard.activeBudget') }}</h3>
+              <router-link to="/budgets"
+                class="text-xs text-gray-600 dark:text-primary-400 hover:text-gray-700 dark:hover:text-primary-300 font-medium">
+                <LucideArrowUpRightFromSquare class="size-3" />
+              </router-link>
+            </div>
+            <ActiveBudgetSection
+              :overview-only="true"
+              :start-date="startDate"
+              :end-date="endDate"
+            />
+          </div>
+        </div>
+
         <!-- Period Summary -->
         <div>
           <div class="border-gray-200 dark:border-gray-700 mb-2">
@@ -272,13 +292,14 @@ import WalletCard from '@/components/wallet/WalletCard.vue';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import type { Wallet } from '@/types/wallet';
 import type { Transaction, TransactionType } from '@/types/transaction';
-import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, FilterX, Scale, ArrowUpRight, ArrowDownRight, ArrowRightLeft, Tag, ChevronLeft, ChevronRight, ArrowLeftRight } from 'lucide-vue-next';
+import { ArrowLeft, Trash2, TrendingUp, TrendingDown, Filter, NotebookPen, FilterX, Scale, ArrowUpRight, ArrowDownRight, ArrowRightLeft, Tag, ChevronLeft, ChevronRight, ArrowLeftRight, LucideArrowUpRightFromSquare } from 'lucide-vue-next';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, startOfDay, endOfDay, parseISO } from 'date-fns';
 import WalletModal from '@/components/wallet/WalletModal.vue';
 import TransactionModal from '@/components/transaction/TransactionModal.vue';
 import CategoryFilterModal from '@/components/category/CategoryFilterModal.vue';
 import QuickAction from '@/components/shared/QuickAction.vue';
 import SummaryCard3 from '@/components/dashboard/SummaryCard3.vue';
+import ActiveBudgetSection from '@/components/dashboard/ActiveBudgetSection.vue';
 
 const { t } = useI18n();
 const route = useRoute();

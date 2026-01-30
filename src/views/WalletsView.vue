@@ -61,43 +61,59 @@
 
       <div v-else class="space-y-6">
         <!-- Wallet Distribution Chart -->
-        <div class="card p-4 lg:p-6">
-          <div class="flex items-center justify-between mb-6 pb-3 border-b border-sepia-200 dark:border-gray-700">
+        <div class="card">
+          <div
+            class="flex items-center justify-between p-4 cursor-pointer select-none"
+            :class="{ 'border-b border-sepia-200 dark:border-gray-700': !isDistributionCollapsed }"
+            @click="toggleDistribution"
+          >
             <div class="flex items-center gap-2">
-              <PieChartIcon class="w-5 h-5 text-sepia-600 dark:text-blue-400" />
+              <ChevronDown
+                class="w-5 h-5 text-sepia-600 dark:text-gray-400 transition-transform duration-300"
+                :class="{ '-rotate-90': isDistributionCollapsed }"
+              />
               <h2 class="text-base lg:text-lg font-bold text-sepia-900 dark:text-white">
                 {{ $t('wallets.distribution') }} ({{ configStore.currency }})
               </h2>
             </div>
-            <div class="flex items-center gap-1">
+            <div class="flex items-center gap-1" @click.stop>
               <!-- Toggle Chart View -->
               <button
                 @click="useCustomLegend = !useCustomLegend"
                 class="p-2 rounded-lg hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors"
                 :title="useCustomLegend ? 'Show chart labels' : 'Show custom legend'"
               >
-                <List v-if="useCustomLegend" class="w-5 h-5 text-sepia-600 dark:text-gray-400" />
-                <Tag v-else class="w-5 h-5 text-sepia-600 dark:text-gray-400" />
+                <List v-if="useCustomLegend" class="size-5 lg:size-4 text-sepia-600 dark:text-gray-400" />
+                <Tag v-else class="size-5 lg:size-4 text-sepia-600 dark:text-gray-400" />
               </button>
               <button
                 @click="toggleHiddenWallets"
                 class="p-2 rounded-lg hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors"
                 :title="showHiddenWallets ? $t('wallets.hideHidden') : $t('wallets.showHidden')"
               >
-                <EyeOff v-if="showHiddenWallets" class="w-5 h-5 text-sepia-600 dark:text-gray-400" />
-                <Eye v-else class="w-5 h-5 text-sepia-600 dark:text-gray-400" />
+                <EyeOff v-if="showHiddenWallets" class="size-5 lg:size-4 text-sepia-600 dark:text-gray-400" />
+                <Eye v-else class="size-5 lg:size-4 text-sepia-600 dark:text-gray-400" />
               </button>
             </div>
           </div>
-          <div v-if="visibleWallets.length === 0" class="text-center py-8">
-            <WalletIcon class="w-12 h-12 text-gray-400 mx-auto mb-2" />
-            <p class="text-gray-500 dark:text-gray-400">{{ $t('wallets.noVisibleWallets') }}</p>
+          <div
+            class="grid transition-[grid-template-rows] duration-300 ease-out"
+            :class="isDistributionCollapsed ? 'grid-rows-[0fr]' : 'grid-rows-[1fr]'"
+          >
+            <div class="overflow-hidden">
+              <div class="p-4 pt-6">
+                <div v-if="visibleWallets.length === 0" class="text-center py-8">
+                  <WalletIcon class="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                  <p class="text-gray-500 dark:text-gray-400">{{ $t('wallets.noVisibleWallets') }}</p>
+                </div>
+                <WalletBalancePieChart v-else ref="chartRef" :chart-data="walletChartData" :use-custom-legend="useCustomLegend" />
+              </div>
+            </div>
           </div>
-          <WalletBalancePieChart v-else ref="chartRef" :chart-data="walletChartData" :use-custom-legend="useCustomLegend" />
         </div>
 
         <!-- Wallets Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
           <div
             v-for="wallet in wallets"
             :key="wallet.id"
@@ -147,7 +163,7 @@ import {
   Share2,
   ChevronLeft,
   ChevronRight,
-  PieChart as PieChartIcon,
+  ChevronDown,
   Eye,
   EyeOff,
   List,
@@ -173,6 +189,12 @@ const wallets = computed(() => {
 const chartRef = ref<InstanceType<typeof WalletBalancePieChart> | null>(null);
 const showHiddenWallets = ref(true);
 const useCustomLegend = ref(true);
+const isDistributionCollapsed = ref(localStorage.getItem('distributionCollapsed') === 'true');
+
+const toggleDistribution = () => {
+  isDistributionCollapsed.value = !isDistributionCollapsed.value;
+  localStorage.setItem('distributionCollapsed', String(isDistributionCollapsed.value));
+};
 
 const visibleWallets = computed(() => {
   return wallets.value.filter(w => {

@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3 hover:bg-sepia-100 dark:hover:bg-gray-800/50 transition-colors text-xs" :class="{ 'opacity-20': transaction.wallet?.hidden }">
+  <div class="p-3 hover:bg-sepia-100 dark:hover:bg-gray-800/50 transition-colors text-xs">
     <div class="flex items-start space-x-3">
       <!-- Category Icon -->
       <div
@@ -38,11 +38,29 @@
               />
             </div>
             <p v-if="transaction.type === 'transfer'" class="text-xs text-sepia-500 dark:text-gray-400 truncate mt-0.5">
-              {{ transaction.wallet?.name }} → {{ transaction.destinationWallet?.name }}
+              <span class="inline-flex items-center gap-1">
+                {{ transaction.wallet?.name }}
+                <span v-if="transaction.wallet?.hidden" class="inline-flex items-center gap-0.5 px-1 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-[10px]">
+                  <EyeOff class="w-2.5 h-2.5" />
+                </span>
+              </span>
+              →
+              <span class="inline-flex items-center gap-1">
+                {{ transaction.destinationWallet?.name }}
+                <span v-if="transaction.destinationWallet?.hidden" class="inline-flex items-center gap-0.5 px-1 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-[10px]">
+                  <EyeOff class="w-2.5 h-2.5" />
+                </span>
+              </span>
               <br> {{ formatDate(transaction.date) }}
             </p>
             <p v-else class="text-xs text-sepia-500 dark:text-gray-400 truncate mt-0.5">
-              {{ transaction.wallet?.name }} • {{ formatDate(transaction.date) }}
+              <span class="inline-flex items-center gap-1">
+                {{ transaction.wallet?.name }}
+                <span v-if="transaction.wallet?.hidden" class="inline-flex items-center gap-0.5 px-1 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-[10px]">
+                  <EyeOff class="w-2.5 h-2.5" />
+                </span>
+              </span>
+              • {{ formatDate(transaction.date) }}
             </p>
           </div>
           <div class="text-right ml-2 flex-shrink-0">
@@ -95,7 +113,7 @@ import type { Transaction } from '@/types/transaction';
 import { useConfigStore } from '@/stores/config';
 import { useI18n } from 'vue-i18n';
 import { getIcon } from '@/utils/icons';
-import { NotebookPen, Trash2, TrendingUp, TrendingDown, ArrowRightLeft } from 'lucide-vue-next';
+import { NotebookPen, Trash2, TrendingUp, TrendingDown, ArrowRightLeft, EyeOff } from 'lucide-vue-next';
 
 defineProps({
   transaction: {
