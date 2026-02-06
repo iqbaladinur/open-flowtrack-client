@@ -21,6 +21,12 @@
             Main
           </span>
           <span
+            v-if="wallet.is_saving"
+            class="text-[9px] font-medium px-1.5 py-0.5 bg-success-100 dark:bg-success-900/40 text-success-600 dark:text-success-400 rounded"
+          >
+            Saving
+          </span>
+          <span
             v-if="wallet.hidden"
             class="text-[9px] font-medium px-1.5 py-0.5 bg-warning-100 dark:bg-warning-900/40 text-warning-600 dark:text-warning-400 rounded"
           >

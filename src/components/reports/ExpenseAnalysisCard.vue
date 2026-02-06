@@ -271,7 +271,8 @@ const chartOption = computed(() => {
         fontSize: 12,
       },
       formatter: (params: any) => {
-        const data = params.data.categoryData;
+        const data = params.data?.categoryData;
+        if (!data) return '';
         const valueLabel = sizeBy.value === 'total'
           ? configStore.formatCurrency(data.total)
           : `${data.count} trx`;
