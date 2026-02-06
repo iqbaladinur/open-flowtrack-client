@@ -248,6 +248,50 @@
                   />
                 </button>
               </div>
+
+              <!-- Saving Wallet -->
+              <div
+                class="flex items-center justify-between rounded-lg p-3 border border-sepia-300 dark:border-gray-700 bg-sepia-100 dark:bg-gray-800/50"
+              >
+                <div>
+                  <label
+                    for="wallet-saving-toggle"
+                    class="font-medium text-sepia-900 dark:text-gray-100"
+                  >
+                    {{ $t("walletModal.setAsSaving") }}
+                  </label>
+                  <p class="text-xs text-sepia-600 dark:text-gray-400 mt-1">
+                    {{ $t("walletModal.setAsSavingHint") }}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  @click="walletForm.is_saving = !walletForm.is_saving"
+                  :class="[
+                    walletForm.is_saving
+                      ? 'bg-sepia-700 dark:bg-neon'
+                      : 'bg-sepia-300 dark:bg-gray-700',
+                    'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sepia-500 dark:focus:ring-neon focus:ring-offset-2 dark:focus:ring-offset-gray-900',
+                  ]"
+                  role="switch"
+                  :aria-checked="walletForm.is_saving"
+                  id="wallet-saving-toggle"
+                  :disabled="loading"
+                >
+                  <span class="sr-only">{{
+                    $t("walletModal.useSetting")
+                  }}</span>
+                  <span
+                    aria-hidden="true"
+                    :class="[
+                      walletForm.is_saving
+                        ? 'translate-x-5'
+                        : 'translate-x-0',
+                      'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                    ]"
+                  />
+                </button>
+              </div>
             </div>
 
             <!-- Actions -->
@@ -420,6 +464,7 @@ const walletForm = reactive({
   initial_balance: 0,
   hidden: false,
   is_main_wallet: true,
+  is_saving: false,
 });
 
 const isWalletFormValid = computed(() => {
@@ -451,6 +496,7 @@ const finishOnboarding = async () => {
       initial_balance: walletForm.initial_balance,
       hidden: walletForm.hidden,
       is_main_wallet: walletForm.is_main_wallet,
+      is_saving: walletForm.is_saving,
     };
     await walletsStore.createWallet(walletData);
 

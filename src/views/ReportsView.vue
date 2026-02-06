@@ -908,7 +908,12 @@ const fetchReportData = async () => {
   ]);
 
   transactions.value = transactionsStore.transactions
-    .filter(t => configStore.includeHiddenWalletsInCalculation ? true : !t.wallet?.hidden);
+    .filter(t => {
+      if (configStore.includeHiddenWalletsInCalculation) return true;
+      if (t.wallet?.hidden) return false;
+      if (t.type === 'transfer' && t.destinationWallet?.hidden) return false;
+      return true;
+    });
 
   loading.value = false;
 };
