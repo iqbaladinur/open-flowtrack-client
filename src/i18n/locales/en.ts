@@ -681,6 +681,8 @@ export default {
     hideWalletHint: "Excluded from total calculations.",
     setAsMain: "Set as main wallet",
     setAsMainHint: "This wallet will be shown first.",
+    setAsSaving: "Set as saving wallet",
+    setAsSavingHint: "Mark this wallet as a savings wallet.",
     useSetting: "Use setting",
     cancel: "Cancel",
     update: "Update",

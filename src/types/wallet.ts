@@ -5,6 +5,7 @@ export interface Wallet {
   initial_balance: number;
   hidden: boolean;
   is_main_wallet?: boolean;
+  is_saving?: boolean;
   created_at: string;
   updated_at: string;
   current_balance?: number; // This is often returned from API calls

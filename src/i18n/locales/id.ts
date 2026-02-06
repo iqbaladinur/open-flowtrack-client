@@ -683,6 +683,8 @@ export default {
     hideWalletHint: "Dikecualikan dari perhitungan total.",
     setAsMain: "Tetapkan sebagai dompet utama",
     setAsMainHint: "Dompet ini akan ditampilkan pertama.",
+    setAsSaving: "Tetapkan sebagai dompet tabungan",
+    setAsSavingHint: "Tandai dompet ini sebagai dompet tabungan.",
     useSetting: "Gunakan pengaturan",
     cancel: "Batal",
     update: "Perbarui",
