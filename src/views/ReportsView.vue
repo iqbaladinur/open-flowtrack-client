@@ -25,10 +25,17 @@
 
         <label v-else class="label">{{ $t('reports.filters') }}</label>
 
-        <button @click="showFilters = !showFilters" class="btn btn-sm text-xs btn-secondary p-2" :class="{ 'text-sepia-800 dark:text-neon': showFilters }">
-          <FilterX v-if="showFilters" class="size-4" />
-          <Filter v-else class="size-4" />
-        </button>
+        <div class="flex items-center gap-1">
+          <button v-if="transactions.length > 0" @click="shareOrCopyForAI" class="btn btn-sm text-xs btn-secondary p-2" :disabled="isCopying">
+            <LoadingSpinner v-if="isCopying" size="sm" />
+            <Share2 v-else-if="isMobile" class="size-4" />
+            <ClipboardCopy v-else class="size-4" />
+          </button>
+          <button @click="showFilters = !showFilters" class="btn btn-sm text-xs btn-secondary p-2" :class="{ 'text-sepia-800 dark:text-neon': showFilters }">
+            <FilterX v-if="showFilters" class="size-4" />
+            <Filter v-else class="size-4" />
+          </button>
+        </div>
       </div>
       <div v-if="showFilters" class="card p-4">
         <div>
@@ -521,7 +528,8 @@ import ExpenseAnalysisCard from '@/components/reports/ExpenseAnalysisCard.vue';
 import WalletFlowSankeyChart from '@/components/reports/WalletFlowSankeyChart.vue';
 import BudgetPerformanceChart from '@/components/reports/BudgetPerformanceChart.vue';
 import BudgetPerformanceList from '@/components/reports/BudgetPerformanceList.vue';
-import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, TrendingUp, TrendingDown, Scale, PieChartIcon, ArrowRightLeft, Filter, FilterX, ChevronLeft, ChevronRight, ChevronDown, Target } from 'lucide-vue-next';
+import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, TrendingUp, TrendingDown, Scale, PieChartIcon, ArrowRightLeft, Filter, FilterX, ChevronLeft, ChevronRight, ChevronDown, Target, ClipboardCopy, Share2 } from 'lucide-vue-next';
+import { useToast } from '@/composables/useToast';
 import type { Transaction } from '@/types/transaction';
 import { format, parseISO } from 'date-fns';
 
@@ -534,7 +542,10 @@ const transactionsStore = useTransactionsStore();
 const configStore = useConfigStore();
 const budgetsStore = useBudgetsStore();
 
+const toast = useToast();
 const showFilters = ref(false);
+const isCopying = ref(false);
+const isMobile = computed(() => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
 const currentView = ref<ReportView>('monthly');
 const customAggregationLevel = ref<AggregationLevel>('monthly');
 const categoryReportType = ref<'income' | 'expense'>('expense');
@@ -916,6 +927,167 @@ const fetchReportData = async () => {
     });
 
   loading.value = false;
+};
+
+const generateReportMarkdown = (): string => {
+  const s = summary.value;
+  const lines: string[] = [];
+
+  // AI analysis prompt
+  lines.push(t('reports.aiAnalysisPrompt'));
+  lines.push('');
+  lines.push('---');
+  lines.push('');
+
+  lines.push(`## ${reportTitle.value}`);
+  lines.push(`**${t('reports.filters')}:** ${dateRange.value.start} ${t('reports.to')} ${dateRange.value.end}`);
+  lines.push(`**Currency:** ${configStore.currency}`);
+  lines.push('');
+
+  // Summary
+  lines.push(`### ${t('reports.title')} Summary`);
+  lines.push(`- ${t('reports.totalIncome')}: ${configStore.formatCurrency(s.totalIncome)}`);
+  lines.push(`- ${t('reports.totalExpenses')}: ${configStore.formatCurrency(s.totalExpense)}`);
+  lines.push(`- ${t('reports.totalTransfer')}: ${configStore.formatCurrency(s.totalTransfer)}`);
+  lines.push(`- ${t('reports.totalNetIncome')}: ${s.net >= 0 ? '+' : ''}${configStore.formatCurrency(s.net)}`);
+  lines.push(`- ${t('reports.expenseRatio')}: ${configStore.formatProsentase(s.expenseRatio)}`);
+  lines.push('');
+
+  // Saving transfers & real net
+  if (s.savingOutflow > 0 || s.savingInflow > 0) {
+    lines.push('### Saving Transfers');
+    if (s.savingOutflow > 0) lines.push(`- Saving Outflow: ${configStore.formatCurrency(s.savingOutflow)}`);
+    if (s.savingInflow > 0) lines.push(`- Saving Inflow: ${configStore.formatCurrency(s.savingInflow)}`);
+    lines.push(`- Real Net Income: ${s.realNet >= 0 ? '+' : ''}${configStore.formatCurrency(s.realNet)}`);
+    lines.push('');
+  }
+
+  // Expense ratio status
+  lines.push(`### ${t('reports.understandingExpenseRatio')}`);
+  if (s.totalIncome > 0) {
+    if (s.expenseRatio < 70) lines.push(`${t('reports.healthyZone')} ${t('reports.healthyZoneDesc')}`);
+    else if (s.expenseRatio <= 80) lines.push(`${t('reports.cautionZone')} ${t('reports.cautionZoneDesc')}`);
+    else lines.push(`${t('reports.dangerZone')} ${t('reports.dangerZoneDesc')}`);
+  } else {
+    lines.push(t('reports.noIncomeRatio'));
+  }
+  lines.push('');
+
+  // Category breakdown - Expense
+  const expenseCategories = categoryChartDataForType('expense');
+  if (expenseCategories.length > 0) {
+    lines.push(`### ${t('reports.breakdownByCategory')} - ${t('reports.spending')}`);
+    expenseCategories.forEach((c, i) => {
+      lines.push(`${i + 1}. ${c.name}: ${configStore.formatCurrency(c.total)} (${c.percentage}%)`);
+    });
+    lines.push('');
+  }
+
+  // Category breakdown - Income
+  const incomeCategories = categoryChartDataForType('income');
+  if (incomeCategories.length > 0) {
+    lines.push(`### ${t('reports.breakdownByCategory')} - ${t('reports.income')}`);
+    incomeCategories.forEach((c, i) => {
+      lines.push(`${i + 1}. ${c.name}: ${configStore.formatCurrency(c.total)} (${c.percentage}%)`);
+    });
+    lines.push('');
+  }
+
+  // Wallet flow
+  const walletData = walletReportData.value;
+  if (walletData.length > 0) {
+    lines.push(`### ${t('reports.walletFlowDiagram')}`);
+    lines.push('| Wallet | Income | Expense | Transfer In | Transfer Out | Net |');
+    lines.push('|--------|--------|---------|-------------|--------------|-----|');
+    walletData.forEach(w => {
+      lines.push(`| ${w.name} | ${configStore.formatCurrency(w.income)} | ${configStore.formatCurrency(w.expense)} | ${configStore.formatCurrency(w.transferIn)} | ${configStore.formatCurrency(w.transferOut)} | ${configStore.formatCurrency(w.net)} |`);
+    });
+    lines.push('');
+  }
+
+  // Budget performance
+  const budgets = budgetsStore.budgets;
+  if (budgets.length > 0) {
+    const bs = budgetSummary.value;
+    lines.push(`### ${t('reports.budgetStatus')}`);
+    lines.push(`- ${t('reports.totalBudgets')}: ${bs.totalBudgets}`);
+    lines.push(`- ${t('reports.totalBudgetAllocated')}: ${configStore.formatCurrency(bs.totalAllocated)}`);
+    lines.push(`- ${t('reports.totalBudgetSpent')}: ${configStore.formatCurrency(bs.totalSpent)}`);
+    lines.push(`- ${t('reports.averageBudgetUsage')}: ${configStore.formatProsentase(bs.averageUsage)}`);
+    lines.push(`- ${t('reports.onTrackBudgets')}: ${bs.budgetsOnTrack} / ${bs.totalBudgets}`);
+    lines.push(`- ${t('reports.overBudget')}: ${bs.budgetsOverBudget} / ${bs.totalBudgets}`);
+    lines.push(`- ${t('reports.totalRemaining')}: ${configStore.formatCurrency(Math.abs(bs.remaining))}`);
+    lines.push('');
+
+    lines.push(`### ${t('reports.budgetPerformanceDetails')}`);
+    lines.push('| Budget | Allocated | Spent | Usage | Status |');
+    lines.push('|--------|-----------|-------|-------|--------|');
+    budgets.forEach(b => {
+      const limit = Number(b.limit_amount) || 0;
+      const spent = Number(b.total_spent) || 0;
+      const usage = limit > 0 ? ((spent / limit) * 100).toFixed(1) : '0.0';
+      const status = Number(usage) > 100 ? 'Over Budget' : 'On Track';
+      lines.push(`| ${b.name} | ${configStore.formatCurrency(limit)} | ${configStore.formatCurrency(spent)} | ${usage}% | ${status} |`);
+    });
+    lines.push('');
+  }
+
+  return lines.join('\n');
+};
+
+const categoryChartDataForType = (type: 'income' | 'expense') => {
+  const categoryTotals = new Map<string, { name: string, total: number }>();
+  transactions.value
+    .filter(tr => tr.type === type)
+    .forEach(tr => {
+      if (tr.category) {
+        // @ts-ignore
+        const current = categoryTotals.get(tr.category.id) || { name: tr.category.name, total: 0 };
+        current.total += tr.amount;
+        // @ts-ignore
+        categoryTotals.set(tr.category.id, current);
+      }
+    });
+  const sorted = Array.from(categoryTotals.values()).sort((a, b) => b.total - a.total);
+  const totalAmount = sorted.reduce((sum, c) => sum + c.total, 0);
+  return sorted.map(c => ({
+    name: c.name,
+    total: c.total,
+    percentage: totalAmount > 0 ? ((c.total / totalAmount) * 100).toFixed(1) : '0.0',
+  }));
+};
+
+const shareOrCopyForAI = async () => {
+  isCopying.value = true;
+  try {
+    const markdown = generateReportMarkdown();
+
+    if (isMobile.value && navigator.share) {
+      const today = format(new Date(), 'yyyy-MM-dd');
+      const file = new File([markdown], `report_${today}.md.txt`, { type: 'text/plain' });
+      const shareData = {
+        title: reportTitle.value,
+        text: markdown,
+        files: [file],
+      };
+      if (navigator.canShare(shareData)) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.share({ title: reportTitle.value, text: markdown });
+      }
+      toast.success(t('reports.sharedSuccess'));
+    } else {
+      await navigator.clipboard.writeText(markdown);
+      toast.success(t('reports.copiedSuccess'));
+    }
+  } catch (error: any) {
+    if (error?.name === 'AbortError') return;
+    toast.error(t('reports.copiedError'));
+  } finally {
+    setTimeout(() => {
+      isCopying.value = false;
+    }, 2000);
+  }
 };
 
 const selectCustomView = () => {

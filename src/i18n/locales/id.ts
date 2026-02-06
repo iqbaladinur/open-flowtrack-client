@@ -327,6 +327,12 @@ export default {
     overBudgetStatusDesc: "Anda telah melebihi alokasi anggaran. Tinjau pengeluaran Anda dan sesuaikan anggaran atau kurangi pengeluaran.",
     negativeIncomeStatus: "Pendapatan Negatif",
     negativeIncomeStatusDesc: "Pengeluaran Anda melebihi pendapatan periode ini. Ini tidak berkelanjutan - segera ambil tindakan untuk mengurangi pengeluaran atau meningkatkan pendapatan.",
+    copyForAI: "Salin untuk AI",
+    copied: "Tersalin!",
+    copiedSuccess: "Laporan berhasil disalin! Sekarang bisa langsung paste ke ChatGPT atau AI lainnya.",
+    sharedSuccess: "Laporan berhasil dibagikan!",
+    copiedError: "Gagal membagikan atau menyalin laporan.",
+    aiAnalysisPrompt: "Analisis laporan keuangan pribadi ini dan berikan insight mengenai hal berikut:\n1. **Pola Pengeluaran** — Identifikasi kategori pengeluaran terbesar dan apakah pengeluaran proporsional atau ada kategori yang terlalu mendominasi.\n2. **Kesehatan Rasio Pengeluaran** — Evaluasi rasio pengeluaran terhadap pemasukan. Apakah berkelanjutan? Berapa target idealnya?\n3. **Potensi Tabungan** — Berdasarkan pemasukan dan pengeluaran, berapa yang idealnya bisa ditabung? Adakah kategori yang pengeluarannya bisa dikurangi?\n4. **Disiplin Anggaran** — Jika ada data anggaran, evaluasi kepatuhannya. Anggaran mana yang sesuai target dan mana yang melebihi? Penyesuaian apa yang diperlukan?\n5. **Aliran Dompet** — Analisis aliran uang antar dompet. Apakah ada pola transfer yang tidak biasa?\n6. **Deteksi Anomali** — Tandai pola yang tidak biasa, pengeluaran kategori tunggal yang mencurigakan tinggi, atau inkonsistensi.\n7. **Rekomendasi Aksi** — Berikan 3-5 langkah aksi spesifik dan terprioritaskan untuk meningkatkan kesehatan keuangan di periode berikutnya.\n\nJawab dalam bahasa yang sama dengan data laporan di bawah ini.",
   },
 
   // Profile

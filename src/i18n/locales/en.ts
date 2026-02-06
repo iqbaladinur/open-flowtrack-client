@@ -326,6 +326,12 @@ export default {
     overBudgetStatusDesc: "You've exceeded your budget allocation. Review your spending and adjust your budget or reduce expenses.",
     negativeIncomeStatus: "Negative Income",
     negativeIncomeStatusDesc: "Your expenses exceed your income this period. This is unsustainable - take immediate action to reduce spending or increase income.",
+    copyForAI: "Copy for AI",
+    copied: "Copied!",
+    copiedSuccess: "Report copied to clipboard! You can now paste it into ChatGPT or other AI.",
+    sharedSuccess: "Report shared successfully!",
+    copiedError: "Failed to share or copy report.",
+    aiAnalysisPrompt: "Analyze this personal finance report and provide insights on the following:\n1. **Spending Pattern** — Identify the largest expense categories and whether the spending is proportional or there are categories that dominate too much.\n2. **Expense Ratio Health** — Evaluate the expense-to-income ratio. Is it sustainable? What's the ideal target?\n3. **Saving Potential** — Based on income and expenses, how much should ideally be saved? Are there categories where spending could be reduced?\n4. **Budget Discipline** — If budget data is available, evaluate adherence. Which budgets are on track and which are over? What adjustments are needed?\n5. **Wallet Flow** — Analyze the money flow between wallets. Are there unusual transfer patterns?\n6. **Anomaly Detection** — Flag any unusual patterns, suspiciously high single-category spending, or inconsistencies.\n7. **Actionable Recommendations** — Provide 3-5 specific, prioritized action items to improve financial health for the next period.\n\nRespond in the same language as the report data below.",
   },
 
   // Profile
