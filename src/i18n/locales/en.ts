@@ -105,7 +105,7 @@ export default {
     addWallet: "Add Wallet",
     noWalletsToExport: "No wallets to export.",
     noWalletsToShare: "No wallets to share.",
-    shareWalletData: "Here is my wallet state:",
+    shareWalletData: "Analyze my wallet portfolio and provide insights on:\n1. **Balance Distribution** — Is my money well-distributed across wallets or too concentrated in one? What's the risk?\n2. **Growth Assessment** — Compare current vs initial balance for each wallet. Which wallets grew and which shrank?\n3. **Hidden Wallets** — If there are hidden wallets, note them. These are typically emergency funds or long-term savings.\n4. **Diversification** — Suggest if I should restructure my wallet allocation for better financial organization.\n5. **Actionable Tips** — Give 2-3 specific suggestions to improve my wallet management.\n\nRespond in the same language as the data below.",
     sharingNotSupported: "Sharing not supported on this device.",
     failedToShare: "Failed to share:",
     hidden: "Hidden",
@@ -206,7 +206,7 @@ export default {
     noNote: "no note",
     onWallet: "on wallet",
     shareTransactionData:
-      "Here is my transactions data for the selected period",
+      "Analyze my transaction data and provide insights on the following:\n1. **Spending Habits** — Identify my top spending categories and any recurring patterns. Are there daily/weekly spending habits?\n2. **Income vs Expense** — Is the net balance healthy? What percentage of income is being spent?\n3. **Category Analysis** — Which categories consume the most? Are there categories with surprisingly high amounts?\n4. **Transfer Patterns** — Are transfers between wallets logical (e.g., allocating to savings), or are there excessive back-and-forth transfers that suggest poor planning?\n5. **Transaction Frequency** — How often am I spending? Are there days with unusually high transaction counts or amounts?\n6. **Notes & Context** — Use the transaction notes to understand spending context. Flag any impulse or non-essential spending patterns.\n7. **Actionable Recommendations** — Provide 3-5 specific suggestions to optimize spending for the next period.\n\nRespond in the same language as the data below.",
     searchPlaceholder: "Search by note or category...",
   },
 
@@ -331,7 +331,7 @@ export default {
     copiedSuccess: "Report copied to clipboard! You can now paste it into ChatGPT or other AI.",
     sharedSuccess: "Report shared successfully!",
     copiedError: "Failed to share or copy report.",
-    aiAnalysisPrompt: "Analyze this personal finance report and provide insights on the following:\n1. **Spending Pattern** — Identify the largest expense categories and whether the spending is proportional or there are categories that dominate too much.\n2. **Expense Ratio Health** — Evaluate the expense-to-income ratio. Is it sustainable? What's the ideal target?\n3. **Saving Potential** — Based on income and expenses, how much should ideally be saved? Are there categories where spending could be reduced?\n4. **Budget Discipline** — If budget data is available, evaluate adherence. Which budgets are on track and which are over? What adjustments are needed?\n5. **Wallet Flow** — Analyze the money flow between wallets. Are there unusual transfer patterns?\n6. **Anomaly Detection** — Flag any unusual patterns, suspiciously high single-category spending, or inconsistencies.\n7. **Actionable Recommendations** — Provide 3-5 specific, prioritized action items to improve financial health for the next period.\n\nRespond in the same language as the report data below.",
+    aiAnalysisPrompt: "Analyze this personal finance report and provide insights on the following:\n\n**Important context:** This report shows cashflow for a specific period only — not wallet balances. A negative net flow on a wallet means outflows exceeded inflows during this period, not that the wallet balance is negative. Transfers between wallets are internal movements and do not affect total net income.\n\n1. **Spending Pattern** — Identify the largest expense categories and whether the spending is proportional or there are categories that dominate too much.\n2. **Expense Ratio Health** — Evaluate the expense-to-income ratio. Is it sustainable? What's the ideal target?\n3. **Saving Potential** — Based on income and expenses, how much should ideally be saved? Are there categories where spending could be reduced?\n4. **Budget Discipline** — If budget data is available, evaluate adherence. Which budgets are on track and which are over? What adjustments are needed?\n5. **Wallet Flow** — Analyze the cashflow distribution across wallets during this period. A wallet with negative net flow simply had more outflows than inflows in this period. Look for whether income and expenses are concentrated in specific wallets or well-distributed.\n6. **Anomaly Detection** — Flag any unusual patterns, suspiciously high single-category spending, or inconsistencies.\n7. **Actionable Recommendations** — Provide 3-5 specific, prioritized action items to improve financial health for the next period.\n\nRespond in the same language as the report data below.",
   },
 
   // Profile

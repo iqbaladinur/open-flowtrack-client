@@ -520,22 +520,36 @@ const shareTransactions = async () => {
 
     const file = new File([dataStr], txtFilename, { type: 'text/plain' });
 
+    // Summary stats
+    const totalIncome = data.filter(tx => tx.type === 'income').reduce((s, tx) => s + tx.amount, 0);
+    const totalExpense = data.filter(tx => tx.type === 'expense').reduce((s, tx) => s + tx.amount, 0);
+    const totalTransfer = data.filter(tx => tx.type === 'transfer').reduce((s, tx) => s + tx.amount, 0);
+
     const formatted = data.map(tx => {
       const type = tx.type.toUpperCase();
-      const amount = tx.amount;
+      const amount = configStore.formatCurrency(tx.amount);
       const date = format(tx.date, 'EEE, dd-MM-yyyy');
       const category = tx.category?.name || t('transactions.uncategorized');
       const wallet = tx.wallet?.name || t('transactions.unknownWallet');
       const walletdestination = tx.destinationWallet?.name || t('transactions.unknownWallet');
       const note = tx.note;
       if (tx.type === 'transfer') {
-        return `${date}: ${t('transactions.transferOf')} ${amount} ${t('transactions.from')} ${wallet} ${t('transactions.to')} ${walletdestination} (${note || t('transactions.noNote')})`;
+        return `- ${date} | TRANSFER | ${amount} | ${wallet} → ${walletdestination} | ${note || t('transactions.noNote')}`;
       }
-      return `${date}: ${type} ${t('transactions.of')} ${amount} ${t('transactions.for')} ${category} (${note || t('transactions.noNote')}) ${t('transactions.onWallet')} ${wallet}`;
+      return `- ${date} | ${type} | ${amount} | ${category} | ${wallet} | ${note || t('transactions.noNote')}`;
     });
 
-    // Concatenate into one big prompt-friendly string
-    const llmFriendlyData = `${t('transactions.shareTransactionData')} (${period}): \n\n\`\`\`\n${formatted.join("\n")}\n\`\`\`\n\n`;
+    const summaryBlock = [
+      `**Currency:** ${configStore.currency}`,
+      `**Period:** ${period}`,
+      `**Total Transactions:** ${data.length}`,
+      `**Total Income:** ${configStore.formatCurrency(totalIncome)}`,
+      `**Total Expense:** ${configStore.formatCurrency(totalExpense)}`,
+      `**Total Transfer:** ${configStore.formatCurrency(totalTransfer)}`,
+      `**Net:** ${totalIncome >= totalExpense ? '+' : ''}${configStore.formatCurrency(totalIncome - totalExpense)}`,
+    ].join('\n');
+
+    const llmFriendlyData = `${t('transactions.shareTransactionData')}\n\n${summaryBlock}\n\n### Transaction List\n${formatted.join("\n")}\n`;
 
     const shareData = {
       title: jsonFilename,

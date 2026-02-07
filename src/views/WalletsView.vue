@@ -286,12 +286,14 @@ const shareWallets = async () => {
 
     const file = new File([dataStr], txtFilename, { type: 'text/plain' });
 
-    const formatted = data.map(w => {
+    const totalBalance = data.reduce((sum, w) => sum + (w.current_balance || 0), 0);
+    const formatted = data.map((w, i) => {
+      const pct = totalBalance > 0 ? ((w.current_balance || 0) / totalBalance * 100).toFixed(1) : '0.0';
       const status = w.hidden ? t('wallets.hidden') : t('wallets.visible');
-      return `${w.name}: Current balance ${w.current_balance}, Initial balance ${w.initial_balance} (${status})`;
+      return `${i + 1}. ${w.name} (${status}): ${configStore.formatCurrency(w.current_balance || 0)} (${pct}%) — Initial: ${configStore.formatCurrency(w.initial_balance || 0)}`;
     });
 
-    const llmInput = `${t('wallets.shareWalletData')} \n \`\`\`\n${formatted.join("\n")}\n\`\`\`\n\n`;
+    const llmInput = `${t('wallets.shareWalletData')}\n\n**${t('wallets.totalBalance')}:** ${configStore.formatCurrency(totalBalance)}\n**Currency:** ${configStore.currency}\n**Date:** ${format(endDate.value, 'yyyy-MM-dd')}\n\n${formatted.join("\n")}\n\n`;
 
     const shareData = {
       title: jsonFilename,
