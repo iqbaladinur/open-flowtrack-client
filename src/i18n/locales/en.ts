@@ -162,6 +162,7 @@ export default {
     addCategory: "Add Category",
     deleteConfirm:
       "Are you sure you want to delete this category? This action cannot be undone.",
+    searchPlaceholder: "Search categories...",
   },
 
   // Transactions

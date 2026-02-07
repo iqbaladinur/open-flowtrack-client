@@ -131,7 +131,7 @@
       </div>
 
       <!-- Search -->
-      <div class="relative">
+      <div class="relative w-full md:w-[360px]">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <Search class="size-4 text-sepia-400 dark:text-gray-500" />
         </div>
@@ -139,7 +139,7 @@
           v-model="searchQuery"
           type="text"
           :placeholder="$t('transactions.searchPlaceholder')"
-          class="input pl-10 pr-10 w-full md:w-[360px] rounded-xl"
+          class="input pl-10 pr-10 w-full rounded-xl"
         />
         <button
           v-if="searchQuery"

@@ -28,6 +28,26 @@
         </div>
       </div>
 
+      <!-- Search -->
+      <div class="relative w-full md:w-[360px]">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <Search class="size-4 text-sepia-400 dark:text-gray-500" />
+        </div>
+        <input
+          v-model="searchQuery"
+          type="text"
+          :placeholder="$t('categories.searchPlaceholder')"
+          class="input pl-10 pr-10 w-full rounded-xl"
+        />
+        <button
+          v-if="searchQuery"
+          @click="searchQuery = ''"
+          class="absolute inset-y-0 right-0 pr-3 flex items-center"
+        >
+          <X class="size-4 text-sepia-400 dark:text-gray-500 hover:text-sepia-600 dark:hover:text-gray-300" />
+        </button>
+      </div>
+
       <!-- Categories List -->
       <div v-if="categoriesStore.loading && categories.length === 0" class="card p-8">
         <LoadingSpinner fullHeight />
@@ -82,7 +102,7 @@ import CategoryModal from '@/components/category/CategoryModal.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import CategoryCard from '@/components/category/CategoryCard.vue';
 import type { Category } from '@/types/category';
-import { Plus, Tag, TrendingUp, TrendingDown, LayoutGrid } from 'lucide-vue-next';
+import { Plus, Tag, TrendingUp, TrendingDown, LayoutGrid, Search, X } from 'lucide-vue-next';
 
 const { t } = useI18n();
 const categoriesStore = useCategoriesStore();
@@ -90,12 +110,20 @@ const categoriesStore = useCategoriesStore();
 const showAddModal = ref(false);
 const selectedCategory = ref<Category | null>(null);
 const filterType = ref<'income' | 'expense' | ''>('');
+const searchQuery = ref('');
 
 const categories = computed(() => {
   return categoriesStore.categories
     .filter(category => {
-      if (!filterType.value) return true;
-      return category.type === filterType.value;
+      // Filter by type
+      if (filterType.value && category.type !== filterType.value) {
+        return false;
+      }
+      // Filter by search query
+      if (searchQuery.value) {
+        return category.name.toLowerCase().includes(searchQuery.value.toLowerCase());
+      }
+      return true;
     })
     .slice()
     .sort((a, b) => {

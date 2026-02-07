@@ -162,6 +162,7 @@ export default {
     addCategory: "Tambah Kategori",
     deleteConfirm:
       "Apakah Anda yakin ingin menghapus kategori ini? Tindakan ini tidak dapat dibatalkan.",
+    searchPlaceholder: "Cari kategori...",
   },
 
   // Transactions
