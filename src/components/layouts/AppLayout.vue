@@ -278,7 +278,6 @@ import {
   LogOut,
   Home,
   Wallet,
-  Target,
   Tag,
   BarChart3,
   Ellipsis,
@@ -290,7 +289,8 @@ import {
   Database,
   Settings,
   ChevronsLeft,
-  Flame
+  Flame,
+  Goal
 } from 'lucide-vue-next';
 
 const router = useRouter();
@@ -311,7 +311,7 @@ const navigation = computed(() => [
   { name: t('nav.wallets'), to: '/wallets', icon: Wallet, routeName: 'Wallets' },
   { name: t('nav.transactions'), to: '/transactions', icon: TrendingUpDown, routeName: 'Transactions' },
   { name: t('nav.categories'), to: '/categories', icon: Tag, routeName: 'Categories' },
-  { name: t('nav.budgets'), to: '/budgets', icon: Target, routeName: 'Budgets' },
+  { name: t('nav.budgets'), to: '/budgets', icon: Goal, routeName: 'Budgets' },
   { name: t('nav.milestones'), to: '/milestones', icon: Flame, routeName: 'Milestones' },
   { name: t('nav.reports'), to: '/reports', icon: BarChart3, routeName: 'Reports' },
   { name: t('nav.backup'), to: '/backup', icon: Database, routeName: 'Backup' },
