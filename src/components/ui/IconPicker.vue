@@ -38,42 +38,45 @@
       </Transition>
     </Teleport>
 
-    <!-- Mobile Bottom Sheet -->
+    <!-- Mobile Bottom Sheet - Backdrop -->
     <Teleport to="body">
       <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0"
         enter-to-class="opacity-100" leave-active-class="transition duration-150 ease-in" leave-from-class="opacity-100"
         leave-to-class="opacity-0">
-        <div v-if="isOpen && isMobile" class="fixed inset-0 z-[9999] bg-black/50" @click="isOpen = false">
-          <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="translate-y-full"
-            enter-to-class="translate-y-0" leave-active-class="transition duration-150 ease-in"
-            leave-from-class="translate-y-0" leave-to-class="translate-y-full">
-            <div v-if="isOpen"
-              class="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-800 rounded-t-2xl p-4 pb-8 max-h-[70vh] overflow-y-auto"
-              @click.stop>
-              <!-- Handle -->
-              <div class="flex justify-center mb-4">
-                <div class="w-10 h-1 bg-sepia-300 dark:bg-gray-600 rounded-full"></div>
-              </div>
+        <div v-if="isOpen && isMobile" class="fixed inset-0 z-[9999] bg-black/50" @click="isOpen = false" />
+      </Transition>
+    </Teleport>
 
-              <!-- Title -->
-              <h3 class="text-base font-semibold text-sepia-800 dark:text-white mb-4 text-center">{{
-                t('iconPicker.selectIcon') }}</h3>
+    <!-- Mobile Bottom Sheet - Panel -->
+    <Teleport to="body">
+      <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="translate-y-full"
+        enter-to-class="translate-y-0" leave-active-class="transition duration-150 ease-in"
+        leave-from-class="translate-y-0" leave-to-class="translate-y-full">
+        <div v-if="isOpen && isMobile"
+          class="fixed bottom-0 left-0 right-0 z-[10000] bg-white dark:bg-gray-800 rounded-t-2xl p-4 pb-8 max-h-[70vh] overflow-y-auto"
+          @click.stop>
+          <!-- Handle -->
+          <div class="flex justify-center mb-4">
+            <div class="w-10 h-1 bg-sepia-300 dark:bg-gray-600 rounded-full"></div>
+          </div>
 
-              <div class="grid grid-cols-6 gap-1 mb-10">
-                <button v-for="icon in allIcons" :key="icon.value" type="button" @click.stop="selectIcon(icon.value)"
-                  class="aspect-square flex items-center justify-center rounded-xl transition-all duration-100" :class="[
-                    modelValue === icon.value
-                      ? 'bg-sepia-200 dark:bg-gray-600 ring-2 ring-sepia-500 dark:ring-neon'
-                      : 'hover:bg-sepia-100 dark:hover:bg-gray-700 active:bg-sepia-200 dark:active:bg-gray-600'
-                  ]">
-                  <div class="size-10 rounded-xl flex items-center justify-center backdrop-blur-sm shadow
+          <!-- Title -->
+          <h3 class="text-base font-semibold text-sepia-800 dark:text-white mb-4 text-center">{{
+            t('iconPicker.selectIcon') }}</h3>
+
+          <div class="grid grid-cols-6 gap-1 mb-10">
+            <button v-for="icon in allIcons" :key="icon.value" type="button" @click.stop="selectIcon(icon.value)"
+              class="aspect-square flex items-center justify-center rounded-xl transition-all duration-100" :class="[
+                modelValue === icon.value
+                  ? 'bg-sepia-200 dark:bg-gray-600 ring-2 ring-sepia-500 dark:ring-neon'
+                  : 'hover:bg-sepia-100 dark:hover:bg-gray-700 active:bg-sepia-200 dark:active:bg-gray-600'
+              ]">
+              <div class="size-10 rounded-xl flex items-center justify-center backdrop-blur-sm shadow
                  bg-gradient-to-br from-white/60 to-sepia-200/60 dark:from-gray-500/60 dark:to-gray-600/50">
-                    <component :is="icon.component" :size="38" class="text-gray-200/0" />
-                  </div>
-                </button>
+                <component :is="icon.component" :size="38" class="text-gray-200/0" />
               </div>
-            </div>
-          </Transition>
+            </button>
+          </div>
         </div>
       </Transition>
     </Teleport>

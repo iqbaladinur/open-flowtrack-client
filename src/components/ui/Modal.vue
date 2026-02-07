@@ -1,23 +1,39 @@
 <template>
+  <!-- Backdrop -->
   <Teleport to="body">
-    <div
-      v-show="modelValue"
-      class="fixed inset-0 z-50 flex items-end sm:items-center sm:justify-center"
-      @click="closeOnOutsideClick && $emit('update:modelValue', false)"
+    <Transition
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition duration-150 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
     >
-      <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" aria-hidden="true"></div>
+      <div
+        v-if="modelValue"
+        class="fixed inset-0 z-50 bg-black/50"
+        @click="closeOnOutsideClick && $emit('update:modelValue', false)"
+        aria-hidden="true"
+      />
+    </Transition>
+  </Teleport>
 
-      <Transition
-        enter-active-class="transition-transform duration-200 ease-out"
-        enter-from-class="translate-y-full"
-        enter-to-class="translate-y-0"
-        leave-active-class="transition-transform duration-200 ease-in"
-        leave-from-class="translate-y-0"
-        leave-to-class="translate-y-full"
+  <!-- Panel -->
+  <Teleport to="body">
+    <Transition
+      enter-active-class="transition-transform duration-200 ease-out"
+      enter-from-class="translate-y-full sm:translate-y-0 sm:scale-95 sm:opacity-0"
+      enter-to-class="translate-y-0 sm:scale-100 sm:opacity-100"
+      leave-active-class="transition-transform duration-200 ease-in"
+      leave-from-class="translate-y-0 sm:scale-100 sm:opacity-100"
+      leave-to-class="translate-y-full sm:translate-y-0 sm:scale-95 sm:opacity-0"
+    >
+      <div
+        v-if="modelValue"
+        class="fixed inset-0 z-[51] flex items-end sm:items-center sm:justify-center pointer-events-none"
       >
         <div
-          v-if="modelValue"
-          class="w-full max-h-[90vh] transform rounded-t-2xl bg-sepia-50 dark:bg-gray-800 shadow-xl transition-all sm:my-8 sm:max-w-lg sm:rounded-xl"
+          class="w-full max-h-[90vh] transform rounded-t-2xl bg-sepia-50 dark:bg-gray-800 shadow-xl sm:my-8 sm:max-w-lg sm:rounded-xl pointer-events-auto"
           @click.stop
         >
           <div class="flex flex-col h-full relative">
@@ -37,7 +53,7 @@
                 </button>
               </div>
             </div>
-            
+
             <div class="px-6 overflow-y-auto flex-1 max-h-[80vh]" :class="{ 'pb-[100px]': !!$slots.footer, 'pb-6': !$slots.footer }">
               <slot />
             </div>
@@ -47,8 +63,8 @@
             </div>
           </div>
         </div>
-      </Transition>
-    </div>
+      </div>
+    </Transition>
   </Teleport>
 </template>
 

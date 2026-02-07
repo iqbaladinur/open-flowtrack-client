@@ -44,50 +44,52 @@
         </div>
       </div>
 
-      <!-- Preview -->
-      <div class="grid grid-cols-2 gap-4">
-        <div>
+      <!-- Preview & Color -->
+      <div class="flex items-start gap-4">
+        <!-- Preview -->
+        <div class="flex-shrink-0">
           <label class="label">{{ $t('categoryModal.preview') }}</label>
-          <div class="flex items-center justify-center p-4 bg-sepia-50 dark:bg-gray-800 rounded-lg">
-            <div class="w-24">
-              <div class="card p-3 aspect-square flex flex-col items-center justify-center text-center relative">
-                <!-- Type Indicator -->
-                <div class="absolute top-1.5 left-1.5">
-                  <component
-                    :is="form.type === 'income' ? TrendingUp : TrendingDown"
-                    class="w-3.5 h-3.5"
-                    :class="form.type === 'income' ? 'text-success-500' : 'text-error-500'"
-                  />
-                </div>
-
-                <!-- Category Icon -->
-                <div
-                  class="w-10 h-10 rounded-xl flex items-center justify-center mb-2"
-                  :style="{ backgroundColor: form.color + '20' }"
-                >
-                  <!-- @vue-ignore -->
-                  <component :is="getIcon(form.icon)" class="w-5 h-5" :style="{ color: form.color }" />
-                </div>
-
-                <!-- Category Info -->
-                <h3 class="text-xs font-medium text-gray-700 dark:text-gray-300 truncate w-full">
-                  {{ form.name || $t('categoryModal.category') }}
-                </h3>
+          <div class="w-20">
+            <div class="card p-2.5 aspect-square flex flex-col items-center justify-center text-center relative">
+              <!-- Type Indicator -->
+              <div class="absolute top-1 left-1">
+                <component
+                  :is="form.type === 'income' ? TrendingUp : TrendingDown"
+                  class="w-3 h-3"
+                  :class="form.type === 'income' ? 'text-success-500' : 'text-error-500'"
+                />
               </div>
+
+              <!-- Category Icon -->
+              <div
+                class="w-8 h-8 rounded-lg flex items-center justify-center mb-1.5"
+                :style="{ backgroundColor: form.color + '20' }"
+              >
+                <!-- @vue-ignore -->
+                <component :is="getIcon(form.icon)" class="w-4 h-4" :style="{ color: form.color }" />
+              </div>
+
+              <!-- Category Info -->
+              <h3 class="text-[10px] font-medium text-gray-700 dark:text-gray-300 truncate w-full">
+                {{ form.name || $t('categoryModal.category') }}
+              </h3>
             </div>
           </div>
         </div>
 
         <!-- Color -->
-        <div class="flex flex-col">
-          <label for="color" class="label flex-shrink-0">{{ $t('categoryModal.color') }}</label>
-          <div class="relative flex-1 flex flex-col">
+        <div class="flex-1">
+          <label for="color" class="label">{{ $t('categoryModal.color') }}</label>
+          <div class="relative h-20">
             <input id="color" v-model="form.color" type="color" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
             <div
-              class="w-full rounded-lg border-2 border-sepia-200 dark:border-gray-700 flex items-center justify-center px-3 flex-1"
-              :style="{ backgroundColor: form.color + '33' }"
+              class="w-full h-full rounded-lg border-2 border-sepia-200 dark:border-gray-700 flex items-center justify-center"
+              :style="{ backgroundColor: form.color + '20' }"
             >
-              <div class="w-12 h-12 rounded" :style="{ backgroundColor: form.color }"></div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-10 h-10 rounded-lg shadow-sm" :style="{ backgroundColor: form.color }"></div>
+                <span class="text-xs font-mono text-sepia-600 dark:text-gray-400">{{ form.color }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -96,20 +98,22 @@
       <!-- Icon -->
       <div>
         <label class="label">{{ $t('categoryModal.icon') }}</label>
-        <div class="grid grid-cols-6 sm:grid-cols-8 gap-2 p-2 bg-sepia-50 dark:bg-gray-800 rounded-lg">
-          <button
-            v-for="icon in iconList"
-            :key="icon"
-            type="button"
-            @click="form.icon = icon"
-            class="h-10 w-10 flex items-center justify-center rounded-lg transition-all"
-            :class="form.icon === icon
-              ? 'bg-sepia-500 dark:bg-primary-500 text-white ring-2 ring-offset-2 ring-offset-sepia-50 dark:ring-offset-gray-900 ring-sepia-500 dark:ring-primary-500'
-              : 'bg-sepia-200 dark:bg-gray-700 text-sepia-600 dark:text-gray-300 hover:bg-sepia-300 dark:hover:bg-gray-600'"
-          >
-            <!-- @vue-ignore -->
-            <component :is="getIcon(icon)" class="w-5 h-5" />
-          </button>
+        <div class="max-h-52 sm:max-h-44 overflow-y-auto rounded-lg bg-sepia-50 dark:bg-gray-800 p-3">
+          <div class="grid grid-cols-5 sm:grid-cols-7 md:grid-cols-8 gap-2.5 sm:gap-2">
+            <button
+              v-for="icon in iconList"
+              :key="icon"
+              type="button"
+              @click="form.icon = icon"
+              class="h-11 w-11 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg transition-all active:scale-95"
+              :class="form.icon === icon
+                ? 'bg-sepia-500 dark:bg-primary-500 text-white ring-2 ring-sepia-500 dark:ring-primary-500'
+                : 'bg-sepia-200 dark:bg-gray-700 text-sepia-600 dark:text-gray-300 hover:bg-sepia-300 dark:hover:bg-gray-600'"
+            >
+              <!-- @vue-ignore -->
+              <component :is="getIcon(icon)" class="w-5 h-5 sm:w-4.5 sm:h-4.5" />
+            </button>
+          </div>
         </div>
       </div>
 

@@ -59,75 +59,55 @@
       </div>
 
       <!-- Quick Actions -->
-      <div class="flex gap-2 lg:flex-wrap">
+      <div class="grid grid-cols-4 gap-2 lg:flex lg:flex-wrap">
         <!-- Add Income -->
         <button @click="toggleAddTransaction('income')" :title="$t('dashboard.addIncome')"
           :aria-label="$t('dashboard.addIncome')"
-          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-white/40 dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-success-100 lg:to-success-200 dark:lg:from-success-900/40 dark:lg:to-success-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-success-200 lg:hover:to-success-300 dark:lg:hover:from-success-900/50 dark:lg:hover:to-success-800/40">
+          class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-success-50 dark:bg-success-900/20 lg:bg-gradient-to-br lg:from-success-100 lg:to-success-200 dark:lg:from-success-900/40 dark:lg:to-success-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-success-200 lg:hover:to-success-300 dark:lg:hover:from-success-900/50 dark:lg:hover:to-success-800/40">
           <div
-            class="relative flex size-10 lg:h-5 lg:w-5 flex-shrink-0 items-center justify-center rounded-xl lg:rounded-md bg-success-500 dark:bg-success-600">
-            <Plus class="absolute size-5 lg:h-3.5 lg:w-3.5 text-white" strokeWidth="2.5" />
+            class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-success-400/80 to-success-600/90 dark:from-success-500/70 dark:to-success-700/80">
+            <Plus class="size-4 lg:size-3.5 text-white" strokeWidth="2.5" />
           </div>
-          <span class="hidden lg:inline text-xs font-semibold text-success-700 dark:text-success-300 whitespace-nowrap">
-            {{ $t('dashboard.addIncome') }}
-          </span>
-          <!-- Mobile Label Tooltip -->
-          <span
-            class="lg:hidden absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-medium text-success-700 dark:text-success-400 whitespace-nowrap opacity-0 group-active:opacity-100 transition-opacity pointer-events-none">
-            {{ $t('dashboard.addIncome') }}
+          <span class="text-[10px] lg:text-xs font-semibold text-success-700 dark:text-success-400 lg:dark:text-success-300 whitespace-nowrap">
+            {{ $t('dashboard.income') }}
           </span>
         </button>
 
         <!-- Add Expense -->
         <button @click="toggleAddTransaction('expense')" :title="$t('dashboard.addExpense')"
           :aria-label="$t('dashboard.addExpense')"
-          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-white/40 dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-error-100 lg:to-error-200 dark:lg:from-error-900/40 dark:lg:to-error-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-error-200 lg:hover:to-error-300 dark:lg:hover:from-error-900/50 dark:lg:hover:to-error-800/40">
+          class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-error-50 dark:bg-error-900/20 lg:bg-gradient-to-br lg:from-error-100 lg:to-error-200 dark:lg:from-error-900/40 dark:lg:to-error-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-error-200 lg:hover:to-error-300 dark:lg:hover:from-error-900/50 dark:lg:hover:to-error-800/40">
           <div
-            class="relative flex size-10 lg:h-5 lg:w-5 flex-shrink-0 items-center justify-center rounded-xl lg:rounded-md bg-error-500 dark:bg-error-600">
-            <Minus class="absolute size-5 lg:h-3.5 lg:w-3.5 text-white" strokeWidth="2.5" />
+            class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-error-400/80 to-error-600/90 dark:from-error-500/70 dark:to-error-700/80">
+            <Minus class="size-4 lg:size-3.5 text-white" strokeWidth="2.5" />
           </div>
-          <span class="hidden lg:inline text-xs font-semibold text-error-700 dark:text-error-300 whitespace-nowrap">
-            {{ $t('dashboard.addExpense') }}
-          </span>
-          <!-- Mobile Label Tooltip -->
-          <span
-            class="lg:hidden absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-medium text-error-700 dark:text-error-400 whitespace-nowrap opacity-0 group-active:opacity-100 transition-opacity pointer-events-none">
-            {{ $t('dashboard.addExpense') }}
+          <span class="text-[10px] lg:text-xs font-semibold text-error-700 dark:text-error-400 lg:dark:text-error-300 whitespace-nowrap">
+            {{ $t('dashboard.expenses') }}
           </span>
         </button>
 
         <!-- Add Transfer -->
         <button @click="toggleAddTransaction('transfer')" :title="$t('dashboard.addTransfer')"
           :aria-label="$t('dashboard.addTransfer')"
-          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-white/40 dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-blue-100 lg:to-blue-200 dark:lg:from-blue-900/40 dark:lg:to-blue-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-blue-200 lg:hover:to-blue-300 dark:lg:hover:from-blue-900/50 dark:lg:hover:to-blue-800/40">
+          class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-blue-50 dark:bg-blue-900/20 lg:bg-gradient-to-br lg:from-blue-100 lg:to-blue-200 dark:lg:from-blue-900/40 dark:lg:to-blue-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-blue-200 lg:hover:to-blue-300 dark:lg:hover:from-blue-900/50 dark:lg:hover:to-blue-800/40">
           <div
-            class="relative flex size-10 lg:h-5 lg:w-5 flex-shrink-0 items-center justify-center rounded-xl lg:rounded-md bg-blue-500 dark:bg-blue-600">
-            <ArrowRightLeft class="absolute size-5 lg:h-3.5 lg:w-3.5 text-white" />
+            class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-blue-400/80 to-blue-600/90 dark:from-blue-500/70 dark:to-blue-700/80">
+            <ArrowRightLeft class="size-4 lg:size-3.5 text-white" />
           </div>
-          <span class="hidden lg:inline text-xs font-semibold text-blue-700 dark:text-blue-300 whitespace-nowrap">
-            {{ $t('dashboard.addTransfer') }}
-          </span>
-          <!-- Mobile Label Tooltip -->
-          <span
-            class="lg:hidden absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-medium text-blue-700 dark:text-blue-400 whitespace-nowrap opacity-0 group-active:opacity-100 transition-opacity pointer-events-none">
-            {{ $t('dashboard.addTransfer') }}
+          <span class="text-[10px] lg:text-xs font-semibold text-blue-700 dark:text-blue-400 lg:dark:text-blue-300 whitespace-nowrap">
+            {{ $t('dashboard.transfers') }}
           </span>
         </button>
 
         <!-- Manage Wallets -->
         <router-link to="/wallets" :title="$t('dashboard.manageWallets')" :aria-label="$t('dashboard.manageWallets')"
-          class="group relative flex flex-1 lg:flex-initial aspect-square lg:aspect-auto items-center justify-center lg:justify-start gap-2 rounded-xl lg:rounded-lg bg-white/40 dark:bg-gray-900/40 lg:bg-gradient-to-br lg:from-purple-100 lg:to-purple-200 dark:lg:from-purple-900/40 dark:lg:to-purple-800/30 p-4 lg:px-3 lg:py-2 shadow-sm transition-all hover:shadow-md lg:hover:from-purple-200 lg:hover:to-purple-300 dark:lg:hover:from-purple-900/50 dark:lg:hover:to-purple-800/40">
+          class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-purple-50 dark:bg-purple-900/20 lg:bg-gradient-to-br lg:from-purple-100 lg:to-purple-200 dark:lg:from-purple-900/40 dark:lg:to-purple-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-purple-200 lg:hover:to-purple-300 dark:lg:hover:from-purple-900/50 dark:lg:hover:to-purple-800/40">
           <div
-            class="relative flex size-10 lg:h-5 lg:w-5 flex-shrink-0 items-center justify-center rounded-xl lg:rounded-md bg-purple-500 dark:bg-purple-600">
-            <Wallet class="absolute size-5 lg:h-3.5 lg:w-3.5 text-white" />
+            class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-purple-400/80 to-purple-600/90 dark:from-purple-500/70 dark:to-purple-700/80">
+            <Wallet class="size-4 lg:size-3.5 text-white" />
           </div>
-          <span class="hidden lg:inline text-xs font-semibold text-purple-700 dark:text-purple-300 whitespace-nowrap">
-            {{ $t('dashboard.manageWallets') }}
-          </span>
-          <!-- Mobile Label Tooltip -->
-          <span
-            class="lg:hidden absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-medium text-purple-700 dark:text-purple-400 whitespace-nowrap opacity-0 group-active:opacity-100 transition-opacity pointer-events-none">
-            {{ $t('dashboard.manageWallets') }}
+          <span class="text-[10px] lg:text-xs font-semibold text-purple-700 dark:text-purple-400 lg:dark:text-purple-300 whitespace-nowrap">
+            {{ $t('nav.wallets') }}
           </span>
         </router-link>
       </div>
