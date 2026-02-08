@@ -2,7 +2,7 @@
   <AppLayout>
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Welcome Section -->
-      <div>
+      <div class="hidden lg:block">
         <h1 class="text-xl lg:text-3xl font-bold text-sepia-900 dark:text-neon mb-2">
           {{ $t('dashboard.title') }}, {{ authStore.user?.full_name || $t('common.user') }}!
         </h1>
@@ -11,7 +11,7 @@
         </p>
       </div>
 
-      <div>
+      <div class="!mt-0 lg:!mt-6">
         <div class="flex items-center justify-between card p-2 rounded-2xl mb-3">
           <div class="flex items-center gap-3 justify-start">
             <button @click="prevDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
