@@ -5,8 +5,8 @@
       <p class="text-gray-500 dark:text-gray-400 text-sm">{{ $t('reports.noWalletData') }}</p>
     </div>
     <div v-else class="space-y-4">
-      <!-- Sankey Chart -->
-      <div class="w-full" style="height: 400px;">
+      <!-- Graph Chart -->
+      <div class="w-full" style="height: 500px;">
         <v-chart ref="chartRef" class="w-full h-full" :option="chartOption" autoresize />
       </div>
 
@@ -78,8 +78,8 @@
 import { computed, ref, markRaw } from 'vue';
 import VChart from 'vue-echarts';
 import { use } from 'echarts/core';
-import { SankeyChart } from 'echarts/charts';
-import { TitleComponent, TooltipComponent } from 'echarts/components';
+import { GraphChart } from 'echarts/charts';
+import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import type { Transaction } from '@/types/transaction';
 import { useConfigStore } from '@/stores/config';
@@ -88,7 +88,7 @@ import { ArrowRightLeft, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight 
 import Modal from '@/components/ui/Modal.vue';
 
 // Register ECharts components
-use([SankeyChart, TitleComponent, TooltipComponent, CanvasRenderer]);
+use([GraphChart, TitleComponent, TooltipComponent, LegendComponent, CanvasRenderer]);
 
 interface WalletData {
   name: string;
@@ -123,30 +123,40 @@ const isDark = computed(() => {
   return themeStore.theme === 'dark';
 });
 
-const sankeyData = computed(() => {
-  const nodes: { name: string }[] = [];
-  const links: { source: string; target: string; value: number }[] = [];
+const graphData = computed(() => {
+  const nodes: any[] = [];
+  const links: any[] = [];
   const nodeSet = new Set<string>();
 
   // Track totals per wallet
   const walletIncome = new Map<string, number>();
   const walletExpense = new Map<string, number>();
-  const transferMap = new Map<string, number>(); // "source->target" -> amount
+  const walletTotals = new Map<string, number>(); // For node sizing
 
   props.transactions.forEach(t => {
     if (t.type === 'income' && t.wallet) {
       const walletName = t.wallet.name;
       walletIncome.set(walletName, (walletIncome.get(walletName) || 0) + t.amount);
+      walletTotals.set(walletName, (walletTotals.get(walletName) || 0) + t.amount);
       nodeSet.add(walletName);
     } else if (t.type === 'expense' && t.wallet) {
       const walletName = t.wallet.name;
       walletExpense.set(walletName, (walletExpense.get(walletName) || 0) + t.amount);
+      walletTotals.set(walletName, (walletTotals.get(walletName) || 0) + t.amount);
       nodeSet.add(walletName);
     } else if (t.type === 'transfer' && t.wallet && t.destinationWallet) {
       const sourceWallet = t.wallet.name;
       const destWallet = t.destinationWallet.name;
-      const key = `${sourceWallet}->${destWallet}`;
-      transferMap.set(key, (transferMap.get(key) || 0) + t.amount);
+
+      // Add bidirectional transfer links (no netting needed for Graph)
+      links.push({
+        source: sourceWallet,
+        target: destWallet,
+        value: t.amount,
+      });
+
+      walletTotals.set(sourceWallet, (walletTotals.get(sourceWallet) || 0) + t.amount);
+      walletTotals.set(destWallet, (walletTotals.get(destWallet) || 0) + t.amount);
       nodeSet.add(sourceWallet);
       nodeSet.add(destWallet);
     }
@@ -157,15 +167,52 @@ const sankeyData = computed(() => {
   const hasExpense = walletExpense.size > 0;
 
   if (hasIncome) {
-    nodes.push({ name: 'Income' });
-  }
-  if (hasExpense) {
-    nodes.push({ name: 'Expense' });
+    const totalIncome = Array.from(walletIncome.values()).reduce((sum, val) => sum + val, 0);
+    nodes.push({
+      id: 'Income',
+      name: 'Income',
+      category: 'income',
+      symbolSize: Math.max(30, Math.min(60, Math.sqrt(totalIncome / 1000) * 5)),
+      itemStyle: {
+        color: '#10b981',
+      },
+      label: {
+        show: true,
+      },
+    });
   }
 
-  // Add wallet nodes
+  if (hasExpense) {
+    const totalExpense = Array.from(walletExpense.values()).reduce((sum, val) => sum + val, 0);
+    nodes.push({
+      id: 'Expense',
+      name: 'Expense',
+      category: 'expense',
+      symbolSize: Math.max(30, Math.min(60, Math.sqrt(totalExpense / 1000) * 5)),
+      itemStyle: {
+        color: '#ef4444',
+      },
+      label: {
+        show: true,
+      },
+    });
+  }
+
+  // Add wallet nodes with size based on total flow
   nodeSet.forEach(walletName => {
-    nodes.push({ name: walletName });
+    const total = walletTotals.get(walletName) || 0;
+    nodes.push({
+      id: walletName,
+      name: walletName,
+      category: 'wallet',
+      symbolSize: Math.max(25, Math.min(50, Math.sqrt(total / 1000) * 5)),
+      itemStyle: {
+        color: '#6366f1',
+      },
+      label: {
+        show: true,
+      },
+    });
   });
 
   // Add income links (Income -> Wallet)
@@ -179,123 +226,6 @@ const sankeyData = computed(() => {
     }
   });
 
-  // Type for links
-  type LinkType = { source: string; target: string; value: number };
-
-  // Add transfer links (Wallet -> Wallet) with cycle resolution (Net Flow)
-  const processedPairs = new Set<string>();
-  const transferLinks: LinkType[] = [];
-
-  transferMap.forEach((amount, key) => {
-    const [source, target] = key.split('->');
-    if (source === target) return; // Ignore self-loops
-
-    // Check if we already handled this pair
-    const pairKey = [source, target].sort().join('-');
-    if (processedPairs.has(pairKey)) return;
-
-    const reverseKey = `${target}->${source}`;
-    const reverseAmount = transferMap.get(reverseKey) || 0;
-
-    const netAmount = amount - reverseAmount;
-
-    if (netAmount > 0) {
-      transferLinks.push({
-        source,
-        target,
-        value: netAmount,
-      });
-    } else if (netAmount < 0) {
-      transferLinks.push({
-        source: target,
-        target: source,
-        value: Math.abs(netAmount),
-      });
-    }
-
-    processedPairs.add(pairKey);
-  });
-
-  // Detect and break cycles to ensure DAG property for Sankey
-  const breakCycles = (inputLinks: LinkType[]): LinkType[] => {
-    if (inputLinks.length === 0) return inputLinks;
-
-    const graph = new Map<string, Set<string>>();
-
-    // Build adjacency list
-    inputLinks.forEach((link: LinkType) => {
-      if (!graph.has(link.source)) {
-        graph.set(link.source, new Set());
-      }
-      graph.get(link.source)!.add(link.target);
-    });
-
-    // Find cycles using DFS
-    const visited = new Set<string>();
-    const recursionStack = new Set<string>();
-    const edgesToRemove = new Set<string>();
-
-    const hasCycleDFS = (node: string, path: string[]): boolean => {
-      visited.add(node);
-      recursionStack.add(node);
-      path.push(node);
-
-      const neighbors = graph.get(node);
-      if (neighbors) {
-        for (const neighbor of neighbors) {
-          if (!visited.has(neighbor)) {
-            if (hasCycleDFS(neighbor, [...path])) {
-              return true;
-            }
-          } else if (recursionStack.has(neighbor)) {
-            // Found a cycle, mark the smallest edge to remove
-            const cycleStart = path.indexOf(neighbor);
-            const cycle = path.slice(cycleStart);
-            cycle.push(neighbor);
-
-            // Find smallest edge in cycle
-            let minValue = Infinity;
-            let minEdge = '';
-            for (let i = 0; i < cycle.length - 1; i++) {
-              const edgeKey = `${cycle[i]}->${cycle[i + 1]}`;
-              const link = inputLinks.find((l: LinkType) => l.source === cycle[i] && l.target === cycle[i + 1]);
-              if (link && link.value < minValue) {
-                minValue = link.value;
-                minEdge = edgeKey;
-              }
-            }
-            if (minEdge) {
-              edgesToRemove.add(minEdge);
-            }
-            return true;
-          }
-        }
-      }
-
-      recursionStack.delete(node);
-      return false;
-    };
-
-    // Check all nodes for cycles
-    graph.forEach((_, node) => {
-      if (!visited.has(node)) {
-        hasCycleDFS(node, []);
-      }
-    });
-
-    // Remove marked edges
-    return inputLinks.filter((link: LinkType) => {
-      const edgeKey = `${link.source}->${link.target}`;
-      return !edgesToRemove.has(edgeKey);
-    });
-  };
-
-  // Apply cycle breaking to transfer links
-  const cycleFreeTrasferLinks = breakCycles(transferLinks);
-
-  // Add cycle-free transfer links
-  links.push(...cycleFreeTrasferLinks);
-
   // Add expense links (Wallet -> Expense)
   walletExpense.forEach((amount, walletName) => {
     if (amount > 0) {
@@ -307,31 +237,11 @@ const sankeyData = computed(() => {
     }
   });
 
-  // Optimization: If there are too many links, filter out very small ones to prevent rendering issues
-  // This is especially important for mobile devices
-  let finalLinks = links;
-  let finalNodes = nodes;
-
-  if (links.length > 50) {
-    const totalValue = links.reduce((sum, link) => sum + link.value, 0);
-    // Filter out links that represent less than 0.5% of the total flow
-    const threshold = totalValue * 0.005;
-    finalLinks = links.filter(link => link.value > threshold);
-
-    // Filter out nodes that are no longer connected
-    const connectedNodes = new Set<string>();
-    finalLinks.forEach(link => {
-      connectedNodes.add(link.source);
-      connectedNodes.add(link.target);
-    });
-    finalNodes = nodes.filter(node => connectedNodes.has(node.name));
-  }
-
-  return { nodes: finalNodes, links: finalLinks };
+  return { nodes, links };
 });
 
 const hasData = computed(() => {
-  return sankeyData.value.nodes.length > 0 && sankeyData.value.links.length > 0;
+  return graphData.value.nodes.length > 0 && graphData.value.links.length > 0;
 });
 
 const chartOption = computed(() => {
@@ -343,7 +253,6 @@ const chartOption = computed(() => {
   return markRaw({
     tooltip: {
       trigger: 'item',
-      triggerOn: 'mousemove',
       backgroundColor: tooltipBg,
       borderColor: tooltipBorder,
       borderWidth: 1,
@@ -356,46 +265,59 @@ const chartOption = computed(() => {
       formatter: (params: any) => {
         if (params.dataType === 'edge') {
           return `${params.data.source} → ${params.data.target}<br/>${configStore.formatCurrency(params.data.value)}`;
+        } else if (params.dataType === 'node') {
+          return params.name;
         }
-        return params.name;
+        return '';
       },
     },
     series: [
       {
-        type: 'sankey',
-        layout: 'none',
-        emphasis: {
-          focus: 'adjacency',
+        type: 'graph',
+        layout: 'force',
+        animation: true,
+        data: graphData.value.nodes,
+        links: graphData.value.links,
+        categories: [
+          { name: 'income' },
+          { name: 'expense' },
+          { name: 'wallet' },
+        ],
+        roam: true, // Enable zoom and pan
+        draggable: true,
+        force: {
+          repulsion: 150,
+          edgeLength: [80, 150],
+          gravity: 0.1,
         },
-        nodeAlign: 'justify',
-        orient: 'horizontal',
-        draggable: false, // Disable draggable to improve performance on mobile
-        animation: sankeyData.value.links.length < 100, // Disable animation for large datasets
         label: {
           show: true,
           position: 'right',
           color: labelColor,
           fontFamily: "'Inter', sans-serif",
           fontSize: 11,
+          formatter: '{b}',
+        },
+        edgeLabel: {
+          show: true,
+          fontSize: 10,
+          color: labelColor,
+          fontFamily: "'Inter', sans-serif",
+          formatter: (params: any) => {
+            return configStore.formatCurrency(params.data.value);
+          },
         },
         lineStyle: {
-          color: 'gradient',
-          curveness: 0.5,
+          color: 'source',
+          curveness: 0.2,
+          width: 2,
         },
-        itemStyle: {
-          borderWidth: 0,
-        },
-        data: sankeyData.value.nodes.map(node => ({
-          name: node.name,
-          itemStyle: {
-            color: node.name === 'Income'
-              ? '#10b981'
-              : node.name === 'Expense'
-                ? '#ef4444'
-                : '#6366f1',
+        emphasis: {
+          focus: 'adjacency',
+          lineStyle: {
+            width: 3,
           },
-        })),
-        links: sankeyData.value.links,
+        },
       },
     ],
   });
