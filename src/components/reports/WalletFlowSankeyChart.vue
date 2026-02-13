@@ -216,78 +216,87 @@ const sankeyData = computed(() => {
     processedPairs.add(pairKey);
   });
 
-  // Detect and break cycles to ensure DAG property for Sankey
+  // Detect and break cycles iteratively to ensure DAG property for Sankey
   const breakCycles = (inputLinks: LinkType[]): LinkType[] => {
-    if (inputLinks.length === 0) return inputLinks;
+    let links = [...inputLinks];
+    if (links.length === 0) return links;
 
-    const graph = new Map<string, Set<string>>();
+    const maxIterations = links.length; // Safety limit
+    for (let iter = 0; iter < maxIterations; iter++) {
+      // Try topological sort to detect a cycle
+      const cycle = findCycle(links);
+      if (!cycle) break; // No cycle found, we're done
 
-    // Build adjacency list
-    inputLinks.forEach((link: LinkType) => {
-      if (!graph.has(link.source)) {
-        graph.set(link.source, new Set());
+      // Find the smallest edge in the cycle and remove it
+      let minIdx = -1;
+      let minValue = Infinity;
+      for (let i = 0; i < cycle.length - 1; i++) {
+        const idx = links.findIndex(l => l.source === cycle[i] && l.target === cycle[i + 1]);
+        if (idx !== -1 && links[idx].value < minValue) {
+          minValue = links[idx].value;
+          minIdx = idx;
+        }
       }
-      graph.get(link.source)!.add(link.target);
+      if (minIdx === -1) break; // Safety: shouldn't happen
+      links.splice(minIdx, 1);
+    }
+
+    return links;
+  };
+
+  // Find a cycle in the graph using DFS, returns the cycle path or null
+  const findCycle = (links: LinkType[]): string[] | null => {
+    const graph = new Map<string, string[]>();
+    const allNodes = new Set<string>();
+
+    links.forEach(link => {
+      if (!graph.has(link.source)) graph.set(link.source, []);
+      graph.get(link.source)!.push(link.target);
+      allNodes.add(link.source);
+      allNodes.add(link.target);
     });
 
-    // Find cycles using DFS
     const visited = new Set<string>();
-    const recursionStack = new Set<string>();
-    const edgesToRemove = new Set<string>();
+    const inStack = new Set<string>();
+    const parent = new Map<string, string>(); // track path
 
-    const hasCycleDFS = (node: string, path: string[]): boolean => {
+    const dfs = (node: string): string | null => {
       visited.add(node);
-      recursionStack.add(node);
-      path.push(node);
+      inStack.add(node);
 
-      const neighbors = graph.get(node);
-      if (neighbors) {
-        for (const neighbor of neighbors) {
-          if (!visited.has(neighbor)) {
-            if (hasCycleDFS(neighbor, [...path])) {
-              return true;
-            }
-          } else if (recursionStack.has(neighbor)) {
-            // Found a cycle, mark the smallest edge to remove
-            const cycleStart = path.indexOf(neighbor);
-            const cycle = path.slice(cycleStart);
-            cycle.push(neighbor);
-
-            // Find smallest edge in cycle
-            let minValue = Infinity;
-            let minEdge = '';
-            for (let i = 0; i < cycle.length - 1; i++) {
-              const edgeKey = `${cycle[i]}->${cycle[i + 1]}`;
-              const link = inputLinks.find((l: LinkType) => l.source === cycle[i] && l.target === cycle[i + 1]);
-              if (link && link.value < minValue) {
-                minValue = link.value;
-                minEdge = edgeKey;
-              }
-            }
-            if (minEdge) {
-              edgesToRemove.add(minEdge);
-            }
-            return true;
+      const neighbors = graph.get(node) || [];
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor)) {
+          parent.set(neighbor, node);
+          const result = dfs(neighbor);
+          if (result) return result;
+        } else if (inStack.has(neighbor)) {
+          // Found cycle, reconstruct path
+          const path: string[] = [neighbor];
+          let current = node;
+          while (current !== neighbor) {
+            path.push(current);
+            current = parent.get(current)!;
           }
+          path.push(neighbor);
+          path.reverse();
+          return path.join('|');
         }
       }
 
-      recursionStack.delete(node);
-      return false;
+      inStack.delete(node);
+      return null;
     };
 
-    // Check all nodes for cycles
-    graph.forEach((_, node) => {
+    for (const node of allNodes) {
       if (!visited.has(node)) {
-        hasCycleDFS(node, []);
+        parent.clear();
+        const result = dfs(node);
+        if (result) return result.split('|');
       }
-    });
+    }
 
-    // Remove marked edges
-    return inputLinks.filter((link: LinkType) => {
-      const edgeKey = `${link.source}->${link.target}`;
-      return !edgesToRemove.has(edgeKey);
-    });
+    return null;
   };
 
   // Apply cycle breaking to transfer links
