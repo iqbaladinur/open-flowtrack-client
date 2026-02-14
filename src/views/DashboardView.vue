@@ -2,7 +2,7 @@
   <AppLayout>
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Welcome Section -->
-      <div>
+      <div class="hidden lg:block">
         <h1 class="text-xl lg:text-3xl font-bold text-sepia-900 dark:text-neon mb-2">
           {{ $t('dashboard.title') }}, {{ authStore.user?.full_name || $t('common.user') }}!
         </h1>
@@ -11,8 +11,8 @@
         </p>
       </div>
 
-      <div>
-        <div class="flex items-center justify-between card p-2 mb-3 rounded-2xl">
+      <div class="!mt-0 lg:!mt-6">
+        <div class="flex items-center justify-between card p-2 rounded-2xl mb-3">
           <div class="flex items-center gap-3 justify-start">
             <button @click="prevDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
               <ChevronLeft class="size-4 text-sepia-600 dark:text-gray-300" />
@@ -31,85 +31,136 @@
             <lock v-else class="size-4" />
           </button>
         </div>
+        <div>
+          <!-- Summary Cards -->
+          <div class="relative overflow-hidden">
+            <!-- Stacked carousel for mobile, grid for desktop -->
+            <div class="lg:grid lg:grid-cols-5 lg:gap-4">
+              <!-- Mobile: Stacked cards with transition -->
+              <div class="relative lg:contents h-[160px] lg:h-auto overflow-hidden lg:overflow-visible" @touchstart="handleTouchStart"
+                @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+                <Transition name="slide-fade" mode="out-in">
+                  <div :key="currentCardIndex" class="absolute inset-0 lg:hidden w-full">
+                    <SummaryCard4 v-if="currentCardIndex === 0" :title="$t('dashboard.totalBalance')"
+                      :value="totalBalance" :icon="Wallet" icon-bg-class="bg-primary-100/90 dark:bg-primary-700/90"
+                      icon-class="text-blue-600 dark:text-blue-400" value-class="text-blue-900 dark:text-white"
+                      class="w-full" />
+                    <SummaryCard4 v-else-if="currentCardIndex === 1" :title="$t('dashboard.income')"
+                      :value="summary.total_income" :icon="TrendingUp"
+                      icon-bg-class="bg-success-100 dark:bg-success-900/50"
+                      icon-class="text-success-600 dark:text-success-400"
+                      value-class="text-success-600 dark:text-success-400" prefix="+" accent="positive"
+                      class="w-full" />
+                    <SummaryCard4 v-else-if="currentCardIndex === 2" :title="$t('dashboard.expenses')"
+                      :value="summary.total_expense" :icon="TrendingDown"
+                      icon-bg-class="bg-error-100 dark:bg-error-900/50" icon-class="text-error-600 dark:text-error-400"
+                      value-class="text-error-600 dark:text-error-400" prefix="-" accent="negative"
+                      class="w-full" />
+                    <SummaryCard4 v-else-if="currentCardIndex === 3" :title="$t('dashboard.transfers')"
+                      :value="summary.total_transfer" :icon="ArrowRightLeft"
+                      icon-bg-class="bg-blue-100 dark:bg-blue-900/50" icon-class="text-blue-600 dark:text-blue-400"
+                      value-class="text-blue-600 dark:text-blue-400" class="w-full" />
+                    <SummaryCard4 v-else :title="$t('dashboard.netIncome')" :value="summary.net_income" :icon="Scale"
+                      icon-bg-class="bg-warning-100 dark:bg-warning-900/50"
+                      icon-class="text-warning-600 dark:text-warning-400" :value-class="{
+                        'text-success-600 dark:text-success-400': summary.net_income > 0,
+                        'text-gray-800 dark:text-gray-200': summary.net_income === 0,
+                        'text-error-600 dark:text-error-400': summary.net_income < 0,
+                      }" :prefix="summary.net_income >= 0 ? '+' : ''"
+                      :accent="summary.net_income >= 0 ? 'positive' : 'negative'"
+                      class="w-full" />
+                  </div>
+                </Transition>
 
-        <!-- Summary Cards -->
-        <div
-          class="flex lg:grid lg:grid-cols-5 lg:gap-4 overflow-x-auto space-x-3 lg:space-x-0 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
-          <SummaryCard3 :title="$t('dashboard.totalBalance')" :value="totalBalance" :icon="Wallet"
-            icon-bg-class="bg-primary-100/90 dark:bg-primary-700/90" icon-class="text-blue-600 dark:text-blue-400"
-            value-class="text-blue-900 dark:text-white" />
-          <SummaryCard3 :title="$t('dashboard.income')" :value="summary.total_income" :icon="TrendingUp"
-            icon-bg-class="bg-success-100 dark:bg-success-900/50" icon-class="text-success-600 dark:text-success-400"
-            value-class="text-success-600 dark:text-success-400" prefix="+" accent="positive" />
-          <SummaryCard3 :title="$t('dashboard.expenses')" :value="summary.total_expense" :icon="TrendingDown"
-            icon-bg-class="bg-error-100 dark:bg-error-900/50" icon-class="text-error-600 dark:text-error-400"
-            value-class="text-error-600 dark:text-error-400" prefix="-" accent="negative" />
-          <SummaryCard3 :title="$t('dashboard.transfers')" :value="summary.total_transfer" :icon="ArrowRightLeft"
-            icon-bg-class="bg-blue-100 dark:bg-blue-900/50" icon-class="text-blue-600 dark:text-blue-400"
-            value-class="text-blue-600 dark:text-blue-400" />
-          <SummaryCard3 :title="$t('dashboard.netIncome')" :value="summary.net_income" :icon="Scale"
-            icon-bg-class="bg-warning-100 dark:bg-warning-900/50" icon-class="text-warning-600 dark:text-warning-400"
-            :value-class="{
-              'text-success-600 dark:text-success-400': summary.net_income > 0,
-              'text-gray-800 dark:text-gray-200': summary.net_income === 0,
-              'text-error-600 dark:text-error-400': summary.net_income < 0,
-            }" :prefix="summary.net_income >= 0 ? '+' : ''"
-            :accent="summary.net_income >= 0 ? 'positive' : 'negative'" />
+                <!-- Desktop: All cards visible -->
+                <div class="hidden lg:contents">
+                  <SummaryCard4 :title="$t('dashboard.totalBalance')" :value="totalBalance" :icon="Wallet"
+                    icon-bg-class="bg-primary-100/90 dark:bg-primary-700/90" icon-class="text-blue-600 dark:text-blue-400"
+                    value-class="text-blue-900 dark:text-white" />
+                  <SummaryCard4 :title="$t('dashboard.income')" :value="summary.total_income" :icon="TrendingUp"
+                    icon-bg-class="bg-success-100 dark:bg-success-900/50"
+                    icon-class="text-success-600 dark:text-success-400"
+                    value-class="text-success-600 dark:text-success-400" prefix="+" accent="positive" />
+                  <SummaryCard4 :title="$t('dashboard.expenses')" :value="summary.total_expense" :icon="TrendingDown"
+                    icon-bg-class="bg-error-100 dark:bg-error-900/50" icon-class="text-error-600 dark:text-error-400"
+                    value-class="text-error-600 dark:text-error-400" prefix="-" accent="negative" />
+                  <SummaryCard4 :title="$t('dashboard.transfers')" :value="summary.total_transfer" :icon="ArrowRightLeft"
+                    icon-bg-class="bg-blue-100 dark:bg-blue-900/50" icon-class="text-blue-600 dark:text-blue-400"
+                    value-class="text-blue-600 dark:text-blue-400" />
+                  <SummaryCard4 :title="$t('dashboard.netIncome')" :value="summary.net_income" :icon="Scale"
+                    icon-bg-class="bg-warning-100 dark:bg-warning-900/50"
+                    icon-class="text-warning-600 dark:text-warning-400" :value-class="{
+                      'text-success-600 dark:text-success-400': summary.net_income > 0,
+                      'text-gray-800 dark:text-gray-200': summary.net_income === 0,
+                      'text-error-600 dark:text-error-400': summary.net_income < 0,
+                    }" :prefix="summary.net_income >= 0 ? '+' : ''"
+                    :accent="summary.net_income >= 0 ? 'positive' : 'negative'" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Carousel indicators for mobile -->
+            <div class="flex justify-center gap-1.5 mt-4 lg:hidden">
+              <button v-for="index in 5" :key="index" @click="goToCard(index - 1)"
+                :class="['h-1.5 rounded-full transition-all', currentCardIndex === index - 1 ? 'w-6 bg-sepia-600 dark:bg-primary-400' : 'w-1.5 bg-sepia-300 dark:bg-gray-600']"
+                :aria-label="`Go to card ${index}`" />
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="grid grid-cols-4 gap-2 lg:flex lg:flex-wrap mt-4">
+            <!-- Add Income -->
+            <button @click="toggleAddTransaction('income')" :title="$t('dashboard.addIncome')"
+              :aria-label="$t('dashboard.addIncome')"
+              class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-success-50 dark:bg-success-900/20 lg:bg-gradient-to-br lg:from-success-100 lg:to-success-200 dark:lg:from-success-900/40 dark:lg:to-success-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-success-200 lg:hover:to-success-300 dark:lg:hover:from-success-900/50 dark:lg:hover:to-success-800/40">
+              <div
+                class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-success-400/80 to-success-600/90 dark:from-success-500/70 dark:to-success-700/80">
+                <Plus class="size-4 lg:size-3.5 text-white" strokeWidth="2.5" />
+              </div>
+              <span class="text-[10px] lg:text-xs font-semibold text-success-700 dark:text-success-400 lg:dark:text-success-300 whitespace-nowrap">
+                {{ $t('dashboard.income') }}
+              </span>
+            </button>
+
+            <!-- Add Expense -->
+            <button @click="toggleAddTransaction('expense')" :title="$t('dashboard.addExpense')"
+              :aria-label="$t('dashboard.addExpense')"
+              class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-error-50 dark:bg-error-900/20 lg:bg-gradient-to-br lg:from-error-100 lg:to-error-200 dark:lg:from-error-900/40 dark:lg:to-error-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-error-200 lg:hover:to-error-300 dark:lg:hover:from-error-900/50 dark:lg:hover:to-error-800/40">
+              <div
+                class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-error-400/80 to-error-600/90 dark:from-error-500/70 dark:to-error-700/80">
+                <Minus class="size-4 lg:size-3.5 text-white" strokeWidth="2.5" />
+              </div>
+              <span class="text-[10px] lg:text-xs font-semibold text-error-700 dark:text-error-400 lg:dark:text-error-300 whitespace-nowrap">
+                {{ $t('dashboard.expenses') }}
+              </span>
+            </button>
+
+            <!-- Add Transfer -->
+            <button @click="toggleAddTransaction('transfer')" :title="$t('dashboard.addTransfer')"
+              :aria-label="$t('dashboard.addTransfer')"
+              class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-blue-50 dark:bg-blue-900/20 lg:bg-gradient-to-br lg:from-blue-100 lg:to-blue-200 dark:lg:from-blue-900/40 dark:lg:to-blue-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-blue-200 lg:hover:to-blue-300 dark:lg:hover:from-blue-900/50 dark:lg:hover:to-blue-800/40">
+              <div
+                class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-blue-400/80 to-blue-600/90 dark:from-blue-500/70 dark:to-blue-700/80">
+                <ArrowRightLeft class="size-4 lg:size-3.5 text-white" />
+              </div>
+              <span class="text-[10px] lg:text-xs font-semibold text-blue-700 dark:text-blue-400 lg:dark:text-blue-300 whitespace-nowrap">
+                {{ $t('dashboard.transfers') }}
+              </span>
+            </button>
+
+            <!-- Manage Wallets -->
+            <router-link to="/wallets" :title="$t('dashboard.manageWallets')" :aria-label="$t('dashboard.manageWallets')"
+              class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-purple-50 dark:bg-purple-900/20 lg:bg-gradient-to-br lg:from-purple-100 lg:to-purple-200 dark:lg:from-purple-900/40 dark:lg:to-purple-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-purple-200 lg:hover:to-purple-300 dark:lg:hover:from-purple-900/50 dark:lg:hover:to-purple-800/40">
+              <div
+                class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-purple-400/80 to-purple-600/90 dark:from-purple-500/70 dark:to-purple-700/80">
+                <Wallet class="size-4 lg:size-3.5 text-white" />
+              </div>
+              <span class="text-[10px] lg:text-xs font-semibold text-purple-700 dark:text-purple-400 lg:dark:text-purple-300 whitespace-nowrap">
+                {{ $t('nav.wallets') }}
+              </span>
+            </router-link>
+          </div>
         </div>
-      </div>
-
-      <!-- Quick Actions -->
-      <div class="grid grid-cols-4 gap-2 lg:flex lg:flex-wrap">
-        <!-- Add Income -->
-        <button @click="toggleAddTransaction('income')" :title="$t('dashboard.addIncome')"
-          :aria-label="$t('dashboard.addIncome')"
-          class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-success-50 dark:bg-success-900/20 lg:bg-gradient-to-br lg:from-success-100 lg:to-success-200 dark:lg:from-success-900/40 dark:lg:to-success-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-success-200 lg:hover:to-success-300 dark:lg:hover:from-success-900/50 dark:lg:hover:to-success-800/40">
-          <div
-            class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-success-400/80 to-success-600/90 dark:from-success-500/70 dark:to-success-700/80">
-            <Plus class="size-4 lg:size-3.5 text-white" strokeWidth="2.5" />
-          </div>
-          <span class="text-[10px] lg:text-xs font-semibold text-success-700 dark:text-success-400 lg:dark:text-success-300 whitespace-nowrap">
-            {{ $t('dashboard.income') }}
-          </span>
-        </button>
-
-        <!-- Add Expense -->
-        <button @click="toggleAddTransaction('expense')" :title="$t('dashboard.addExpense')"
-          :aria-label="$t('dashboard.addExpense')"
-          class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-error-50 dark:bg-error-900/20 lg:bg-gradient-to-br lg:from-error-100 lg:to-error-200 dark:lg:from-error-900/40 dark:lg:to-error-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-error-200 lg:hover:to-error-300 dark:lg:hover:from-error-900/50 dark:lg:hover:to-error-800/40">
-          <div
-            class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-error-400/80 to-error-600/90 dark:from-error-500/70 dark:to-error-700/80">
-            <Minus class="size-4 lg:size-3.5 text-white" strokeWidth="2.5" />
-          </div>
-          <span class="text-[10px] lg:text-xs font-semibold text-error-700 dark:text-error-400 lg:dark:text-error-300 whitespace-nowrap">
-            {{ $t('dashboard.expenses') }}
-          </span>
-        </button>
-
-        <!-- Add Transfer -->
-        <button @click="toggleAddTransaction('transfer')" :title="$t('dashboard.addTransfer')"
-          :aria-label="$t('dashboard.addTransfer')"
-          class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-blue-50 dark:bg-blue-900/20 lg:bg-gradient-to-br lg:from-blue-100 lg:to-blue-200 dark:lg:from-blue-900/40 dark:lg:to-blue-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-blue-200 lg:hover:to-blue-300 dark:lg:hover:from-blue-900/50 dark:lg:hover:to-blue-800/40">
-          <div
-            class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-blue-400/80 to-blue-600/90 dark:from-blue-500/70 dark:to-blue-700/80">
-            <ArrowRightLeft class="size-4 lg:size-3.5 text-white" />
-          </div>
-          <span class="text-[10px] lg:text-xs font-semibold text-blue-700 dark:text-blue-400 lg:dark:text-blue-300 whitespace-nowrap">
-            {{ $t('dashboard.transfers') }}
-          </span>
-        </button>
-
-        <!-- Manage Wallets -->
-        <router-link to="/wallets" :title="$t('dashboard.manageWallets')" :aria-label="$t('dashboard.manageWallets')"
-          class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-purple-50 dark:bg-purple-900/20 lg:bg-gradient-to-br lg:from-purple-100 lg:to-purple-200 dark:lg:from-purple-900/40 dark:lg:to-purple-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-purple-200 lg:hover:to-purple-300 dark:lg:hover:from-purple-900/50 dark:lg:hover:to-purple-800/40">
-          <div
-            class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-purple-400/80 to-purple-600/90 dark:from-purple-500/70 dark:to-purple-700/80">
-            <Wallet class="size-4 lg:size-3.5 text-white" />
-          </div>
-          <span class="text-[10px] lg:text-xs font-semibold text-purple-700 dark:text-purple-400 lg:dark:text-purple-300 whitespace-nowrap">
-            {{ $t('nav.wallets') }}
-          </span>
-        </router-link>
       </div>
 
       <!-- AI Suggestions -->
@@ -193,7 +244,7 @@ import TransactionModal from '@/components/transaction/TransactionModal.vue';
 // import QuickActionButton from '@/components/shared/QuickActionButton.vue';
 // import SummaryCard from '@/components/dashboard/SummaryCard.vue';
 // import SummaryCard2 from '@/components/dashboard/SummaryCard2.vue';
-import SummaryCard3 from '@/components/dashboard/SummaryCard3.vue';
+import SummaryCard4 from '@/components/dashboard/SummaryCard4.vue';
 import ActiveBudgetSection from '@/components/dashboard/ActiveBudgetSection.vue';
 import TransactionItem from '@/components/transaction/TransactionItem.vue';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
@@ -230,6 +281,11 @@ const showAddTransactionModal = ref(false);
 const transactionType = ref<TransactionType>('income');
 
 const endDateSummary = ref(endOfDay(new Date()));
+
+// Carousel state
+const currentCardIndex = ref(0);
+let touchStartX = 0;
+let touchEndX = 0;
 
 const readableDate = computed(() => {
   return format(endOfDay(endDateSummary.value), 'E, dd MMM yyy')
@@ -279,6 +335,34 @@ const toggleAddTransaction = (type: TransactionType) => {
   showAddTransactionModal.value = true;
   transactionType.value = type;
 }
+
+// Carousel functions
+const goToCard = (index: number) => {
+  currentCardIndex.value = index;
+};
+
+const handleTouchStart = (e: TouchEvent) => {
+  touchStartX = e.changedTouches[0].screenX;
+};
+
+const handleTouchMove = (e: TouchEvent) => {
+  touchEndX = e.changedTouches[0].screenX;
+};
+
+const handleTouchEnd = () => {
+  const swipeThreshold = 50; // Minimum swipe distance in pixels
+  const diff = touchStartX - touchEndX;
+
+  if (Math.abs(diff) > swipeThreshold) {
+    if (diff > 0) {
+      // Swipe left - next card
+      currentCardIndex.value = (currentCardIndex.value + 1) % 5;
+    } else {
+      // Swipe right - previous card
+      currentCardIndex.value = (currentCardIndex.value - 1 + 5) % 5;
+    }
+  }
+};
 
 function getAIAnalytics() {
   if (!configStore.isApiKeyAiExist) {
@@ -405,3 +489,25 @@ onMounted(async () => {
   getAIAnalytics();
 });
 </script>
+
+<style scoped>
+/* Slide fade transition */
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.2s ease-in;
+  position: absolute;
+}
+
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+</style>
