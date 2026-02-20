@@ -97,101 +97,100 @@
 
         </div>
 
-        <!-- Mobile: Compact Navigation -->
-        <div class="flex items-center justify-between lg:hidden card p-2 rounded-2xl mb-3">
-          <div class="flex items-center gap-3 justify-start">
-            <button @click="prevDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
-              <ChevronLeft class="size-4 text-sepia-600 dark:text-gray-300" />
-            </button>
-            <button @click="openDatePicker" class="text-xs italic text-sepia-600 dark:text-gray-300 hover:text-sepia-900 dark:hover:text-white transition-colors">
-              {{ readableDate }}
-            </button>
-            <button @click="nextDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
-              <ChevronRight class="size-4 text-sepia-600 dark:text-gray-300" />
+        <!-- Mobile: Unified nav + summary card -->
+        <div class="lg:hidden card rounded-2xl overflow-hidden mb-3">
+          <!-- Nav strip -->
+          <div class="flex items-center justify-between px-2 py-1.5">
+            <div class="flex items-center gap-1">
+              <button @click="prevDate" class="p-2 rounded-full btn-borderless">
+                <ChevronLeft class="size-4 text-sepia-600 dark:text-gray-300" />
+              </button>
+              <button @click="openDatePicker"
+                class="text-xs italic text-sepia-600 dark:text-gray-300 hover:text-sepia-900 dark:hover:text-white transition-colors px-1">
+                {{ readableDate }}
+              </button>
+              <button @click="nextDate" class="p-2 rounded-full btn-borderless">
+                <ChevronRight class="size-4 text-sepia-600 dark:text-gray-300" />
+              </button>
+            </div>
+            <button @click="configStore.toggleShowAmount"
+              class="p-2 rounded-full text-sepia-600 dark:text-gray-400 hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+              <Unlock v-if="configStore.showAmount" class="size-4" />
+              <Lock v-else class="size-4" />
             </button>
           </div>
 
-          <button @click="configStore.toggleShowAmount"
-            class="p-2 rounded-full text-sepia-600 dark:text-gray-400 hover:bg-sepia-100 dark:hover:bg-gray-700 hover:text-sepia-700 dark:hover:text-gray-300 transition-colors">
-            <Unlock v-if="configStore.showAmount" class="size-4" />
-            <Lock v-else class="size-4" />
-          </button>
-        </div>
-        <div>
-          <!-- Summary Cards -->
-          <div class="relative overflow-hidden">
-            <!-- Stacked carousel for mobile, grid for desktop -->
-            <div class="lg:grid lg:grid-cols-5 lg:gap-4">
-              <!-- Mobile: Stacked cards with transition -->
-              <div class="relative lg:contents h-[160px] lg:h-auto overflow-hidden lg:overflow-visible" @touchstart="handleTouchStart"
-                @touchmove="handleTouchMove" @touchend="handleTouchEnd">
-                <Transition name="slide-fade" mode="out-in">
-                  <div :key="currentCardIndex" class="absolute inset-0 lg:hidden w-full">
-                    <SummaryCard4 v-if="currentCardIndex === 0" :title="$t('dashboard.totalBalance')"
-                      :value="totalBalance" :icon="Wallet" icon-bg-class="bg-primary-100/90 dark:bg-primary-700/90"
-                      icon-class="text-blue-600 dark:text-blue-400" value-class="text-blue-900 dark:text-white"
-                      class="w-full" />
-                    <SummaryCard4 v-else-if="currentCardIndex === 1" :title="$t('dashboard.income')"
-                      :value="summary.total_income" :icon="TrendingUp"
-                      icon-bg-class="bg-success-100 dark:bg-success-900/50"
-                      icon-class="text-success-600 dark:text-success-400"
-                      value-class="text-success-600 dark:text-success-400" prefix="+" accent="positive"
-                      class="w-full" />
-                    <SummaryCard4 v-else-if="currentCardIndex === 2" :title="$t('dashboard.expenses')"
-                      :value="summary.total_expense" :icon="TrendingDown"
-                      icon-bg-class="bg-error-100 dark:bg-error-900/50" icon-class="text-error-600 dark:text-error-400"
-                      value-class="text-error-600 dark:text-error-400" prefix="-" accent="negative"
-                      class="w-full" />
-                    <SummaryCard4 v-else-if="currentCardIndex === 3" :title="$t('dashboard.transfers')"
-                      :value="summary.total_transfer" :icon="ArrowRightLeft"
-                      icon-bg-class="bg-blue-100 dark:bg-blue-900/50" icon-class="text-blue-600 dark:text-blue-400"
-                      value-class="text-blue-600 dark:text-blue-400" class="w-full" />
-                    <SummaryCard4 v-else :title="$t('dashboard.netIncome')" :value="summary.net_income" :icon="Scale"
-                      icon-bg-class="bg-warning-100 dark:bg-warning-900/50"
-                      icon-class="text-warning-600 dark:text-warning-400" :value-class="{
-                        'text-success-600 dark:text-success-400': summary.net_income > 0,
-                        'text-gray-800 dark:text-gray-200': summary.net_income === 0,
-                        'text-error-600 dark:text-error-400': summary.net_income < 0,
-                      }" :prefix="summary.net_income >= 0 ? '+' : ''"
-                      :accent="summary.net_income >= 0 ? 'positive' : 'negative'"
-                      class="w-full" />
-                  </div>
-                </Transition>
+          <div class="h-px mx-5 bg-gradient-to-r from-transparent via-sepia-200 dark:via-gray-700 to-transparent" />
 
-                <!-- Desktop: All cards visible -->
-                <div class="hidden lg:contents">
-                  <SummaryCard4 :title="$t('dashboard.totalBalance')" :value="totalBalance" :icon="Wallet"
-                    icon-bg-class="bg-primary-100/90 dark:bg-primary-700/90" icon-class="text-blue-600 dark:text-blue-400"
-                    value-class="text-blue-900 dark:text-white" />
-                  <SummaryCard4 :title="$t('dashboard.income')" :value="summary.total_income" :icon="TrendingUp"
-                    icon-bg-class="bg-success-100 dark:bg-success-900/50"
-                    icon-class="text-success-600 dark:text-success-400"
-                    value-class="text-success-600 dark:text-success-400" prefix="+" accent="positive" />
-                  <SummaryCard4 :title="$t('dashboard.expenses')" :value="summary.total_expense" :icon="TrendingDown"
-                    icon-bg-class="bg-error-100 dark:bg-error-900/50" icon-class="text-error-600 dark:text-error-400"
-                    value-class="text-error-600 dark:text-error-400" prefix="-" accent="negative" />
-                  <SummaryCard4 :title="$t('dashboard.transfers')" :value="summary.total_transfer" :icon="ArrowRightLeft"
-                    icon-bg-class="bg-blue-100 dark:bg-blue-900/50" icon-class="text-blue-600 dark:text-blue-400"
-                    value-class="text-blue-600 dark:text-blue-400" />
-                  <SummaryCard4 :title="$t('dashboard.netIncome')" :value="summary.net_income" :icon="Scale"
-                    icon-bg-class="bg-warning-100 dark:bg-warning-900/50"
-                    icon-class="text-warning-600 dark:text-warning-400" :value-class="{
-                      'text-success-600 dark:text-success-400': summary.net_income > 0,
-                      'text-gray-800 dark:text-gray-200': summary.net_income === 0,
-                      'text-error-600 dark:text-error-400': summary.net_income < 0,
-                    }" :prefix="summary.net_income >= 0 ? '+' : ''"
-                    :accent="summary.net_income >= 0 ? 'positive' : 'negative'" />
-                </div>
+          <!-- Summary carousel -->
+          <div class="relative h-[148px] overflow-hidden" @touchstart="handleTouchStart"
+            @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+            <Transition name="slide-fade" mode="out-in">
+              <div :key="currentCardIndex" class="absolute inset-0">
+                <SummaryCard4 v-if="currentCardIndex === 0" :flat="true" :title="$t('dashboard.totalBalance')"
+                  :value="totalBalance" :icon="Wallet" icon-bg-class="bg-primary-100/90 dark:bg-primary-700/90"
+                  icon-class="text-blue-600 dark:text-blue-400" value-class="text-blue-900 dark:text-white" />
+                <SummaryCard4 v-else-if="currentCardIndex === 1" :flat="true" :title="$t('dashboard.income')"
+                  :value="summary.total_income" :icon="TrendingUp"
+                  icon-bg-class="bg-success-100 dark:bg-success-900/50"
+                  icon-class="text-success-600 dark:text-success-400"
+                  value-class="text-success-600 dark:text-success-400" prefix="+" accent="positive" />
+                <SummaryCard4 v-else-if="currentCardIndex === 2" :flat="true" :title="$t('dashboard.expenses')"
+                  :value="summary.total_expense" :icon="TrendingDown"
+                  icon-bg-class="bg-error-100 dark:bg-error-900/50" icon-class="text-error-600 dark:text-error-400"
+                  value-class="text-error-600 dark:text-error-400" prefix="-" accent="negative" />
+                <SummaryCard4 v-else-if="currentCardIndex === 3" :flat="true" :title="$t('dashboard.transfers')"
+                  :value="summary.total_transfer" :icon="ArrowRightLeft"
+                  icon-bg-class="bg-blue-100 dark:bg-blue-900/50" icon-class="text-blue-600 dark:text-blue-400"
+                  value-class="text-blue-600 dark:text-blue-400" />
+                <SummaryCard4 v-else :flat="true" :title="$t('dashboard.netIncome')" :value="summary.net_income"
+                  :icon="Scale" icon-bg-class="bg-warning-100 dark:bg-warning-900/50"
+                  icon-class="text-warning-600 dark:text-warning-400" :value-class="{
+                    'text-success-600 dark:text-success-400': summary.net_income > 0,
+                    'text-gray-800 dark:text-gray-200': summary.net_income === 0,
+                    'text-error-600 dark:text-error-400': summary.net_income < 0,
+                  }" :prefix="summary.net_income >= 0 ? '+' : ''"
+                  :accent="summary.net_income >= 0 ? 'positive' : 'negative'" />
               </div>
-            </div>
-
-            <!-- Carousel indicators for mobile -->
-            <div class="flex justify-center gap-1.5 mt-4 lg:hidden">
-              <button v-for="index in 5" :key="index" @click="goToCard(index - 1)"
-                :class="['h-1.5 rounded-full transition-all', currentCardIndex === index - 1 ? 'w-6 bg-sepia-600 dark:bg-primary-400' : 'w-1.5 bg-sepia-300 dark:bg-gray-600']"
-                :aria-label="`Go to card ${index}`" />
-            </div>
+            </Transition>
           </div>
+
+          <div class="h-px mx-5 bg-gradient-to-r from-transparent via-sepia-200 dark:via-gray-700 to-transparent" />
+
+          <!-- Carousel indicators -->
+          <div class="flex justify-center gap-1.5 py-2.5">
+            <button v-for="index in 5" :key="index" @click="goToCard(index - 1)"
+              :class="['h-1.5 rounded-full transition-all', currentCardIndex === index - 1 ? 'w-6 bg-sepia-600 dark:bg-primary-400' : 'w-1.5 bg-sepia-300 dark:bg-gray-600']"
+              :aria-label="`Go to card ${index}`" />
+          </div>
+        </div>
+
+        <!-- Desktop: Summary grid -->
+        <div class="hidden lg:grid lg:grid-cols-5 lg:gap-4 mb-3">
+          <SummaryCard4 :title="$t('dashboard.totalBalance')" :value="totalBalance" :icon="Wallet"
+            icon-bg-class="bg-primary-100/90 dark:bg-primary-700/90" icon-class="text-blue-600 dark:text-blue-400"
+            value-class="text-blue-900 dark:text-white" />
+          <SummaryCard4 :title="$t('dashboard.income')" :value="summary.total_income" :icon="TrendingUp"
+            icon-bg-class="bg-success-100 dark:bg-success-900/50"
+            icon-class="text-success-600 dark:text-success-400"
+            value-class="text-success-600 dark:text-success-400" prefix="+" accent="positive" />
+          <SummaryCard4 :title="$t('dashboard.expenses')" :value="summary.total_expense" :icon="TrendingDown"
+            icon-bg-class="bg-error-100 dark:bg-error-900/50" icon-class="text-error-600 dark:text-error-400"
+            value-class="text-error-600 dark:text-error-400" prefix="-" accent="negative" />
+          <SummaryCard4 :title="$t('dashboard.transfers')" :value="summary.total_transfer" :icon="ArrowRightLeft"
+            icon-bg-class="bg-blue-100 dark:bg-blue-900/50" icon-class="text-blue-600 dark:text-blue-400"
+            value-class="text-blue-600 dark:text-blue-400" />
+          <SummaryCard4 :title="$t('dashboard.netIncome')" :value="summary.net_income" :icon="Scale"
+            icon-bg-class="bg-warning-100 dark:bg-warning-900/50"
+            icon-class="text-warning-600 dark:text-warning-400" :value-class="{
+              'text-success-600 dark:text-success-400': summary.net_income > 0,
+              'text-gray-800 dark:text-gray-200': summary.net_income === 0,
+              'text-error-600 dark:text-error-400': summary.net_income < 0,
+            }" :prefix="summary.net_income >= 0 ? '+' : ''"
+            :accent="summary.net_income >= 0 ? 'positive' : 'negative'" />
+        </div>
+
+        <div>
 
           <!-- Quick Actions -->
           <div class="grid grid-cols-4 gap-2 lg:flex lg:flex-wrap mt-4">
