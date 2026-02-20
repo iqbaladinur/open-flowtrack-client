@@ -40,6 +40,7 @@ export default {
     details: "Detail",
     income: "pemasukan",
     expense: "pengeluaran",
+    today: "Hari Ini",
   },
 
   // Navigation & Layout
@@ -94,6 +95,13 @@ export default {
     recentTransactions: "Transaksi Terbaru",
     noTransactionsYet: "Belum ada transaksi",
     addFirstTransaction: "Tambahkan transaksi pertama Anda",
+    gettingStarted: {
+      title: "Mulai Dari Sini",
+      wallets:      { title: "Kelola Dompet",   desc: "Tambahkan rekening bank, tunai, atau kartu untuk memantau saldo." },
+      transactions: { title: "Catat Transaksi", desc: "Catat pemasukan dan pengeluaran agar keuangan selalu terkini." },
+      budgets:      { title: "Atur Anggaran",   desc: "Buat anggaran bulanan untuk mengontrol kebiasaan belanjamu." },
+      reports:      { title: "Lihat Laporan",   desc: "Analisis pola pengeluaran dengan grafik yang detail." },
+    },
   },
 
   // Wallets

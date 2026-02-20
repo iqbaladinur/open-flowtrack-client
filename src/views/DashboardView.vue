@@ -12,14 +12,100 @@
       </div>
 
       <div class="!mt-0 lg:!mt-6">
-        <div class="flex items-center justify-between card p-2 rounded-2xl mb-3">
+        <!-- Desktop: Calendar + Tips — unified card, hidden on mobile -->
+        <div class="hidden lg:flex card rounded-2xl overflow-hidden mb-3 divide-x divide-sepia-100 dark:divide-gray-700/60">
+
+          <!-- Calendar (25%) -->
+          <div class="w-1/4 shrink-0 flex flex-col pt-4 pb-4">
+            <!-- Header with navigation -->
+            <div class="flex items-center justify-between px-3 mb-3">
+              <div class="flex items-center gap-0.5">
+                <button @click="prevDate" class="p-1.5 rounded-full hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+                  <ChevronLeft class="size-3.5 text-sepia-600 dark:text-gray-300" />
+                </button>
+                <h3 class="text-xs font-semibold text-sepia-900 dark:text-neon px-1 min-w-[100px] text-center">{{ calendarHeader }}</h3>
+                <button @click="nextDate" class="p-1.5 rounded-full hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+                  <ChevronRight class="size-3.5 text-sepia-600 dark:text-gray-300" />
+                </button>
+              </div>
+              <div class="flex items-center gap-0.5">
+                <button v-if="!isCurrentPeriodToday" @click="goToToday"
+                  class="text-[10px] text-primary-600 dark:text-primary-400 hover:underline font-medium px-1">
+                  {{ $t('common.today') }}
+                </button>
+                <button @click="configStore.toggleShowAmount"
+                  class="p-1.5 rounded-full text-sepia-600 dark:text-gray-400 hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+                  <Unlock v-if="configStore.showAmount" class="size-3" />
+                  <Lock v-else class="size-3" />
+                </button>
+              </div>
+            </div>
+
+            <!-- Week day headers -->
+            <div class="grid grid-cols-7 px-2 mb-1">
+              <div v-for="day in WEEK_DAYS" :key="day"
+                class="flex items-center justify-center h-5 text-[9px] font-medium text-sepia-400 dark:text-gray-500">
+                {{ day }}
+              </div>
+            </div>
+
+            <!-- Day cells -->
+            <div class="grid grid-cols-7 px-2 gap-y-0.5">
+              <div v-for="(cell, i) in calendarDays" :key="i" class="flex items-center justify-center">
+                <button @click="!cell.isOverflow && selectCalendarDay(cell)" :class="[
+                  'relative w-6 h-6 rounded-full text-[10px] flex items-center justify-center transition-colors',
+                  cell.isOverflow
+                    ? 'text-sepia-300 dark:text-gray-600 cursor-default'
+                    : cell.isSelected
+                      ? 'bg-sepia-700 dark:bg-primary-600 text-white font-semibold'
+                      : cell.isToday
+                        ? 'text-primary-600 dark:text-primary-400 font-bold hover:bg-primary-50 dark:hover:bg-primary-900/30'
+                        : 'text-sepia-700 dark:text-gray-300 hover:bg-sepia-100 dark:hover:bg-gray-700',
+                ]">
+                  {{ cell.day }}
+                  <span v-if="cell.isToday" :class="[
+                    'absolute bottom-0.5 left-1/2 -translate-x-1/2 w-0.5 h-0.5 rounded-full',
+                    cell.isSelected ? 'bg-white/70' : 'bg-primary-500 dark:bg-primary-400',
+                  ]" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Getting Started Tips (75%) -->
+          <div class="flex-1 p-6 flex flex-col">
+            <p class="text-[10px] font-semibold uppercase tracking-widest text-sepia-400 dark:text-gray-500 mb-6">
+              {{ $t('dashboard.gettingStarted.title') }}
+            </p>
+            <div class="grid grid-cols-2 gap-x-10 gap-y-7">
+              <router-link v-for="tip in gettingStartedTips" :key="tip.key" :to="tip.to"
+                class="flex items-start gap-4 group">
+                <div :class="['shrink-0 w-9 h-9 rounded-xl flex items-center justify-center', tip.iconBg]">
+                  <component :is="tip.icon" class="size-4" :class="tip.iconColor" />
+                </div>
+                <div class="min-w-0">
+                  <p class="text-xs font-semibold text-sepia-800 dark:text-gray-200 group-hover:text-sepia-900 dark:group-hover:text-white transition-colors leading-tight">
+                    {{ $t(`dashboard.gettingStarted.${tip.key}.title`) }}
+                  </p>
+                  <p class="text-[11px] text-sepia-400 dark:text-gray-500 mt-1 leading-relaxed line-clamp-2">
+                    {{ $t(`dashboard.gettingStarted.${tip.key}.desc`) }}
+                  </p>
+                </div>
+              </router-link>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Mobile: Compact Navigation -->
+        <div class="flex items-center justify-between lg:hidden card p-2 rounded-2xl mb-3">
           <div class="flex items-center gap-3 justify-start">
             <button @click="prevDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
               <ChevronLeft class="size-4 text-sepia-600 dark:text-gray-300" />
             </button>
-            <span class="text-xs italic text-sepia-600 dark:text-gray-300">
+            <button @click="openDatePicker" class="text-xs italic text-sepia-600 dark:text-gray-300 hover:text-sepia-900 dark:hover:text-white transition-colors">
               {{ readableDate }}
-            </span>
+            </button>
             <button @click="nextDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
               <ChevronRight class="size-4 text-sepia-600 dark:text-gray-300" />
             </button>
@@ -28,7 +114,7 @@
           <button @click="configStore.toggleShowAmount"
             class="p-2 rounded-full text-sepia-600 dark:text-gray-400 hover:bg-sepia-100 dark:hover:bg-gray-700 hover:text-sepia-700 dark:hover:text-gray-300 transition-colors">
             <Unlock v-if="configStore.showAmount" class="size-4" />
-            <lock v-else class="size-4" />
+            <Lock v-else class="size-4" />
           </button>
         </div>
         <div>
@@ -228,6 +314,46 @@
 
     <!-- Add Transaction Modals -->
     <TransactionModal v-model="showAddTransactionModal" :type="transactionType" @success="handleTransactionAdded" />
+
+    <!-- Mobile Date Picker Bottom Sheet -->
+    <Teleport to="body">
+      <Transition name="sheet">
+        <div v-if="showDatePicker"
+          class="lg:hidden fixed inset-0 bg-black/50 z-50 flex items-end"
+          @click.self="showDatePicker = false">
+          <div class="w-full bg-white dark:bg-gray-800 rounded-t-2xl p-4 shadow-xl">
+            <div class="w-12 h-1 bg-gray-200 dark:bg-gray-600 rounded-full mx-auto mb-4" />
+            <!-- Year navigation -->
+            <div class="flex items-center justify-between mb-4">
+              <button @click="pickerYear--"
+                class="p-2 rounded-full hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+                <ChevronLeft class="size-4 text-sepia-600 dark:text-gray-300" />
+              </button>
+              <span class="text-sm font-semibold text-sepia-900 dark:text-white">{{ pickerYear }}</span>
+              <button @click="pickerYear++"
+                class="p-2 rounded-full hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+                <ChevronRight class="size-4 text-sepia-600 dark:text-gray-300" />
+              </button>
+            </div>
+            <!-- Month grid -->
+            <div class="grid grid-cols-4 gap-2 mb-4">
+              <button v-for="(month, i) in MONTHS_SHORT" :key="i" @click="selectPickerMonth(i)" :class="[
+                'py-2.5 rounded-xl text-sm font-medium transition-colors',
+                pickerYear === endDateSummary.getFullYear() && i === endDateSummary.getMonth()
+                  ? 'bg-sepia-700 dark:bg-primary-600 text-white'
+                  : 'text-sepia-700 dark:text-gray-300 hover:bg-sepia-100 dark:hover:bg-gray-700',
+              ]">
+                {{ month }}
+              </button>
+            </div>
+            <button @click="showDatePicker = false"
+              class="w-full py-2.5 rounded-xl text-sm font-medium text-sepia-600 dark:text-gray-400 bg-sepia-100 dark:bg-gray-700 hover:bg-sepia-200 dark:hover:bg-gray-600 transition-colors">
+              {{ $t('common.cancel') }}
+            </button>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </AppLayout>
 </template>
 
@@ -262,7 +388,9 @@ import {
   ChevronRight,
   Lock,
   Unlock,
-  TrendingUpDown
+  TrendingUpDown,
+  Goal,
+  BarChart3,
 } from 'lucide-vue-next';
 import { endOfDay, format, parseISO, subDays } from 'date-fns';
 import { reactive } from 'vue';
@@ -281,6 +409,100 @@ const showAddTransactionModal = ref(false);
 const transactionType = ref<TransactionType>('income');
 
 const endDateSummary = ref(endOfDay(new Date()));
+
+// Getting started tips
+const gettingStartedTips = [
+  { key: 'wallets',      to: '/wallets',      icon: Wallet,        iconBg: 'bg-purple-100 dark:bg-purple-900/40',  iconColor: 'text-purple-600 dark:text-purple-400' },
+  { key: 'transactions', to: '/transactions', icon: TrendingUpDown, iconBg: 'bg-blue-100 dark:bg-blue-900/40',    iconColor: 'text-blue-600 dark:text-blue-400' },
+  { key: 'budgets',      to: '/budgets',      icon: Goal,     iconBg: 'bg-success-100 dark:bg-success-900/40', iconColor: 'text-success-600 dark:text-success-400' },
+  { key: 'reports',      to: '/reports',      icon: BarChart3, iconBg: 'bg-warning-100 dark:bg-warning-900/40', iconColor: 'text-warning-600 dark:text-warning-400' },
+];
+
+// Calendar constants
+const WEEK_DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+// Calendar state
+interface CalendarCell { day: number; isToday: boolean; isSelected: boolean; isOverflow: boolean; }
+
+const isCurrentPeriodToday = computed(() => {
+  const today = new Date();
+  const end = endDateSummary.value;
+  return today.getFullYear() === end.getFullYear()
+    && today.getMonth() === end.getMonth()
+    && today.getDate() === end.getDate();
+});
+
+const calendarHeader = computed(() => format(endDateSummary.value, 'MMMM yyyy'));
+
+const calendarDays = computed((): CalendarCell[] => {
+  const month = endDateSummary.value.getMonth();
+  const year = endDateSummary.value.getFullYear();
+  const today = new Date();
+  const endDate = endDateSummary.value;
+  const firstWeekDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevMonthDays = new Date(year, month, 0).getDate();
+  const cells: CalendarCell[] = [];
+
+  // Leading days from previous month
+  for (let i = firstWeekDay - 1; i >= 0; i--)
+    cells.push({ day: prevMonthDays - i, isToday: false, isSelected: false, isOverflow: true });
+
+  // Current month days
+  for (let d = 1; d <= daysInMonth; d++) {
+    cells.push({
+      day: d,
+      isToday: today.getFullYear() === year && today.getMonth() === month && today.getDate() === d,
+      isSelected: endDate.getFullYear() === year && endDate.getMonth() === month && endDate.getDate() === d,
+      isOverflow: false,
+    });
+  }
+
+  // Trailing days from next month
+  const remainder = cells.length % 7;
+  if (remainder !== 0) {
+    for (let d = 1; d <= 7 - remainder; d++)
+      cells.push({ day: d, isToday: false, isSelected: false, isOverflow: true });
+  }
+
+  return cells;
+});
+
+const selectCalendarDay = (cell: CalendarCell) => {
+  endDateSummary.value = endOfDay(new Date(endDateSummary.value.getFullYear(), endDateSummary.value.getMonth(), cell.day));
+  const iso = endDateSummary.value.toISOString();
+  walletsStore.fetchWallets(true, undefined, iso);
+  setSummary({ endDate: iso, includeHidden: configStore.includeHiddenWalletsInCalculation });
+};
+
+const goToToday = () => {
+  endDateSummary.value = endOfDay(new Date());
+  const iso = endDateSummary.value.toISOString();
+  walletsStore.fetchWallets(true, undefined, iso);
+  setSummary({ endDate: iso, includeHidden: configStore.includeHiddenWalletsInCalculation });
+};
+
+// Mobile date picker
+const showDatePicker = ref(false);
+const pickerYear = ref(new Date().getFullYear());
+
+const openDatePicker = () => {
+  pickerYear.value = endDateSummary.value.getFullYear();
+  showDatePicker.value = true;
+};
+
+const selectPickerMonth = (monthIndex: number) => {
+  const firstDay = configStore.firstDayOfMonth;
+  const endDate = firstDay <= 1
+    ? new Date(pickerYear.value, monthIndex + 1, 0)
+    : new Date(pickerYear.value, monthIndex + 1, firstDay - 1);
+  endDateSummary.value = endOfDay(endDate);
+  const iso = endDateSummary.value.toISOString();
+  walletsStore.fetchWallets(true, undefined, iso);
+  setSummary({ endDate: iso, includeHidden: configStore.includeHiddenWalletsInCalculation });
+  showDatePicker.value = false;
+};
 
 // Carousel state
 const currentCardIndex = ref(0);
@@ -509,5 +731,23 @@ onMounted(async () => {
 .slide-fade-leave-to {
   opacity: 0;
   transform: scale(0.95);
+}
+
+/* Bottom sheet transition */
+.sheet-enter-active,
+.sheet-leave-active {
+  transition: opacity 0.2s ease;
+}
+.sheet-enter-active > div,
+.sheet-leave-active > div {
+  transition: transform 0.25s ease;
+}
+.sheet-enter-from,
+.sheet-leave-to {
+  opacity: 0;
+}
+.sheet-enter-from > div,
+.sheet-leave-to > div {
+  transform: translateY(100%);
 }
 </style>

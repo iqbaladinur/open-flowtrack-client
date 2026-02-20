@@ -40,6 +40,7 @@ export default {
     details: "Details",
     income: "income",
     expense: "expense",
+    today: "Today",
   },
 
   // Navigation & Layout
@@ -93,6 +94,13 @@ export default {
     recentTransactions: "Recent Transactions",
     noTransactionsYet: "No transactions yet",
     addFirstTransaction: "Add your first transaction",
+    gettingStarted: {
+      title: "Getting Started",
+      wallets:      { title: "Manage Wallets",       desc: "Add bank accounts, cash, or cards to track your balances." },
+      transactions: { title: "Record Transactions",  desc: "Log income and expenses to keep your finances up to date." },
+      budgets:      { title: "Set Budgets",           desc: "Create monthly budgets to control your spending habits." },
+      reports:      { title: "View Reports",          desc: "Analyze your spending patterns with detailed charts." },
+    },
   },
 
   // Wallets
