@@ -3,35 +3,32 @@
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
+        <div class="hidden lg:block">
           <h1 class="text-xl lg:text-3xl font-bold text-sepia-900 dark:text-neon">{{ $t('wallets.title') }}</h1>
-          <p class="text-sepia-600 dark:text-gray-400 mt-1 text-sm">
-            {{ $t('wallets.subtitle') }}
-          </p>
+          <p class="text-sepia-600 dark:text-gray-400 mt-1 text-sm">{{ $t('wallets.subtitle') }}</p>
         </div>
-        <div class="flex items-center gap-4 lg:gap-2 justify-between">
-          <div class="flex items-center gap-3 justify-start">
-            <button @click="prevDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
+        <div class="flex items-center gap-2 justify-between sm:justify-end w-full sm:w-auto">
+          <!-- Mobile: date nav inline -->
+          <div class="flex items-center gap-1 lg:hidden">
+            <button @click="prevDate" class="p-2 rounded-full btn-borderless">
               <ChevronLeft class="size-4 text-sepia-600 dark:text-gray-300" />
             </button>
-            <span class="text-xs italic text-sepia-600 dark:text-gray-300">
+            <button @click="openDatePicker"
+              class="text-xs italic text-sepia-600 dark:text-gray-300 hover:text-sepia-900 dark:hover:text-white transition-colors px-1">
               {{ readableDate }}
-            </span>
-            <button @click="nextDate" class="flex items-center btn-secondary p-2 rounded-full btn-borderless">
+            </button>
+            <button @click="nextDate" class="p-2 rounded-full btn-borderless">
               <ChevronRight class="size-4 text-sepia-600 dark:text-gray-300" />
             </button>
           </div>
-          <div class="flex items-center gap-2 justify-end">
+          <!-- Action buttons -->
+          <div class="flex items-center gap-2">
             <button @click="exportToJson" class="btn btn-secondary gap-2 flex items-center p-2">
               <Download class="size-4 text-sepia-600 dark:text-gray-300" />
             </button>
             <button @click="shareWallets" class="btn-secondary lg:hidden p-2" :disabled="loadingShare">
-              <span v-if="loadingShare" class="flex items-center gap-2">
-                <LoadingSpinner size="sm"/>
-              </span>
-              <span v-else class="flex items-center gap-2">
-                <Share2 class="size-4 text-sepia-600 dark:text-gray-300" />
-              </span>
+              <span v-if="loadingShare"><LoadingSpinner size="sm" /></span>
+              <span v-else><Share2 class="size-4 text-sepia-600 dark:text-gray-300" /></span>
             </button>
             <button @click="showAddModal = true" class="btn-primary hidden sm:flex flex-shrink-0 p-2">
               <Plus class="size-4" />
@@ -39,6 +36,154 @@
           </div>
         </div>
       </div>
+
+      <!-- Desktop: Calendar + Wallet Overview — unified card -->
+      <div class="hidden lg:flex card rounded-2xl overflow-hidden divide-x divide-sepia-100 dark:divide-gray-700/60">
+
+        <!-- Calendar (25%) -->
+        <div class="w-1/4 shrink-0 flex flex-col pt-4 pb-4">
+          <div class="flex items-center justify-between px-3 mb-3">
+            <div class="flex items-center gap-0.5">
+              <button @click="prevDate" class="p-1.5 rounded-full hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+                <ChevronLeft class="size-3.5 text-sepia-600 dark:text-gray-300" />
+              </button>
+              <h3 class="text-xs font-semibold text-sepia-900 dark:text-neon px-1 min-w-[100px] text-center">{{ calendarHeader }}</h3>
+              <button @click="nextDate" class="p-1.5 rounded-full hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+                <ChevronRight class="size-3.5 text-sepia-600 dark:text-gray-300" />
+              </button>
+            </div>
+            <div class="flex items-center gap-0.5">
+              <button v-if="!isCurrentPeriodToday" @click="goToToday"
+                class="text-[10px] text-primary-600 dark:text-primary-400 hover:underline font-medium px-1">
+                {{ $t('common.today') }}
+              </button>
+              <button @click="configStore.toggleShowAmount"
+                class="p-1.5 rounded-full text-sepia-600 dark:text-gray-400 hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+                <Unlock v-if="configStore.showAmount" class="size-3" />
+                <Lock v-else class="size-3" />
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-7 px-2 mb-1">
+            <div v-for="day in WEEK_DAYS" :key="day"
+              class="flex items-center justify-center h-5 text-[9px] font-medium text-sepia-400 dark:text-gray-500">
+              {{ day }}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-7 px-2 gap-y-0.5">
+            <div v-for="(cell, i) in calendarDays" :key="i" class="flex items-center justify-center">
+              <button @click="!cell.isOverflow && selectCalendarDay(cell)" :class="[
+                'relative w-6 h-6 rounded-full text-[10px] flex items-center justify-center transition-colors',
+                cell.isOverflow
+                  ? 'text-sepia-300 dark:text-gray-600 cursor-default'
+                  : cell.isSelected
+                    ? 'bg-sepia-700 dark:bg-primary-600 text-white font-semibold'
+                    : cell.isToday
+                      ? 'text-primary-600 dark:text-primary-400 font-bold hover:bg-primary-50 dark:hover:bg-primary-900/30'
+                      : 'text-sepia-700 dark:text-gray-300 hover:bg-sepia-100 dark:hover:bg-gray-700',
+              ]">
+                {{ cell.day }}
+                <span v-if="cell.isToday" :class="[
+                  'absolute bottom-0.5 left-1/2 -translate-x-1/2 w-0.5 h-0.5 rounded-full',
+                  cell.isSelected ? 'bg-white/70' : 'bg-primary-500 dark:bg-primary-400',
+                ]" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wallet Overview (75%) -->
+        <div class="flex-1 px-7 py-5 flex flex-col">
+          <!-- Label -->
+          <p class="text-[10px] font-semibold uppercase tracking-widest text-sepia-400 dark:text-gray-500 mb-5">
+            {{ $t('wallets.overview') }}
+          </p>
+
+          <!-- Hero: Total Balance -->
+          <div class="mb-3">
+            <p class="text-[10px] uppercase tracking-wide text-sepia-400 dark:text-gray-500 mb-1">{{ $t('wallets.totalBalance') }}</p>
+            <p class="text-3xl font-bold text-sepia-900 dark:text-white tracking-tight leading-none">
+              {{ configStore.showAmount ? configStore.formatCurrency(overviewTotalBalance) : '••••••' }}
+            </p>
+          </div>
+
+          <!-- Wallet distribution bar -->
+          <div v-if="topWallets.length > 0 && overviewTotalBalance > 0" class="flex h-1 rounded-full overflow-hidden gap-px mb-5">
+            <div v-for="(w, i) in topWallets" :key="w.id"
+              :style="{ width: `${Math.max((w.current_balance || 0) / overviewTotalBalance * 100, 1)}%`, backgroundColor: BAR_COLORS[i % BAR_COLORS.length] }"
+              class="min-w-[4px] transition-all" />
+          </div>
+          <div v-else class="h-1 rounded-full bg-sepia-100 dark:bg-gray-700 mb-5" />
+
+          <!-- Secondary stats -->
+          <div class="flex items-start gap-6 mt-auto">
+            <!-- Net Change -->
+            <div>
+              <p class="text-[10px] uppercase tracking-wide text-sepia-400 dark:text-gray-500 mb-2">{{ $t('wallets.netChange') }}</p>
+              <span :class="['inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold',
+                overviewNetChange >= 0
+                  ? 'bg-success-100 dark:bg-success-900/40 text-success-700 dark:text-success-400'
+                  : 'bg-error-100 dark:bg-error-900/40 text-error-700 dark:text-error-400']">
+                <TrendingUp v-if="overviewNetChange >= 0" class="size-3" />
+                <TrendingDown v-else class="size-3" />
+                {{ configStore.showAmount ? `${overviewNetChange >= 0 ? '+' : ''}${configStore.formatCurrency(overviewNetChange)}` : '••••••' }}
+              </span>
+            </div>
+
+            <div class="w-px self-stretch bg-sepia-100 dark:bg-gray-700/60 shrink-0" />
+
+            <!-- Active wallets -->
+            <div>
+              <p class="text-[10px] uppercase tracking-wide text-sepia-400 dark:text-gray-500 mb-1.5">{{ $t('wallets.active') }}</p>
+              <p class="text-xl font-bold text-sepia-900 dark:text-white">{{ activeWalletCount }}</p>
+            </div>
+
+            <!-- Hidden wallets -->
+            <div>
+              <p class="text-[10px] uppercase tracking-wide text-sepia-400 dark:text-gray-500 mb-1.5">{{ $t('wallets.hidden') }}</p>
+              <p class="text-xl font-bold text-sepia-400 dark:text-gray-500">{{ hiddenWalletCount }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile: Date Picker Bottom Sheet -->
+      <Teleport to="body">
+        <Transition name="sheet">
+          <div v-if="showDatePicker"
+            class="lg:hidden fixed inset-0 bg-black/50 z-50 flex items-end"
+            @click.self="showDatePicker = false">
+            <div class="w-full bg-white dark:bg-gray-800 rounded-t-2xl p-4 shadow-xl">
+              <div class="w-12 h-1 bg-gray-200 dark:bg-gray-600 rounded-full mx-auto mb-4" />
+              <div class="flex items-center justify-between mb-4">
+                <button @click="pickerYear--" class="p-2 rounded-full hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+                  <ChevronLeft class="size-4 text-sepia-600 dark:text-gray-300" />
+                </button>
+                <span class="text-sm font-semibold text-sepia-900 dark:text-white">{{ pickerYear }}</span>
+                <button @click="pickerYear++" class="p-2 rounded-full hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+                  <ChevronRight class="size-4 text-sepia-600 dark:text-gray-300" />
+                </button>
+              </div>
+              <div class="grid grid-cols-4 gap-2 mb-4">
+                <button v-for="(month, i) in MONTHS_SHORT" :key="i" @click="selectPickerMonth(i)" :class="[
+                  'py-2.5 rounded-xl text-sm font-medium transition-colors',
+                  pickerYear === endDate.getFullYear() && i === endDate.getMonth()
+                    ? 'bg-sepia-700 dark:bg-primary-600 text-white'
+                    : 'text-sepia-700 dark:text-gray-300 hover:bg-sepia-100 dark:hover:bg-gray-700',
+                ]">
+                  {{ month }}
+                </button>
+              </div>
+              <button @click="showDatePicker = false"
+                class="w-full py-2.5 rounded-xl text-sm font-medium text-sepia-600 dark:text-gray-400 bg-sepia-100 dark:bg-gray-700 hover:bg-sepia-200 dark:hover:bg-gray-600 transition-colors">
+                {{ $t('common.cancel') }}
+              </button>
+            </div>
+          </div>
+        </Transition>
+      </Teleport>
 
       <!-- Wallets Grid -->
       <div v-if="walletsStore.loading" class="card p-8">
@@ -168,6 +313,10 @@ import {
   EyeOff,
   List,
   Tag,
+  Lock,
+  Unlock,
+  TrendingUp,
+  TrendingDown,
 } from 'lucide-vue-next';
 import { useConfigStore } from '@/stores/config';
 
@@ -180,6 +329,111 @@ const selectedWallet = ref<Wallet | null>(null);
 const loadingShare = ref<boolean>(false);
 const endDate = ref<Date>(new Date());
 const configStore = useConfigStore();
+
+// Calendar constants
+const WEEK_DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+interface CalendarCell { day: number; isToday: boolean; isSelected: boolean; isOverflow: boolean; }
+
+const isCurrentPeriodToday = computed(() => {
+  const today = new Date();
+  const end = endDate.value;
+  return today.getFullYear() === end.getFullYear()
+    && today.getMonth() === end.getMonth()
+    && today.getDate() === end.getDate();
+});
+
+const calendarHeader = computed(() => format(endDate.value, 'MMMM yyyy'));
+
+const calendarDays = computed((): CalendarCell[] => {
+  const month = endDate.value.getMonth();
+  const year = endDate.value.getFullYear();
+  const today = new Date();
+  const selected = endDate.value;
+  const firstWeekDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevMonthDays = new Date(year, month, 0).getDate();
+  const cells: CalendarCell[] = [];
+
+  // Leading days from previous month
+  for (let i = firstWeekDay - 1; i >= 0; i--)
+    cells.push({ day: prevMonthDays - i, isToday: false, isSelected: false, isOverflow: true });
+
+  // Current month days
+  for (let d = 1; d <= daysInMonth; d++) {
+    cells.push({
+      day: d,
+      isToday: today.getFullYear() === year && today.getMonth() === month && today.getDate() === d,
+      isSelected: selected.getFullYear() === year && selected.getMonth() === month && selected.getDate() === d,
+      isOverflow: false,
+    });
+  }
+
+  // Trailing days from next month
+  const remainder = cells.length % 7;
+  if (remainder !== 0) {
+    for (let d = 1; d <= 7 - remainder; d++)
+      cells.push({ day: d, isToday: false, isSelected: false, isOverflow: true });
+  }
+
+  return cells;
+});
+
+const selectCalendarDay = (cell: CalendarCell) => {
+  endDate.value = endOfDay(new Date(endDate.value.getFullYear(), endDate.value.getMonth(), cell.day));
+  getWalletsData();
+};
+
+const goToToday = () => {
+  endDate.value = endOfDay(new Date());
+  getWalletsData();
+};
+
+// Mobile date picker
+const showDatePicker = ref(false);
+const pickerYear = ref(new Date().getFullYear());
+
+const openDatePicker = () => {
+  pickerYear.value = endDate.value.getFullYear();
+  showDatePicker.value = true;
+};
+
+const selectPickerMonth = (monthIndex: number) => {
+  const firstDay = configStore.firstDayOfMonth;
+  const newEnd = firstDay <= 1
+    ? new Date(pickerYear.value, monthIndex + 1, 0)
+    : new Date(pickerYear.value, monthIndex + 1, firstDay - 1);
+  endDate.value = endOfDay(newEnd);
+  showDatePicker.value = false;
+  getWalletsData();
+};
+
+// Wallet overview stats
+const BAR_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
+
+const topWallets = computed(() =>
+  walletsStore.wallets
+    .filter(w => (w.current_balance || 0) > 0)
+    .sort((a, b) => (b.current_balance || 0) - (a.current_balance || 0))
+    .slice(0, 8)
+);
+
+const overviewTotalBalance = computed(() =>
+  walletsStore.wallets.reduce((sum, w) => sum + (w.current_balance || 0), 0)
+);
+
+const overviewNetChange = computed(() =>
+  walletsStore.wallets.reduce((sum, w) => sum + ((w.current_balance || 0) - (w.initial_balance || 0)), 0)
+);
+
+const activeWalletCount = computed(() =>
+  walletsStore.wallets.filter(w => !w.hidden).length
+);
+
+const hiddenWalletCount = computed(() =>
+  walletsStore.wallets.filter(w => w.hidden).length
+);
 
 const wallets = computed(() => {
   return walletsStore.wallets
@@ -400,3 +654,23 @@ onMounted(() => {
   getWalletsData();
 });
 </script>
+
+<style scoped>
+/* Bottom sheet transition */
+.sheet-enter-active,
+.sheet-leave-active {
+  transition: opacity 0.2s ease;
+}
+.sheet-enter-active > div,
+.sheet-leave-active > div {
+  transition: transform 0.25s ease;
+}
+.sheet-enter-from,
+.sheet-leave-to {
+  opacity: 0;
+}
+.sheet-enter-from > div,
+.sheet-leave-to > div {
+  transform: translateY(100%);
+}
+</style>
