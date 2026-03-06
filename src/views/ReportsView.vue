@@ -419,6 +419,34 @@
                   }">
                     {{ configStore.formatCurrency(Math.abs(budgetSummary.remaining)) }}
                   </p>
+                  <button @click="showPotentialSaving = !showPotentialSaving"
+                    class="mt-1 flex items-center gap-1 text-xs text-sepia-500 dark:text-gray-400 hover:text-sepia-700 dark:hover:text-gray-300 transition-colors">
+                    <ChevronDown class="size-3 transition-transform" :class="{ 'rotate-180': showPotentialSaving }" />
+                    <span>Detail</span>
+                  </button>
+                  <div v-if="showPotentialSaving" class="mt-2 space-y-1 text-xs text-sepia-500 dark:text-gray-400 border-t border-sepia-200 dark:border-gray-700 pt-2">
+                    <div class="flex justify-between">
+                      <span>{{ $t('reports.periodNetIncome') }}</span>
+                      <span :class="{
+                        'text-success-600 dark:text-success-400': summary.realNet > 0,
+                        'text-error-600 dark:text-error-400': summary.realNet < 0,
+                      }">{{ configStore.formatCurrency(summary.realNet) }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span>{{ $t('reports.budgetRemaining') }}</span>
+                      <span :class="{
+                        'text-success-600 dark:text-success-400': budgetSummary.remaining >= 0,
+                        'text-error-600 dark:text-error-400': budgetSummary.remaining < 0,
+                      }">-{{ configStore.formatCurrency(Math.abs(budgetSummary.remaining)) }}</span>
+                    </div>
+                    <div class="flex justify-between font-semibold border-t border-sepia-200 dark:border-gray-700 pt-1">
+                      <span>{{ $t('reports.potentialSaving') }}</span>
+                      <span :class="{
+                        'text-success-600 dark:text-success-400': (summary.realNet - budgetSummary.remaining) > 0,
+                        'text-error-600 dark:text-error-400': (summary.realNet - budgetSummary.remaining) <= 0,
+                      }">{{ configStore.formatCurrency(summary.realNet - budgetSummary.remaining) }}</span>
+                    </div>
+                  </div>
                 </div>
                 <div class="p-3 bg-sepia-50 dark:bg-gray-800 rounded-lg">
                   <p class="text-xs text-sepia-500 dark:text-gray-400 mb-1">{{ $t('reports.coverageRatio') }}</p>
@@ -552,6 +580,7 @@ const categoryReportType = ref<'income' | 'expense'>('expense');
 const chartType = ref<ChartType>('bar');
 const budgetSortBy = ref<'name' | 'usage' | 'spent' | 'remaining'>('usage');
 const showNetBreakdown = ref(false);
+const showPotentialSaving = ref(false);
 const loading = ref(false);
 const transactions = ref<Transaction[]>([]);
 

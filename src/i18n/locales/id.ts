@@ -326,6 +326,7 @@ export default {
     budgetVsIncomeComparison: "Perbandingan Anggaran vs Pendapatan",
     periodNetIncome: "Pendapatan Bersih Periode",
     budgetRemaining: "Sisa Anggaran",
+    potentialSaving: "Potensi Tabungan",
     coverageRatio: "Rasio Cakupan",
     healthStatus: "Status Kesehatan",
     healthy: "Sehat",

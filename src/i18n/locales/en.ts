@@ -325,6 +325,7 @@ export default {
     budgetVsIncomeComparison: "Budget vs Income Comparison",
     periodNetIncome: "Period Net Income",
     budgetRemaining: "Budget Remaining",
+    potentialSaving: "Potential Saving",
     coverageRatio: "Coverage Ratio",
     healthStatus: "Health Status",
     healthy: "Healthy",
