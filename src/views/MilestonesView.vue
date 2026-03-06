@@ -89,38 +89,38 @@
 
       <!-- Timeline View -->
       <div v-else class="relative max-w-6xl mx-auto">
-        <!-- Timeline Line (Centered) -->
-        <div class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700 -translate-x-1/2" />
+        <!-- Timeline Line (Mobile: left, sm+: centered) -->
+        <div class="absolute left-5 sm:left-1/2 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700 -translate-x-1/2" />
 
         <!-- Timeline Start Circle -->
-        <div class="absolute left-1/2 top-0 -translate-x-1/2 z-10">
+        <div class="absolute left-5 sm:left-1/2 top-0 -translate-x-1/2 z-10">
           <div class="w-4 h-4 rounded-full bg-gray-300 dark:bg-gray-600 border-4 border-white dark:border-gray-900" />
         </div>
 
         <!-- Timeline End Circle -->
-        <div class="absolute left-1/2 bottom-0 -translate-x-1/2 z-10">
+        <div class="absolute left-5 sm:left-1/2 bottom-0 -translate-x-1/2 z-10">
           <div class="w-4 h-4 rounded-full bg-gray-300 dark:bg-gray-600 border-4 border-white dark:border-gray-900" />
         </div>
 
         <!-- Timeline Items -->
-        <div class="space-y-6 sm:space-y-8 md:space-y-12">
+        <div class="space-y-4 sm:space-y-8 md:space-y-12">
           <div
             v-for="(milestone, index) in sortedMilestones"
             :key="milestone.id"
             class="relative"
           >
-            <!-- Timeline Dot (Centered) -->
-            <div class="absolute left-1/2 top-4 sm:top-5 md:top-6 flex items-center justify-center -translate-x-1/2 z-10">
+            <!-- Timeline Dot (Mobile: left, sm+: centered) -->
+            <div class="absolute left-5 sm:left-1/2 top-4 sm:top-5 md:top-6 flex items-center justify-center -translate-x-1/2 z-10">
               <div
                 class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border-2 border-white dark:border-gray-900"
                 :class="getTimelineDotClass(milestone.status)"
               />
             </div>
 
-            <!-- Timeline Content (Zigzag: even=left, odd=right) -->
+            <!-- Timeline Content (Mobile: all right, sm+: zigzag) -->
             <div
-              class="w-[calc(50%-1rem)] sm:w-[calc(50%-1.5rem)] md:w-[calc(50%-2rem)]"
-              :class="index % 2 === 0 ? 'mr-auto pr-4 sm:pr-6 md:pr-8' : 'ml-auto pl-4 sm:pl-6 md:pl-8'"
+              class="pl-10 sm:pl-0 sm:w-[calc(50%-1.5rem)] md:w-[calc(50%-2rem)]"
+              :class="index % 2 === 0 ? 'sm:mr-auto sm:pr-6 md:pr-8' : 'sm:ml-auto sm:pl-6 md:pl-8'"
             >
               <MilestoneTimelineCard
                 :milestone="milestone"
