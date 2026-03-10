@@ -225,6 +225,18 @@ async function shareSlide() {
   sharing.value = true
   clearInterval(progressTimer!)
 
+  // html2canvas captures CSS animations at their initial keyframe (opacity:0),
+  // not the completed fill-mode state. Inject a style that forces all slide
+  // animation classes to their final visible state before capture.
+  const captureStyle = document.createElement('style')
+  captureStyle.textContent = `
+    .animate-fade-up { animation: none !important; opacity: 1 !important; transform: translateY(0) !important; }
+    .animate-pop     { animation: none !important; opacity: 1 !important; transform: scale(1) !important; }
+  `
+  document.head.appendChild(captureStyle)
+  // Wait 2 frames so the overridden styles are fully applied before capture
+  await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
+
   try {
     const canvas = await html2canvas(slideAreaEl.value, {
       useCORS: true,
@@ -257,6 +269,7 @@ async function shareSlide() {
   } catch {
     // user cancelled or browser denied — silent
   } finally {
+    document.head.removeChild(captureStyle)
     sharing.value = false
     startProgress()
   }
