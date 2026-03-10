@@ -6,7 +6,10 @@
       <p class="text-red-400 text-xs font-mono tracking-widest uppercase mb-8">Spending</p>
 
       <p class="text-white/40 text-sm mb-2">And you spent</p>
-      <p class="text-5xl lg:text-6xl font-bold text-red-400 leading-tight mb-2 tabular-nums">
+      <p
+        class="font-bold text-red-400 leading-tight mb-2 tabular-nums break-all"
+        :class="amountSizeClass"
+      >
         {{ displayAmount }}
       </p>
       <p class="text-white/30 text-sm mb-10">in total expenses</p>
@@ -17,7 +20,7 @@
           <p class="text-white/40 text-xs mb-2">Saving rate</p>
           <div class="flex items-end gap-2 mb-1">
             <p
-              class="text-4xl font-bold tabular-nums"
+              class="text-3xl font-bold tabular-nums"
               :class="savingRateColor"
             >
               {{ data.expense.savingRate.toFixed(1) }}%
@@ -38,7 +41,7 @@
         <!-- Busiest day -->
         <div :class="{ 'animate-fade-up': mounted }" style="animation-delay: 600ms">
           <p class="text-white/40 text-xs mb-1">Most expenses on</p>
-          <p class="text-2xl font-bold text-orange-300">{{ data.expense.busiestDayOfWeek }}</p>
+          <p class="text-xl font-bold text-orange-300">{{ data.expense.busiestDayOfWeek }}</p>
           <p class="text-white/30 text-xs mt-1">{{ data.expense.busiestDayCount }} transactions</p>
         </div>
       </div>
@@ -54,6 +57,15 @@ const props = defineProps<{ data: WrappedData; config: any }>()
 
 const mounted = ref(false)
 const displayAmount = ref(props.config.formatCurrency(0))
+
+const amountSizeClass = computed(() => {
+  const formatted = props.config.formatCurrency(props.data.expense.total)
+  if (formatted.length > 18) return 'text-xl sm:text-2xl lg:text-3xl'
+  if (formatted.length > 15) return 'text-2xl sm:text-3xl lg:text-4xl'
+  if (formatted.length > 12) return 'text-3xl sm:text-4xl lg:text-5xl'
+  if (formatted.length > 9)  return 'text-4xl sm:text-5xl lg:text-6xl'
+  return 'text-5xl sm:text-6xl lg:text-7xl'
+})
 
 const savingRateColor = computed(() => {
   const r = props.data.expense.savingRate

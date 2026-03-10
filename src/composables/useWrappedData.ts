@@ -233,7 +233,7 @@ export function useWrappedData() {
     try {
       const [transactions] = await Promise.all([
         transactionsStore.fetchTransactions({ start_date: startDate, end_date: endDate }, true, true),
-        walletsStore.fetchWallets(true),
+        walletsStore.fetchWallets(true, undefined, endDate),
         milestonesStore.fetchMilestones(),
       ])
 

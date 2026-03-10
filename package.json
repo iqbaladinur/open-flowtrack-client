@@ -16,6 +16,7 @@
     "cropperjs": "^2.1.0",
     "date-fns": "^4.1.0",
     "echarts": "^6.0.0",
+    "html2canvas": "^1.4.1",
     "lucide-vue-next": "^0.562.0",
     "nprogress": "^0.2.0",
     "pinia": "^3.0.4",

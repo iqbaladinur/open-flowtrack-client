@@ -6,7 +6,10 @@
       <p class="text-emerald-400 text-xs font-mono tracking-widest uppercase mb-8">Income</p>
 
       <p class="text-white/40 text-sm mb-2">This year, you earned</p>
-      <p class="text-5xl lg:text-6xl font-bold text-emerald-400 leading-tight mb-2 tabular-nums">
+      <p
+        class="font-bold text-emerald-400 leading-tight mb-2 tabular-nums break-all"
+        :class="amountSizeClass"
+      >
         {{ displayAmount }}
       </p>
       <p class="text-white/30 text-sm mb-10">total income in {{ data.period.year }}</p>
@@ -14,12 +17,12 @@
       <div class="grid grid-cols-2 gap-6">
         <div :class="{ 'animate-fade-up': mounted }" style="animation-delay: 500ms">
           <p class="text-white/40 text-xs mb-1">Best month</p>
-          <p class="text-3xl font-bold text-emerald-300">{{ data.income.peakMonth }}</p>
-          <p class="text-white/30 text-xs mt-1">{{ config.formatCurrency(data.income.peakAmount) }}</p>
+          <p class="text-2xl font-bold text-emerald-300">{{ data.income.peakMonth }}</p>
+          <p class="text-white/30 text-xs mt-1 tabular-nums">{{ config.formatCurrency(data.income.peakAmount) }}</p>
         </div>
         <div :class="{ 'animate-fade-up': mounted }" style="animation-delay: 700ms">
           <p class="text-white/40 text-xs mb-1">Monthly avg</p>
-          <p class="text-2xl font-bold text-emerald-300">
+          <p class="text-lg font-bold text-emerald-300 tabular-nums break-all">
             {{ config.formatCurrency(data.income.total / 12) }}
           </p>
           <p class="text-white/30 text-xs mt-1">per month</p>
@@ -30,13 +33,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import type { WrappedData } from '@/composables/useWrappedData'
 
 const props = defineProps<{ data: WrappedData; config: any }>()
 
 const mounted = ref(false)
 const displayAmount = ref(props.config.formatCurrency(0))
+
+const amountSizeClass = computed(() => {
+  const formatted = props.config.formatCurrency(props.data.income.total)
+  if (formatted.length > 18) return 'text-xl sm:text-2xl lg:text-3xl'
+  if (formatted.length > 15) return 'text-2xl sm:text-3xl lg:text-4xl'
+  if (formatted.length > 12) return 'text-3xl sm:text-4xl lg:text-5xl'
+  if (formatted.length > 9)  return 'text-4xl sm:text-5xl lg:text-6xl'
+  return 'text-5xl sm:text-6xl lg:text-7xl'
+})
 
 function countUpCurrency(target: number, duration = 1500) {
   const start = performance.now()

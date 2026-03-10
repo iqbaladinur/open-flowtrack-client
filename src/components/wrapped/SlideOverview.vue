@@ -9,9 +9,9 @@
       <!-- Big stat -->
       <div class="mb-10">
         <p class="text-white/40 text-sm mb-1">You made</p>
-        <div class="flex items-end gap-3">
-          <span class="text-7xl lg:text-8xl font-bold text-white tabular-nums">{{ displayCount }}</span>
-          <span class="text-2xl text-white/60 mb-3">transactions</span>
+        <div class="flex items-end gap-2 flex-wrap">
+          <span class="text-5xl sm:text-6xl lg:text-8xl font-bold text-white tabular-nums">{{ displayCount }}</span>
+          <span class="text-xl sm:text-2xl text-white/60 mb-1 sm:mb-2 lg:mb-3">transactions</span>
         </div>
       </div>
 
@@ -19,7 +19,7 @@
       <div class="grid grid-cols-2 gap-6">
         <div :class="{ 'animate-fade-up': mounted }" style="animation-delay: 400ms">
           <p class="text-white/40 text-xs mb-1">Active days</p>
-          <p class="text-3xl font-bold text-blue-300">{{ data.overview.activeDays }}</p>
+          <p class="text-2xl font-bold text-blue-300">{{ data.overview.activeDays }}</p>
           <p class="text-white/30 text-xs mt-1">days you recorded</p>
         </div>
         <div :class="{ 'animate-fade-up': mounted }" style="animation-delay: 600ms">

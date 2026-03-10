@@ -60,9 +60,11 @@ const formattedDate = computed(() => {
 // Shrink font for very large numbers
 const amountSizeClass = computed(() => {
   const formatted = props.config.formatCurrency(props.data.biggestExpense?.amount ?? 0)
-  if (formatted.length > 16) return 'text-4xl lg:text-5xl'
-  if (formatted.length > 12) return 'text-5xl lg:text-6xl'
-  return 'text-6xl lg:text-7xl'
+  if (formatted.length > 18) return 'text-xl sm:text-2xl lg:text-3xl'
+  if (formatted.length > 15) return 'text-2xl sm:text-3xl lg:text-4xl'
+  if (formatted.length > 12) return 'text-3xl sm:text-4xl lg:text-5xl'
+  if (formatted.length > 9)  return 'text-4xl sm:text-5xl lg:text-6xl'
+  return 'text-5xl sm:text-6xl lg:text-7xl'
 })
 
 onMounted(() => setTimeout(() => (mounted.value = true), 100))

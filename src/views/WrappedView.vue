@@ -41,13 +41,35 @@
         <X class="w-4 h-4" />
       </button>
 
-      <!-- Year badge -->
-      <span class="fixed top-7 left-4 z-50 text-xs font-mono text-white/30">
-        {{ data.period.year }}
-      </span>
+      <!-- Year picker -->
+      <div class="fixed top-7 left-4 z-50">
+        <button
+          @click.stop="showYearPicker = !showYearPicker"
+          class="flex items-center gap-1 text-xs font-mono text-white/40 hover:text-white/70 transition-colors"
+        >
+          {{ selectedYear }}
+          <ChevronDown class="w-3 h-3" :class="{ 'rotate-180': showYearPicker }" style="transition: transform 0.2s" />
+        </button>
+        <Transition name="dropdown">
+          <div
+            v-if="showYearPicker"
+            class="absolute top-6 left-0 bg-black/80 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden py-1 min-w-[80px]"
+          >
+            <button
+              v-for="yr in availableYears"
+              :key="yr"
+              @click.stop="changeYear(yr)"
+              class="w-full text-left px-4 py-2 text-xs font-mono transition-colors"
+              :class="yr === selectedYear ? 'text-white bg-white/10' : 'text-white/50 hover:text-white hover:bg-white/5'"
+            >
+              {{ yr }}
+            </button>
+          </div>
+        </Transition>
+      </div>
 
       <!-- Slide area — tap zones are layered above content but below UI chrome -->
-      <div class="absolute inset-0">
+      <div ref="slideAreaEl" class="absolute inset-0">
         <Transition :name="transitionName" mode="out-in">
           <component
             :is="slides[currentSlide]"
@@ -60,10 +82,20 @@
       </div>
 
       <!-- Tap zones (invisible, on top of slides) -->
-      <div class="fixed inset-0 z-40 flex">
+      <div class="fixed inset-0 z-40 flex" :class="{ 'pointer-events-none': sharing }">
         <div class="w-1/3 h-full cursor-pointer" @click="prevSlide" />
         <div class="w-2/3 h-full cursor-pointer" @click="nextSlide" />
       </div>
+
+      <!-- Share button (always visible, bottom-right) -->
+      <button
+        @click.stop="shareSlide"
+        :disabled="sharing"
+        class="fixed bottom-6 right-4 lg:bottom-8 lg:right-8 z-50 flex items-center gap-1.5 px-3 py-2 rounded-full bg-white/15 hover:bg-white/25 active:bg-white/30 text-white text-xs font-medium transition-colors backdrop-blur-sm border border-white/10 disabled:opacity-50"
+      >
+        <component :is="sharing ? Loader2 : Share2" class="w-3.5 h-3.5" :class="{ 'animate-spin': sharing }" />
+        <span>{{ sharing ? 'Saving...' : 'Share' }}</span>
+      </button>
 
       <!-- Desktop navigation (above tap zones) -->
       <div class="hidden lg:flex fixed bottom-10 left-0 right-0 z-50 justify-center items-center gap-6 pointer-events-none">
@@ -88,10 +120,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, markRaw } from 'vue'
+import { ref, computed, onMounted, onUnmounted, markRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSwipe } from '@vueuse/core'
-import { X, ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { X, ChevronLeft, ChevronRight, ChevronDown, Share2, Loader2 } from 'lucide-vue-next'
+import html2canvas from 'html2canvas'
 import { useWrappedData, useWrappedAvailability } from '@/composables/useWrappedData'
 import { useConfigStore } from '@/stores/config'
 
@@ -123,9 +156,20 @@ const { defaultYear } = useWrappedAvailability()
 const { loading, error, data, compute } = useWrappedData()
 
 const rootEl = ref<HTMLElement | null>(null)
+const slideAreaEl = ref<HTMLElement | null>(null)
 const currentSlide = ref(0)
 const transitionName = ref('slide-left')
 const slideProgress = ref(0)
+const sharing = ref(false)
+const showYearPicker = ref(false)
+const selectedYear = ref(defaultYear.value)
+
+const availableYears = computed(() => {
+  const current = new Date().getFullYear()
+  const years: number[] = []
+  for (let y = current; y >= 2020; y--) years.push(y)
+  return years
+})
 
 const SLIDE_DURATION = 10_000
 let progressTimer: ReturnType<typeof setInterval> | null = null
@@ -166,25 +210,86 @@ useSwipe(rootEl, {
   threshold: 50,
 })
 
+async function changeYear(year: number) {
+  showYearPicker.value = false
+  if (year === selectedYear.value) return
+  selectedYear.value = year
+  currentSlide.value = 0
+  clearInterval(progressTimer!)
+  await compute(year)
+  startProgress()
+}
+
+async function shareSlide() {
+  if (!slideAreaEl.value || sharing.value) return
+  sharing.value = true
+  clearInterval(progressTimer!)
+
+  try {
+    const canvas = await html2canvas(slideAreaEl.value, {
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#0b0b18',
+      scale: 2,
+    })
+
+    const blob = await new Promise<Blob>((resolve, reject) =>
+      canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob failed')), 'image/png'),
+    )
+
+    const filename = `flowtrack-${data.value?.period.year}-wrapped-slide${currentSlide.value + 1}.png`
+    const file = new File([blob], filename, { type: 'image/png' })
+
+    if (navigator.share && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        title: `FlowTrack ${data.value?.period.year} Wrapped`,
+        text: 'Check out my financial year in review!',
+        files: [file],
+      })
+    } else {
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      a.click()
+      URL.revokeObjectURL(url)
+    }
+  } catch {
+    // user cancelled or browser denied — silent
+  } finally {
+    sharing.value = false
+    startProgress()
+  }
+}
+
 function onKeydown(e: KeyboardEvent) {
   if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide() }
   if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide() }
-  if (e.key === 'Escape') router.back()
+  if (e.key === 'Escape') {
+    if (showYearPicker.value) { showYearPicker.value = false; return }
+    router.back()
+  }
+}
+
+function onDocClick() {
+  if (showYearPicker.value) showYearPicker.value = false
 }
 
 const loadData = async () => {
-  await compute(defaultYear.value)
+  await compute(selectedYear.value)
   startProgress()
 }
 
 onMounted(() => {
   loadData()
   window.addEventListener('keydown', onKeydown)
+  document.addEventListener('click', onDocClick)
 })
 
 onUnmounted(() => {
   clearInterval(progressTimer!)
   window.removeEventListener('keydown', onKeydown)
+  document.removeEventListener('click', onDocClick)
 })
 </script>
 
@@ -220,4 +325,10 @@ onUnmounted(() => {
 }
 .slide-right-enter-from { transform: translateX(-100%); opacity: 0; }
 .slide-right-leave-to   { transform: translateX(30%); opacity: 0; }
+
+/* Year picker dropdown */
+.dropdown-enter-active,
+.dropdown-leave-active { transition: opacity 0.15s ease, transform 0.15s ease; }
+.dropdown-enter-from,
+.dropdown-leave-to     { opacity: 0; transform: translateY(-4px); }
 </style>

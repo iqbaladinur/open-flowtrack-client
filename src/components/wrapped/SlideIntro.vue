@@ -10,10 +10,10 @@
     <!-- Content -->
     <div class="relative z-10 flex flex-col items-center gap-6">
       <div
-        class="w-20 h-20 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center"
+        class="w-20 h-20 rounded-2xl bg-green-500 border border-emerald-500/40 flex items-center justify-center"
         :class="{ 'animate-pop': mounted }"
       >
-        <TrendingUp class="w-10 h-10 text-emerald-400" />
+        <TrendingUp class="w-10 h-10 text-white" />
       </div>
 
       <div :class="{ 'animate-fade-up': mounted }" style="animation-delay: 200ms">

@@ -6,16 +6,16 @@
       <p class="text-teal-400 text-xs font-mono tracking-widest uppercase mb-6">Month by Month</p>
 
       <!-- Best / Worst month callout -->
-      <div class="flex gap-6 mb-8" :class="{ 'animate-fade-up': mounted }">
-        <div>
+      <div class="flex gap-4 mb-8" :class="{ 'animate-fade-up': mounted }">
+        <div class="min-w-0 flex-1">
           <p class="text-white/30 text-xs mb-1">Best month</p>
-          <p class="text-xl font-bold text-teal-300">{{ bestMonth.label }}</p>
-          <p class="text-white/40 text-xs">+{{ config.formatCurrency(bestMonth.net) }}</p>
+          <p class="text-lg font-bold text-teal-300">{{ bestMonth.label }}</p>
+          <p class="text-white/40 text-xs tabular-nums truncate">+{{ config.formatCurrency(bestMonth.net) }}</p>
         </div>
-        <div v-if="worstMonth.net < 0">
+        <div v-if="worstMonth.net < 0" class="min-w-0 flex-1">
           <p class="text-white/30 text-xs mb-1">Toughest month</p>
-          <p class="text-xl font-bold text-red-400">{{ worstMonth.label }}</p>
-          <p class="text-white/40 text-xs">{{ config.formatCurrency(worstMonth.net) }}</p>
+          <p class="text-lg font-bold text-red-400">{{ worstMonth.label }}</p>
+          <p class="text-white/40 text-xs tabular-nums truncate">{{ config.formatCurrency(worstMonth.net) }}</p>
         </div>
       </div>
 

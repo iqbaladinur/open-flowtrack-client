@@ -13,14 +13,14 @@
           :class="{ 'animate-fade-up': mounted }"
           :style="{ animationDelay: `${i * 120}ms` }"
         >
-          <div class="flex items-center justify-between mb-1.5">
-            <div class="flex items-center gap-2">
-              <span class="text-white/30 text-xs w-4">{{ i + 1 }}</span>
-              <span class="text-white text-sm font-medium">{{ cat.name }}</span>
+          <div class="flex items-center justify-between gap-2 mb-1.5">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="text-white/30 text-xs w-4 shrink-0">{{ i + 1 }}</span>
+              <span class="text-white text-sm font-medium truncate">{{ cat.name }}</span>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 shrink-0">
               <span class="text-white/40 text-xs">{{ cat.count }}x</span>
-              <span class="text-white text-sm font-semibold tabular-nums">
+              <span class="text-white text-xs sm:text-sm font-semibold tabular-nums">
                 {{ config.formatCurrency(cat.total) }}
               </span>
             </div>
