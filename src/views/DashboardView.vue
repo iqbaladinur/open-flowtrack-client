@@ -13,28 +13,28 @@
 
       <div class="!mt-0 lg:!mt-6">
         <!-- Desktop: Calendar + Tips — unified card, hidden on mobile -->
-        <div class="hidden lg:flex card rounded-2xl overflow-hidden mb-3 divide-x divide-sepia-100 dark:divide-gray-700/60">
+        <div class="hidden lg:flex card special-card rounded-2xl overflow-hidden divide-x divide-white/10 mb-6">
 
           <!-- Calendar (25%) -->
           <div class="w-1/4 shrink-0 flex flex-col pt-4 pb-4">
             <!-- Header with navigation -->
             <div class="flex items-center justify-between px-3 mb-3">
               <div class="flex items-center gap-0.5">
-                <button @click="prevDate" class="p-1.5 rounded-full hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
-                  <ChevronLeft class="size-3.5 text-sepia-600 dark:text-gray-300" />
+                <button @click="prevDate" class="p-1.5 rounded-full hover:bg-success-700/60 transition-colors">
+                  <ChevronLeft class="size-3.5 text-success-200" />
                 </button>
-                <h3 class="text-xs font-semibold text-sepia-900 dark:text-neon px-1 min-w-[100px] text-center">{{ calendarHeader }}</h3>
-                <button @click="nextDate" class="p-1.5 rounded-full hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
-                  <ChevronRight class="size-3.5 text-sepia-600 dark:text-gray-300" />
+                <h3 class="text-xs font-semibold text-white px-1 min-w-[100px] text-center">{{ calendarHeader }}</h3>
+                <button @click="nextDate" class="p-1.5 rounded-full hover:bg-success-700/60 transition-colors">
+                  <ChevronRight class="size-3.5 text-success-200" />
                 </button>
               </div>
               <div class="flex items-center gap-0.5">
                 <button v-if="!isCurrentPeriodToday" @click="goToToday"
-                  class="text-[10px] text-primary-600 dark:text-primary-400 hover:underline font-medium px-1">
+                  class="text-[10px] text-success-200 hover:underline font-medium px-1">
                   {{ $t('common.today') }}
                 </button>
                 <button @click="configStore.toggleShowAmount"
-                  class="p-1.5 rounded-full text-sepia-600 dark:text-gray-400 hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+                  class="p-1.5 rounded-full text-success-200 hover:bg-success-700/60 transition-colors">
                   <Unlock v-if="configStore.showAmount" class="size-3" />
                   <Lock v-else class="size-3" />
                 </button>
@@ -44,7 +44,7 @@
             <!-- Week day headers -->
             <div class="grid grid-cols-7 px-2 mb-1">
               <div v-for="day in WEEK_DAYS" :key="day"
-                class="flex items-center justify-center h-5 text-[9px] font-medium text-sepia-400 dark:text-gray-500">
+                class="flex items-center justify-center h-5 text-[9px] font-medium text-white/40">
                 {{ day }}
               </div>
             </div>
@@ -55,17 +55,17 @@
                 <button @click="!cell.isOverflow && selectCalendarDay(cell)" :class="[
                   'relative w-6 h-6 rounded-full text-[10px] flex items-center justify-center transition-colors',
                   cell.isOverflow
-                    ? 'text-sepia-300 dark:text-gray-600 cursor-default'
+                    ? 'text-white/20 cursor-default'
                     : cell.isSelected
-                      ? 'bg-sepia-700 dark:bg-primary-600 text-white font-semibold'
+                      ? 'bg-white/20 text-white font-semibold'
                       : cell.isToday
-                        ? 'text-primary-600 dark:text-primary-400 font-bold hover:bg-primary-50 dark:hover:bg-primary-900/30'
-                        : 'text-sepia-700 dark:text-gray-300 hover:bg-sepia-100 dark:hover:bg-gray-700',
+                        ? 'text-neon font-bold hover:bg-success-700/60'
+                        : 'text-white/80 hover:bg-success-700/60',
                 ]">
                   {{ cell.day }}
                   <span v-if="cell.isToday" :class="[
                     'absolute bottom-0.5 left-1/2 -translate-x-1/2 w-0.5 h-0.5 rounded-full',
-                    cell.isSelected ? 'bg-white/70' : 'bg-primary-500 dark:bg-primary-400',
+                    cell.isSelected ? 'bg-white/70' : 'bg-neon',
                   ]" />
                 </button>
               </div>
@@ -74,7 +74,7 @@
 
           <!-- Getting Started Tips (75%) -->
           <div class="flex-1 p-6 flex flex-col">
-            <p class="text-[10px] font-semibold uppercase tracking-widest text-sepia-400 dark:text-gray-500 mb-6">
+            <p class="text-[10px] font-semibold uppercase tracking-widest text-white/40 mb-6">
               {{ $t('dashboard.gettingStarted.title') }}
             </p>
             <div class="grid grid-cols-2 gap-x-10 gap-y-7">
@@ -84,10 +84,10 @@
                   <component :is="tip.icon" class="size-4" :class="tip.iconColor" />
                 </div>
                 <div class="min-w-0">
-                  <p class="text-xs font-semibold text-sepia-800 dark:text-gray-200 group-hover:text-sepia-900 dark:group-hover:text-white transition-colors leading-tight">
+                  <p class="text-xs font-semibold text-white/90 group-hover:text-white transition-colors leading-tight">
                     {{ $t(`dashboard.gettingStarted.${tip.key}.title`) }}
                   </p>
-                  <p class="text-[11px] text-sepia-400 dark:text-gray-500 mt-1 leading-relaxed line-clamp-2">
+                  <p class="text-[11px] text-white/50 mt-1 leading-relaxed line-clamp-2">
                     {{ $t(`dashboard.gettingStarted.${tip.key}.desc`) }}
                   </p>
                 </div>
@@ -119,8 +119,6 @@
               <Lock v-else class="size-4" />
             </button>
           </div>
-
-          <div class="h-px mx-5 bg-gradient-to-r from-transparent via-sepia-200 dark:via-gray-700 to-transparent" />
 
           <!-- Summary carousel -->
           <div class="relative h-[148px] overflow-hidden" @touchstart="handleTouchStart"
@@ -154,8 +152,6 @@
               </div>
             </Transition>
           </div>
-
-          <div class="h-px mx-5 bg-gradient-to-r from-transparent via-sepia-200 dark:via-gray-700 to-transparent" />
 
           <!-- Carousel indicators -->
           <div class="flex justify-center gap-1.5 py-2.5">
