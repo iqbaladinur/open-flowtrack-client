@@ -45,20 +45,20 @@
           <div class="flex items-center justify-between px-3 mb-3">
             <div class="flex items-center gap-0.5">
               <button @click="prevDate" class="p-1.5 rounded-full hover:bg-success-700/60 transition-colors">
-                <ChevronLeft class="size-3.5 text-success-200" />
+                <ChevronLeft class="size-3.5 text-white/70" />
               </button>
               <h3 class="text-xs font-semibold text-white px-1 min-w-[100px] text-center">{{ calendarHeader }}</h3>
               <button @click="nextDate" class="p-1.5 rounded-full hover:bg-success-700/60 transition-colors">
-                <ChevronRight class="size-3.5 text-success-200" />
+                <ChevronRight class="size-3.5 text-white/70" />
               </button>
             </div>
             <div class="flex items-center gap-0.5">
               <button v-if="!isCurrentPeriodToday" @click="goToToday"
-                class="text-[10px] text-success-200 hover:underline font-medium px-1">
+                class="text-[10px] text-white/70 hover:underline font-medium px-1">
                 {{ $t('common.today') }}
               </button>
               <button @click="configStore.toggleShowAmount"
-                class="p-1.5 rounded-full text-success-200 hover:bg-success-700/60 transition-colors">
+                class="p-1.5 rounded-full text-white/70 hover:bg-success-700/60 transition-colors">
                 <Unlock v-if="configStore.showAmount" class="size-3" />
                 <Lock v-else class="size-3" />
               </button>

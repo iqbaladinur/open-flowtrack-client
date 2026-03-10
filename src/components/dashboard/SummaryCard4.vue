@@ -18,7 +18,7 @@
       </div>
 
       <div :class="flat ? 'text-center' : 'mt-auto'">
-        <p class="text-xs font-medium text-sepia-700 dark:text-gray-300 text-center lg:text-left">{{ title }}</p>
+        <p :class="['text-xs font-medium text-center lg:text-left', titleClass || 'text-sepia-700 dark:text-gray-300']">{{ title }}</p>
         <p :class="['font-semibold text-center lg:text-left', flat ? 'text-xl' : 'text-2xl lg:text-sm', valueClass]">
           <span v-if="isCurrency">
             {{ configStore.showAmount ? prefix : '*' }}{{ configStore.formatCurrency(value) }}
@@ -43,6 +43,7 @@ withDefaults(defineProps<{
   icon: FunctionalComponent<HTMLAttributes & VNodeProps, {}>;
   iconBgClass: string;
   iconClass: string;
+  titleClass?: string;
   valueClass: any;
   prefix?: string;
   accent?: 'positive' | 'negative';

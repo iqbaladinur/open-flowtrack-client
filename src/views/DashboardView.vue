@@ -21,20 +21,20 @@
             <div class="flex items-center justify-between px-3 mb-3">
               <div class="flex items-center gap-0.5">
                 <button @click="prevDate" class="p-1.5 rounded-full hover:bg-success-700/60 transition-colors">
-                  <ChevronLeft class="size-3.5 text-success-200" />
+                  <ChevronLeft class="size-3.5 text-white/70" />
                 </button>
                 <h3 class="text-xs font-semibold text-white px-1 min-w-[100px] text-center">{{ calendarHeader }}</h3>
                 <button @click="nextDate" class="p-1.5 rounded-full hover:bg-success-700/60 transition-colors">
-                  <ChevronRight class="size-3.5 text-success-200" />
+                  <ChevronRight class="size-3.5 text-white/70" />
                 </button>
               </div>
               <div class="flex items-center gap-0.5">
                 <button v-if="!isCurrentPeriodToday" @click="goToToday"
-                  class="text-[10px] text-success-200 hover:underline font-medium px-1">
+                  class="text-[10px] text-white/70 hover:underline font-medium px-1">
                   {{ $t('common.today') }}
                 </button>
                 <button @click="configStore.toggleShowAmount"
-                  class="p-1.5 rounded-full text-success-200 hover:bg-success-700/60 transition-colors">
+                  class="p-1.5 rounded-full text-white/70 hover:bg-success-700/60 transition-colors">
                   <Unlock v-if="configStore.showAmount" class="size-3" />
                   <Lock v-else class="size-3" />
                 </button>
@@ -98,23 +98,23 @@
         </div>
 
         <!-- Mobile: Unified nav + summary card -->
-        <div class="lg:hidden card rounded-2xl overflow-hidden mb-3">
+        <div class="lg:hidden card special-card rounded-2xl overflow-hidden mb-3">
           <!-- Nav strip -->
           <div class="flex items-center justify-between px-2 py-1.5">
             <div class="flex items-center gap-1">
               <button @click="prevDate" class="p-2 rounded-full btn-borderless">
-                <ChevronLeft class="size-4 text-sepia-600 dark:text-gray-300" />
+                <ChevronLeft class="size-4 text-white/70" />
               </button>
               <button @click="openDatePicker"
-                class="text-xs italic text-sepia-600 dark:text-gray-300 hover:text-sepia-900 dark:hover:text-white transition-colors px-1">
+                class="text-xs italic text-white/70 hover:text-white transition-colors px-1">
                 {{ readableDate }}
               </button>
               <button @click="nextDate" class="p-2 rounded-full btn-borderless">
-                <ChevronRight class="size-4 text-sepia-600 dark:text-gray-300" />
+                <ChevronRight class="size-4 text-white/70" />
               </button>
             </div>
             <button @click="configStore.toggleShowAmount"
-              class="p-2 rounded-full text-sepia-600 dark:text-gray-400 hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+              class="p-2 rounded-full text-white/70 hover:bg-success-700/60 transition-colors">
               <Unlock v-if="configStore.showAmount" class="size-4" />
               <Lock v-else class="size-4" />
             </button>
@@ -126,27 +126,27 @@
             <Transition name="slide-fade" mode="out-in">
               <div :key="currentCardIndex" class="absolute inset-0">
                 <SummaryCard4 v-if="currentCardIndex === 0" :flat="true" :title="$t('dashboard.totalBalance')"
-                  :value="totalBalance" :icon="Wallet" icon-bg-class="bg-primary-100/90 dark:bg-primary-700/90"
-                  icon-class="text-blue-600 dark:text-blue-400" value-class="text-blue-900 dark:text-white" />
+                  :value="totalBalance" :icon="Wallet" icon-bg-class="bg-white/15 from-white/20 to-white/5"
+                  icon-class="text-blue-300" title-class="text-white/50" value-class="text-white" />
                 <SummaryCard4 v-else-if="currentCardIndex === 1" :flat="true" :title="$t('dashboard.income')"
                   :value="summary.total_income" :icon="TrendingUp"
-                  icon-bg-class="bg-success-100 dark:bg-success-900/50"
-                  icon-class="text-success-600 dark:text-success-400"
-                  value-class="text-success-600 dark:text-success-400" prefix="+" accent="positive" />
+                  icon-bg-class="bg-success-400/20 from-success-400/20 to-success-900/30"
+                  icon-class="text-success-400" title-class="text-white/50"
+                  value-class="text-success-400" prefix="+" accent="positive" />
                 <SummaryCard4 v-else-if="currentCardIndex === 2" :flat="true" :title="$t('dashboard.expenses')"
                   :value="summary.total_expense" :icon="TrendingDown"
-                  icon-bg-class="bg-error-100 dark:bg-error-900/50" icon-class="text-error-600 dark:text-error-400"
-                  value-class="text-error-600 dark:text-error-400" prefix="-" accent="negative" />
+                  icon-bg-class="bg-error-400/20 from-error-400/20 to-error-900/30" icon-class="text-error-400"
+                  title-class="text-white/50" value-class="text-error-400" prefix="-" accent="negative" />
                 <SummaryCard4 v-else-if="currentCardIndex === 3" :flat="true" :title="$t('dashboard.transfers')"
                   :value="summary.total_transfer" :icon="ArrowRightLeft"
-                  icon-bg-class="bg-blue-100 dark:bg-blue-900/50" icon-class="text-blue-600 dark:text-blue-400"
-                  value-class="text-blue-600 dark:text-blue-400" />
+                  icon-bg-class="bg-blue-400/20 from-blue-400/20 to-blue-900/30" icon-class="text-blue-400"
+                  title-class="text-white/50" value-class="text-blue-400" />
                 <SummaryCard4 v-else :flat="true" :title="$t('dashboard.netIncome')" :value="summary.net_income"
-                  :icon="Scale" icon-bg-class="bg-warning-100 dark:bg-warning-900/50"
-                  icon-class="text-warning-600 dark:text-warning-400" :value-class="{
-                    'text-success-600 dark:text-success-400': summary.net_income > 0,
-                    'text-gray-800 dark:text-gray-200': summary.net_income === 0,
-                    'text-error-600 dark:text-error-400': summary.net_income < 0,
+                  :icon="Scale" icon-bg-class="bg-warning-400/20 from-warning-400/20 to-warning-900/30"
+                  icon-class="text-warning-400" title-class="text-white/50" :value-class="{
+                    'text-success-400': summary.net_income > 0,
+                    'text-white/60': summary.net_income === 0,
+                    'text-error-400': summary.net_income < 0,
                   }" :prefix="summary.net_income >= 0 ? '+' : ''"
                   :accent="summary.net_income >= 0 ? 'positive' : 'negative'" />
               </div>
@@ -156,7 +156,7 @@
           <!-- Carousel indicators -->
           <div class="flex justify-center gap-1.5 py-2.5">
             <button v-for="index in 5" :key="index" @click="goToCard(index - 1)"
-              :class="['h-1.5 rounded-full transition-all', currentCardIndex === index - 1 ? 'w-6 bg-sepia-600 dark:bg-primary-400' : 'w-1.5 bg-sepia-300 dark:bg-gray-600']"
+              :class="['h-1.5 rounded-full transition-all', currentCardIndex === index - 1 ? 'w-6 bg-white' : 'w-1.5 bg-white/30']"
               :aria-label="`Go to card ${index}`" />
           </div>
         </div>
