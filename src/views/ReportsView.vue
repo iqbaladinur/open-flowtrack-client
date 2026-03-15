@@ -341,7 +341,7 @@
                   'text-success-600 dark:text-success-400': budgetSummary.remaining >= 0,
                   'text-error-600 dark:text-error-400': budgetSummary.remaining < 0,
                 }">
-                  {{ configStore.formatCurrency(Math.abs(budgetSummary.remaining)) }}
+                  {{ configStore.formatCurrency(budgetSummary.remaining) }}
                 </p>
               </div>
             </div>
@@ -428,7 +428,7 @@
                     'text-success-600 dark:text-success-400': budgetSummary.remaining >= 0,
                     'text-error-600 dark:text-error-400': budgetSummary.remaining < 0,
                   }">
-                    {{ configStore.formatCurrency(Math.abs(budgetSummary.remaining)) }}
+                    {{ configStore.formatCurrency(budgetSummary.remaining) }}
                   </p>
                   <button @click="showPotentialSaving = !showPotentialSaving"
                     class="mt-1 flex items-center gap-1 text-xs text-sepia-500 dark:text-gray-400 hover:text-sepia-700 dark:hover:text-gray-300 transition-colors">
@@ -448,14 +448,14 @@
                       <span :class="{
                         'text-success-600 dark:text-success-400': budgetSummary.remaining >= 0,
                         'text-error-600 dark:text-error-400': budgetSummary.remaining < 0,
-                      }">-{{ configStore.formatCurrency(Math.abs(budgetSummary.remaining)) }}</span>
+                      }">{{ configStore.formatCurrency(budgetSummary.remaining < 0 ? 0 : budgetSummary.remaining) }}</span>
                     </div>
                     <div class="flex justify-between font-semibold border-t border-sepia-200 dark:border-gray-700 pt-1">
                       <span>{{ $t('reports.potentialSaving') }}</span>
                       <span :class="{
                         'text-success-600 dark:text-success-400': (summary.realNet - budgetSummary.remaining) > 0,
                         'text-error-600 dark:text-error-400': (summary.realNet - budgetSummary.remaining) <= 0,
-                      }">{{ configStore.formatCurrency(summary.realNet - budgetSummary.remaining) }}</span>
+                      }">{{ configStore.formatCurrency(budgetSummary.remaining < 0 ? summary.realNet : (summary.realNet - budgetSummary.remaining)) }}</span>
                     </div>
                   </div>
                 </div>
