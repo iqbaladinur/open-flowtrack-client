@@ -287,7 +287,11 @@
               </router-link>
             </div>
 
-            <div v-if="recentTransactions.length === 0" class="text-center py-8">
+            <div v-if="!transactionsInitialized || (transactionsLoading && recentTransactions.length === 0)" class="flex justify-center items-center py-8">
+              <LoadingSpinner class="w-8 h-8" />
+            </div>
+
+            <div v-else-if="recentTransactions.length === 0" class="text-center py-8">
               <div
                 class="w-16 h-16 bg-sepia-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
                 <TrendingUpDown class="w-8 h-8 text-sepia-400 dark:text-gray-400" />
@@ -353,7 +357,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
 import { useWalletsStore } from '@/stores/wallets';
@@ -395,6 +399,14 @@ import type { TransactionType } from '@/types/transaction';
 const authStore = useAuthStore();
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
+const { loading: transactionsLoading } = storeToRefs(transactionsStore);
+const transactionsInitialized = ref(false);
+const stopTransactionsWatch = watch(transactionsLoading, (loading) => {
+  if (!loading) {
+    transactionsInitialized.value = true;
+    stopTransactionsWatch();
+  }
+});
 const configStore = useConfigStore();
 const analyticsStore = useAnalyticsStore();
 const reportsStore = useReportsStore();
