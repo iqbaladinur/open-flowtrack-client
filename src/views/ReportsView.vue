@@ -2,11 +2,22 @@
   <AppLayout>
     <div class="p-4 lg:p-8 space-y-6 mb-20 lg:mb-0">
       <!-- Header -->
-      <div>
-        <h1 class="text-xl lg:text-3xl font-bold text-sepia-900 dark:text-neon">{{ $t('reports.title') }}</h1>
-        <p class="text-sm text-sepia-700 dark:text-gray-400 mt-1">
-          {{ $t('reports.subtitle') }}
-        </p>
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-xl lg:text-3xl font-bold text-sepia-900 dark:text-neon">{{ $t('reports.title') }}</h1>
+          <p class="text-sm text-sepia-700 dark:text-gray-400 mt-1">
+            {{ $t('reports.subtitle') }}
+          </p>
+        </div>
+        <router-link
+          v-if="isWrappedAvailable"
+          to="/wrapped"
+          class="flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:from-emerald-500/20 hover:to-blue-500/20 transition-all"
+        >
+          <Sparkles class="w-3.5 h-3.5" />
+          <span class="hidden sm:inline">{{ defaultYear }} Wrapped</span>
+          <span class="sm:hidden">Wrapped</span>
+        </router-link>
       </div>
 
       <!-- View Switcher -->
@@ -330,7 +341,7 @@
                   'text-success-600 dark:text-success-400': budgetSummary.remaining >= 0,
                   'text-error-600 dark:text-error-400': budgetSummary.remaining < 0,
                 }">
-                  {{ configStore.formatCurrency(Math.abs(budgetSummary.remaining)) }}
+                  {{ configStore.formatCurrency(budgetSummary.remaining) }}
                 </p>
               </div>
             </div>
@@ -417,7 +428,7 @@
                     'text-success-600 dark:text-success-400': budgetSummary.remaining >= 0,
                     'text-error-600 dark:text-error-400': budgetSummary.remaining < 0,
                   }">
-                    {{ configStore.formatCurrency(Math.abs(budgetSummary.remaining)) }}
+                    {{ configStore.formatCurrency(budgetSummary.remaining) }}
                   </p>
                   <button @click="showPotentialSaving = !showPotentialSaving"
                     class="mt-1 flex items-center gap-1 text-xs text-sepia-500 dark:text-gray-400 hover:text-sepia-700 dark:hover:text-gray-300 transition-colors">
@@ -437,14 +448,14 @@
                       <span :class="{
                         'text-success-600 dark:text-success-400': budgetSummary.remaining >= 0,
                         'text-error-600 dark:text-error-400': budgetSummary.remaining < 0,
-                      }">-{{ configStore.formatCurrency(Math.abs(budgetSummary.remaining)) }}</span>
+                      }">{{ configStore.formatCurrency(budgetSummary.remaining < 0 ? 0 : budgetSummary.remaining) }}</span>
                     </div>
                     <div class="flex justify-between font-semibold border-t border-sepia-200 dark:border-gray-700 pt-1">
                       <span>{{ $t('reports.potentialSaving') }}</span>
                       <span :class="{
                         'text-success-600 dark:text-success-400': (summary.realNet - budgetSummary.remaining) > 0,
                         'text-error-600 dark:text-error-400': (summary.realNet - budgetSummary.remaining) <= 0,
-                      }">{{ configStore.formatCurrency(summary.realNet - budgetSummary.remaining) }}</span>
+                      }">{{ configStore.formatCurrency(budgetSummary.remaining < 0 ? summary.realNet : (summary.realNet - budgetSummary.remaining)) }}</span>
                     </div>
                   </div>
                 </div>
@@ -556,8 +567,9 @@ import ExpenseAnalysisCard from '@/components/reports/ExpenseAnalysisCard.vue';
 import WalletFlowSankeyChart from '@/components/reports/WalletFlowSankeyChart.vue';
 import BudgetPerformanceChart from '@/components/reports/BudgetPerformanceChart.vue';
 import BudgetPerformanceList from '@/components/reports/BudgetPerformanceList.vue';
-import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, TrendingUp, TrendingDown, Scale, PieChartIcon, ArrowRightLeft, Filter, FilterX, ChevronLeft, ChevronRight, ChevronDown, Target, ClipboardCopy, Share2 } from 'lucide-vue-next';
+import { Calendar, CalendarClock, BarChart3, SlidersHorizontal, PieChart, TrendingUp, TrendingDown, Scale, PieChartIcon, ArrowRightLeft, Filter, FilterX, ChevronLeft, ChevronRight, ChevronDown, Target, ClipboardCopy, Share2, Sparkles } from 'lucide-vue-next';
 import { useToast } from '@/composables/useToast';
+import { useWrappedAvailability } from '@/composables/useWrappedData';
 import type { Transaction } from '@/types/transaction';
 import { format, parseISO } from 'date-fns';
 
@@ -571,6 +583,7 @@ const configStore = useConfigStore();
 const budgetsStore = useBudgetsStore();
 
 const toast = useToast();
+const { isAvailable: isWrappedAvailable, defaultYear } = useWrappedAvailability();
 const showFilters = ref(false);
 const isCopying = ref(false);
 const isMobile = computed(() => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));

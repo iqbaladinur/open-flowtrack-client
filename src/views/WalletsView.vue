@@ -38,27 +38,27 @@
       </div>
 
       <!-- Desktop: Calendar + Wallet Overview — unified card -->
-      <div class="hidden lg:flex card rounded-2xl overflow-hidden divide-x divide-sepia-100 dark:divide-gray-700/60">
+      <div class="hidden lg:flex card special-card rounded-2xl overflow-hidden divide-x divide-white/10">
 
         <!-- Calendar (25%) -->
         <div class="w-1/4 shrink-0 flex flex-col pt-4 pb-4">
           <div class="flex items-center justify-between px-3 mb-3">
             <div class="flex items-center gap-0.5">
-              <button @click="prevDate" class="p-1.5 rounded-full hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
-                <ChevronLeft class="size-3.5 text-sepia-600 dark:text-gray-300" />
+              <button @click="prevDate" class="p-1.5 rounded-full hover:bg-success-700/60 transition-colors">
+                <ChevronLeft class="size-3.5 text-white/70" />
               </button>
-              <h3 class="text-xs font-semibold text-sepia-900 dark:text-neon px-1 min-w-[100px] text-center">{{ calendarHeader }}</h3>
-              <button @click="nextDate" class="p-1.5 rounded-full hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
-                <ChevronRight class="size-3.5 text-sepia-600 dark:text-gray-300" />
+              <h3 class="text-xs font-semibold text-white px-1 min-w-[100px] text-center">{{ calendarHeader }}</h3>
+              <button @click="nextDate" class="p-1.5 rounded-full hover:bg-success-700/60 transition-colors">
+                <ChevronRight class="size-3.5 text-white/70" />
               </button>
             </div>
             <div class="flex items-center gap-0.5">
               <button v-if="!isCurrentPeriodToday" @click="goToToday"
-                class="text-[10px] text-primary-600 dark:text-primary-400 hover:underline font-medium px-1">
+                class="text-[10px] text-white/70 hover:underline font-medium px-1">
                 {{ $t('common.today') }}
               </button>
               <button @click="configStore.toggleShowAmount"
-                class="p-1.5 rounded-full text-sepia-600 dark:text-gray-400 hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+                class="p-1.5 rounded-full text-white/70 hover:bg-success-700/60 transition-colors">
                 <Unlock v-if="configStore.showAmount" class="size-3" />
                 <Lock v-else class="size-3" />
               </button>
@@ -67,7 +67,7 @@
 
           <div class="grid grid-cols-7 px-2 mb-1">
             <div v-for="day in WEEK_DAYS" :key="day"
-              class="flex items-center justify-center h-5 text-[9px] font-medium text-sepia-400 dark:text-gray-500">
+              class="flex items-center justify-center h-5 text-[9px] font-medium text-white/40">
               {{ day }}
             </div>
           </div>
@@ -77,17 +77,17 @@
               <button @click="!cell.isOverflow && selectCalendarDay(cell)" :class="[
                 'relative w-6 h-6 rounded-full text-[10px] flex items-center justify-center transition-colors',
                 cell.isOverflow
-                  ? 'text-sepia-300 dark:text-gray-600 cursor-default'
+                  ? 'text-white/20 cursor-default'
                   : cell.isSelected
-                    ? 'bg-sepia-700 dark:bg-primary-600 text-white font-semibold'
+                    ? 'bg-white/20 text-white font-semibold'
                     : cell.isToday
-                      ? 'text-primary-600 dark:text-primary-400 font-bold hover:bg-primary-50 dark:hover:bg-primary-900/30'
-                      : 'text-sepia-700 dark:text-gray-300 hover:bg-sepia-100 dark:hover:bg-gray-700',
+                      ? 'text-neon font-bold hover:bg-success-700/60'
+                      : 'text-white/80 hover:bg-success-700/60',
               ]">
                 {{ cell.day }}
                 <span v-if="cell.isToday" :class="[
                   'absolute bottom-0.5 left-1/2 -translate-x-1/2 w-0.5 h-0.5 rounded-full',
-                  cell.isSelected ? 'bg-white/70' : 'bg-primary-500 dark:bg-primary-400',
+                  cell.isSelected ? 'bg-white/70' : 'bg-neon',
                 ]" />
               </button>
             </div>
@@ -97,14 +97,14 @@
         <!-- Wallet Overview (75%) -->
         <div class="flex-1 px-7 py-5 flex flex-col">
           <!-- Label -->
-          <p class="text-[10px] font-semibold uppercase tracking-widest text-sepia-400 dark:text-gray-500 mb-5">
+          <p class="text-[10px] font-semibold uppercase tracking-widest text-white/40 mb-5">
             {{ $t('wallets.overview') }}
           </p>
 
           <!-- Hero: Total Balance -->
           <div class="mb-3">
-            <p class="text-[10px] uppercase tracking-wide text-sepia-400 dark:text-gray-500 mb-1">{{ $t('wallets.totalBalance') }}</p>
-            <p class="text-3xl font-bold text-sepia-900 dark:text-white tracking-tight leading-none">
+            <p class="text-[10px] uppercase tracking-wide text-white/40 mb-1">{{ $t('wallets.totalBalance') }}</p>
+            <p class="text-3xl font-bold text-white tracking-tight leading-none">
               {{ configStore.showAmount ? configStore.formatCurrency(overviewTotalBalance) : '••••••' }}
             </p>
           </div>
@@ -115,35 +115,35 @@
               :style="{ width: `${Math.max((w.current_balance || 0) / overviewTotalBalance * 100, 1)}%`, backgroundColor: BAR_COLORS[i % BAR_COLORS.length] }"
               class="min-w-[4px] transition-all" />
           </div>
-          <div v-else class="h-1 rounded-full bg-sepia-100 dark:bg-gray-700 mb-5" />
+          <div v-else class="h-1 rounded-full bg-white/10 mb-5" />
 
           <!-- Secondary stats -->
           <div class="flex items-start gap-6 mt-auto">
             <!-- Net Change -->
             <div>
-              <p class="text-[10px] uppercase tracking-wide text-sepia-400 dark:text-gray-500 mb-2">{{ $t('wallets.netChange') }}</p>
+              <p class="text-[10px] uppercase tracking-wide text-white/40 mb-2">{{ $t('wallets.netChange') }}</p>
               <span :class="['inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold',
                 overviewNetChange >= 0
-                  ? 'bg-success-100 dark:bg-success-900/40 text-success-700 dark:text-success-400'
-                  : 'bg-error-100 dark:bg-error-900/40 text-error-700 dark:text-error-400']">
+                  ? 'bg-success-900/40 text-success-400'
+                  : 'bg-error-900/40 text-error-400']">
                 <TrendingUp v-if="overviewNetChange >= 0" class="size-3" />
                 <TrendingDown v-else class="size-3" />
                 {{ configStore.showAmount ? `${overviewNetChange >= 0 ? '+' : ''}${configStore.formatCurrency(overviewNetChange)}` : '••••••' }}
               </span>
             </div>
 
-            <div class="w-px self-stretch bg-sepia-100 dark:bg-gray-700/60 shrink-0" />
+            <div class="w-px self-stretch bg-white/10 shrink-0" />
 
             <!-- Active wallets -->
             <div>
-              <p class="text-[10px] uppercase tracking-wide text-sepia-400 dark:text-gray-500 mb-1.5">{{ $t('wallets.active') }}</p>
-              <p class="text-xl font-bold text-sepia-900 dark:text-white">{{ activeWalletCount }}</p>
+              <p class="text-[10px] uppercase tracking-wide text-white/40 mb-1.5">{{ $t('wallets.active') }}</p>
+              <p class="text-xl font-bold text-white">{{ activeWalletCount }}</p>
             </div>
 
             <!-- Hidden wallets -->
             <div>
-              <p class="text-[10px] uppercase tracking-wide text-sepia-400 dark:text-gray-500 mb-1.5">{{ $t('wallets.hidden') }}</p>
-              <p class="text-xl font-bold text-sepia-400 dark:text-gray-500">{{ hiddenWalletCount }}</p>
+              <p class="text-[10px] uppercase tracking-wide text-white/40 mb-1.5">{{ $t('wallets.hidden') }}</p>
+              <p class="text-xl font-bold text-white/40">{{ hiddenWalletCount }}</p>
             </div>
           </div>
         </div>

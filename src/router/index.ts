@@ -120,6 +120,12 @@ const router = createRouter({
       name: 'milestone-detail',
       component: () => import('@/views/MilestoneDetailView.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/wrapped',
+      name: 'wrapped',
+      component: () => import('@/views/WrappedView.vue'),
+      meta: { requiresAuth: true }
     }
   ],
   scrollBehavior() {

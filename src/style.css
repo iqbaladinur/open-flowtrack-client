@@ -50,6 +50,16 @@
 
   .card {
     @apply rounded-xl border-[1.5px] border-sepia-300 dark:border-white/10 bg-white dark:bg-slate-800/10;
+
+    &.special-card {
+      @apply bg-gradient-to-br from-gray-900 via-gray-700 to-gray-900 border-gray-700/40
+             dark:from-primary-800 dark:to-primary-900 dark:border-transparent;
+      box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+      .dark & {
+        box-shadow: 0 8px 32px -8px rgba(15, 23, 42, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      }
+    }
   }
   
   .input {

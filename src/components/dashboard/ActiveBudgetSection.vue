@@ -121,10 +121,22 @@
             </span>
           </div>
         </div>
+
+        <!-- Budget List Toggle Trigger -->
+        <button
+          v-if="!overviewOnly"
+          @click="showBudgetList = !showBudgetList"
+          class="w-full flex items-center justify-between pt-2 mt-2 border-t border-sepia-200 dark:border-gray-700 text-sepia-500 dark:text-gray-500 hover:text-sepia-700 dark:hover:text-gray-300 transition-colors"
+        >
+          <span class="text-[10px]">
+            {{ showBudgetList ? $t('dashboard.hideBudgetList') : $t('dashboard.showBudgetList', { n: budgets.length }) }}
+          </span>
+          <ChevronDown class="size-3 transition-transform duration-200" :class="{ 'rotate-180': showBudgetList }" />
+        </button>
       </div>
 
       <!-- Budget List -->
-      <div v-if="!overviewOnly" class="card">
+      <div v-if="!overviewOnly && showBudgetList" class="card">
         <BudgetCard v-for="budget in budgets" :key="`budgetlist_` + budget.id" class="mb-1 last:mb-0" :budget="budget"
           :simple-view="true" />
       </div>
@@ -133,7 +145,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, onMounted, watch } from 'vue';
+import { computed, reactive, ref, onMounted, watch } from 'vue';
 import { useConfigStore } from '@/stores/config';
 import { useBudgetsStore } from '@/stores/budgets';
 import BudgetCard from '@/components/budget/BudgetCard.vue';
@@ -141,9 +153,12 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import {
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   LucideArrowUpRightFromSquare,
   Target
 } from 'lucide-vue-next';
+
+const showBudgetList = ref(false);
 import { format, endOfDay, parseISO } from 'date-fns';
 
 interface Props {

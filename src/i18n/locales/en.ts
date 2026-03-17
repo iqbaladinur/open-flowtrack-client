@@ -99,6 +99,10 @@ export default {
     over: "Over",
     limit: "Limit",
     used: "used",
+    budget: "budget",
+    budgets: "budgets",
+    showBudgetList: "Show {n} budget details",
+    hideBudgetList: "Hide budget details",
     recentTransactions: "Recent Transactions",
     noTransactionsYet: "No transactions yet",
     addFirstTransaction: "Add your first transaction",
@@ -849,6 +853,7 @@ export default {
       transactionAmountCategory:
         'Get {type} transaction {operator} {target} from "{category}"',
       periodTotal: "Total {type} in {period} {operator} {target}",
+      periodTotalCategory: 'Total {type} in {period} from "{category}" {operator} {target}',
       netWorth: "Total net worth (assets - liabilities) {operator} {target}",
       categorySpending:
         'Spending in "{category}" for {period} {operator} {target}',

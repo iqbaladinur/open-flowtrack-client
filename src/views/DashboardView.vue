@@ -13,28 +13,28 @@
 
       <div class="!mt-0 lg:!mt-6">
         <!-- Desktop: Calendar + Tips — unified card, hidden on mobile -->
-        <div class="hidden lg:flex card rounded-2xl overflow-hidden mb-3 divide-x divide-sepia-100 dark:divide-gray-700/60">
+        <div class="hidden lg:flex card special-card rounded-2xl overflow-hidden divide-x divide-white/10 mb-6">
 
           <!-- Calendar (25%) -->
           <div class="w-1/4 shrink-0 flex flex-col pt-4 pb-4">
             <!-- Header with navigation -->
             <div class="flex items-center justify-between px-3 mb-3">
               <div class="flex items-center gap-0.5">
-                <button @click="prevDate" class="p-1.5 rounded-full hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
-                  <ChevronLeft class="size-3.5 text-sepia-600 dark:text-gray-300" />
+                <button @click="prevDate" class="p-1.5 rounded-full hover:bg-success-700/60 transition-colors">
+                  <ChevronLeft class="size-3.5 text-white/70" />
                 </button>
-                <h3 class="text-xs font-semibold text-sepia-900 dark:text-neon px-1 min-w-[100px] text-center">{{ calendarHeader }}</h3>
-                <button @click="nextDate" class="p-1.5 rounded-full hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
-                  <ChevronRight class="size-3.5 text-sepia-600 dark:text-gray-300" />
+                <h3 class="text-xs font-semibold text-white px-1 min-w-[100px] text-center">{{ calendarHeader }}</h3>
+                <button @click="nextDate" class="p-1.5 rounded-full hover:bg-success-700/60 transition-colors">
+                  <ChevronRight class="size-3.5 text-white/70" />
                 </button>
               </div>
               <div class="flex items-center gap-0.5">
                 <button v-if="!isCurrentPeriodToday" @click="goToToday"
-                  class="text-[10px] text-primary-600 dark:text-primary-400 hover:underline font-medium px-1">
+                  class="text-[10px] text-white/70 hover:underline font-medium px-1">
                   {{ $t('common.today') }}
                 </button>
                 <button @click="configStore.toggleShowAmount"
-                  class="p-1.5 rounded-full text-sepia-600 dark:text-gray-400 hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+                  class="p-1.5 rounded-full text-white/70 hover:bg-success-700/60 transition-colors">
                   <Unlock v-if="configStore.showAmount" class="size-3" />
                   <Lock v-else class="size-3" />
                 </button>
@@ -44,7 +44,7 @@
             <!-- Week day headers -->
             <div class="grid grid-cols-7 px-2 mb-1">
               <div v-for="day in WEEK_DAYS" :key="day"
-                class="flex items-center justify-center h-5 text-[9px] font-medium text-sepia-400 dark:text-gray-500">
+                class="flex items-center justify-center h-5 text-[9px] font-medium text-white/40">
                 {{ day }}
               </div>
             </div>
@@ -55,17 +55,17 @@
                 <button @click="!cell.isOverflow && selectCalendarDay(cell)" :class="[
                   'relative w-6 h-6 rounded-full text-[10px] flex items-center justify-center transition-colors',
                   cell.isOverflow
-                    ? 'text-sepia-300 dark:text-gray-600 cursor-default'
+                    ? 'text-white/20 cursor-default'
                     : cell.isSelected
-                      ? 'bg-sepia-700 dark:bg-primary-600 text-white font-semibold'
+                      ? 'bg-white/20 text-white font-semibold'
                       : cell.isToday
-                        ? 'text-primary-600 dark:text-primary-400 font-bold hover:bg-primary-50 dark:hover:bg-primary-900/30'
-                        : 'text-sepia-700 dark:text-gray-300 hover:bg-sepia-100 dark:hover:bg-gray-700',
+                        ? 'text-neon font-bold hover:bg-success-700/60'
+                        : 'text-white/80 hover:bg-success-700/60',
                 ]">
                   {{ cell.day }}
                   <span v-if="cell.isToday" :class="[
                     'absolute bottom-0.5 left-1/2 -translate-x-1/2 w-0.5 h-0.5 rounded-full',
-                    cell.isSelected ? 'bg-white/70' : 'bg-primary-500 dark:bg-primary-400',
+                    cell.isSelected ? 'bg-white/70' : 'bg-neon',
                   ]" />
                 </button>
               </div>
@@ -74,7 +74,7 @@
 
           <!-- Getting Started Tips (75%) -->
           <div class="flex-1 p-6 flex flex-col">
-            <p class="text-[10px] font-semibold uppercase tracking-widest text-sepia-400 dark:text-gray-500 mb-6">
+            <p class="text-[10px] font-semibold uppercase tracking-widest text-white/40 mb-6">
               {{ $t('dashboard.gettingStarted.title') }}
             </p>
             <div class="grid grid-cols-2 gap-x-10 gap-y-7">
@@ -84,10 +84,10 @@
                   <component :is="tip.icon" class="size-4" :class="tip.iconColor" />
                 </div>
                 <div class="min-w-0">
-                  <p class="text-xs font-semibold text-sepia-800 dark:text-gray-200 group-hover:text-sepia-900 dark:group-hover:text-white transition-colors leading-tight">
+                  <p class="text-xs font-semibold text-white/90 group-hover:text-white transition-colors leading-tight">
                     {{ $t(`dashboard.gettingStarted.${tip.key}.title`) }}
                   </p>
-                  <p class="text-[11px] text-sepia-400 dark:text-gray-500 mt-1 leading-relaxed line-clamp-2">
+                  <p class="text-[11px] text-white/50 mt-1 leading-relaxed line-clamp-2">
                     {{ $t(`dashboard.gettingStarted.${tip.key}.desc`) }}
                   </p>
                 </div>
@@ -98,29 +98,27 @@
         </div>
 
         <!-- Mobile: Unified nav + summary card -->
-        <div class="lg:hidden card rounded-2xl overflow-hidden mb-3">
+        <div class="lg:hidden card special-card rounded-2xl overflow-hidden mb-3">
           <!-- Nav strip -->
           <div class="flex items-center justify-between px-2 py-1.5">
             <div class="flex items-center gap-1">
               <button @click="prevDate" class="p-2 rounded-full btn-borderless">
-                <ChevronLeft class="size-4 text-sepia-600 dark:text-gray-300" />
+                <ChevronLeft class="size-4 text-white/70" />
               </button>
               <button @click="openDatePicker"
-                class="text-xs italic text-sepia-600 dark:text-gray-300 hover:text-sepia-900 dark:hover:text-white transition-colors px-1">
+                class="text-xs italic text-white/70 hover:text-white transition-colors px-1">
                 {{ readableDate }}
               </button>
               <button @click="nextDate" class="p-2 rounded-full btn-borderless">
-                <ChevronRight class="size-4 text-sepia-600 dark:text-gray-300" />
+                <ChevronRight class="size-4 text-white/70" />
               </button>
             </div>
             <button @click="configStore.toggleShowAmount"
-              class="p-2 rounded-full text-sepia-600 dark:text-gray-400 hover:bg-sepia-100 dark:hover:bg-gray-700 transition-colors">
+              class="p-2 rounded-full text-white/70 hover:bg-success-700/60 transition-colors">
               <Unlock v-if="configStore.showAmount" class="size-4" />
               <Lock v-else class="size-4" />
             </button>
           </div>
-
-          <div class="h-px mx-5 bg-gradient-to-r from-transparent via-sepia-200 dark:via-gray-700 to-transparent" />
 
           <!-- Summary carousel -->
           <div class="relative h-[148px] overflow-hidden" @touchstart="handleTouchStart"
@@ -128,39 +126,37 @@
             <Transition name="slide-fade" mode="out-in">
               <div :key="currentCardIndex" class="absolute inset-0">
                 <SummaryCard4 v-if="currentCardIndex === 0" :flat="true" :title="$t('dashboard.totalBalance')"
-                  :value="totalBalance" :icon="Wallet" icon-bg-class="bg-primary-100/90 dark:bg-primary-700/90"
-                  icon-class="text-blue-600 dark:text-blue-400" value-class="text-blue-900 dark:text-white" />
+                  :value="totalBalance" :icon="Wallet" icon-bg-class="bg-white/15 from-white/20 to-white/5"
+                  icon-class="text-blue-300" title-class="text-white/50" value-class="text-white" />
                 <SummaryCard4 v-else-if="currentCardIndex === 1" :flat="true" :title="$t('dashboard.income')"
                   :value="summary.total_income" :icon="TrendingUp"
-                  icon-bg-class="bg-success-100 dark:bg-success-900/50"
-                  icon-class="text-success-600 dark:text-success-400"
-                  value-class="text-success-600 dark:text-success-400" prefix="+" accent="positive" />
+                  icon-bg-class="bg-success-400/20 from-success-400/20 to-success-900/30"
+                  icon-class="text-success-400" title-class="text-white/50"
+                  value-class="text-success-400" prefix="+" accent="positive" />
                 <SummaryCard4 v-else-if="currentCardIndex === 2" :flat="true" :title="$t('dashboard.expenses')"
                   :value="summary.total_expense" :icon="TrendingDown"
-                  icon-bg-class="bg-error-100 dark:bg-error-900/50" icon-class="text-error-600 dark:text-error-400"
-                  value-class="text-error-600 dark:text-error-400" prefix="-" accent="negative" />
+                  icon-bg-class="bg-error-400/20 from-error-400/20 to-error-900/30" icon-class="text-error-400"
+                  title-class="text-white/50" value-class="text-error-400" prefix="-" accent="negative" />
                 <SummaryCard4 v-else-if="currentCardIndex === 3" :flat="true" :title="$t('dashboard.transfers')"
                   :value="summary.total_transfer" :icon="ArrowRightLeft"
-                  icon-bg-class="bg-blue-100 dark:bg-blue-900/50" icon-class="text-blue-600 dark:text-blue-400"
-                  value-class="text-blue-600 dark:text-blue-400" />
+                  icon-bg-class="bg-blue-400/20 from-blue-400/20 to-blue-900/30" icon-class="text-blue-400"
+                  title-class="text-white/50" value-class="text-blue-400" />
                 <SummaryCard4 v-else :flat="true" :title="$t('dashboard.netIncome')" :value="summary.net_income"
-                  :icon="Scale" icon-bg-class="bg-warning-100 dark:bg-warning-900/50"
-                  icon-class="text-warning-600 dark:text-warning-400" :value-class="{
-                    'text-success-600 dark:text-success-400': summary.net_income > 0,
-                    'text-gray-800 dark:text-gray-200': summary.net_income === 0,
-                    'text-error-600 dark:text-error-400': summary.net_income < 0,
+                  :icon="Scale" icon-bg-class="bg-warning-400/20 from-warning-400/20 to-warning-900/30"
+                  icon-class="text-warning-400" title-class="text-white/50" :value-class="{
+                    'text-success-400': summary.net_income > 0,
+                    'text-white/60': summary.net_income === 0,
+                    'text-error-400': summary.net_income < 0,
                   }" :prefix="summary.net_income >= 0 ? '+' : ''"
                   :accent="summary.net_income >= 0 ? 'positive' : 'negative'" />
               </div>
             </Transition>
           </div>
 
-          <div class="h-px mx-5 bg-gradient-to-r from-transparent via-sepia-200 dark:via-gray-700 to-transparent" />
-
           <!-- Carousel indicators -->
           <div class="flex justify-center gap-1.5 py-2.5">
             <button v-for="index in 5" :key="index" @click="goToCard(index - 1)"
-              :class="['h-1.5 rounded-full transition-all', currentCardIndex === index - 1 ? 'w-6 bg-sepia-600 dark:bg-primary-400' : 'w-1.5 bg-sepia-300 dark:bg-gray-600']"
+              :class="['h-1.5 rounded-full transition-all', currentCardIndex === index - 1 ? 'w-6 bg-white' : 'w-1.5 bg-white/30']"
               :aria-label="`Go to card ${index}`" />
           </div>
         </div>
@@ -291,7 +287,11 @@
               </router-link>
             </div>
 
-            <div v-if="recentTransactions.length === 0" class="text-center py-8">
+            <div v-if="!transactionsInitialized || (transactionsLoading && recentTransactions.length === 0)" class="flex justify-center items-center py-8">
+              <LoadingSpinner class="w-8 h-8" />
+            </div>
+
+            <div v-else-if="recentTransactions.length === 0" class="text-center py-8">
               <div
                 class="w-16 h-16 bg-sepia-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
                 <TrendingUpDown class="w-8 h-8 text-sepia-400 dark:text-gray-400" />
@@ -357,7 +357,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
 import { useWalletsStore } from '@/stores/wallets';
@@ -399,6 +399,14 @@ import type { TransactionType } from '@/types/transaction';
 const authStore = useAuthStore();
 const walletsStore = useWalletsStore();
 const transactionsStore = useTransactionsStore();
+const { loading: transactionsLoading } = storeToRefs(transactionsStore);
+const transactionsInitialized = ref(false);
+const stopTransactionsWatch = watch(transactionsLoading, (loading) => {
+  if (!loading) {
+    transactionsInitialized.value = true;
+    stopTransactionsWatch();
+  }
+});
 const configStore = useConfigStore();
 const analyticsStore = useAnalyticsStore();
 const reportsStore = useReportsStore();

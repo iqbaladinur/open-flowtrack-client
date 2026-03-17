@@ -131,7 +131,7 @@ const budgetData = ref<Budget | null | undefined>(null);
 const formatCustomDate = (dateString: string): string => {
   try {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   } catch {
     return dateString;
   }
@@ -245,6 +245,18 @@ const conditionExplanation = computed(() => {
         period = `${formatCustomDate(config.start_date)} - ${formatCustomDate(config.end_date)}`;
       } else {
         period = t('milestones.periods.custom');
+      }
+      if (config.category_id) {
+        const periodCategoryName = categoryData.value?.name ||
+                                   categoriesStore.getCategoryById(config.category_id)?.name ||
+                                   t('milestones.unknownCategory');
+        return t('milestones.conditionExplanations.periodTotalCategory', {
+          type: periodType,
+          period,
+          category: periodCategoryName,
+          operator,
+          target: formattedTarget
+        });
       }
       return t('milestones.conditionExplanations.periodTotal', {
         type: periodType,

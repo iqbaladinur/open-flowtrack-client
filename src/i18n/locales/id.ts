@@ -100,6 +100,10 @@ export default {
     over: "Lebih",
     limit: "Batas",
     used: "terpakai",
+    budget: "anggaran",
+    budgets: "anggaran",
+    showBudgetList: "Tampilkan {n} detail anggaran",
+    hideBudgetList: "Sembunyikan detail anggaran",
     recentTransactions: "Transaksi Terbaru",
     noTransactionsYet: "Belum ada transaksi",
     addFirstTransaction: "Tambahkan transaksi pertama Anda",
@@ -852,6 +856,7 @@ export default {
       transactionAmountCategory:
         'Dapatkan transaksi {type} {operator} {target} dari "{category}"',
       periodTotal: "Total {type} di {period} {operator} {target}",
+      periodTotalCategory: 'Total {type} di {period} dari "{category}" {operator} {target}',
       netWorth: "Total kekayaan bersih (aset - kewajiban) {operator} {target}",
       categorySpending:
         'Pengeluaran di "{category}" untuk {period} {operator} {target}',
