@@ -126,20 +126,20 @@
             <Transition name="slide-fade" mode="out-in">
               <div :key="currentCardIndex" class="absolute inset-0">
                 <SummaryCard4 v-if="currentCardIndex === 0" :flat="true" :title="$t('dashboard.totalBalance')"
-                  :value="totalBalance" :icon="Wallet" icon-bg-class="bg-gray-200/10 from-gray-400/20 to-gray-600/5"
+                  :value="totalBalance" :icon="Wallet" icon-bg-class="bg-gray-400/10 from-gray-400/40 to-gray-600/10"
                   icon-class="text-blue-300" title-class="text-white/50" value-class="text-white" />
                 <SummaryCard4 v-else-if="currentCardIndex === 1" :flat="true" :title="$t('dashboard.income')"
                   :value="summary.total_income" :icon="TrendingUp"
-                  icon-bg-class="bg-green-400/20 from-green-400/20 to-green-900/30"
+                  icon-bg-class="bg-green-400/20 from-green-400/40 to-green-900/30"
                   icon-class="text-success-400" title-class="text-white/50"
                   value-class="text-success-400" prefix="+" accent="positive" />
                 <SummaryCard4 v-else-if="currentCardIndex === 2" :flat="true" :title="$t('dashboard.expenses')"
                   :value="summary.total_expense" :icon="TrendingDown"
-                  icon-bg-class="bg-red-400/20 from-red-400/20 to-red-900/30" icon-class="text-error-400"
+                  icon-bg-class="bg-red-300/20 from-red-400/30 to-red-900/60" icon-class="text-error-400"
                   title-class="text-white/50" value-class="text-error-400" prefix="-" accent="negative" />
                 <SummaryCard4 v-else-if="currentCardIndex === 3" :flat="true" :title="$t('dashboard.transfers')"
                   :value="summary.total_transfer" :icon="ArrowRightLeft"
-                  icon-bg-class="bg-blue-400/20 from-gray-400/20 to-gray-900/30" icon-class="text-blue-400"
+                  icon-bg-class="bg-blue-400/20 from-gray-400/40 to-gray-900/30" icon-class="text-blue-400"
                   title-class="text-white/50" value-class="text-blue-400" />
                 <SummaryCard4 v-else :flat="true" :title="$t('dashboard.netIncome')" :value="summary.net_income"
                   :icon="Scale" icon-bg-class="bg-yellow-400/20 from-yellow-400/20 to-yellow-900/30"
