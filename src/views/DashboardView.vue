@@ -193,7 +193,7 @@
             <!-- Add Income -->
             <button @click="toggleAddTransaction('income')" :title="$t('dashboard.addIncome')"
               :aria-label="$t('dashboard.addIncome')"
-              class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-success-50 dark:bg-success-900/20 lg:bg-gradient-to-br lg:from-success-100 lg:to-success-200 dark:lg:from-success-900/40 dark:lg:to-success-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-success-200 lg:hover:to-success-300 dark:lg:hover:from-success-900/50 dark:lg:hover:to-success-800/40">
+              class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-sepia-100 dark:bg-gray-500/20 lg:bg-gradient-to-br lg:from-success-100 lg:to-success-200 dark:lg:from-success-900/40 dark:lg:to-success-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-success-200 lg:hover:to-success-300 dark:lg:hover:from-success-900/50 dark:lg:hover:to-success-800/40">
               <div
                 class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-success-400/80 to-success-600/90 dark:from-success-500/70 dark:to-success-700/80">
                 <Plus class="size-4 lg:size-3.5 text-white" strokeWidth="2.5" />
@@ -206,7 +206,7 @@
             <!-- Add Expense -->
             <button @click="toggleAddTransaction('expense')" :title="$t('dashboard.addExpense')"
               :aria-label="$t('dashboard.addExpense')"
-              class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-error-50 dark:bg-error-900/20 lg:bg-gradient-to-br lg:from-error-100 lg:to-error-200 dark:lg:from-error-900/40 dark:lg:to-error-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-error-200 lg:hover:to-error-300 dark:lg:hover:from-error-900/50 dark:lg:hover:to-error-800/40">
+              class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-sepia-100 dark:bg-gray-500/20 lg:bg-gradient-to-br lg:from-error-100 lg:to-error-200 dark:lg:from-error-900/40 dark:lg:to-error-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-error-200 lg:hover:to-error-300 dark:lg:hover:from-error-900/50 dark:lg:hover:to-error-800/40">
               <div
                 class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-error-400/80 to-error-600/90 dark:from-error-500/70 dark:to-error-700/80">
                 <Minus class="size-4 lg:size-3.5 text-white" strokeWidth="2.5" />
@@ -219,7 +219,7 @@
             <!-- Add Transfer -->
             <button @click="toggleAddTransaction('transfer')" :title="$t('dashboard.addTransfer')"
               :aria-label="$t('dashboard.addTransfer')"
-              class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-blue-50 dark:bg-blue-900/20 lg:bg-gradient-to-br lg:from-blue-100 lg:to-blue-200 dark:lg:from-blue-900/40 dark:lg:to-blue-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-blue-200 lg:hover:to-blue-300 dark:lg:hover:from-blue-900/50 dark:lg:hover:to-blue-800/40">
+              class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-sepia-100 dark:bg-gray-500/20 lg:bg-gradient-to-br lg:from-blue-100 lg:to-blue-200 dark:lg:from-blue-900/40 dark:lg:to-blue-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-blue-200 lg:hover:to-blue-300 dark:lg:hover:from-blue-900/50 dark:lg:hover:to-blue-800/40">
               <div
                 class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-blue-400/80 to-blue-600/90 dark:from-blue-500/70 dark:to-blue-700/80">
                 <ArrowRightLeft class="size-4 lg:size-3.5 text-white" />
@@ -231,7 +231,7 @@
 
             <!-- Manage Wallets -->
             <router-link to="/wallets" :title="$t('dashboard.manageWallets')" :aria-label="$t('dashboard.manageWallets')"
-              class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-purple-50 dark:bg-purple-900/20 lg:bg-gradient-to-br lg:from-purple-100 lg:to-purple-200 dark:lg:from-purple-900/40 dark:lg:to-purple-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-purple-200 lg:hover:to-purple-300 dark:lg:hover:from-purple-900/50 dark:lg:hover:to-purple-800/40">
+              class="flex flex-col lg:flex-row items-center justify-center gap-1.5 lg:gap-2 rounded-xl lg:rounded-lg p-3 lg:px-3 lg:py-2 bg-sepia-100 dark:bg-gray-500/20 lg:bg-gradient-to-br lg:from-purple-100 lg:to-purple-200 dark:lg:from-purple-900/40 dark:lg:to-purple-800/30 shadow-sm transition-all active:scale-95 lg:active:scale-100 hover:shadow-md lg:hover:from-purple-200 lg:hover:to-purple-300 dark:lg:hover:from-purple-900/50 dark:lg:hover:to-purple-800/40">
               <div
                 class="flex size-8 lg:size-5 flex-shrink-0 items-center justify-center rounded-lg lg:rounded-md backdrop-blur-sm shadow bg-gradient-to-br from-purple-400/80 to-purple-600/90 dark:from-purple-500/70 dark:to-purple-700/80">
                 <Wallet class="size-4 lg:size-3.5 text-white" />
