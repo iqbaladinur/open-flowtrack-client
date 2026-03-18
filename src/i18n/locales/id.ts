@@ -356,10 +356,11 @@ export default {
   profile: {
     title: "Profil",
     subtitle: "Kelola pengaturan akun dan preferensi Anda",
+    accountInfo: "Informasi Akun",
+    email: "Email",
     memberSince: "Anggota sejak",
-    dangerZone: "Zona Bahaya",
-    dangerZoneWarning:
-      "Tindakan ini tidak dapat dibatalkan. Harap pastikan sebelum melanjutkan.",
+    session: "Sesi",
+    loggedInAs: "Masuk sebagai",
     logout: "Keluar",
     logoutConfirm: "Apakah Anda yakin ingin keluar?",
   },

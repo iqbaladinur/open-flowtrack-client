@@ -355,10 +355,11 @@ export default {
   profile: {
     title: "Profile",
     subtitle: "Manage your account settings and preferences",
+    accountInfo: "Account Information",
+    email: "Email",
     memberSince: "Member since",
-    dangerZone: "Danger Zone",
-    dangerZoneWarning:
-      "This action is irreversible. Please be certain before proceeding.",
+    session: "Session",
+    loggedInAs: "Logged in as",
     logout: "Logout",
     logoutConfirm: "Are you sure you want to logout?",
   },

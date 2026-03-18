@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-sepia-50 dark:bg-[#020617]">
     <!-- Mobile Header -->
-    <header class="lg:hidden fixed top-0 left-0 right-0 z-40 bg-sepia-50 dark:bg-[#020617] border-b border-sepia-300 dark:border-gray-800 safe-area-top">
+    <header class="lg:hidden fixed top-0 left-0 right-0 z-40 bg-sepia-50 dark:bg-[#020617] border-b border-sepia-300/40 dark:border-gray-800 safe-area-top">
       <div class="flex items-center justify-between px-4 py-3">
         <div class="flex items-center space-x-3">
           <div class="w-8 h-8 bg-[#16a34a] rounded-lg flex items-center justify-center">
@@ -91,7 +91,7 @@
                     $route.name?.toString()?.toLocaleLowerCase() === item.routeName?.toLocaleLowerCase() ? 'bg-sepia-200 dark:bg-gray-700 text-sepia-900 dark:text-neon' : 'text-sepia-800 dark:text-gray-400 dark:hover:text-white hover:bg-sepia-200 dark:hover:bg-gray-700',
                     uiStore.isSidebarMinimized && 'justify-center'
                   ]">
-                    <component :is="item.icon" class="h-5 w-5 shrink-0" :class="[$route.name?.toString()?.toLocaleLowerCase() === item.routeName?.toLocaleLowerCase() ? 'fill-[#16a34a]/50 text-[#16a34a] dark:fill-none dark:text-inherit' : '']" />
+                    <component :is="item.icon" class="h-5 w-5 shrink-0" :class="[$route.name?.toString()?.toLocaleLowerCase() === item.routeName?.toLocaleLowerCase() ? 'active-navigation-icon' : '']" />
                     <span v-show="!uiStore.isSidebarMinimized" class="truncate">{{ item.name }}</span>
                   </router-link>
                 </li>
@@ -170,7 +170,7 @@
             ? 'text-sepia-900 dark:text-neon'
             : 'text-sepia-600 dark:text-gray-400'"
         >
-          <component :is="item.icon" class="w-5 h-5 mb-1" :class="[$route.name?.toString()?.toLocaleLowerCase() === item.routeName?.toLocaleLowerCase() ? 'fill-[#16a34a]/50 text-[#16a34a] dark:fill-none dark:text-inherit' : '']" />
+          <component :is="item.icon" class="w-5 h-5 mb-1" :class="[$route.name?.toString()?.toLocaleLowerCase() === item.routeName?.toLocaleLowerCase() ? 'active-navigation-icon' : '']" />
           <span class="text-[10px] font-medium">{{ item.name }}</span>
         </router-link>
         <button
@@ -180,7 +180,7 @@
             ? 'text-sepia-900 dark:text-neon'
             : 'text-sepia-600 dark:text-gray-400'"
         >
-          <Ellipsis class="w-5 h-5 mb-1" :class="[isMoreMenuActive ? 'fill-[#16a34a]/50 text-[#16a34a] dark:fill-none dark:text-inherit' : '']" />
+          <Ellipsis class="w-5 h-5 mb-1" :class="[isMoreMenuActive ? 'active-navigation-icon' : '']" />
           <span class="text-[10px] font-medium">{{ $t('nav.more') }}</span>
         </button>
       </div>
@@ -221,7 +221,7 @@
                       ? 'bg-sepia-200 dark:bg-gray-600'
                       : 'bg-sepia-200 dark:bg-gray-700'"
                   >
-                    <component :is="item.icon" class="w-5 h-5" :class="[$route.name?.toString()?.toLocaleLowerCase() === item.routeName?.toLocaleLowerCase() ? 'fill-[#16a34a]/50 text-[#16a34a] dark:fill-none dark:text-inherit' : '']" />
+                    <component :is="item.icon" class="w-5 h-5" :class="[$route.name?.toString()?.toLocaleLowerCase() === item.routeName?.toLocaleLowerCase() ? 'active-navigation-icon' : '']" />
                   </div>
                   <span class="text-sm font-medium">{{ item.name }}</span>
                 </router-link>
@@ -308,3 +308,8 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
 });
 </script>
+<style scoped lang="css">
+.active-navigation-icon {
+  @apply fill-sepia-800/50 text-sepia-800 dark:fill-none dark:text-inherit;
+}
+</style>
