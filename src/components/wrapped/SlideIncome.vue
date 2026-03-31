@@ -15,12 +15,12 @@
       <p class="text-white/30 text-sm mb-10">total income in {{ data.period.year }}</p>
 
       <div class="grid grid-cols-2 gap-6">
-        <div :class="{ 'animate-fade-up': mounted }" style="animation-delay: 500ms">
+        <div :style="{ opacity: mounted ? 1 : 0, transform: mounted ? 'none' : 'translateY(16px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '500ms' }">
           <p class="text-white/40 text-xs mb-1">Best month</p>
           <p class="text-2xl font-bold text-emerald-300">{{ data.income.peakMonth }}</p>
           <p class="text-white/30 text-xs mt-1 tabular-nums">{{ config.formatCurrency(data.income.peakAmount) }}</p>
         </div>
-        <div :class="{ 'animate-fade-up': mounted }" style="animation-delay: 700ms">
+        <div :style="{ opacity: mounted ? 1 : 0, transform: mounted ? 'none' : 'translateY(16px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '700ms' }">
           <p class="text-white/40 text-xs mb-1">Monthly avg</p>
           <p class="text-lg font-bold text-emerald-300 tabular-nums break-all">
             {{ config.formatCurrency(data.income.total / 12) }}
@@ -71,9 +71,4 @@ onMounted(() => {
 
 <style scoped>
 .slide { position: absolute; inset: 0; }
-.animate-fade-up { animation: fade-up 0.6s ease forwards; opacity: 0; }
-@keyframes fade-up {
-  from { transform: translateY(16px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
 </style>

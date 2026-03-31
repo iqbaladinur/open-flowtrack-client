@@ -6,7 +6,10 @@
       <p class="text-teal-400 text-xs font-mono tracking-widest uppercase mb-6">Month by Month</p>
 
       <!-- Best / Worst month callout -->
-      <div class="flex gap-4 mb-8" :class="{ 'animate-fade-up': mounted }">
+      <div
+        class="flex gap-4 mb-8"
+        :style="{ opacity: mounted ? 1 : 0, transform: mounted ? 'none' : 'translateY(16px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }"
+      >
         <div class="min-w-0 flex-1">
           <p class="text-white/30 text-xs mb-1">Best month</p>
           <p class="text-lg font-bold text-teal-300">{{ bestMonth.label }}</p>
@@ -105,9 +108,4 @@ onMounted(() => setTimeout(() => (mounted.value = true), 100))
 
 <style scoped>
 .slide { position: absolute; inset: 0; }
-.animate-fade-up { animation: fade-up 0.5s ease forwards; opacity: 0; }
-@keyframes fade-up {
-  from { transform: translateY(12px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
 </style>
