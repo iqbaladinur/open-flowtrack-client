@@ -16,8 +16,11 @@
           {{ config.formatCurrency(data.biggestExpense.amount) }}
         </p>
 
-        <div class="space-y-4 mt-8" :class="{ 'animate-fade-up': mounted }" style="animation-delay: 400ms">
-          <div class="flex gap-8">
+        <div
+          class="mt-8"
+          :style="{ opacity: mounted ? 1 : 0, transform: mounted ? 'none' : 'translateY(16px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '400ms' }"
+        >
+          <div class="flex gap-8 mb-4">
             <div>
               <p class="text-white/30 text-xs mb-1">Category</p>
               <p class="text-white text-base font-medium">{{ data.biggestExpense.categoryName }}</p>
@@ -72,9 +75,4 @@ onMounted(() => setTimeout(() => (mounted.value = true), 100))
 
 <style scoped>
 .slide { position: absolute; inset: 0; }
-.animate-fade-up { animation: fade-up 0.6s ease forwards; opacity: 0; }
-@keyframes fade-up {
-  from { transform: translateY(16px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
 </style>

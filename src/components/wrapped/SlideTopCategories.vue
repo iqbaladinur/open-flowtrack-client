@@ -6,12 +6,17 @@
       <p class="text-purple-400 text-xs font-mono tracking-widest uppercase mb-8">Top Categories</p>
       <p class="text-white/40 text-sm mb-6">Where your money went most</p>
 
-      <div class="space-y-5">
+      <div>
         <div
           v-for="(cat, i) in data.topCategories"
           :key="cat.category_id"
-          :class="{ 'animate-fade-up': mounted }"
-          :style="{ animationDelay: `${i * 120}ms` }"
+          :style="{
+            opacity: mounted ? 1 : 0,
+            transform: mounted ? 'none' : 'translateY(16px)',
+            transition: 'opacity 0.6s ease, transform 0.6s ease',
+            transitionDelay: `${i * 120}ms`,
+            marginTop: i > 0 ? '1.25rem' : '0',
+          }"
         >
           <div class="flex items-center justify-between gap-2 mb-1.5">
             <div class="flex items-center gap-2 min-w-0">
@@ -59,9 +64,4 @@ onMounted(() => setTimeout(() => (mounted.value = true), 100))
 
 <style scoped>
 .slide { position: absolute; inset: 0; }
-.animate-fade-up { animation: fade-up 0.5s ease forwards; opacity: 0; }
-@keyframes fade-up {
-  from { transform: translateY(12px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
 </style>

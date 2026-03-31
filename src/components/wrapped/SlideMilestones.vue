@@ -25,8 +25,7 @@
       <div
         v-if="data.milestones.totalCount > 0"
         class="mb-8"
-        :class="{ 'animate-fade-up': mounted }"
-        style="animation-delay: 300ms"
+        :style="{ opacity: mounted ? 1 : 0, transform: mounted ? 'none' : 'translateY(16px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '300ms' }"
       >
         <div class="flex justify-between text-xs text-white/30 mb-1">
           <span>Completion rate</span>
@@ -43,8 +42,7 @@
       <!-- Nearest in-progress -->
       <div
         v-if="data.milestones.nearestName"
-        :class="{ 'animate-fade-up': mounted }"
-        style="animation-delay: 500ms"
+        :style="{ opacity: mounted ? 1 : 0, transform: mounted ? 'none' : 'translateY(16px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '500ms' }"
       >
         <p class="text-white/30 text-xs mb-2">Almost there →</p>
         <div class="bg-white/5 border border-white/10 rounded-xl p-4">
@@ -65,8 +63,7 @@
       <p
         v-else-if="data.milestones.totalCount === 0"
         class="text-white/30 text-sm italic"
-        :class="{ 'animate-fade-up': mounted }"
-        style="animation-delay: 300ms"
+        :style="{ opacity: mounted ? 1 : 0, transform: mounted ? 'none' : 'translateY(16px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '300ms' }"
       >
         No milestones set yet. Create your first goal!
       </p>
@@ -92,9 +89,4 @@ onMounted(() => setTimeout(() => (mounted.value = true), 100))
 
 <style scoped>
 .slide { position: absolute; inset: 0; }
-.animate-fade-up { animation: fade-up 0.6s ease forwards; opacity: 0; }
-@keyframes fade-up {
-  from { transform: translateY(16px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
 </style>

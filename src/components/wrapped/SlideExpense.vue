@@ -16,7 +16,7 @@
 
       <div class="grid grid-cols-2 gap-6">
         <!-- Saving rate -->
-        <div :class="{ 'animate-fade-up': mounted }" style="animation-delay: 400ms">
+        <div :style="{ opacity: mounted ? 1 : 0, transform: mounted ? 'none' : 'translateY(16px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '400ms' }">
           <p class="text-white/40 text-xs mb-2">Saving rate</p>
           <div class="flex items-end gap-2 mb-1">
             <p
@@ -39,7 +39,7 @@
         </div>
 
         <!-- Busiest day -->
-        <div :class="{ 'animate-fade-up': mounted }" style="animation-delay: 600ms">
+        <div :style="{ opacity: mounted ? 1 : 0, transform: mounted ? 'none' : 'translateY(16px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '600ms' }">
           <p class="text-white/40 text-xs mb-1">Most expenses on</p>
           <p class="text-xl font-bold text-orange-300">{{ data.expense.busiestDayOfWeek }}</p>
           <p class="text-white/30 text-xs mt-1">{{ data.expense.busiestDayCount }} transactions</p>
@@ -110,9 +110,4 @@ onMounted(() => {
 
 <style scoped>
 .slide { position: absolute; inset: 0; }
-.animate-fade-up { animation: fade-up 0.6s ease forwards; opacity: 0; }
-@keyframes fade-up {
-  from { transform: translateY(16px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
 </style>

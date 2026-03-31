@@ -116,11 +116,27 @@
       </div>
     </template>
 
+    <!-- Off-screen capture target: rendered only during share, behind all UI -->
+    <div
+      v-if="sharing && data"
+      ref="captureEl"
+      class="fixed inset-0 pointer-events-none overflow-hidden"
+      style="z-index:-9999;"
+      aria-hidden="true"
+    >
+      <WrappedCaptureView
+        :data="data"
+        :config="configStore"
+        :slide-index="currentSlide"
+        style="position:absolute;inset:0;"
+      />
+    </div>
+
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, markRaw } from 'vue'
+import { ref, computed, onMounted, onUnmounted, markRaw, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSwipe } from '@vueuse/core'
 import { X, ChevronLeft, ChevronRight, ChevronDown, Share2, Loader2 } from 'lucide-vue-next'
@@ -137,6 +153,7 @@ import SlideBiggestExpense from '@/components/wrapped/SlideBiggestExpense.vue'
 import SlideMonthly from '@/components/wrapped/SlideMonthly.vue'
 import SlideMilestones from '@/components/wrapped/SlideMilestones.vue'
 import SlidePersonality from '@/components/wrapped/SlidePersonality.vue'
+import WrappedCaptureView from '@/components/wrapped/WrappedCaptureView.vue'
 
 const slides = [
   markRaw(SlideIntro),
@@ -156,7 +173,8 @@ const { defaultYear } = useWrappedAvailability()
 const { loading, error, data, compute } = useWrappedData()
 
 const rootEl = ref<HTMLElement | null>(null)
-const slideAreaEl = ref<HTMLElement | null>(null)
+const slideAreaEl = ref<HTMLElement | null>(null) // used for swipe target
+const captureEl = ref<HTMLElement | null>(null)
 const currentSlide = ref(0)
 const transitionName = ref('slide-left')
 const slideProgress = ref(0)
@@ -221,28 +239,30 @@ async function changeYear(year: number) {
 }
 
 async function shareSlide() {
-  if (!slideAreaEl.value || sharing.value) return
+  if (sharing.value) return
   sharing.value = true
   clearInterval(progressTimer!)
 
-  // html2canvas captures CSS animations at their initial keyframe (opacity:0),
-  // not the completed fill-mode state. Inject a style that forces all slide
-  // animation classes to their final visible state before capture.
-  const captureStyle = document.createElement('style')
-  captureStyle.textContent = `
-    .animate-fade-up { animation: none !important; opacity: 1 !important; transform: translateY(0) !important; }
-    .animate-pop     { animation: none !important; opacity: 1 !important; transform: scale(1) !important; }
-  `
-  document.head.appendChild(captureStyle)
-  // Wait 2 frames so the overridden styles are fully applied before capture
-  await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
+  // Wait for Vue to render the WrappedCaptureView into captureEl
+  await nextTick()
+  await new Promise<void>(r => requestAnimationFrame(() => requestAnimationFrame(() => r())))
+
+  if (!captureEl.value) {
+    sharing.value = false
+    startProgress()
+    return
+  }
 
   try {
-    const canvas = await html2canvas(slideAreaEl.value, {
+    const canvas = await html2canvas(captureEl.value, {
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#0b0b18',
       scale: 2,
+      scrollX: 0,
+      scrollY: 0,
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
     })
 
     const blob = await new Promise<Blob>((resolve, reject) =>
@@ -252,13 +272,23 @@ async function shareSlide() {
     const filename = `flowtrack-${data.value?.period.year}-wrapped-slide${currentSlide.value + 1}.png`
     const file = new File([blob], filename, { type: 'image/png' })
 
-    if (navigator.share && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        title: `FlowTrack ${data.value?.period.year} Wrapped`,
-        text: 'Check out my financial year in review!',
-        files: [file],
-      })
-    } else {
+    let shared = false
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+      try {
+        await navigator.share({
+          title: `FlowTrack ${data.value?.period.year} Wrapped`,
+          text: 'Check out my financial year in review!',
+          files: [file],
+        })
+        shared = true
+      } catch (err) {
+        // AbortError = user dismissed the share sheet — treat as success (no fallback)
+        if (err instanceof Error && err.name === 'AbortError') shared = true
+        // NotAllowedError (gesture timeout) or anything else → fall through to download
+      }
+    }
+
+    if (!shared) {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -266,10 +296,9 @@ async function shareSlide() {
       a.click()
       URL.revokeObjectURL(url)
     }
-  } catch {
-    // user cancelled or browser denied — silent
+  } catch (err) {
+    console.warn('[FlowTrack] share/capture error:', err)
   } finally {
-    document.head.removeChild(captureStyle)
     sharing.value = false
     startProgress()
   }
